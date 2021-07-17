@@ -5,7 +5,7 @@ A discord bot built on the discord.py lib.
 
 **Note that i am very new to programming a discord bot, and this is only meant (for now at least) to test out and to learn how to build one. The offical code will come later once i figure it all out**
 
-Licensed under the AGPL-3.0 License
+Licensed under the CC0-1.0 License
 
 The name "Rin" (リン) comes from the vocaloid character Kagamine Rin (鏡音リン). This is actually an inside joke btw....
 # Disclaimer
