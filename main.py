@@ -1,18 +1,20 @@
 import discord
-from discord.ext import commands
+from discord.ext.commands import Bot
+from discord import Intents
 import os
+from dotenv import load_dotenv
+load_dotenv()
+TOKEN = os.getenv("TOKEN")
+intents = Intents.all()
+bot = Bot(intents=intents, command_prefix='!') # or whatever prefix you choose(!,%,?)
 
-client = discord.Client()
+class MyClient(discord.Client):
+    @bot.event
+    async def on_message(message):
+	    if message.content == 'hello':
+		    await message.channel.send('Hello there')
+    async def on_message(message):
+        if message.content == 'info':
+            await message.channel.send('Some info here')
 
-@client.event
-async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
-
+bot.run(TOKEN) #Make sure not to forget thtis....

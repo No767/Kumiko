@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import time
+import os
 
 
 class PingCog(commands.Cog, name="ping command"):
@@ -19,3 +20,8 @@ class PingCog(commands.Cog, name="ping command"):
 
 def setup(bot:commands.Bot):
 	bot.add_cog(PingCog(bot))
+ 
+ 
+ 
+client = discord.Client()
+client.run(os.getenv('TOKEN'))
