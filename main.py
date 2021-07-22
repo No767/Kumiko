@@ -22,7 +22,11 @@ async def fetchServerInfo(context):
 class MyClient(discord.Client):
     @bot.event
     async def on_message(message):
-	    if message.content == '$hello':
+	    if message.content == 'hello':
 		    await message.channel.send('Hello there')
+    async def on_message(message):
+        if message.content == 'help':
+            await message.channel.send("What is the help that you need?")
+            await message.channel.send("Please contact me for help")
 
 bot.run(TOKEN) #Make sure not to forget thtis....
