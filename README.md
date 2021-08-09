@@ -1,10 +1,19 @@
 # Rin
 
+<div align=center>
+[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml)
+
+<img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
 
 A Discord Bot Built on Discord.py
 
 **Note that i am very new to programming a discord bot, and this is only meant (for now at least) to test out and to learn how to build one. The official code will come later once i figure it all out**
 
+<div align=left>
+
+# Installing
+
+Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg
 
 # Licensing
 
