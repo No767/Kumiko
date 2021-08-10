@@ -1,0 +1,39 @@
+name: Feature Request
+description: File a feature request
+title: "[Feature Request] "
+labels: [enhancement]
+body:
+
+- type: textarea
+  attributes:
+    label: Related to a problem?
+    description: Is your feature request related to a problem? Please describe in a clear and concise manner.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Solution
+    description: Describe the solution you'd like
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Describe the Alternatives
+    description: Describe any alternatives that you have considered.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      Any other additional context that you would like to add?
+    render: markdown
+  validations:
+    required: false
+- type: checkboxes
+  attributes:
+    label: Is there an existing feature request for this?
+    description: Please search and see if there is any duplicate feature requests. 
+    options:
+    - label: I have searched the existing feature requests
+      required: true
