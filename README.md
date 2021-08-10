@@ -6,7 +6,11 @@
 
 A Discord Bot Built on Discord.py
 
-**Note that i am very new to programming a discord bot, and this is only meant (for now at least) to test out and to learn how to build one. The official code will come later once i figure it all out**
+# Notes
+
+- I'm very new to programming a discord bot. The code isn't even done yet, and all of the features that I planned for is not there yet
+
+- My time is very limited, so support for the bot might not come until weeks to months later. Development of the bot won't be as much as I hope, since I have a lot of exams and classes to go through. Expect delays when new updates will arrive
 
 <div align=left>
 
@@ -24,7 +28,6 @@ See [Contributing](https://github.com/No767/Rin/blob/master/contributing.md)
 
 # Other information
 
-This runs off of Chisaku's [EasyBot.py](https://github.com/chisaku-dev/EasyBot.py) framework / bot. This will allow for the use of the plugins as well. Adding support for that is a later thing...
 The name "Rin" (リン) comes from the vocaloid character Kagamine Rin (鏡音リン). 
 
 # Disclaimer
