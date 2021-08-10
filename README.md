@@ -8,11 +8,7 @@ A Discord Bot Built on Discord.py
 
 <div align=left>
 
-# Notes
-
-- I'm very new to programming a discord bot. The code isn't even done yet, and all of the features that I planned for is not there yet
-
-- My time is very limited, so support for the bot might not come until weeks to months later. Development of the bot won't be as much as I hope, since I have a lot of exams and classes to go through. Expect delays when new updates will arrive
+> :exclamation: My time is very limited, so support for the bot might not come until weeks to months later. Development of the bot won't be as much as I hope, since I have a lot of exams and classes to go through. Releases won't be very often due to this
 
 <div align=left>
 
