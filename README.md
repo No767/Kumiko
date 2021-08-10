@@ -6,6 +6,8 @@
 
 A Discord Bot Built on Discord.py
 
+<div align=left>
+
 # Notes
 
 - I'm very new to programming a discord bot. The code isn't even done yet, and all of the features that I planned for is not there yet
