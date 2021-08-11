@@ -4,7 +4,6 @@ import datetime # Please keep the datetime module here...
 class RinInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
     @commands.command()
     async def Rin_info(self, message):
         embedVar = discord.Embed(title="Info", color=14414079, timestamp=datetime.datetime.now())

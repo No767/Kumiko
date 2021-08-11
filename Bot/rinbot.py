@@ -1,7 +1,6 @@
 import discord
 from discord import Intents
 from discord.ext import commands
-from discord.abc import User
 import os
 from dotenv import load_dotenv
 import datetime
