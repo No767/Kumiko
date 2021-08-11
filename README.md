@@ -14,7 +14,7 @@ A Discord Bot Built on Discord.py and EasyBot.py
 
 # Installing
 
-Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg
+Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg. More information on this can be found within the [docs](https://rin-docs.readthedocs.io/en/latest/).
 
 # Licensing
 
@@ -22,11 +22,8 @@ This project is licensed under the CC0-1.0 License. This project uses the [EasyB
 
 # Contributing
 
-See [Contributing](https://github.com/No767/Rin/blob/master/contributing.md)
+See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
 
-# Other information
-
-The name "Rin" (リン) comes from the vocaloid character Kagamine Rin (鏡音リン). 
 
 # Disclaimer
 
