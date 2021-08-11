@@ -12,7 +12,6 @@ TOKEN = os.getenv("TOKEN")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".")
 
-
 @bot.command(name='info')
 async def on_message(message):
     embedVar = discord.Embed(title="Info", color=14414079, timestamp= datetime.datetime.now())
