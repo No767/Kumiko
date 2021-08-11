@@ -3,8 +3,7 @@
 <div align=center>
 
 [![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <a href="https://www.codefactor.io/repository/github/no767/rin"><img src="https://www.codefactor.io/repository/github/no767/rin/badge" alt="CodeFactor" /></a>
-<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin">
-<img src="https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8"/></a> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin"><img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
 
 A Discord Bot Built on Discord.py
 
