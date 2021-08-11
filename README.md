@@ -2,10 +2,7 @@
 
 <div align=center>
 
-[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <img alt="Snyk Vulnerabilities for GitHub Repo" src="https://img.shields.io/snyk/vulnerabilities/github/No767/Rin?label=vulnerabilities"> <a href="https://www.codefactor.io/repository/github/no767/rin"> <img src="https://www.codefactor.io/repository/github/no767/rin/badge" alt="CodeFactor" /></a> <a href="https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8"/></a>
-<a href='https://rin-docs.readthedocs.io/en/latest/?badge=latest'>
-    <img src='https://readthedocs.org/projects/rin-docs/badge/?version=latest' alt='Documentation Status' />
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin"> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
+[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <img alt="Snyk Vulnerabilities for GitHub Repo" src="https://img.shields.io/snyk/vulnerabilities/github/No767/Rin?label=vulnerabilities"> [![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Documentation Status](https://readthedocs.org/projects/rin-docs/badge/?version=latest)](https://rin-docs.readthedocs.io/en/latest/?badge=latest) <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin"> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
 
 A Discord Bot Built on Discord.py and EasyBot.py
 
@@ -17,7 +14,7 @@ A Discord Bot Built on Discord.py and EasyBot.py
 
 # Installing
 
-Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg
+Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg. More information on this can be found within the [docs](https://rin-docs.readthedocs.io/en/latest/).
 
 # Licensing
 
@@ -25,11 +22,8 @@ This project is licensed under the CC0-1.0 License. This project uses the [EasyB
 
 # Contributing
 
-See [Contributing](https://github.com/No767/Rin/blob/master/contributing.md)
+See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
 
-# Other information
-
-The name "Rin" (リン) comes from the vocaloid character Kagamine Rin (鏡音リン). 
 
 # Disclaimer
 
