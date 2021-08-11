@@ -2,17 +2,15 @@
 
 <div align=center>
 
-[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
+[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <a href="https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade"> 
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin">
+<img src="https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8"/></a> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
 
 A Discord Bot Built on Discord.py
 
 <div align=left>
 
-# Notes
-
-- I'm very new to programming a discord bot. The code isn't even done yet, and all of the features that I planned for is not there yet
-
-- My time is very limited, so support for the bot might not come until weeks to months later. Development of the bot won't be as much as I hope, since I have a lot of exams and classes to go through. Expect delays when new updates will arrive
+> :exclamation: My time is very limited, so support for the bot might not come until weeks to months later. Development of the bot won't be as much as I hope, since I have a lot of exams and classes to go through. Releases won't be very often due to this
 
 <div align=left>
 
