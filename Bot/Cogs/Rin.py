@@ -10,6 +10,5 @@ class RinInfo(commands.Cog):
         embedVar.add_field(name="Command Prefix", value='Command Prefix is "**.**"')
         embedVar.add_field(name="Server Name", value=message.guild.name)
         await message.channel.send(embed=embedVar)
-        
 def setup(bot):
     bot.add_cog(RinInfo(bot))
