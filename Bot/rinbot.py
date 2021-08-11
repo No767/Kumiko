@@ -11,18 +11,8 @@ intents = Intents.all()
 bot = commands.Bot(command_prefix=".")
 
 # Loads in all extensions
-initial_extensions = ['Cogs.rininfo']
+initial_extensions = ['Cogs.Rin_Info', 'Cogs.Utility', 'Cog.Bot_Admin', 'Cogs.Misc']
 for extension in initial_extensions:
     bot.load_extension(extension)
-
-    
-    
-    
-@bot.command(name='info')
-async def on_message(message):
-    embedVar = discord.Embed(title="Info", color=14414079, timestamp= datetime.datetime.now())
-    embedVar.add_field(name="Command Prefix", value='Command Prefix is "**.**"')
-    embedVar.add_field(name="Server Name", value=message.guild.name)
-    await message.channel.send(embed=embedVar)
 
 bot.run(TOKEN)
