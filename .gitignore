@@ -5,3 +5,4 @@ Bot/.env
 *.idea 
 .idea
 __pycache__
+reddit-api-oauth.py
