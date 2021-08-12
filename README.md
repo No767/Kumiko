@@ -2,6 +2,10 @@
 
 <div align=center>
 
+<img src="./assets/Rin Logo V2.webp">
+
+<br/>
+
 <img alt="Python Version" src="https://img.shields.io/badge/Python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue"> [![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Documentation Status](https://readthedocs.org/projects/rin-docs/badge/?version=latest)](https://rin-docs.readthedocs.io/en/latest/?badge=latest) <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin"> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
 
 A Discord Bot Built on Discord.py and EasyBot.py

@@ -5,4 +5,8 @@ qrcode==7.2
 image==1.5.33
 praw==7.4.0
 pixiv-api==1.0.0
+<<<<<<< HEAD
+python-twitter==3.5
+=======
 deviantart==0.1.5
+>>>>>>> 96251bcb0085dc4876bb26a13408e17cdd3ddede
