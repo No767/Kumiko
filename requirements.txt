@@ -5,3 +5,4 @@ qrcode==7.2
 image==1.5.33
 praw==7.4.0
 pixiv-api==1.0.0
+python-twitter==3.5
