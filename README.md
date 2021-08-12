@@ -26,7 +26,7 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 
 # To-Do List
 
-- [] Replace Reddit Cmd with one that uses OAuth API or doesn't dump it into a local database (SQLite3)
+- [ ] Replace Reddit Cmd with one that uses OAuth API or doesn't dump it into a local database (SQLite3)
 - Use Twitter API to grab certain posts, etc
 - Hook into MangaDex API?
 # Disclaimer
