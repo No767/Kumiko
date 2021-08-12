@@ -24,7 +24,11 @@ This project is licensed under the CC0-1.0 License. This project uses the [EasyB
 
 See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
 
+# To-Do List
 
+- [] Replace Reddit Cmd with one that uses OAuth API or doesn't dump it into a local database (SQLite3)
+- Use Twitter API to grab certain posts, etc
+- Hook into MangaDex API?
 # Disclaimer
 
 No767, any contributor of this project, any assets, or any works of this project is related with Vocaliod and their parent company Crypton Future Media or any other affiliates of Crypton Future Media.

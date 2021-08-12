@@ -6,3 +6,5 @@ Bot/.env
 .idea
 __pycache__
 reddit-api-oauth.py
+reddit
+*reddit.db
