@@ -2,29 +2,23 @@
 #built in
 import os
 #external
-import qrcode, image
+import qrcode
+import image
 
-# This part is most likely not going to be used...
+# Main classes that will be using...
+from discord.ext import commands
+import discord
+
+
 def discord_colors():
     colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
     from random import choice
     return choice(colors)
 
-def install(library_name):
-    os.system(f'pip3 install {library_name}')
-    print(f'Library {library_name} has been installed')
- 
-def install_multiple(libraries):
-    for library in libraries:
-        install(library)
-
 def fast_embed(content):
     embed = discord.Embed(description = content, color = discord_colors())
     return embed
 
-# Main classes that will be using...
-from discord.ext import commands
-import discord
 class Utility(commands.Cog):
     
     def __init__(self, bot):
@@ -45,13 +39,6 @@ class Utility(commands.Cog):
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_image(url='attachment://invite.png')
         await ctx.send(embed=embed, file=file)
-
-    @commands.command(
-        name='ping',
-        help='Test the latency of the bot'
-    )
-    async def ping(self, ctx):
-        await ctx.send(fast_embed(f'Pong took {self.bot.latency} seconds 🏓'))
 
     @commands.command(
         name='botinfo',
@@ -77,6 +64,27 @@ class Utility(commands.Cog):
         '''
         embed.set_thumbnail(url=bot.user.avatar_url)
         await ctx.send(embed=embed)
+        
+    @commands.command(
+        name='translate',
+        help='Translates the given message',
+        pass_context=True
+        )
+    async def translate(self, ctx):
+        def check(ms):
+            return ms.channel == ctx.message.channel and ms.author == ctx.message.author
+        await ctx.send('Enter the message you wish to be translated:')
+        msg = await self.bot.wait_for('message', check=check)
+        translated = GoogleTranslator(source='auto', target='english').translate(msg.content)
+        translate_embed = discord.Embed(
+            title='Translation',
+            description=translated
+        )
+        translate_embed.set_author(
+            name=ctx.message.author.name,
+            icon_url=ctx.message.author.avatar_url
+        )
+        await ctx.send(embed=translate_embed)
 
 class Bot_Admin(commands.Cog):
     def __init__(self, bot):
