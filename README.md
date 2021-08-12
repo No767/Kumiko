@@ -2,7 +2,7 @@
 
 <div align=center>
 
-[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <img alt="Snyk Vulnerabilities for GitHub Repo" src="https://img.shields.io/snyk/vulnerabilities/github/No767/Rin?label=vulnerabilities"> [![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Documentation Status](https://readthedocs.org/projects/rin-docs/badge/?version=latest)](https://rin-docs.readthedocs.io/en/latest/?badge=latest) <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin"> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
+<img alt="Python Version" src="https://img.shields.io/badge/Python-3.6%20%7C%203.7%20%7C%203.8%20%7C%203.9-blue"> [![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) <img alt="Snyk Vulnerabilities for GitHub Repo" src="https://img.shields.io/snyk/vulnerabilities/github/No767/Rin?label=vulnerabilities"> [![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Documentation Status](https://readthedocs.org/projects/rin-docs/badge/?version=latest)](https://rin-docs.readthedocs.io/en/latest/?badge=latest) <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/No767/Rin"> <img alt="GitHub" src="https://img.shields.io/github/license/No767/Rin">
 
 A Discord Bot Built on Discord.py and EasyBot.py
 
@@ -26,9 +26,9 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 
 # To-Do List
 
-- [ ] Replace Reddit Cmd with one that uses OAuth API or doesn't dump it into a local database (SQLite3)
 - [ ] Use Twitter API to grab certain posts, etc
-- [ ] Hook into MangaDex API?
+- [ ] Kana.pro-like Guessing Game
+
 # Disclaimer
 
 No767, any contributor of this project, any assets, or any works of this project is related with Vocaliod and their parent company Crypton Future Media or any other affiliates of Crypton Future Media.
