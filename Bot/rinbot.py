@@ -13,7 +13,7 @@ intents = Intents.all()
 bot = commands.Bot(command_prefix=".")
 
 # Loads in all extensions
-initial_extensions = ['Cogs.rininfo', 'Cogs.plugin_tools', 'Cogs.global', 'Cogs.rinping', 'Cogs.deviantart', 'Cogs.valid', 'Cogs.rinhelp']
+initial_extensions = ['Cogs.rininfo', 'Cogs.plugin_tools', 'Cogs.global', 'Cogs.rinping', 'Cogs.deviantart', 'Cogs.valid', 'Cogs.rinhelp', 'Cogs.twitter']
 for extension in initial_extensions:
     bot.load_extension(extension)
 

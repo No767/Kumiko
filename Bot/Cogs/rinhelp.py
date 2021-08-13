@@ -23,6 +23,8 @@ class rinhelp(commands.Cog):
         - .valid
 
         - .ping 
+        
+        - .rintwitter
 
         - .meme (from EasyBot.py)
 
