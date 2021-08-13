@@ -2,7 +2,7 @@
 
 <div align=center>
 
-<img src="./assets/Rin Logo V2.webp">
+<img src="./assets/Rin Logo V4 (GitHub).png">
 
 <br/>
 
