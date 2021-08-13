@@ -8,3 +8,4 @@ __pycache__
 reddit-api-oauth.py
 reddit
 *reddit.db
+*responses.json
