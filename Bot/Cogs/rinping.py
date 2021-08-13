@@ -8,7 +8,6 @@ class rinping(commands.Cog):
         
     @commands.command(
         name='ping',
-        help='Test the latency of the bot'
     )
     async def ping(self, ctx):
         await ctx.send(f'Ping >> {self.bot.latency} seconds')
