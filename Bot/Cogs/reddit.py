@@ -106,6 +106,5 @@ class reddit(commands.Cog):
             return
         except:
             await ctx.send(f'There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.')
-
 def setup(bot):
     bot.add_cog(reddit(bot))
