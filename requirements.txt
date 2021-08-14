@@ -9,5 +9,6 @@ python-twitter==3.5
 deviantart==0.1.5
 py3-pinterest==1.2.2
 tweepy==3.10.0
+deep-translator==1.5.0
 django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability
 pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability
