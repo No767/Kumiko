@@ -1,8 +1,6 @@
 from discord.ext import commands
-from discord import client
+from discord import Client
 import discord
-
-
 class valid(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
