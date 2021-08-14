@@ -11,7 +11,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env: 
+      working-directory: ./Bot
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -29,4 +30,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest .../Bot
+        pytest 
+      working-directory: ${{env.working-directory}}
