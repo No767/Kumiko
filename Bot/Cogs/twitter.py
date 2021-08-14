@@ -4,10 +4,10 @@ from discord import Embed
 from dotenv import load_dotenv
 import tweepy
 import os
+import pytest
 load_dotenv()
 
 # Access the Twitter API via Tweepy
-# All Tokens are stored within a .env file
 Twitter_API_Key = os.getenv("Twitter_API_Key")
 API_Secret_Key = os.getenv("API_Secret_Key")
 Access_Token = os.getenv("Access_Token")
@@ -28,6 +28,12 @@ class rintwitter(commands.Cog):
         embedVar = discord.Embed(title="Twitter Timeline")
         embedVar.description = f'{api.home_timeline()}'
         await ctx.send(embed=embedVar)
+    @commands.command(name="rintsearch")
+    async def rintwittersearch(self, ctx, search):
+        twitter_query = api.search_tweets(search)
+        twitter_embed = discord.Embed()
+        twitter_embed.description = f'{twitter_query}'
+        await ctx.send(embed=twitter_embed)
 
 def setup(bot):
     bot.add_cog(rintwitter(bot))

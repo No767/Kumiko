@@ -2,6 +2,7 @@ import requests
 import bs4
 import random
 from discord.ext import commands
+import pytest
 
 #get link and prepare for scraping
 def image_scrape(link):

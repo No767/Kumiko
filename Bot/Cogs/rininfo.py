@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import datetime
+import pytest
 class rininfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

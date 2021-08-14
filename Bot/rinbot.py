@@ -5,6 +5,7 @@ from discord import client
 from discord import Game
 import os
 from dotenv import load_dotenv
+import pytest
 
 # Grabs the bot's token from the .env file
 load_dotenv()

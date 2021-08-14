@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import Embed
+import pytest
 class rinping(commands.Cog):
     
     def __init__(self, bot):

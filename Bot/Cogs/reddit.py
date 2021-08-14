@@ -4,6 +4,7 @@ import discord
 import random
 import sqlite3
 import praw
+import pytest
 
 #reddit login script
 def redditkey():

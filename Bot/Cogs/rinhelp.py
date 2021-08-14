@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+import pytest
 class rinhelp(commands.Cog):        
     def __init__(self, bot):
         self.bot = bot
