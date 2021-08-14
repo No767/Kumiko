@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 import deviantart
 import os
 import asyncio
-import pytest
 
 load_dotenv()
 Client_ID = os.getenv("Client_ID")

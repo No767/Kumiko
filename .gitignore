@@ -10,3 +10,4 @@ reddit
 *reddit.db
 *responses.json
 Kana
+.pytest_cache

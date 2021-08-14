@@ -4,7 +4,6 @@ from discord import Embed
 from dotenv import load_dotenv
 import tweepy
 import os
-import pytest
 load_dotenv()
 
 # Access the Twitter API via Tweepy

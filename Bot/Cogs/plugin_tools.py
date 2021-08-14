@@ -5,7 +5,6 @@ import os
 import qrcode
 import image
 from deep_translator import GoogleTranslator
-import pytest
 
 # Main classes that will be using...
 from discord.ext import commands
