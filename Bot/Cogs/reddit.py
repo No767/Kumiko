@@ -80,7 +80,8 @@ class reddit(commands.Cog):
         help="finds a trans related meme"
     )
     async def transmeme(self, ctx):
-        searchtopics = [' ', ' trans ', ' egg_irl ', ' traaaaaaannnnnnnnnns ', ' GaySoundsShitposts ', ' Bisexual ', ' Bi_IRL ', ' ActualLesbians ', ' SapphoAndherFriend'] # Tried to watch onetopic in order to figure out the different subs
+        # Tried to watch onetopic in order to figure out the different subs
+        searchtopics = [' ', ' trans ', ' egg_irl ', ' traaaaaaannnnnnnnnns ', ' GaySoundsShitposts ', ' Bisexual ', ' Bi_IRL ', ' ActualLesbians ', ' SapphoAndherFriend']
         searchterm = random.choice(searchtopics)
         await ctx.invoke(self.bot.get_command('reddit'), search = searchterm)
         

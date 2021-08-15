@@ -27,11 +27,12 @@ class rintwitter(commands.Cog):
         embedVar = discord.Embed(title="Twitter Timeline")
         embedVar.description = f'{api.home_timeline()}'
         await ctx.send(embed=embedVar)
-    @commands.command(name="rintsearch")
-    async def rintwittersearch(self, ctx, search):
-        twitter_query = api.search_tweets(search)
+    # The OAuth can only handle Read requests, not post requests. adding support in the future
+    @commands.command(name="rtupdatestatus")
+    async def rintwittersearch(self, ctx, search:str):
+        twitter_query = api.update_status(status = search)
         twitter_embed = discord.Embed()
-        twitter_embed.description = f'{twitter_query}'
+        twitter_embed.description = f'Your Twitter Status has been updated to {twitter_query}'
         await ctx.send(embed=twitter_embed)
 
 def setup(bot):
