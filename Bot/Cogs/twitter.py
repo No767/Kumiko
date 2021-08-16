@@ -21,7 +21,7 @@ class rintwitter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(name="rintwitter")
+    @commands.command(name="rt")
     async def rintwitter(self, ctx):
         home_timeline = api.home_timeline()
         embedVar = discord.Embed(title="Twitter Timeline")
@@ -34,6 +34,13 @@ class rintwitter(commands.Cog):
         twitter_embed = discord.Embed()
         twitter_embed.description = f'Your Twitter Status has been updated to {twitter_query}'
         await ctx.send(embed=twitter_embed)
-
+        # Still need to figure out that....
+    @commands.command(name='rtsearch')
+    async def rtgetsaved(self, ctx, search:str):
+        getcursor = api.get_user(search)
+        search_embed = discord.Embed()
+        search_embed.description = f'This was the tweet found: {getcursor.followers_count()}'
+        await ctx.send(embed = search_embed)
+        
 def setup(bot):
     bot.add_cog(rintwitter(bot))
