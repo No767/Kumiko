@@ -9,7 +9,7 @@ import praw
 def redditkey():
     #saving information to database
     def save_information(redditid, redditsecret):
-        conn = sqlite3.connect('.reddit.db')
+        conn = sqlite3.connect('reddit.db')
         conn.execute('''CREATE TABLE IF NOT EXISTS saved_information (
             redditid text,
             redditsecret text);
@@ -21,7 +21,7 @@ def redditkey():
         conn.close()
         return(redditid, redditsecret)
 
-    conn = sqlite3.connect('.reddit.db')
+    conn = sqlite3.connect('reddit.db')
     try:
         #attempt login discord
         cur = conn.cursor()
@@ -75,6 +75,16 @@ class reddit(commands.Cog):
         searchterm = random.choice(searchtopics) + 'memes'
         await ctx.invoke(self.bot.get_command('reddit'), search = searchterm)
 
+    @commands.command(
+        name="transmeme",
+        help="finds a trans related meme"
+    )
+    async def transmeme(self, ctx):
+        # Tried to watch onetopic in order to figure out the different subs
+        searchtopics = [' ', ' trans ', ' egg_irl ', ' traaaaaaannnnnnnnnns ', ' GaySoundsShitposts ', ' Bisexual ', ' Bi_IRL ', ' ActualLesbians ', ' SapphoAndherFriend']
+        searchterm = random.choice(searchtopics)
+        await ctx.invoke(self.bot.get_command('reddit'), search = searchterm)
+        
     @commands.command(
         name="reddit",
         help="browses on reddit"

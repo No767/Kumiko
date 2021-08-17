@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord import client
+from discord import Client
 from dotenv import load_dotenv
 import deviantart
 import os
@@ -16,19 +16,28 @@ class devart(commands.Cog, discord.Client):
     def __init__(self, bot):
         self.bot = bot
     @commands.command(name='devartfind')
-    async def on_message(ctx):
-        await ctx.send(da.browse(endpoint='hot'))
+    async def on_message(ctx, search:str):
+        devartfind = da.browse(endpoint = f'{search}')
+        devEmbed = discord.Embed()
+        devEmbed.description = f'{devartfind}'
+        await ctx.send(embed = devEmbed)
     async def on_error(ctx):
         await ctx.send("There seems to be an error. Please try again")
         
     @commands.command(name='devartsearch')
-    @commands.Cog.listener('message')
-    async def on_message(message, ctx):
-        await ctx.send(f'What do you want to search for?')
-        msg = await client.wait_for(message)
-        await ctx.send(f'You have searched for {msg}')
-        # await ctx.send(da.search_tags(msg))
-        # devart_embed = discord.Embed()
-        # devart_embed.description = f''
+    async def on_message(message, ctx, search: str):
+        devsearch = search
+        devart = da.search_tags(search)
+        devart_embed = discord.Embed()
+        devart_embed.description = f'{devart}'
+        await ctx.send(embed=devart_embed)
+    
+    # Requires Auth Code in order to work. Still need to set that up in the api app
+    @commands.command(name="devartuserget")
+    async def on_message(ctx, search:str):
+        devartuserget = da.get_users(search)
+        devartget_embed = discord.Embed()
+        devartget_embed.description = f'{devartuserget}'
+        await ctx.send(embed = devartget_embed)
 def setup(bot):
     bot.add_cog(devart(bot))

@@ -10,8 +10,9 @@ class rinping(commands.Cog):
         name='ping',
     )
     async def ping(self, ctx):
-        await ctx.send(f'Ping >> {self.bot.latency} seconds')
-    
+        ping_embed = discord.Embed()
+        ping_embed.description = f'Ping >> {self.bot.latency} seconds'
+        await ctx.send(embed = ping_embed)    
 
 def setup(bot):
     bot.add_cog(rinping(bot))

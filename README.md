@@ -33,7 +33,7 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 - [ ] Use Twitter API to grab certain posts, etc
 - [x] Very Basic Twitter API Support
 - [ ] Add support for music and videos (YouTube API, SoundClound API, and/or Spotify API)
-- [ ] Deviantart support
+- [x] Deviantart support
 - [x] Reddit support 
 # Disclaimer
 
