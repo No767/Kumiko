@@ -44,7 +44,7 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 # Links 
 
 - [Documentation](https://rin-docs.readthedocs.io/en/latest/)
-- 
+
 # Disclaimer
 
 No767, any contributor of this project, any assets, or any works of this project is related with Vocaliod and their parent company Crypton Future Media or any other affiliates of Crypton Future Media. Even though I didn't use any assets of Crypton or Kagamine Rin, I'm still going to put that out there just in case...
