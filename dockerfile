@@ -1,4 +1,4 @@
-FROM python:3.10.0b4-slim-buster
+FROM python:3.10-rc-slim
 WORKDIR /Bot
 COPY . .
 RUN pip install -r requirements.txt
