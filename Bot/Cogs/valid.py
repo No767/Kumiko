@@ -10,5 +10,9 @@ class valid(commands.Cog):
         embedVar = discord.Embed(color = 14414079)
         embedVar.description = f'You are valid no matter what! You got this {user_search}!'
         await ctx.send(embed = embedVar)
+    async def on_command_error(self, ctx):
+        embedVar = discord.Embed(color = 14414079)
+        embedVar.description = f'There seems to be an error. Please try again.'
+        await ctx.send(embed = embedVar)
 def setup(bot):
     bot.add_cog(valid(bot))

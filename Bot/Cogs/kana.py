@@ -1,11 +1,10 @@
-import os
 from discord.ext import commands
 from discord import Embed
 import pykakasi
 import tensorflow as tf
 
 
-class kana(name="kana"):
+class kana(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 

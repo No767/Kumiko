@@ -39,12 +39,12 @@ There are 2 main branches: master and dev. Master is the branch that contains th
   
 # To-Do List
 
-- [ ] Use Twitter API to grab certain posts, etc
+- [x] Use Twitter API to grab certain posts, etc
 - [x] Very Basic Twitter API Support
 - [ ] Add support for music and videos (YouTube API, SoundClound API, and/or Spotify API)
 - [x] Deviantart support
 - [x] Reddit support 
-- [ ] Add support for a kana-quiz like system
+- [ ] Add support for a kana-quiz like system (Maybe use Tensorflow for AI and Machine Learning responses)
 - [ ] Jisho API Support
 
 # Links 
