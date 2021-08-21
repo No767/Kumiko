@@ -12,3 +12,6 @@ pyinstrument==4.0.3
 black==21.7b0
 django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability
 pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability
+pykakasi == 2.2.1
+tensorflow==2.6.0
+jishopy==0.0.1.1
