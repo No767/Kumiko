@@ -44,6 +44,8 @@ There are 2 main branches: master and dev. Master is the branch that contains th
 - [ ] Add support for music and videos (YouTube API, SoundClound API, and/or Spotify API)
 - [x] Deviantart support
 - [x] Reddit support 
+- [ ] Add support for a kana-quiz like system
+- [ ] Jisho API Support
 
 # Links 
 
