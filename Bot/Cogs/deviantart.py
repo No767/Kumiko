@@ -23,7 +23,21 @@ class devart(commands.Cog, discord.Client):
         await ctx.send(embed = devEmbed)
     async def on_error(ctx):
         await ctx.send("There seems to be an error. Please try again")
-        
+
+class devartuserget(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    @commands.command(name="devartuserget")
+    async def on_message(ctx, search:str):
+        devartuserget = da.get_users(search)
+        devartget_embed = discord.Embed()
+        devartget_embed.description = f'{devartuserget}'
+        await ctx.send(embed = devartget_embed)
+
+class devartsearcher(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+            
     @commands.command(name='devartsearch')
     async def on_message(message, ctx, search: str):
         devsearch = search
@@ -32,12 +46,8 @@ class devart(commands.Cog, discord.Client):
         devart_embed.description = f'{devart}'
         await ctx.send(embed=devart_embed)
     
-    # Requires Auth Code in order to work. Still need to set that up in the api app
-    @commands.command(name="devartuserget")
-    async def on_message(ctx, search:str):
-        devartuserget = da.get_users(search)
-        devartget_embed = discord.Embed()
-        devartget_embed.description = f'{devartuserget}'
-        await ctx.send(embed = devartget_embed)
+    
 def setup(bot):
     bot.add_cog(devart(bot))
+    bot.add_cog(devartuserget(bot))
+    bot.add_cog(devartsearcher(bot))

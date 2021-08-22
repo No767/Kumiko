@@ -45,7 +45,7 @@ There are 2 main branches: master and dev. Master is the branch that contains th
 - [x] Deviantart support
 - [x] Reddit support 
 - [ ] Add support for a kana-quiz like system (Maybe use Tensorflow for AI and Machine Learning responses)
-- [ ] Jisho API Support
+- [x] JmDict Support
 
 # Links 
 
