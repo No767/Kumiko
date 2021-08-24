@@ -47,6 +47,7 @@ body:
     label: Anything else?
     description: |
       Links, References, Examples can all work here. Anything that will give us more context about the issue you are encountering will help here.
+    render: markdown
   validations:
     required: false
 - type: checkboxes

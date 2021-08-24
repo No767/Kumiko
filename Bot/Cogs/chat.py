@@ -1,6 +1,8 @@
 from discord.ext import commands
 import discord
 import json
+
+# Disabled due to not being able to find the responses.json file
 class Chat(commands.Cog):
 
     def __init__(self, bot):

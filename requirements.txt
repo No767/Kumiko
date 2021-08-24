@@ -10,5 +10,5 @@ tweepy==3.10.0
 deep-translator==1.5.4
 pyinstrument==4.0.3
 black==21.7b0
-django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability
+instagram-private-api==1.6.0
 pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability

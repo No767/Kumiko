@@ -5,54 +5,73 @@ class rinhelp(commands.Cog):
         self.bot = bot
     
     @commands.command(name="rinhelp")
-    async def rinhelp(self, ctx):
-        bot = self.bot
-        name = bot.user.name
-        id = bot.user.id
-        embedVar = discord.Embed(title="Rin Help", color=14414079)
-        embedVar.description = f'''
-        **NOTE**: Currently the amount of commands are not complete, hence why this is in alpha. 
-        
-        Full List of Cmds (including ones from EasyBot.py):
-        
-        - .rinhelp
+    async def on_message(self, ctx, search:str):
+            if search == 'help':
+                bot = self.bot
+                name = bot.user.name
+                id = bot.user.id
+                embedVar = discord.Embed(title="Rin Help", color=14414079)
+                embedVar.description = f'''
+                Help Section Page
+                '''
+                embedVar.set_thumbnail(url=bot.user.avatar_url)
+                ctx.send(embed=embedVar)
+            else:
+                bot = self.bot
+                name = bot.user.name
+                id = bot.user.id
+                embedVar = discord.Embed(title="Rin Help", color=14414079)
+                embedVar.description = f'''
+                NOTE: Currently the amount of commands are not complete, hence why this is in alpha.
 
-        - .rininfo
+Full List of Cmds (including ones from EasyBot.py):
 
-        - .valid
+- .rinhelp
 
-        - .ping 
-        
-        - .rintwitter
+- .rininfo
 
-        - .meme (from EasyBot.py)
+- .valid
 
-        - .reddit (from EasyBot.py)
+- .ping
 
-        - .devartfind (**NOT COMPLETE YET**)
+- .rintwitter
 
-        - .devartsearch (**NOT COMPLETE YET**)
+- .meme (from EasyBot.py)
 
-        - .image (from EasyBot.py)
+- .reddit (from EasyBot.py)
 
-        - .invite (from EasyBot.py)
+- .devartfind (NOT COMPLETE YET)
 
-        - .botinfo (from EasyBot.py)
+- .devartsearch (NOT COMPLETE YET)
 
-        - .translate (from EasyBot.py, missing lib)
+- .image (from EasyBot.py)
 
-        - .botgrowth
+- .invite (from EasyBot.py)
 
-        - .prune
+- .botinfo (from EasyBot.py)
 
-        - .broadcast
+- .translate (from EasyBot.py, missing lib)
 
-        - .makeyourownbot
-        
-        More are still to come...
-        '''
-        embedVar.set_thumbnail(url=bot.user.avatar_url)
-        await ctx.send(embed=embedVar)
+- .botgrowth
 
+- .prune
+
+- .broadcast
+
+- .makeyourownbot
+                '''
+            embedVar.set_thumbnail(url=bot.user.avatar_url)
+            await ctx.send(embed=embedVar)
+    async def error_message(self, ctx):
+            bot = self.bot
+            name = bot.user.name
+            id = bot.user.id
+            embedVar = discord.Embed(title="Rin Help", color=14414079)
+            embedVar.description = f'''
+            Sorry, try again. Something went wrong....
+            '''
+            embedVar.set_thumbnail(url=bot.user.avatar_url)
+            await ctx.send(embed=embedVar)
 def setup(bot):
     bot.add_cog(rinhelp(bot))
+    
