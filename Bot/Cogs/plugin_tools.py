@@ -1,7 +1,8 @@
 # EasyBot.py file
-#built in
+# built in
 import os
-#external
+
+# external
 import qrcode
 import image
 from deep_translator import GoogleTranslator
@@ -14,37 +15,37 @@ import discord
 def discord_colors():
     colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
     from random import choice
+
     return choice(colors)
 
+
 def fast_embed(content):
-    embed = discord.Embed(description = content, color = discord_colors())
+    embed = discord.Embed(description=content, color=discord_colors())
     return embed
 
+
 class Utility(commands.Cog):
-    
     def __init__(self, bot):
         self.bot = bot
-    @commands.command(
-        name='invite',
-        help='Generates the link to invite bot',
-    )
-    async def invite(self, ctx):
-        link = f'https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8'
-        if not os.path.isfile('./cogs/plugin_tools/invite.png'):
-            img = qrcode.make(link)
-            img.save('./cogs/plugin_tools/invite.png')
-        file = discord.File('./cogs/plugin_tools/invite.png')
-        embed = discord.Embed(color=discord_colors())
-        embed.title = f'Invite {self.bot.user.name}'
-        embed.description = link
-        embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.set_image(url='attachment://invite.png')
-        await ctx.send(embed=embed, file=file)
 
     @commands.command(
-        name='botinfo',
-        help='Statistics about this bot'
+        name="invite",
+        help="Generates the link to invite bot",
     )
+    async def invite(self, ctx):
+        link = f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8"
+        if not os.path.isfile("./cogs/plugin_tools/invite.png"):
+            img = qrcode.make(link)
+            img.save("./cogs/plugin_tools/invite.png")
+        file = discord.File("./cogs/plugin_tools/invite.png")
+        embed = discord.Embed(color=discord_colors())
+        embed.title = f"Invite {self.bot.user.name}"
+        embed.description = link
+        embed.set_thumbnail(url=self.bot.user.avatar_url)
+        embed.set_image(url="attachment://invite.png")
+        await ctx.send(embed=embed, file=file)
+
+    @commands.command(name="botinfo", help="Statistics about this bot")
     async def botinfo(self, ctx):
         bot = self.bot
         name = bot.user.name
@@ -55,37 +56,35 @@ class Utility(commands.Cog):
             total_members += guild.member_count
         average_members_per_guild = total_members / len(guilds)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f'Bot Info'
-        embed.description = f'''
+        embed.title = f"Bot Info"
+        embed.description = f"""
         Name: {name}\n
         ID: {id}\n
         Servers: {len(guilds)}\n
         Total Users: {total_members}\n
         Average Users Per Server: {average_members_per_guild}\n
-        '''
+        """
         embed.set_thumbnail(url=bot.user.avatar_url)
         await ctx.send(embed=embed)
-        
+
     @commands.command(
-        name='translate',
-        help='Translates the given message',
-        pass_context=True
-        )
+        name="translate", help="Translates the given message", pass_context=True
+    )
     async def translate(self, ctx):
         def check(ms):
             return ms.channel == ctx.message.channel and ms.author == ctx.message.author
-        await ctx.send('Enter the message you wish to be translated:')
-        msg = await self.bot.wait_for('message', check=check)
-        translated = GoogleTranslator(source='auto', target='english').translate(msg.content)
-        translate_embed = discord.Embed(
-            title='Translation',
-            description=translated
+
+        await ctx.send("Enter the message you wish to be translated:")
+        msg = await self.bot.wait_for("message", check=check)
+        translated = GoogleTranslator(source="auto", target="english").translate(
+            msg.content
         )
+        translate_embed = discord.Embed(title="Translation", description=translated)
         translate_embed.set_author(
-            name=ctx.message.author.name,
-            icon_url=ctx.message.author.avatar_url
+            name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url
         )
         await ctx.send(embed=translate_embed)
+
 
 class Bot_Admin(commands.Cog):
     def __init__(self, bot):
@@ -93,8 +92,8 @@ class Bot_Admin(commands.Cog):
 
     @commands.is_owner()
     @commands.command(
-        name='botgrowth',
-        help='Tips based on bot statistics on how to reach more people!'
+        name="botgrowth",
+        help="Tips based on bot statistics on how to reach more people!",
     )
     async def botgrowth(self, ctx):
         total_users = 0
@@ -102,49 +101,47 @@ class Bot_Admin(commands.Cog):
             total_users += guild.member_count
         total_guilds = len(self.bot.guilds)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f'Tips'
+        embed.title = f"Tips"
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         if total_guilds > 75:
-            if total_users/total_guilds > 150:
-                embed.description = '''
+            if total_users / total_guilds > 150:
+                embed.description = """
                 You have good server densities on this bot which means that it isn't worth trimming as there just isn't enough small servers to make a noticable difference.\n
                 - You can try to verify your bot with discord which means providing your ID to bypass the 100 server limit.
                 - Or you can add another bot to function as a clone of this bot through the launcher with the add command.
-                '''
+                """
             else:
-                embed.description = '''
+                embed.description = """
                 Your server density is still quite low on this bot which means trimming smaller servers can make space to reach more users
                 - You should try using the prune command to trim smaller servers. A size of 5-10 can help ensure that you have enough space in your server limits
                 - Alternatively you can verify your bot with discord which means providing your ID to bypass the 100 server limit.
-                '''
+                """
         else:
-            embed.description = '''
+            embed.description = """
             Your bot is stil relatively small and has space to grow.
             - You should try advertising your bot on bot finder pages like top.gg to get more attention.
             - Also try inviting your friends to invite this bot to their servers as well!
-            The more popular your bot is, the more people that will use it!'''
-            if total_users/total_guilds < 50:
-                embed.description += '''\nAdditionally, your server density is still fairly low
-                - If the theme of the bot matches try asking owners of larger servers to invite your bot!'''
+            The more popular your bot is, the more people that will use it!"""
+            if total_users / total_guilds < 50:
+                embed.description += """\nAdditionally, your server density is still fairly low
+                - If the theme of the bot matches try asking owners of larger servers to invite your bot!"""
         await ctx.send(embed=embed)
-
 
     @commands.is_owner()
     @commands.command(
-        name='prune',
-        help='Removes bot from servers smaller than the specified limit'
+        name="prune", help="Removes bot from servers smaller than the specified limit"
     )
     async def purge(self, ctx, minimum):
         guilds_left = 0
         embed = discord.Embed(color=discord_colors())
-        embed.title = 'Notice of Leave'
-        embed.description = f'''{self.bot.user.name} will be leaving your server due to a lack of users;
+        embed.title = "Notice of Leave"
+        embed.description = f"""{self.bot.user.name} will be leaving your server due to a lack of users;
         This is done to ensure the bot can reach as many people as possible as discord limits the amount of servers one bot can be in to 100.
         This limit is out of our control and the best solution is to trim down the number of smaller servers such that more people can enjoy this bot
         It's been a joy working with you and your patrons!
         If you wish to invite me again, use https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8\n\n\n
         \tMay we meet again soon,
-        {self.bot.user.name}'''
+        {self.bot.user.name}"""
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         for guild in self.bot.guilds:
             if guild.member_count < int(minimum):
@@ -152,7 +149,8 @@ class Bot_Admin(commands.Cog):
                     try:
                         await channel.send(embed=embed)
                         break
-                    except: pass
+                    except:
+                        pass
                 guilds_left += 1
                 await guild.leave()
         await ctx.send(f"Left {guilds_left} server(s)!")
@@ -160,15 +158,16 @@ class Bot_Admin(commands.Cog):
     @commands.is_owner()
     @commands.command(
         name="broadcast",
-        help="Sends a broadcast to all servers this bot is connected to; Only use this for serious messages!"
+        help="Sends a broadcast to all servers this bot is connected to; Only use this for serious messages!",
     )
     async def broadcast(self, ctx):
         def check(ms):
             return ms.channel == ctx.message.channel and ms.author == ctx.message.author
-        await ctx.send('Enter your message:')
-        msg = await self.bot.wait_for('message', check=check)
+
+        await ctx.send("Enter your message:")
+        msg = await self.bot.wait_for("message", check=check)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f'{self.bot.user.name} Admin Broadcast'
+        embed.title = f"{self.bot.user.name} Admin Broadcast"
         embed.description = msg.content
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         for guild in self.bot.guilds:
@@ -176,30 +175,32 @@ class Bot_Admin(commands.Cog):
                 try:
                     await channel.send(embed=embed)
                     break
-                except: pass
+                except:
+                    pass
         await ctx.send(f"Message broadcasted to all servers connected")
 
+
 class Misc(commands.Cog):
-    
     def __init__(self, bot):
         self.bot = bot
-            
+
     @commands.command(
-        name='makeyourownbot',
-        help='Make your own discord bot with EasyBot framework by Chisaku-Dev'
+        name="makeyourownbot",
+        help="Make your own discord bot with EasyBot framework by Chisaku-Dev",
     )
     async def makeyourownbot(self, ctx):
-        link = f'https://github.com/chisaku-dev/EasyBot.py'
-        if not os.path.isfile('./cogs/plugin_tools/makeyourownbot.png'):
+        link = f"https://github.com/chisaku-dev/EasyBot.py"
+        if not os.path.isfile("./cogs/plugin_tools/makeyourownbot.png"):
             img = qrcode.make(link)
-            img.save('./cogs/plugin_tools/makeyourownbot.png')
-        file = discord.File('./cogs/plugin_tools/makeyourownbot.png')
+            img.save("./cogs/plugin_tools/makeyourownbot.png")
+        file = discord.File("./cogs/plugin_tools/makeyourownbot.png")
         embed = discord.Embed(color=discord_colors())
-        embed.title = f'Make a bot like {self.bot.user.name}!'
+        embed.title = f"Make a bot like {self.bot.user.name}!"
         embed.description = link
         embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.set_image(url='attachment://makeyourownbot.png')
+        embed.set_image(url="attachment://makeyourownbot.png")
         await ctx.send(embed=embed, file=file)
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))

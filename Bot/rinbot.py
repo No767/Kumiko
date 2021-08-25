@@ -13,12 +13,28 @@ intents = Intents.all()
 bot = commands.Bot(command_prefix=".")
 
 # Loads in all extensions
-initial_extensions = ['Cogs.rininfo', 'Cogs.plugin_tools', 'Cogs.global', 'Cogs.rinping', 'Cogs.deviantart', 'Cogs.valid', 'Cogs.rinhelp', 'Cogs.twitter', 'Cogs.reddit', 'Cogs.disquest', 'Cogs.images', 'Cogs.jamdict', 'Cogs.pinger', 'Cogs.instagram', 'Cogs.delete']
+initial_extensions = [
+    "Cogs.rininfo",
+    "Cogs.plugin_tools",
+    "Cogs.global",
+    "Cogs.rinping",
+    "Cogs.deviantart",
+    "Cogs.valid",
+    "Cogs.rinhelp",
+    "Cogs.twitter",
+    "Cogs.reddit",
+    "Cogs.disquest",
+    "Cogs.images",
+    "Cogs.jamdict",
+    "Cogs.pinger",
+    "Cogs.instagram",
+    "Cogs.delete",
+]
 for extension in initial_extensions:
     bot.load_extension(extension)
 
 # Add in Playing status
-client = discord.Client(activity=discord.Game(name='my game'))
+client = discord.Client(activity=discord.Game(name="my game"))
 
 # Run the bot
 bot.run(TOKEN)
