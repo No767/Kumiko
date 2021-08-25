@@ -10,11 +10,10 @@ To get started, you'll need these things installed:
 - Python 3.6 and above (Made in 3.9.6)
 - pip 
 
-All of the dependencies that is needed for this project can be found within the `requirements.txt` within the root directory of this project.
 
 ## Installing Dependencies
 
-Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)). And lastly, the Discord.py lib is listed within the requirements.txt file. 
+All of the dependencies that is needed for this project can be found within the `requirements.txt` within the root directory of this project. Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)).
 
 To install the dependencies listed within the requirements.txt, just cd into the project's root directory and  run `pip install -r requirements.txt`.
 
@@ -33,7 +32,7 @@ If there is an issue or a feature you want to be added, use the built-in GitHub 
 
 - If updating any other files that aren't project files or not important, add the [skip ci] label in the front
 - With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
-
+- 
 ## Code StyleGuides
 
 - Use the PEP 8 Standard if possible
