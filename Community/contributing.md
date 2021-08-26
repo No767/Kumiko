@@ -1,29 +1,39 @@
-# Requirements
+# Contributing
+
+We are glad that you're willing to contribute to this project. We are usually very lenient and relaxed with the submissions of PRs, and Issues reports. But there are some stuff that you need to know before contributing.
+
+## Requirements
 
 To get started, you'll need these things installed: 
 
-- Git 
-- Python 3.6 or above
-- Pip
-- Discord.py
-- Python-dotenv
-- Cog Watch 
+- Git
+- Python 3.6 and above (Made in 3.9.6)
+- pip 
 
-# Installing Dependencies
 
-Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)). And lastly, the Discord.py lib is listed within the requirements.txt file. 
+## Installing Dependencies
+
+All of the dependencies that is needed for this project can be found within the `requirements.txt` within the root directory of this project. Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)).
 
 To install the dependencies listed within the requirements.txt, just cd into the project's root directory and  run `pip install -r requirements.txt`.
-Or you want to do it manually, run `pip install discord`, `pip install python-dotenv`, and `pip install cogwatch`.
 
-# Pull Requests and Commits
+## Pull Requests and Commits
 
-You typically would want to fork the repo, and send all the changes back as a pull request. Though this is fine, it's more preferred to just to commit to the branch itself. The recommended way to do this is to send the pr or commit into the dev branch, then if it's stable enough, it'll be committed into the master branch.
-# Git Commit StyleGuides
+You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred.
 
-- Make sure to add [skip ci] or [ci skip], so the CI servers won't make or test another build
+## Issue and Feature Requests Reports
 
-# Code StyleGuides
+If there is an issue or a feature you want to be added, use the built-in GitHub issue tracker. Though a system like Jira could be used, it would be more efficient to just use the issue tracker that GitHub provides. 
+
+- If submitting a issue report, follow the template. Duplicates will not receive support
+- If submitting a feature request, follow the template as well. As with issue reports, duplicate requests will not receive support
+
+## Git Commit StyleGuides
+
+- If updating any other files that aren't project files or not important, add the [skip ci] label in the front
+- With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
+
+## Code StyleGuides
 
 - Use the PEP 8 Standard if possible
 - Use patches if possible (not needed, but if you want to, go ahead)
