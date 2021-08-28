@@ -1,6 +1,8 @@
 import sqlite3, os, discord, math, random
 from Cogs import plugin_tools
 from discord.ext import commands
+
+# Possible SQL Injection, but fixed by DeepSource
 class disaccount:
     def __init__(self, ctx):
         self.id = ctx.author.id
