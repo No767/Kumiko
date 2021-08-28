@@ -9,9 +9,6 @@ class kana(commands.Cog):
         self.bot = bot
 
     @commands.command(name="kanatranslate")
-    async def kanatranslate (self, ctx, search:str):
+    async def kanatranslate(self, ctx, search: str):
         kks = pykakasi.kakasi()
         kks.setMode("H", "a")
-
-
-

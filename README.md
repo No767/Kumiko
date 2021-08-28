@@ -46,6 +46,7 @@ There are 2 main branches: master and dev. Master is the branch that contains th
 - [x] Reddit support 
 - [ ] Add support for a kana-quiz like system (Maybe use Tensorflow for AI and Machine Learning responses)
 - [x] JmDict Support
+- [ ] Reformat all the data that the API is giving (JSON requests) into more human-readable data and lists
 
 # Links 
 

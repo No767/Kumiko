@@ -1,27 +1,29 @@
 import discord
 from discord.ext import commands
-class rinhelp(commands.Cog):        
+
+
+class rinhelp(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="rinhelp")
-    async def on_message(self, ctx, search:str):
-            if search == 'help':
-                bot = self.bot
-                name = bot.user.name
-                id = bot.user.id
-                embedVar = discord.Embed(title="Rin Help", color=14414079)
-                embedVar.description = f'''
+    async def on_message(self, ctx, search: str):
+        if search == "help":
+            bot = self.bot
+            name = bot.user.name
+            id = bot.user.id
+            embedVar = discord.Embed(title="Rin Help", color=14414079)
+            embedVar.description = f"""
                 Help Section Page
-                '''
-                embedVar.set_thumbnail(url=bot.user.avatar_url)
-                ctx.send(embed=embedVar)
-            else:
-                bot = self.bot
-                name = bot.user.name
-                id = bot.user.id
-                embedVar = discord.Embed(title="Rin Help", color=14414079)
-                embedVar.description = f'''
+                """
+            embedVar.set_thumbnail(url=bot.user.avatar_url)
+            ctx.send(embed=embedVar)
+        else:
+            bot = self.bot
+            name = bot.user.name
+            id = bot.user.id
+            embedVar = discord.Embed(title="Rin Help", color=14414079)
+            embedVar.description = f"""
                 NOTE: Currently the amount of commands are not complete, hence why this is in alpha.
 
 Full List of Cmds (including ones from EasyBot.py):
@@ -59,19 +61,21 @@ Full List of Cmds (including ones from EasyBot.py):
 - .broadcast
 
 - .makeyourownbot
-                '''
-            embedVar.set_thumbnail(url=bot.user.avatar_url)
-            await ctx.send(embed=embedVar)
+                """
+        embedVar.set_thumbnail(url=bot.user.avatar_url)
+        await ctx.send(embed=embedVar)
+
     async def error_message(self, ctx):
-            bot = self.bot
-            name = bot.user.name
-            id = bot.user.id
-            embedVar = discord.Embed(title="Rin Help", color=14414079)
-            embedVar.description = f'''
+        bot = self.bot
+        name = bot.user.name
+        id = bot.user.id
+        embedVar = discord.Embed(title="Rin Help", color=14414079)
+        embedVar.description = f"""
             Sorry, try again. Something went wrong....
-            '''
-            embedVar.set_thumbnail(url=bot.user.avatar_url)
-            await ctx.send(embed=embedVar)
+            """
+        embedVar.set_thumbnail(url=bot.user.avatar_url)
+        await ctx.send(embed=embedVar)
+
+
 def setup(bot):
     bot.add_cog(rinhelp(bot))
-    

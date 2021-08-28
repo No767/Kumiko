@@ -27,7 +27,7 @@ class rintwitter(commands.Cog):
     async def rintwitter(self, ctx):
         home_timeline = api.mentions_timeline()
         embedVar = discord.Embed()
-        embedVar.description = f'Current Timeline: {home_timeline}'
+        embedVar.description = f"Current Timeline: {home_timeline}"
         await ctx.send(embed=embedVar)
 
     # The OAuth can only handle Read requests, not post requests. adding support in the future
@@ -35,15 +35,19 @@ class rintwitter(commands.Cog):
     async def rtupdatestatus(self, ctx, search: str):
         twitter_query = api.update_status(status=search)
         twitter_embed = discord.Embed()
-        twitter_embed.description = f'Your Twitter Status has been updated to {twitter_query}'
+        twitter_embed.description = (
+            f"Your Twitter Status has been updated to {twitter_query}"
+        )
         await ctx.send(embed=twitter_embed)
 
     # Make sure that the search input is a string, by wrapping it in '' or ""
-    @commands.command(name='rtsearch')
+    @commands.command(name="rtsearch")
     async def rtgetsaved(self, ctx, search: str):
         getcursor = api.get_user(search)
         search_embed = discord.Embed()
-        search_embed.description = f'This was the tweet found: {getcursor.followers_count()}'
+        search_embed.description = (
+            f"This was the tweet found: {getcursor.followers_count()}"
+        )
         await ctx.send(embed=search_embed)
 
 
