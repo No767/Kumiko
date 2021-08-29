@@ -3,6 +3,7 @@ import os
 from discord.ext import commands
 from instagram_private_api import Client, ClientCompatPatch
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -52,16 +53,28 @@ class top_search(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="igtopsearch")
+    @commands.command(name="igtaginfo")
     async def on_message(self, ctx, search: str):
-        best_search = api.top_search(search)
+        best_search = api.tag_info(search)
         embedVar = discord.Embed()
         embedVar.description = f"{best_search}"
         await ctx.send(embed=embedVar)
 
+class username_checker(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    
+    @commands.command(name="igusernamecheck")
+    async def on_message(self, ctx, search:str):
+        username_check = api.check_username(search)
+        username_check_formatter = username_check.spilt(str=":")
+        embedVar = discord.Embed()
+        embedVar.description = f"{username_check_formatter}"
+        await ctx.send(embed=embedVar)
 
 def setup(bot):
     bot.add_cog(instagram(bot))
     bot.add_cog(iguserfeed(bot))
     bot.add_cog(iginfo(bot))
     bot.add_cog(top_search(bot))
+    bot.add_cog(username_checker(bot))
