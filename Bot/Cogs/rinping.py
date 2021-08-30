@@ -10,7 +10,7 @@ class rinping(commands.Cog):
     @commands.command(
         name="ping",
     )
-    async def ping(self, ctx):
+    async def on_message(self, ctx):
         ping_embed = discord.Embed()
         ping_embed.description = f"Ping >> {self.bot.latency} seconds"
         await ctx.send(embed=ping_embed)

@@ -5,7 +5,7 @@ qrcode==7.3
 image==1.5.33
 praw==7.4.0
 deviantart==0.1.5
-py3-pinterest==1.2.2
+py3-pinterest==1.2.2 # This remains unused as of now. Will be adding in pinterest api support very soon...
 tweepy==3.10.0
 deep-translator==1.5.4
 pyinstrument==4.0.3
