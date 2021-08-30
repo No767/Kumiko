@@ -13,7 +13,6 @@ password = os.getenv("InstagramPassword")
 api = Client(user_name, password)
 api.generate_uuid()
 
-
 # will only output metadata
 class instagram(commands.Cog):
     def __init__(self, bot):
@@ -67,7 +66,14 @@ class username_checker(commands.Cog):
     @commands.command(name="igusernamecheck")
     async def on_message(self, ctx, search:str):
         username_check = api.check_username(search)
-        username_check_formatter = username_check.spilt(str=":")
+        username_check_formatter = """
+        Username: {username}
+        Available: {available}
+        Existing User Password: {existing_user_password}
+        Error: {error}
+        Error Type: {error_type}
+        Status: {status}
+        """.format(**api.check_username(search))
         embedVar = discord.Embed()
         embedVar.description = f"{username_check_formatter}"
         await ctx.send(embed=embedVar)
