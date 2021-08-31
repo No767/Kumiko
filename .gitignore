@@ -12,3 +12,5 @@ reddit
 Kana
 .pytest_cache
 disquest
+.dccache
+*.dccache 
