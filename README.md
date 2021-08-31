@@ -21,6 +21,10 @@ A Discord Bot Built on Discord.py and EasyBot.py
 
 Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg. More information on this can be found within the [docs](https://rin-docs.readthedocs.io/en/latest/).
 
+# Expected Release Date
+
+As of now, the expect release date is around Dec 2021 or July 2021 (depending on how AP exams goes). More features are being added, and some of them will be removed as time goes on. Basically this is a one-person project, and I'm only doing this on my free time
+
 # Building
 
 Via [Python](https://www.python.org/), and [pip](https://pypi.org/)
