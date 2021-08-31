@@ -9,7 +9,7 @@ py3-pinterest==1.2.2 # This remains unused as of now. Will be adding in pinteres
 tweepy==3.10.0
 deep-translator==1.5.4
 pyinstrument==4.0.3
-black==21.7b0
+black==21.8b0
 instagram-private-api==1.6.0
 pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability
 django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability

@@ -20,6 +20,7 @@ A Discord Bot Built on Discord.py and EasyBot.py
 # Installing
 
 Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg. More information on this can be found within the [docs](https://rin-docs.readthedocs.io/en/latest/).
+
 # Building
 
 Via [Python](https://www.python.org/), and [pip](https://pypi.org/)
@@ -34,10 +35,6 @@ This project is licensed under the CC0-1.0 License. This project uses the [EasyB
 
 See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
 
-# Branches
-
-There are 2 main branches: master and dev. Master is the branch that contains the stable code. This is meant later on for production use. Dev is where all of the code gets pushed and made. If you want the latest and greatest, check out the dev branch
-  
 # To-Do List
 
 - [x] Use Twitter API to grab certain posts, etc
