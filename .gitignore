@@ -14,3 +14,5 @@ Kana
 disquest
 .dccache
 *.dccache 
+.metadata
+*.metadata
