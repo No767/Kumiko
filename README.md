@@ -41,9 +41,9 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 
 # To-Do List
 
-- [x] Use Twitter API to grab certain posts, etc
+- [ ] Switch from Tweepy to the official Twitter 1.3 API Client Library
 - [x] Very Basic Twitter API Support
-- [ ] Add support for music and videos (YouTube API, SoundClound API, and/or Spotify API)
+- [ ] Add support for music and videos (YouTube API, SoundCloud API, and/or Spotify API)
 - [x] Deviantart support
 - [x] Reddit support 
 - [ ] Add support for a kana-quiz like system (Maybe use Tensorflow for AI and Machine Learning responses)

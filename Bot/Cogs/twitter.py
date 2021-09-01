@@ -54,7 +54,7 @@ class rtgetsaved(commands.Cog):
         getcursor = api.get_user(search)
         search_embed = discord.Embed()
         search_embed.description = (
-            f"This was the tweet found: {getcursor.followers_count()}"
+            f"{api.get_user(search)}"
         )
         await ctx.send(embed=search_embed)
 
