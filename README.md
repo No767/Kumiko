@@ -49,6 +49,7 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 - [ ] Add support for a kana-quiz like system (Maybe use Tensorflow for AI and Machine Learning responses)
 - [x] JmDict Support
 - [ ] Reformat all the data that the API is giving (JSON requests) into more human-readable data and lists
+- [ ] Add in user_feed method for instagram cog
 
 # Links 
 
