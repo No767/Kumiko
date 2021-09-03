@@ -16,3 +16,4 @@ disquest
 *.dccache 
 .metadata
 *.metadata
+json_parser.py
