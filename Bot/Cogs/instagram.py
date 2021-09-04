@@ -35,18 +35,18 @@ class instagram(commands.Cog):
         Usertag Count >> {api.user_info(search)['user']['usertags_count']}
         Follower Count >> {api.user_info(search)['user']['follower_count']}
         Following Count >> {api.user_info(search)['user']['following_count']}
-        Biography >> {api.user_info(search)['user']['biography']}
+        Biography >> 
+        {api.user_info(search)['user']['biography']}
         External URL >> {api.user_info(search)['user']['external_url']}
         External Lynx URL >>> {api.user_info(search)['user']['external_lynx_url']}
         
         **API Contact Status**
         API Status >> {api.user_info(search)['status']}
         """
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(title="Instagram User Info")
         embedVar.description = f"{username_info_format}"
         await ctx.send(embed=embedVar)
 
-# Currently Broken....
 class iginfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -55,10 +55,24 @@ class iginfo(commands.Cog):
     async def on_message(self, ctx, search: str):
         top_search = api.search_users(search)
         search_users_formatted = f"""
+        **Results**
+        
         Results >> {api.search_users(search)['num_results']}
-        Username >> {api.search_users(search)['users']['username']}
+        
+        **User Information**
+        
+        PK >> {api.search_users(search)['users'][0]['pk']}
+        Username >> {api.search_users(search)['users'][0]['username']}
+        Full Name >> {api.search_users(search)['users'][0]['full_name']}
+        Is Private >> {api.search_users(search)['users'][0]['is_private']}
+        Is Verified >> {api.search_users(search)['users'][0]['is_verified']}
+        Account Badges >> {api.search_users(search)['users'][0]['account_badges']}
+        
+        **API Contact Status**
+        
+        API >> {api.search_users(search)['status']}
         """
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(title="Instagram User Search")
         embedVar.description = f"{search_users_formatted}"
         await ctx.send(embed=embedVar)
 
@@ -77,12 +91,15 @@ class top_search(commands.Cog):
         Following >> {following}
         Tag Media Count >> {formatted_media_count}
         Description >> {description}
-        API Status >> {status}
         
         **Related Tags**
         {related_tags}
+        
+        **API Contact Status**
+        
+        API Status >> {status}
         """.format(**api.tag_info(search))
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(title="Instagram Tag Search")
         embedVar.description = f"{tag_info_formatted}"
         await ctx.send(embed=embedVar)
 
@@ -99,9 +116,12 @@ class username_checker(commands.Cog):
         Existing User Password >> {existing_user_password}
         Error >> {error}
         Error Type >> {error_type}
+        
+        **API Contact Status**
+        
         API Status >> {status}
         """.format(**api.check_username(search))
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(title="Instagram Username Checker")
         embedVar.description = f"{username_check_formatter}"
         await ctx.send(embed=embedVar)
 
