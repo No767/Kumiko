@@ -4,6 +4,7 @@ import random
 import praw
 from dotenv import load_dotenv
 import os
+
 load_dotenv()
 
 # Replaced the old user input based auth with a more secure env var based auth

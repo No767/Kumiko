@@ -11,7 +11,12 @@ class pinger(commands.Cog):
         pinger_search = search
         for x in range(replace):
             await ctx.send(f"@everyone {search}")
+
     async def on_error(self, ctx):
-        await ctx.send(f'There is something wrong with the pinger module. Please Try Again...')
+        await ctx.send(
+            f"There is something wrong with the pinger module. Please Try Again..."
+        )
+
+
 def setup(bot):
     bot.add_cog(pinger(bot))

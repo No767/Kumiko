@@ -12,12 +12,14 @@ password = os.getenv("InstagramPasswordV2")
 api = Client(user_name, password)
 api.generate_uuid()
 
+
 # Requires Client ID
 class instagram(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
     @commands.command(name="iguserinfo")
-    async def on_message(self, ctx, search:str):
+    async def on_message(self, ctx, search: str):
         username_feed = api.user_info(search)
         username_info_format = f"""
         **Basic Information**
@@ -46,6 +48,7 @@ class instagram(commands.Cog):
         embedVar = discord.Embed(title="Instagram User Info")
         embedVar.description = f"{username_info_format}"
         await ctx.send(embed=embedVar)
+
 
 class iginfo(commands.Cog):
     def __init__(self, bot):
@@ -98,17 +101,20 @@ class top_search(commands.Cog):
         **API Contact Status**
         
         API Status >> {status}
-        """.format(**api.tag_info(search))
+        """.format(
+            **api.tag_info(search)
+        )
         embedVar = discord.Embed(title="Instagram Tag Search")
         embedVar.description = f"{tag_info_formatted}"
         await ctx.send(embed=embedVar)
 
+
 class username_checker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="igusernamecheck")
-    async def on_message(self, ctx, search:str):
+    async def on_message(self, ctx, search: str):
         username_check = api.check_username(search)
         username_check_formatter = """
         Username >> {username}
@@ -120,10 +126,13 @@ class username_checker(commands.Cog):
         **API Contact Status**
         
         API Status >> {status}
-        """.format(**api.check_username(search))
+        """.format(
+            **api.check_username(search)
+        )
         embedVar = discord.Embed(title="Instagram Username Checker")
         embedVar.description = f"{username_check_formatter}"
         await ctx.send(embed=embedVar)
+
 
 def setup(bot):
     bot.add_cog(instagram(bot))
