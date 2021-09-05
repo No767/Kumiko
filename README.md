@@ -25,6 +25,10 @@ Currently, as of writing this (8/8/2021), the bot is only available if you insta
 
 Via [pip](https://pypi.org/)
 
+`python -m pip install --upgrade pip`
+
+`pip install --upgrade pip setuptools wheel`
+
 `pip install -r requirements.txt`
 
 # Licensing
@@ -38,3 +42,4 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 # Links 
 
 - [Documentation](https://rin-docs.readthedocs.io/en/latest/)
+- [Docker Image](https://hub.docker.com/repository/docker/no767/rin)
