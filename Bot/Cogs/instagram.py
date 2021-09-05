@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-user_name = os.getenv("InstagramUserName")
-password = os.getenv("InstagramPassword")
+user_name = os.getenv("InstagramUserNameV2")
+password = os.getenv("InstagramPasswordV2")
 
 api = Client(user_name, password)
 api.generate_uuid()
