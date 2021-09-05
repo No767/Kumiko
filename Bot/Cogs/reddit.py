@@ -1,75 +1,19 @@
-from tkinter import *
 from discord.ext import commands
 import discord
 import random
-import sqlite3
 import praw
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
+# Replaced the old user input based auth with a more secure env var based auth
+# Make sure you have this stored at the same directory as the rinbot file within a .env file
+reddit_id = os.getenv("Reddit_ID")
+reddit_secret = os.getenv("Reddit_Secret")
 
-# reddit login script
-def redditkey():
-    # saving information to database
-    def save_information(redditid, redditsecret):
-        conn = sqlite3.connect("reddit.db")
-        conn.execute(
-            """CREATE TABLE IF NOT EXISTS saved_information (
-            redditid text,
-            redditsecret text);
-            """
-        )
-        conn.commit()
-        conn.execute(
-            """INSERT INTO saved_information (redditid, redditsecret)
-            VALUES (?, ?)""",
-            (redditid, redditsecret),
-        )
-        conn.commit()
-        conn.close()
-        return (redditid, redditsecret)
-
-    conn = sqlite3.connect("reddit.db")
-    try:
-        # attempt login discord
-        cur = conn.cursor()
-        cur.execute("SELECT redditid, redditsecret FROM saved_information;")
-        saved_information_tuple = cur.fetchone()
-        conn.close()
-        return (saved_information_tuple[0], saved_information_tuple[1])
-    except sqlite3.Error:
-        # upon error start ui
-        # window
-        tkWindow = Tk()
-        tkWindow.geometry("400x150")
-        tkWindow.title("reddit.py by Chisaki-Dev")
-        # redditid label and text entry box
-        redditidLabel = Label(tkWindow, text="redditid").grid(row=0, column=0)
-        redditid = StringVar()
-        redditidEntry = Entry(tkWindow, textvariable=redditid).grid(row=0, column=1)
-
-        # redditsecret label and text entry box
-        redditsecretLabel = Label(tkWindow, text="redditsecret").grid(row=1, column=0)
-        redditsecret = StringVar()
-        redditsecretEntry = Entry(tkWindow, textvariable=redditsecret).grid(
-            row=1, column=1
-        )
-
-        # startup button
-        startupButton = Button(
-            tkWindow,
-            text="start reddit.py",
-            command=lambda: [
-                tkWindow.withdraw(),
-                save_information(redditid.get(), redditsecret.get()),
-            ],
-        ).grid(row=6, column=1)
-
-        tkWindow.mainloop()
-
-
-cred = redditkey()
 redditapi = praw.Reddit(
-    client_id=cred[0],
-    client_secret=cred[1],
+    client_id=f'{os.getenv("Reddit_ID")}',
+    client_secret=f'{os.getenv("Reddit_Secret")}',
     # the user_agent just identifies to reddit what browser it's connecting from.
     user_agent="Discord",
     # asyncpraw is causing issues and will be worked upon
