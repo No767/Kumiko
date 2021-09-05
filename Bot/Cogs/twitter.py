@@ -30,6 +30,7 @@ class rintwitter(commands.Cog):
         embedVar.description = f"Current Timeline: {home_timeline}"
         await ctx.send(embed=embedVar)
 
+
 class rtupdatestatus(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -44,18 +45,17 @@ class rtupdatestatus(commands.Cog):
         )
         await ctx.send(embed=twitter_embed)
 
+
 class rtgetsaved(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     # Make sure that the search input is a string, by wrapping it in '' or ""
     @commands.command(name="rtsearch")
     async def rtgetsaved(self, ctx, search: str):
         getcursor = api.get_user(search)
         search_embed = discord.Embed()
-        search_embed.description = (
-            f"{api.get_user(search)}"
-        )
+        search_embed.description = f"{api.get_user(search)}"
         await ctx.send(embed=search_embed)
 
 
