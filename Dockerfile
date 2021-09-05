@@ -1,6 +1,7 @@
-FROM python:3.10-rc-slim
+FROM python:3.9.7
 WORKDIR /Bot
-COPY requirements.txt ./Bot
+COPY requirements.txt ./ /Bot/
 RUN python -m pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-CMD ["python", "./rinbot.py"]
+RUN pip install --upgrade pip setuptools wheel
+RUN pip install -r requirements.txt 
+CMD ["python", "./Bot/rinbot.py"]

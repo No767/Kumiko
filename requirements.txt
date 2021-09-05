@@ -1,5 +1,4 @@
-discord == 1.7.3
-discord.py == 1.7.3
+discord.py[voice] == 1.7.3
 python-dotenv == 0.19.0
 qrcode==7.3
 image==1.5.33
@@ -13,3 +12,5 @@ black==21.8b0
 instagram-private-api==1.6.0
 pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability
 django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability
+jamdict==0.1a11.post2
+jamdict-data==1.5
