@@ -25,9 +25,7 @@ Currently, as of writing this (8/8/2021), the bot is only available if you insta
 
 Via [pip](https://pypi.org/)
 
-`python -m pip install --upgrade pip`
-
-`pip install --upgrade pip setuptools wheel`
+`python -m pip install --upgrade pip setuptools wheel`
 
 `pip install -r requirements.txt`
 
