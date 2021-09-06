@@ -27,6 +27,7 @@ def image_scrape(link):
         # print all links
     return random.choice(links)
 
+
 def image_scrape_pixiv(link):
     htmldata = requests.get(link).text
     soup = bs4.BeautifulSoup(htmldata, "html.parser")
@@ -60,17 +61,19 @@ class deviantart_images(commands.Cog):
         image_link = image_scrape(link)
         await ctx.send(image_link)
 
+
 class pixiv_images(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="pixivimage")
     async def on_message(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
         pixiv_link = f"https://www.pixiv.net/en/tags/{search}"
         link_scraper = image_scrape_pixiv(pixiv_link)
         await ctx.send(link_scraper)
-        
+
+
 def setup(bot):
     bot.add_cog(deviantart_images(bot))
     bot.add_cog(pixiv_images(bot))

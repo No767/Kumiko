@@ -48,8 +48,8 @@ class instagram(commands.Cog):
         """
         embedVar = discord.Embed(title="Instagram User Info")
         embedVar.description = f"{username_info_format}"
-        embedurl = api.user_info(search)['user']['profile_pic_url']
-        embedVar.set_thumbnail(url = embedurl)
+        embedurl = api.user_info(search)["user"]["profile_pic_url"]
+        embedVar.set_thumbnail(url=embedurl)
         await ctx.send(embed=embedVar)
 
 
@@ -80,8 +80,8 @@ class iginfo(commands.Cog):
         """
         embedVar = discord.Embed(title="Instagram User Search")
         embedVar.description = f"{search_users_formatted}"
-        embedpfp = api.search_users(search)['users'][0]['profile_pic_url']
-        embedVar.set_thumbnail(url = embedpfp)
+        embedpfp = api.search_users(search)["users"][0]["profile_pic_url"]
+        embedVar.set_thumbnail(url=embedpfp)
         await ctx.send(embed=embedVar)
 
 
