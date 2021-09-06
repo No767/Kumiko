@@ -27,7 +27,7 @@ class Chat(commands.Cog):
                 inputs = msg.split(",")
                 try:
                     msg_responses = dict(ping=inputs[0], pong=inputs[1])
-                    response_file = open("./cogs/chat/responses.json", "a")
+                    response_file = open("chat/responses.json", "a")
                     response_file.write(f"{json.dumps(msg_responses)}\n")
                 except Exception as e:
                     await message.channel.send(
@@ -36,7 +36,7 @@ class Chat(commands.Cog):
                     print(e)
             else:
                 try:
-                    msg_save = open("./cogs/chat/responses.json", "r")
+                    msg_save = open("chat/responses.json", "r")
                     msg_responses = msg_save.readlines()
                     msg_responses = [
                         json.loads(s.replace("\n", "")) for s in msg_responses
