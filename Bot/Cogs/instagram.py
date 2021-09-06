@@ -1,13 +1,14 @@
 import discord
 import os
 from discord.ext import commands
-from instagram_private_api import Client, ClientCompatPatch
+from instagram_private_api import Client
+from instagram_private_api import ClientCompatPatch
 from dotenv import load_dotenv
 
 load_dotenv()
 
-user_name = os.getenv("InstagramUserNameV2")
-password = os.getenv("InstagramPasswordV2")
+user_name = os.getenv("InstagramUserName")
+password = os.getenv("InstagramPassword")
 
 api = Client(user_name, password)
 api.generate_uuid()
@@ -45,6 +46,8 @@ class instagram(commands.Cog):
         """
         embedVar = discord.Embed(title="Instagram User Info")
         embedVar.description = f"{username_info_format}"
+        embedurl = api.user_info(search)['user']['profile_pic_url']
+        embedVar.set_thumbnail(url = embedurl)
         await ctx.send(embed=embedVar)
 
 class iginfo(commands.Cog):
@@ -74,6 +77,8 @@ class iginfo(commands.Cog):
         """
         embedVar = discord.Embed(title="Instagram User Search")
         embedVar.description = f"{search_users_formatted}"
+        embedpfp = api.search_users(search)['users'][0]['profile_pic_url']
+        embedVar.set_thumbnail(url = embedpfp)
         await ctx.send(embed=embedVar)
 
 
