@@ -18,3 +18,4 @@ disquest
 *.metadata
 json_parser.py
 deviantarttest.py
+chat/responses.json
