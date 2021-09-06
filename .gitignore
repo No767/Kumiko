@@ -17,3 +17,4 @@ disquest
 .metadata
 *.metadata
 json_parser.py
+deviantarttest.py
