@@ -138,12 +138,13 @@ class username_checker(commands.Cog):
         embedVar.description = f"{username_check_formatter}"
         await ctx.send(embed=embedVar)
 
+
 class userfeed(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="iguserfeed")
-    async def on_message(self, ctx, search:str):
+    async def on_message(self, ctx, search: str):
         userfeed_formatter = f"""
         
         {api.user_feed(search)['items'][0]['caption']['text']}
@@ -151,11 +152,14 @@ class userfeed(commands.Cog):
         
         
         """
-        userfeedurl = api.user_feed(search)['items'][0]['carousel_media'][0]['image_versions2']['candidates'][0]['url']
+        userfeedurl = api.user_feed(search)["items"][0]["carousel_media"][0][
+            "image_versions2"
+        ]["candidates"][0]["url"]
         embedVar = discord.Embed()
         embedVar.description = f"{userfeed_formatter}"
         embedVar.set_image(url=userfeedurl)
         await ctx.send(embed=embedVar)
+
 
 def setup(bot):
     bot.add_cog(instagram(bot))
