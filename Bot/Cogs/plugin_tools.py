@@ -28,23 +28,6 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        name="invite",
-        help="Generates the link to invite bot",
-    )
-    async def invite(self, ctx):
-        link = f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8"
-        if not os.path.isfile("./cogs/plugin_tools/invite.png"):
-            img = qrcode.make(link)
-            img.save("./cogs/plugin_tools/invite.png")
-        file = discord.File("./cogs/plugin_tools/invite.png")
-        embed = discord.Embed(color=discord_colors())
-        embed.title = f"Invite {self.bot.user.name}"
-        embed.description = link
-        embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.set_image(url="attachment://invite.png")
-        await ctx.send(embed=embed, file=file)
-
     @commands.command(name="botinfo", help="Statistics about this bot")
     async def botinfo(self, ctx):
         bot = self.bot

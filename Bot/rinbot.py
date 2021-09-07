@@ -30,6 +30,7 @@ initial_extensions = [
     "Cogs.instagram",
     "Cogs.delete",
     "Cogs.chat",
+    "Cogs.invitation",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

@@ -3,7 +3,6 @@ import discord
 import json
 
 
-# Disabled due to not being able to find the responses.json file
 class Chat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -22,8 +21,8 @@ class Chat(commands.Cog):
         if not message.author.bot:
             # message has multiple different sub definitions like content author channel
             msg = message.content.lower()
-            if msg.startswith("update"):
-                msg = msg.replace("update ", "")  # trunicate off update
+            if msg.startswith("rinupdate"): # Use rinupdate instead, so if someone is saying update in the chat, this will not trigger
+                msg = msg.replace("rinupdate ", "")  # trunicate off update
                 inputs = msg.split(",")
                 try:
                     msg_responses = dict(ping=inputs[0], pong=inputs[1])
