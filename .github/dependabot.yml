@@ -12,3 +12,10 @@ updates:
     commit-message:
       prefix: "[pip]"
       include: "scope"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "[GitHub-Actions]"
+      include: "scope"
