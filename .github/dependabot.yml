@@ -17,5 +17,5 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "[GitHub-Actions]"
+      prefix: "[Actions]"
       include: "scope"
