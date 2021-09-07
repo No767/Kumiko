@@ -147,7 +147,7 @@ class userfeed(commands.Cog):
     async def on_message(self, ctx, search: str):
         userfeed_formatter = f"""
         
-        {api.user_feed(search)['items'][0]['caption']['text']}
+        {api.user_feed(search)["items"][3]['caption']['text']}
         
         
         
