@@ -21,7 +21,9 @@ class Chat(commands.Cog):
         if not message.author.bot:
             # message has multiple different sub definitions like content author channel
             msg = message.content.lower()
-            if msg.startswith("rinupdate"): # Use rinupdate instead, so if someone is saying update in the chat, this will not trigger
+            if msg.startswith(
+                "rinupdate"
+            ):  # Use rinupdate instead, so if someone is saying update in the chat, this will not trigger
                 msg = msg.replace("rinupdate ", "")  # trunicate off update
                 inputs = msg.split(",")
                 try:
