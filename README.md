@@ -7,7 +7,7 @@
 <br/>
 
 [![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Flake8 + Black](https://github.com/No767/Rin/actions/workflows/flake8+black.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/flake8+black.yml) [![Docker CI](https://github.com/No767/Rin/actions/workflows/docker.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/docker.yml)
-[![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Documentation Status](https://readthedocs.org/projects/rin-docs/badge/?version=latest)](https://rin-docs.readthedocs.io/en/latest/?badge=latest)
+[![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Documentation Status](https://readthedocs.org/projects/rin-docs/badge/?version=latest)](https://rin-docs.readthedocs.io/en/latest/?badge=latest) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin)
 
 A Discord bot with EasyBot.py plugin support and additional features
 
