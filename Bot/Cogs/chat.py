@@ -47,9 +47,6 @@ class Chat(commands.Cog):
                         if i["ping"] == msg:
                             await message.channel.send(i["pong"])
                             return
-                    await message.channel.send(
-                        f'Sorry, a response to *"{msg}"* has not yet been added.'
-                    )
                 except Exception as e:
                     await message.channel.send(e)
 

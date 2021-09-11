@@ -28,28 +28,6 @@ def image_scrape(link):
     return random.choice(links)
 
 
-def image_scrape_pixiv(link):
-    htmldata = requests.get(link).text
-    soup = bs4.BeautifulSoup(htmldata, "html.parser")
-    links = []
-    for item in soup.find_all("img"):
-        # if src is the link
-        if (
-            not "avatar" in item["src"]
-            and not "hover" in item["src"]
-            and not "logo" in item["src"]
-            and not "icon" in item["src"]
-            and not "data" in item["src"]
-        ):
-            if "//" in item["src"]:
-                links.append(item["src"])
-            else:
-                # takes domain name and adds back src to complete link
-                links.append("https://" + link.split("/")[2] + item["src"])
-        # print all links
-    return random.choice(links)
-
-
 class deviantart_images(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
