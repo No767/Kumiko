@@ -7,15 +7,18 @@ We are glad that you're willing to contribute to this project. We are usually ve
 To get started, you'll need these things installed: 
 
 - Git
-- Python 3.6 and above (Made in 3.9.6)
-- pip 
-
+- Python 3.6 and above (Made in 3.9.6 and 3.9.7)
 
 ## Installing Dependencies
 
 All of the dependencies that is needed for this project can be found within the `requirements.txt` within the root directory of this project. Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)).
 
-To install the dependencies listed within the requirements.txt, just cd into the project's root directory and  run `pip install -r requirements.txt`.
+Before you can get working, you need to run 2 commands:
+
+- `pip install --upgrade pip setuptools wheel`
+- `pip install -r requirements.txt`
+
+The reason why is that one of the dependencies breaks if setuptools and wheels is not updated. Make sure to do this in the root directory of this repo.
 
 ## Pull Requests and Commits
 
