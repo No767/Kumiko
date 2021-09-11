@@ -40,7 +40,6 @@ for extension in initial_extensions:
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name=".rinhelp"))
-    
 
 
 # Run the bot
