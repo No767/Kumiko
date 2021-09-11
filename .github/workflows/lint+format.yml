@@ -34,6 +34,6 @@ jobs:
       run: |
         black Bot/Cogs
     - name: Format with Isort
-        run: |
-          isort Bot/Cogs
+      run: |
+        isort Bot/Cogs
     
