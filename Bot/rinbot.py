@@ -3,6 +3,7 @@ from discord import Intents
 from discord.ext import commands
 from discord import Client
 from discord import Game
+from discord import Embed, Activity, ActivityType
 import os
 from dotenv import load_dotenv
 
@@ -35,8 +36,12 @@ initial_extensions = [
 for extension in initial_extensions:
     bot.load_extension(extension)
 
-# Add in Playing status
-client = discord.Client(activity=discord.Game(name="my game"))
+
+@bot.event
+async def on_ready():
+    await bot.change_presence(activity=discord.Game(name=".rinhelp"))
+    
+
 
 # Run the bot
 bot.run(TOKEN)
