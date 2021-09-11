@@ -19,8 +19,8 @@ enabled = true
 
 [[transformers]]
 name = "isort"
-enabled = true
+enabled = false
 
 [[transformers]]
 name = "yapf"
-enabled = true
+enabled = false
