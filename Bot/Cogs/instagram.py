@@ -148,16 +148,17 @@ class userfeed(commands.Cog):
         userfeed_formatter = f"""
         {api.user_feed(search)["items"][0]['caption']['text']}
         """
-        userfeedurl = api.user_feed(search)["items"][0]["carousel_media"][0]["image_versions2"]["candidates"][0]["url"]
-        userfeedpfpurl = api.user_feed(search)["items"][0]['user']['profile_pic_url']
-        userfeed_likecount = api.user_feed(search)["items"][0]['like_count']
+        userfeedurl = api.user_feed(search)["items"][0]["carousel_media"][0][
+            "image_versions2"
+        ]["candidates"][0]["url"]
+        userfeedpfpurl = api.user_feed(search)["items"][0]["user"]["profile_pic_url"]
+        userfeed_likecount = api.user_feed(search)["items"][0]["like_count"]
         embedVar = discord.Embed()
         embedVar.description = f"{userfeed_formatter}"
         embedVar.set_image(url=userfeedurl)
         embedVar.set_thumbnail(url=userfeedpfpurl)
-        embedVar.set_footer(text=f'Likes >> {userfeed_likecount}')
+        embedVar.set_footer(text=f"Likes >> {userfeed_likecount}")
         await ctx.send(embed=embedVar)
-        
 
 
 def setup(bot):
