@@ -40,7 +40,5 @@ class deviantart_images(commands.Cog):
         await ctx.send(image_link)
 
 
-
 def setup(bot):
     bot.add_cog(deviantart_images(bot))
-
