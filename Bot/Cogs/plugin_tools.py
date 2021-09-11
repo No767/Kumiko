@@ -61,7 +61,8 @@ class Utility(commands.Cog):
         translated = GoogleTranslator(source="auto", target="english").translate(
             msg.content
         )
-        translate_embed = discord.Embed(title="Translation", description=translated)
+        translate_embed = discord.Embed(
+            title="Translation", description=translated)
         translate_embed.set_author(
             name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url
         )
