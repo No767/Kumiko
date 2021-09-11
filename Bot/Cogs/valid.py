@@ -1,6 +1,6 @@
-from discord.ext import commands
-from discord import Client
 import discord
+from discord import Client
+from discord.ext import commands
 
 
 class valid(commands.Cog):

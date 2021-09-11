@@ -1,9 +1,10 @@
-import discord
-from discord.ext import commands
-from discord import Embed
-from dotenv import load_dotenv
-import tweepy
 import os
+
+import discord
+import tweepy
+from discord import Embed
+from discord.ext import commands
+from dotenv import load_dotenv
 
 load_dotenv()
 

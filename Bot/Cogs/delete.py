@@ -1,7 +1,6 @@
-from discord.ext import commands
 import discord
-from discord import Embed
-from discord import TextChannel
+from discord import Embed, TextChannel
+from discord.ext import commands
 
 
 class deletemessage(commands.Cog):

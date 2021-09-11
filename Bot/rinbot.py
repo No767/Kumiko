@@ -32,6 +32,7 @@ initial_extensions = [
     "Cogs.delete",
     "Cogs.chat",
     "Cogs.invitation",
+    "Cogs.jisho",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

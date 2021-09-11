@@ -1,6 +1,6 @@
-from jamdict import Jamdict
-from discord.ext import commands
 import discord
+from discord.ext import commands
+from jamdict import Jamdict
 
 jam = Jamdict()
 

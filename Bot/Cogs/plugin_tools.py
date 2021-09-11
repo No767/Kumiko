@@ -2,14 +2,13 @@
 # built in
 import os
 
+import discord
+import image
 # external
 import qrcode
-import image
 from deep_translator import GoogleTranslator
-
 # Main classes that will be using...
 from discord.ext import commands
-import discord
 
 
 def discord_colors():

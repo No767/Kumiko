@@ -1,9 +1,10 @@
-from discord.ext import commands
-import discord
-import random
-import praw
-from dotenv import load_dotenv
 import os
+import random
+
+import discord
+import praw
+from discord.ext import commands
+from dotenv import load_dotenv
 
 load_dotenv()
 

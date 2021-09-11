@@ -1,14 +1,14 @@
-import discord
 import os
+
+import discord
 from discord.ext import commands
-from instagram_private_api import Client
-from instagram_private_api import ClientCompatPatch
 from dotenv import load_dotenv
+from instagram_private_api import Client, ClientCompatPatch
 
 load_dotenv()
 
-user_name = os.getenv("InstagramUserName")
-password = os.getenv("InstagramPassword")
+user_name = os.getenv("InstagramUserNameV2")
+password = os.getenv("InstagramPasswordV2")
 
 api = Client(user_name, password)
 api.generate_uuid()
