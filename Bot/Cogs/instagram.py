@@ -24,25 +24,23 @@ class instagram(commands.Cog):
         username_feed = api.user_info(search)
         username_info_format = f"""
         **Basic Information**
-        
+
         Instagram Username >> {api.user_info(search)['user']['username']}
         Full Name >> {api.user_info(search)['user']['full_name']}
         Is Private >> {api.user_info(search)['user']['is_private']}
         Profile Pic ID >> {api.user_info(search)['user']['profile_pic_id']}
         Is Verified >> {api.user_info(search)['user']['is_verified']}
-        
+
         **User Information**
-        
+
         Media / Post Count >> {api.user_info(search)['user']['media_count']}
         Total IGTV Videos >> {api.user_info(search)['user']['total_igtv_videos']}
         Usertag Count >> {api.user_info(search)['user']['usertags_count']}
         Follower Count >> {api.user_info(search)['user']['follower_count']}
         Following Count >> {api.user_info(search)['user']['following_count']}
-        Biography >> 
+        Biography >>
         {api.user_info(search)['user']['biography']}
-        External URL >> {api.user_info(search)['user']['external_url']}
-        External Lynx URL >>> {api.user_info(search)['user']['external_lynx_url']}
-        
+
         **API Contact Status**
         API Status >> {api.user_info(search)['status']}
         """
@@ -62,20 +60,20 @@ class iginfo(commands.Cog):
         top_search = api.search_users(search)
         search_users_formatted = f"""
         **Results**
-        
+
         Results >> {api.search_users(search)['num_results']}
-        
+
         **User Information**
-        
+
         PK >> {api.search_users(search)['users'][0]['pk']}
         Username >> {api.search_users(search)['users'][0]['username']}
         Full Name >> {api.search_users(search)['users'][0]['full_name']}
         Is Private >> {api.search_users(search)['users'][0]['is_private']}
         Is Verified >> {api.search_users(search)['users'][0]['is_verified']}
         Account Badges >> {api.search_users(search)['users'][0]['account_badges']}
-        
+
         **API Contact Status**
-        
+
         API >> {api.search_users(search)['status']}
         """
         embedVar = discord.Embed(title="Instagram User Search")
@@ -99,12 +97,12 @@ class top_search(commands.Cog):
         Following >> {following}
         Tag Media Count >> {formatted_media_count}
         Description >> {description}
-        
+
         **Related Tags**
         {related_tags}
-        
+
         **API Contact Status**
-        
+
         API Status >> {status}
         """.format(
             **api.tag_info(search)
@@ -127,9 +125,9 @@ class username_checker(commands.Cog):
         Existing User Password >> {existing_user_password}
         Error >> {error}
         Error Type >> {error_type}
-        
+
         **API Contact Status**
-        
+
         API Status >> {status}
         """.format(
             **api.check_username(search)
