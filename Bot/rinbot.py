@@ -36,7 +36,7 @@ initial_extensions = [
 for extension in initial_extensions:
     bot.load_extension(extension)
 
-
+# Adds in the bot presence 
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name=".rinhelp"))
