@@ -19,4 +19,4 @@ class jamdict_searcher(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Jamdict(bot))
+    bot.add_cog(jamdict_searcher(bot))
