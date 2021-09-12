@@ -5,7 +5,7 @@ from jamdict import Jamdict
 jam = Jamdict()
 
 
-class Jamdict(commands.Cog):
+class jamdict_searcher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
