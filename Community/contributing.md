@@ -24,6 +24,9 @@ The reason why is that one of the dependencies breaks if setuptools and wheels i
 
 You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred.
 
+## Formatting
+
+This projects uses a ton of linters and formatters. The main formatter is Black, AutoPEP8, and Isort. And there are a lot of linters as well. Most of them are from Codefactor, Codacy, and Deepsource. You don't have to worry about them because they are set up as formatters on the CI/CD workflow. Meaning that once it is done, all the code is formatted already.
 ## Issue and Feature Requests Reports
 
 If there is an issue or a feature you want to be added, use the built-in GitHub issue tracker. Though a system like Jira could be used, it would be more efficient to just use the issue tracker that GitHub provides. 
@@ -39,4 +42,4 @@ If there is an issue or a feature you want to be added, use the built-in GitHub 
 ## Code StyleGuides
 
 - Use the PEP 8 Standard if possible
-- Use patches if possible (not needed, but if you want to, go ahead)
+
