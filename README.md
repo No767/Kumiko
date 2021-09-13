@@ -13,10 +13,6 @@ A Discord bot with EasyBot.py plugin support and additional features
 
 <div align=left>
 
-> :exclamation: My time is very limited, so support for the bot might not come until weeks to months later. Development of the bot won't be as much as I hope, since I have a lot of exams and classes to go through. Releases won't be very often due to this
-
-<div align=left>
-
 # Installing
 
 Currently, as of writing this (8/8/2021), the bot is only available if you install all the dependencies and run the main.py file. Once it is ready for release, it will be available for invite on top.gg. More information on this can be found within the [docs](https://rin-docs.readthedocs.io/en/latest/). As of now, the expect release date is around Dec 2021 or July 2021 (depending on how AP exams goes). More features are being added, and some of them will be removed as time goes on. Basically this is a one-person project, and I'm only doing this on my free time
