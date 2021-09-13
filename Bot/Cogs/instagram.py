@@ -7,8 +7,8 @@ from instagram_private_api import Client, ClientCompatPatch
 
 load_dotenv()
 
-user_name = os.getenv("InstagramUserNameV2")
-password = os.getenv("InstagramPasswordV2")
+user_name = os.getenv("InstagramUserNameV3")
+password = os.getenv("InstagramPasswordV3")
 
 api = Client(user_name, password)
 api.generate_uuid()

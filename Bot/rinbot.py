@@ -28,13 +28,14 @@ initial_extensions = [
     "Cogs.images",
     "Cogs.jamdict",
     "Cogs.pinger",
-    "Cogs.instagram",
     "Cogs.delete",
     "Cogs.chat",
     "Cogs.invitation",
     "Cogs.jisho",
     "Cogs.translate",
     "Cogs.chat_purge",
+    "Cogs.mcsrvstats",
+    "Cogs.instagram",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
