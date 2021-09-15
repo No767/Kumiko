@@ -18,7 +18,7 @@ class mcsrvstats(commands.Cog):
         mcsrv_data = r.text
         mcsrv = json.loads(mcsrv_data)
         try:
-            if "true" == mcsrv['online']:
+            if "True" == mcsrv['online']:
                 embedVar = discord.Embed(color=0xc27c0e)
                 embedVar.description = f"""
                 **Infomation (Java Edition)**
@@ -93,7 +93,7 @@ class bedrock_mcsrvstats(commands.Cog):
         bedmcsrv_data = r.text
         bedmcsrv = json.loads(bedmcsrv_data)
         try: 
-            if "true" == bedmcsrv["online"]:
+            if "True" == bedmcsrv["online"]:
                 embedVar = discord.Embed(color=0x607d8b)
                 embedVar.description = f"""
                 **Information (Bedrock Edition)**
