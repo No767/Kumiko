@@ -23,3 +23,4 @@ flake8==3.9.2
 pylint==2.10.2
 autoflake==1.4
 pyupgrade==2.25.1
+selenium==3.141.0
