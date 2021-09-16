@@ -20,3 +20,5 @@ json_parser.py
 deviantarttest.py
 chat/responses.json
 chat
+*.un~ # Vim's temp files
+*.py~ # Also Vim's temp files
