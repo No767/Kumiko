@@ -22,3 +22,9 @@ chat/responses.json
 chat
 *.un~ # Vim's temp files
 *.py~ # Also Vim's temp files
+.py~
+.un~
+.jisho.py.un~
+jisho.py~
+.gitignore~
+..gitignore.un~
