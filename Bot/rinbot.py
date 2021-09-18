@@ -35,7 +35,7 @@ initial_extensions = [
     "Cogs.translate",
     "Cogs.chat_purge",
     "Cogs.mcsrvstats",
-    "Cogs.instagram",
+    "Cogs.waifu_generator",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

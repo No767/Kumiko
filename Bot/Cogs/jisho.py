@@ -38,7 +38,7 @@ class jisho_dict(commands.Cog):
         Tags >> {jisho_parser['data'][1]['senses'][1]['tags']}
         
         --- 
-        That goddamn third word (kanji): {jisho_parser['data'][2]['japanese'][0]['word']} # May replace that with the slug of each python dict. Currently broken
+        That goddamn third word (kanji): {jisho_parser['data'][2]['japanese'][0]['word']} 
          
         Hiragana: {jisho_parser['data'][2]['japanese'][0]['reading']}
         
