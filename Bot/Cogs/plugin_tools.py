@@ -52,7 +52,6 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
 
 
-
 class Bot_Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

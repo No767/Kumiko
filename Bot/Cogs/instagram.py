@@ -7,8 +7,8 @@ from instagram_private_api import Client, ClientCompatPatch
 
 load_dotenv()
 
-user_name = os.getenv("InstagramUserNameV3")
-password = os.getenv("InstagramPasswordV3")
+user_name = os.getenv("InstagramUserNameV2")
+password = os.getenv("InstagramPasswordV2")
 
 api = Client(user_name, password)
 api.generate_uuid()
@@ -149,8 +149,7 @@ class userfeed(commands.Cog):
         userfeedurl = api.user_feed(search)["items"][0]["carousel_media"][0][
             "image_versions2"
         ]["candidates"][0]["url"]
-        userfeedpfpurl = api.user_feed(
-            search)["items"][0]["user"]["profile_pic_url"]
+        userfeedpfpurl = api.user_feed(search)["items"][0]["user"]["profile_pic_url"]
         userfeed_likecount = api.user_feed(search)["items"][0]["like_count"]
         embedVar = discord.Embed()
         embedVar.description = f"{userfeed_formatter}"

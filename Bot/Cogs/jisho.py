@@ -4,6 +4,7 @@ import discord
 import requests
 from discord import Embed
 from discord.ext import commands
+import re
 
 class jisho_dict(commands.Cog):
     def __init__(self, bot):
@@ -16,42 +17,41 @@ class jisho_dict(commands.Cog):
         r = requests.get(link)
         jisho_data = r.text
         jisho_parser = json.loads(jisho_data)
+        english_def = jisho_parser['data'][0]['senses'][0]['english_definitions'][1:-1]
         embedVar = discord.Embed()
+        
+        
         embedVar.description = f"""
-        First Word: {jisho_parser['data'][0]['japanese'][0]['reading']}
+        Results: 
         
-        English Def: {jisho_parser['data'][0]['senses'][0]['english_definitions']}
+        **Result 1**
         
-        Parts of speech: {jisho_parser['data'][0]['senses'][0]['parts_of_speech']}
-        
-        Tags? >> {jisho_parser['data'][0]['tags']}
-        
-        ---
-        
-        The second word: {jisho_parser['data'][1]['japanese'][0]['reading']}
-        
-        That second word's english writing: {jisho_parser['data'][1]['senses'][1]['english_definitions']}
+        Kanji >> {jisho_parser['data'][0]['slug']}
+        Hiragana >> {jisho_parser['data'][0]['japanese'][0]['reading']}
+        Katakana >> {jisho_parser['data'][0]['japanese'][1]['reading']}
         
         
-        Parts of speech: {jisho_parser['data'][1]['senses'][1]['parts_of_speech']}
+        English Def >> {english_def}
+
+        Attributions
+        JMDict >> {jisho_parser['data'][0]['attribution']['jmdict']}
+        JMNEDict >> {jisho_parser['data'][0]['attribution']['jmnedict']}
+        DBPedia >> {jisho_parser['data'][0]['attribution']['dbpedia']}
         
-        Tags >> {jisho_parser['data'][1]['senses'][1]['tags']}
+        **Result 2**
         
-        --- 
-        That goddamn third word (kanji): {jisho_parser['data'][2]['japanese'][0]['word']} 
-         
-        Hiragana: {jisho_parser['data'][2]['japanese'][0]['reading']}
         
-        Katakana: {jisho_parser['data'][2]['japanese'][1]['reading']}
+
+
         
-        English Def: {jisho_parser['data'][2]['senses'][0]['english_definitions']}
+
         
-        Parts of Speech: {jisho_parser['data'][2]['senses'][0]['parts_of_speech']}
+        **HTTP Status**
+        HTTP Status Code >> {jisho_parser['meta']['status']}
         
-        tags: {jisho_parser['data'][2]['senses'][0]['tags']}
+        
         """
         await ctx.send(embed=embedVar)
-
 
 def setup(bot):
     bot.add_cog(jisho_dict(bot))
