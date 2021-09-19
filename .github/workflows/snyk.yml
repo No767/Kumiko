@@ -38,7 +38,7 @@ jobs:
           snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Code
         run: |
-          snyk code test --severity-threshold=critical
+          snyk code test --severity-threshold=high
       - name: Run Snyk Monitor 
         run: |
           snyk monitor
