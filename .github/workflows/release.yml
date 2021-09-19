@@ -1,17 +1,25 @@
 name: Release New Version
 on: 
   push: 
+    branches: 
+      - master
     tags:
-      - '*'
+      - 'Beta-*.*'
+
+  pull_request:
+    branches:
+      - master
+
 jobs:
-  build: 
+  release: 
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Release New version
-      uses: ncipollo/release-action@v1.8.9
+    - name: Release New Version
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
+        body_path: "Changelog.md"
         token: ${{ secrets.GITHUB_TOKEN }}
-        allowUpdates: true
-        owner: No767
-        bodyFile: "Changelog.md"
+        tag_name: 'Beta-*.*'
+        draft: true
