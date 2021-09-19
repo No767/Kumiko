@@ -1,10 +1,10 @@
 name: Tag Repo
-on: 
-  push:
-    branches:
-      - master
-  pull_request:
-      branches: [ master ]
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag'
+        required: true
 
 jobs:
   build:
