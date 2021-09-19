@@ -15,11 +15,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: Bump Version and Push Tag
       uses: mathieudutour/github-tag-action@v5.6
+      id: tag_version
       with: 
         tag_prefix: Beta-
         github_token: ${{ secrets.GITHUB_TOKEN }}
         default_bump: false
-    - name: Create a GitHub release
+    - name: Release
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
