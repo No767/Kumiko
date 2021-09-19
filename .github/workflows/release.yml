@@ -18,6 +18,7 @@ jobs:
       id: tag_version
       with: 
         tag_prefix: Beta-
+        token: ${{ secrets.GITHUB_TOKEN}}
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
