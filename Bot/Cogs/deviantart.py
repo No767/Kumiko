@@ -1,10 +1,11 @@
-import discord
-from discord.ext import commands
-from discord import Client
-from dotenv import load_dotenv
-import deviantart
-import os
 import asyncio
+import os
+
+import deviantart
+import discord
+from discord import Client
+from discord.ext import commands
+from dotenv import load_dotenv
 
 load_dotenv()
 Client_ID = os.getenv("Client_ID")

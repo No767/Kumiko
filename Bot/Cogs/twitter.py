@@ -1,9 +1,10 @@
-import discord
-from discord.ext import commands
-from discord import Embed
-from dotenv import load_dotenv
-import tweepy
 import os
+
+import discord
+import tweepy
+from discord import Embed
+from discord.ext import commands
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -30,9 +31,14 @@ class rintwitter(commands.Cog):
         embedVar.description = f"Current Timeline: {home_timeline}"
         await ctx.send(embed=embedVar)
 
+
+class rtupdatestatus(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
     # The OAuth can only handle Read requests, not post requests. adding support in the future
     @commands.command(name="rtupdatestatus")
-    async def rtupdatestatus(self, ctx, search: str):
+    async def on_message(self, ctx, search: str):
         twitter_query = api.update_status(status=search)
         twitter_embed = discord.Embed()
         twitter_embed.description = (
@@ -40,16 +46,21 @@ class rintwitter(commands.Cog):
         )
         await ctx.send(embed=twitter_embed)
 
+
+class rtgetsaved(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
     # Make sure that the search input is a string, by wrapping it in '' or ""
     @commands.command(name="rtsearch")
     async def rtgetsaved(self, ctx, search: str):
         getcursor = api.get_user(search)
         search_embed = discord.Embed()
-        search_embed.description = (
-            f"This was the tweet found: {getcursor.followers_count()}"
-        )
+        search_embed.description = f"{api.get_user(search)}"
         await ctx.send(embed=search_embed)
 
 
 def setup(bot):
     bot.add_cog(rintwitter(bot))
+    bot.add_cog(rtgetsaved(bot))
+    bot.add_cog(rtupdatestatus(bot))

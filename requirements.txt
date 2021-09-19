@@ -1,11 +1,10 @@
-discord == 1.7.3
-discord.py == 1.7.3
+discord.py[voice] == 1.7.3
 python-dotenv == 0.19.0
 qrcode==7.3
 image==1.5.33
 praw==7.4.0
 deviantart==0.1.5
-py3-pinterest==1.2.2
+py3-pinterest==1.2.2 # This remains unused as of now. Will be adding in pinterest api support very soon...
 tweepy==3.10.0
 deep-translator==1.5.4
 pyinstrument==4.0.3
@@ -13,3 +12,18 @@ black==21.9b0
 instagram-private-api==1.6.0
 pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability
 django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability
+jamdict==0.1a11.post2
+jamdict-data==1.5
+requests==2.26.0
+coverage==5.5
+yapf==0.31.0
+autopep8==1.5.7
+isort==5.9.3
+flake8==3.9.2
+pylint==2.10.2
+autoflake==1.4
+pyupgrade==2.25.1
+selenium==3.141.0
+lxml==4.6.3
+scrapy==2.5.0
+fake-useragent==0.1.11

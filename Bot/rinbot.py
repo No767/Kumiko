@@ -3,6 +3,7 @@ from discord import Intents
 from discord.ext import commands
 from discord import Client
 from discord import Game
+from discord import Embed, Activity, ActivityType
 import os
 from dotenv import load_dotenv
 
@@ -25,16 +26,26 @@ initial_extensions = [
     "Cogs.reddit",
     "Cogs.disquest",
     "Cogs.images",
-    "Cogs.jamdict",
+    "Cogs.jmdict",
     "Cogs.pinger",
-    "Cogs.instagram",
     "Cogs.delete",
+    "Cogs.chat",
+    "Cogs.invitation",
+    "Cogs.jisho",
+    "Cogs.translate",
+    "Cogs.chat_purge",
+    "Cogs.mcsrvstats",
+    "Cogs.waifu_generator",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
 
-# Add in Playing status
-client = discord.Client(activity=discord.Game(name="my game"))
+
+# Adds in the bot presence
+@bot.event
+async def on_ready():
+    await bot.change_presence(activity=discord.Game(name=".rinhelp"))
+
 
 # Run the bot
 bot.run(TOKEN)

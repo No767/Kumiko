@@ -2,14 +2,15 @@
 # built in
 import os
 
+import discord
+import image
+
 # external
 import qrcode
-import image
 from deep_translator import GoogleTranslator
 
 # Main classes that will be using...
 from discord.ext import commands
-import discord
 
 
 def discord_colors():
@@ -27,23 +28,6 @@ def fast_embed(content):
 class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command(
-        name="invite",
-        help="Generates the link to invite bot",
-    )
-    async def invite(self, ctx):
-        link = f"https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8"
-        if not os.path.isfile("./cogs/plugin_tools/invite.png"):
-            img = qrcode.make(link)
-            img.save("./cogs/plugin_tools/invite.png")
-        file = discord.File("./cogs/plugin_tools/invite.png")
-        embed = discord.Embed(color=discord_colors())
-        embed.title = f"Invite {self.bot.user.name}"
-        embed.description = link
-        embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.set_image(url="attachment://invite.png")
-        await ctx.send(embed=embed, file=file)
 
     @commands.command(name="botinfo", help="Statistics about this bot")
     async def botinfo(self, ctx):
@@ -66,24 +50,6 @@ class Utility(commands.Cog):
         """
         embed.set_thumbnail(url=bot.user.avatar_url)
         await ctx.send(embed=embed)
-
-    @commands.command(
-        name="translate", help="Translates the given message", pass_context=True
-    )
-    async def translate(self, ctx):
-        def check(ms):
-            return ms.channel == ctx.message.channel and ms.author == ctx.message.author
-
-        await ctx.send("Enter the message you wish to be translated:")
-        msg = await self.bot.wait_for("message", check=check)
-        translated = GoogleTranslator(source="auto", target="english").translate(
-            msg.content
-        )
-        translate_embed = discord.Embed(title="Translation", description=translated)
-        translate_embed.set_author(
-            name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url
-        )
-        await ctx.send(embed=translate_embed)
 
 
 class Bot_Admin(commands.Cog):

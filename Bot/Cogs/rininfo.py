@@ -1,6 +1,7 @@
+import datetime
+
 import discord
 from discord.ext import commands
-import datetime
 
 
 class rininfo(commands.Cog):
@@ -13,10 +14,10 @@ class rininfo(commands.Cog):
         name = bot.user.name
         id = bot.user.id
         embedVar = discord.Embed(title="Rin Info", color=14414079)
-        embedVar.description = f"""
+        embedVar.description = """
         Welcome! Thanks for using this bot, and as of now, it is under heavy development.
         
-        The Rin bot is a Discord bot built on top of EasyBot.py, and allows for EasyBot.py plugins to be supported. Its function is to be a general-purpose bot, which mostly focuses on games, and other third-party API support.
+        The Rin bot is a Discord bot built on top of EasyBot.py, and allows for EasyBot.py plugins to be supported. Its function is to be a general-purpose bot, which mostly focuses on third-party API support.
         
         GitHub: https://github.com/No767/Rin
         

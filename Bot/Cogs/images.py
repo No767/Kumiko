@@ -1,6 +1,7 @@
-import requests
-import bs4
 import random
+
+import bs4
+import requests
 from discord.ext import commands
 
 

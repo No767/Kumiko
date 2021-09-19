@@ -1,9 +1,9 @@
-from discord.ext import commands
-import discord
 import json
 
+import discord
+from discord.ext import commands
 
-# Disabled due to not being able to find the responses.json file
+
 class Chat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -22,12 +22,14 @@ class Chat(commands.Cog):
         if not message.author.bot:
             # message has multiple different sub definitions like content author channel
             msg = message.content.lower()
-            if msg.startswith("update"):
-                msg = msg.replace("update ", "")  # trunicate off update
+            if msg.startswith(
+                "rinupdate"
+            ):  # Use rinupdate instead, so if someone is saying update in the chat, this will not trigger
+                msg = msg.replace("rinupdate ", "")  # trunicate off update
                 inputs = msg.split(",")
                 try:
                     msg_responses = dict(ping=inputs[0], pong=inputs[1])
-                    response_file = open("./cogs/chat/responses.json", "a")
+                    response_file = open("chat/responses.json", "a")
                     response_file.write(f"{json.dumps(msg_responses)}\n")
                 except Exception as e:
                     await message.channel.send(
@@ -36,7 +38,7 @@ class Chat(commands.Cog):
                     print(e)
             else:
                 try:
-                    msg_save = open("./cogs/chat/responses.json", "r")
+                    msg_save = open("chat/responses.json", "r")
                     msg_responses = msg_save.readlines()
                     msg_responses = [
                         json.loads(s.replace("\n", "")) for s in msg_responses
@@ -46,9 +48,6 @@ class Chat(commands.Cog):
                         if i["ping"] == msg:
                             await message.channel.send(i["pong"])
                             return
-                    await message.channel.send(
-                        f'Sorry, a response to *"{msg}"* has not yet been added.'
-                    )
                 except Exception as e:
                     await message.channel.send(e)
 

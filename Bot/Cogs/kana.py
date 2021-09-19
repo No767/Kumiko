@@ -1,7 +1,7 @@
-from discord.ext import commands
-from discord import Embed
 import pykakasi
 import tensorflow as tf
+from discord import Embed
+from discord.ext import commands
 
 
 class kana(commands.Cog):

@@ -1,11 +1,11 @@
-from jamdict import Jamdict
-from discord.ext import commands
 import discord
+from discord.ext import commands
+from jamdict import Jamdict
 
 jam = Jamdict()
 
 
-class Jamdict(commands.Cog):
+class jamdict_searcher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -19,4 +19,4 @@ class Jamdict(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Jamdict(bot))
+    bot.add_cog(jamdict_searcher(bot))

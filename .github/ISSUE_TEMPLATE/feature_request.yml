@@ -27,7 +27,6 @@ body:
     label: Anything else?
     description: |
       Any other additional context that you would like to add?
-    render: markdown
   validations:
     required: false
 - type: checkboxes
