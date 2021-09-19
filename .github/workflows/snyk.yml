@@ -27,7 +27,7 @@ jobs:
       - name: Install Snyk
         run: |
           npm install snyk -g
-      - name: Upgrade Pip, Setuptools, and Whell
+      - name: Upgrade Pip, Setuptools, and Wheel
         run: |
           pip install --upgrade pip setuptools wheel
       - name: Install Dependencies
@@ -36,9 +36,9 @@ jobs:
       - name: Login to Snyk
         run: |
           snyk auth ${{ secrets.SNYK_TOKEN }}
-      - name: Run Snyk Test
+      - name: Run Snyk Fix
         run: |
-          snyk test
+          snyk fix
       - name: Run Snyk Monitor 
         run: |
           snyk monitor

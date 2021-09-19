@@ -1,0 +1,16 @@
+name: Release New Version
+on: 
+  push: 
+    tags:
+      - '*'
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Release New version
+      uses: ncipollo/release-action@v1.8.9
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        allowUpdates: true
+        owner: No767
