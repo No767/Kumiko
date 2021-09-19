@@ -12,6 +12,7 @@ updates:
     commit-message:
       prefix: "[pip]"
       include: "scope"
+    target-branch: "dev"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -19,3 +20,4 @@ updates:
     commit-message:
       prefix: "[Actions]"
       include: "scope"
+    target-branch: "dev"
