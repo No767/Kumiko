@@ -51,7 +51,7 @@ class rinhelpv2(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            else:
+            elif str(args) == "index":
                 bot = self.bot
                 name = bot.user.name
                 id = bot.user.id
