@@ -20,18 +20,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+      - name: Login to Snyk
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Vulnerability Scanner
         uses: snyk/actions/python@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: code
-      - name: Run Snyk Test
-        uses: snyk/actions/python@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: test
       - name: Run Snyk Monitor
         uses: snyk/actions/python@master
         env:
