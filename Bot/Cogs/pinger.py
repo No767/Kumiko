@@ -7,7 +7,7 @@ class pinger(commands.Cog):
 
     # Note that you need to wrap the message around in "" marks. Which is just making it a string
     @commands.command(name="pinger")
-    async def on_message(self, ctx, replace: int, search: str):
+    async def on_message(self, ctx, replace: int, *, search: str):
         pinger_search = search
         for x in range(replace):
             await ctx.send(f"@everyone {search}")
