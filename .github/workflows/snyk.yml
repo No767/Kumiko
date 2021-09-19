@@ -20,18 +20,20 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
+      - name: Set up Node.js and Snyk
+        uses: actions/setup-node@v2
+        with: 
+          node-version: '14'
+        run: |
+          npm install snyk -g
       - name: Login to Snyk
-        uses: snyk/actions/python@master
         run: |
           snyk auth ${{ secrets.SNYK_TOKEN }}
-      - name: Run Snyk Vulnerability Scanner
-        uses: snyk/actions/python@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      - name: Run Snyk Monitor
-        uses: snyk/actions/python@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          command: monitor
+      - name: Run Snyk Test
+        run: |
+          snyk test
+      - name: Run Snyk Monitor 
+        run: |
+          snyk monitor
+
         
