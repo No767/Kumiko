@@ -16,8 +16,7 @@ class jisho_dict(commands.Cog):
         link = f"https://jisho.org/api/v1/search/words?keyword={search}"
         r = requests.get(link)
         jisho_data = r.text
-        jisho_parser = json.loads(jisho_data)
-        english_def = jisho_parser['data'][0]['senses'][0]['english_definitions'][1:-1]
+        jisho = json.loads(jisho_data)
         embedVar = discord.Embed()
         
         
@@ -26,28 +25,28 @@ class jisho_dict(commands.Cog):
         
         **Result 1**
         
-        Kanji >> {jisho_parser['data'][0]['slug']}
-        Hiragana >> {jisho_parser['data'][0]['japanese'][0]['reading']}
-        Katakana >> {jisho_parser['data'][0]['japanese'][1]['reading']}
+        Kanji >> {jisho['data'][0]['slug']}
+        Hiragana >> {jisho['data'][0]['japanese'][0]['reading']}
+        Katakana >> {jisho['data'][0]['japanese'][1]['reading']}
         
         
-        English Def >> {english_def}
+        English Def >> 
 
         Attributions
-        JMDict >> {jisho_parser['data'][0]['attribution']['jmdict']}
-        JMNEDict >> {jisho_parser['data'][0]['attribution']['jmnedict']}
-        DBPedia >> {jisho_parser['data'][0]['attribution']['dbpedia']}
+        JMDict >> {jisho['data'][0]['attribution']['jmdict']}
+        JMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}
+        DBPedia >> {jisho['data'][0]['attribution']['dbpedia']}
         
         **Result 2**
         
-        
+        Kanji >> {jisho['data'][1]['slug']}
 
 
         
 
         
         **HTTP Status**
-        HTTP Status Code >> {jisho_parser['meta']['status']}
+        HTTP Status Code >> {jisho['meta']['status']}
         
         
         """

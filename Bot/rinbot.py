@@ -26,7 +26,7 @@ initial_extensions = [
     "Cogs.reddit",
     "Cogs.disquest",
     "Cogs.images",
-    "Cogs.jamdict",
+    "Cogs.jmdict",
     "Cogs.pinger",
     "Cogs.delete",
     "Cogs.chat",
