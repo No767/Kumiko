@@ -34,8 +34,7 @@ jobs:
         run: |
           pip install -r requirements.txt
       - name: Login to Snyk
-        run: |
-          snyk auth ${{ secrets.SNYK_TOKEN }}
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Code
         run: |
           snyk code test --severity-threshold=high
