@@ -1,0 +1,41 @@
+name: Snyk
+on:
+  push:
+    branches:
+      - master
+      - dev
+    
+  pull_request:
+    branches:
+      - master
+      - dev
+  schedule:
+    - cron: '36 7 * * 0'
+jobs:
+  analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Run Snyk Vulnerability Scanner
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: code
+      - name: Run Snyk Test
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+      - name: Run Snyk Monitor
+        uses: snyk/actions/python@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+        
