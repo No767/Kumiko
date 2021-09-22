@@ -25,7 +25,7 @@ class jisho_dict(commands.Cog):
         
         **Result 1**
         
-        Kanji >> {jisho['data'][0]['slug']}
+        Kanji >> {str(jisho['data'][0]['slug']).split(", ")[0]}
         Hiragana >> {jisho['data'][0]['japanese'][0]['reading']}
         Katakana >> {jisho['data'][0]['japanese'][1]['reading']}
         
@@ -39,7 +39,11 @@ class jisho_dict(commands.Cog):
         
         **Result 2**
         
-        Kanji >> {jisho['data'][1]['slug']}
+        Kanji >> {str(jisho['data'][1]['slug']).split(", ")[0]}
+        Hiragana >> {str(jisho['data'][1]['japanese'][0]['reading']).split(", ")[0]}
+        Katakana >> {str(jisho['data'][1]['japanese'][0]['reading']).split(", ")[0]}
+        
+        English Def >> 
 
 
         
@@ -52,5 +56,7 @@ class jisho_dict(commands.Cog):
         """
         await ctx.send(embed=embedVar)
 
+
+    
 def setup(bot):
     bot.add_cog(jisho_dict(bot))

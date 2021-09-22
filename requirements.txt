@@ -27,3 +27,4 @@ selenium==3.141.0
 lxml==4.6.3
 scrapy==2.5.0
 fake-useragent==0.1.11
+searchtweets==1.7.6
