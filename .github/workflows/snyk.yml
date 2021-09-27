@@ -42,10 +42,10 @@ jobs:
       - name: Login to Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Code
-        run: snyk code test 
-        continue-on-error: true
         with:
           args: --sarif-file-output=snyk.sarif
+        run: snyk code test 
+        continue-on-error: true
       - name: Run Snyk Monitor 
         run: |
           snyk monitor
