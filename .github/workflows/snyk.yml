@@ -42,9 +42,9 @@ jobs:
       - name: Login to Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Code
+        uses: snyk/actions/python-3.8@master
         with:
           args: --sarif-file-output=snyk.sarif
-        run: snyk code test 
         continue-on-error: true
       - name: Run Snyk Monitor 
         run: |
