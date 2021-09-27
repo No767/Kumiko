@@ -1,6 +1,6 @@
-from discord.ext import commands
 import discord
 from Cogs import plugin_tools
+from discord.ext import commands
 
 
 class Utility(commands.Cog):

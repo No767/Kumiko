@@ -9,7 +9,7 @@ class valid(commands.Cog):
 
     @commands.command(name="valid")
     async def on_message(message, ctx, search: str):
-        try: 
+        try:
             user_search = search
             embedVar = discord.Embed(color=14414079)
             embedVar.description = f"""
@@ -21,7 +21,6 @@ class valid(commands.Cog):
             embedVar = discord.Embed(color=14414079)
             embedVar.description = f"There seems to be an error. Please try again."
             await ctx.send(embed=embedVar)
-
 
 
 def setup(bot):

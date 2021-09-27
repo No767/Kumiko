@@ -1,8 +1,9 @@
+import os
+
 import discord
 from discord.ext import commands
-from searchtweets import load_credentials
-import os
 from dotenv import load_dotenv
+from searchtweets import load_credentials
 
 load_dotenv()
 
