@@ -33,10 +33,10 @@ jobs:
       - name: Install all Dependencies
         run: |
           pip install -r requirements.txt
-      - name: Install Pipenv
+      - name: Install Colorama 
         run: |
-          pip install pipenv
-      - name: Sync All Dependencies from Pipfile.lock
+          pipenv install colorama
+      - name: Install All Dependencies from Pipfile.lock
         run: |
           pipenv install
       - name: Login to Snyk
