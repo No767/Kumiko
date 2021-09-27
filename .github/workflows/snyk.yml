@@ -52,4 +52,4 @@ jobs:
       - name: Upload SARIF File
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: snyk-sarif
+          sarif_file: snyk.sarif
