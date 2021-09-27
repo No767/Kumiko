@@ -43,9 +43,12 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Code
         run: |
-          snyk code test --severity-threshold=high
+          snyk code test --sarif-file-output=snyk-sarif.json
+          continue-on-error: true
       - name: Run Snyk Monitor 
         run: |
           snyk monitor
-
-        
+      - name: Upload SARIF File
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk-sarif.json
