@@ -30,9 +30,15 @@ jobs:
       - name: Upgrade Pip, Setuptools, and Wheel
         run: |
           pip install --upgrade pip setuptools wheel
-      - name: Install Dependencies
+      - name: Install all Dependencies
         run: |
           pip install -r requirements.txt
+      - name: Install Pipenv
+        run: |
+          pip install pipenv
+      - name: Sync All Dependencies from Pipfile.lock
+        run: |
+          py -3.9 -m pipenv sync
       - name: Login to Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk Code
