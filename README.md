@@ -29,7 +29,7 @@ Option 2: Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pip install pipenv`
 
-`py 3.9 -m pipenv sync`
+`py -3.9 -m pipenv sync`
 
 # Licensing
 
