@@ -19,11 +19,15 @@ Currently, as of writing this (8/8/2021), the bot is only available if you insta
 
 # Building
 
-Via [pip](https://pypi.org/)
+Option 1: Via [Pip](https://pypi.org/)
 
 `python -m pip install --upgrade pip setuptools wheel`
 
 `pip install -r requirements.txt`
+
+Option 2: Via [Pipenv](https://pipenv.pypa.io/en/latest/)
+
+`py 3.9 -m pipenv sync`
 
 # Licensing
 
