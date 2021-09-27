@@ -28,3 +28,4 @@ lxml==4.6.3
 scrapy==2.5.0
 fake-useragent==0.1.11
 searchtweets==1.7.6
+pipenv==2021.5.29
