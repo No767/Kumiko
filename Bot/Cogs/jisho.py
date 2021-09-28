@@ -41,7 +41,7 @@ class jisho_dict(commands.Cog):
                 "x-rapidapi-host": "kanjialive-api.p.rapidapi.com",
                 "x-rapidapi-key": f"{os.getenv('Rapid_API_Key')}",
             }
-            r = requests.get(link)
+            r = requests.get(link) # Only use Jisho for english def
             jisho_data = r.text
             jisho = json.loads(jisho_data)
             kanji_alive = requests.request("GET", kanji_url, headers=headers)
