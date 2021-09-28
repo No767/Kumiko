@@ -22,8 +22,9 @@ def kanji_finder(search):
     search = search.replace(" ", "%")
     result = jam.lookup(search)
     for c in result.chars:
-        searcher = re.search("^\w", repr(c))
-        return searcher.group(0)
+        searcher = re.match("^\w", repr(c))
+        return searcher.group()
+            
     
 class jisho_dict(commands.Cog):
     def __init__(self, bot):
@@ -51,7 +52,9 @@ class jisho_dict(commands.Cog):
             embedVar.description = f"""
             Results: 
 
-            Kanji >> {kanji_finder(search)}
+            Kanji >> 
+            
+            {kanji_finder(search)}
             
             
             English Def >> {english_def_parser(search)}
