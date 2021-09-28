@@ -41,6 +41,8 @@ jobs:
           pipenv install
       - name: Login to Snyk
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
+        env: 
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN}}
       - name: Run Snyk
         uses: snyk/actions/python-3.8@master
         continue-on-error: true # To make sure that SARIF upload gets called
