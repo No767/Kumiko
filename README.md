@@ -25,11 +25,9 @@ Option 1: Via [Pip](https://pypi.org/)
 
 `pip install -r requirements.txt`
 
-Option 2: Via [Pipenv](https://pipenv.pypa.io/en/latest/)
+Option 2 (Preferred): Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
-`pip install pipenv`
-
-`py -3.9 -m pipenv sync`
+`pipenv install`
 
 # Licensing
 
