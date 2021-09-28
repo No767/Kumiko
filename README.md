@@ -27,8 +27,6 @@ Option 1: Via [Pip](https://pypi.org/)
 
 Option 2 (Preferred): Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
-`pip install pipenv`
-
 `pipenv install`
 
 # Licensing
