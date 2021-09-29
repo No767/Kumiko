@@ -19,7 +19,7 @@ Currently, as of writing this (8/8/2021), the bot is only available if you insta
 
 # Building
 
-Option 1: Via [Pip](https://pypi.org/)
+*Option 1: Via [Pip](https://pypi.org/)
 
 `python -m pip install --upgrade pip setuptools wheel`
 
@@ -29,9 +29,12 @@ Option 2 (Preferred): Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
 
+*Note that Option 1 (Via Pip) is no longer tracked by dependabot, which means the dependencies can be outdated. It is recommended to use option 2 instead.
+
+
 # Licensing
 
-This project is licensed under the CC0-1.0 License. This project uses the [EasyBot.py](https://github.com/chisaku-dev/EasyBot.py) project, which is also licensed under the CC0-1.0 License
+This project is licensed under the CC0-1.0 License. This project uses the [EasyBot.py](https://github.com/chisaku-dev/EasyBot.py) project, which is also licensed under the CC0-1.0 License. I do have plans to switch this into Apache-2.0...
 
 # Contributing
 
