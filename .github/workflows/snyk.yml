@@ -20,13 +20,6 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Set up Node.js and Snyk
-        uses: actions/setup-node@v2
-        with: 
-          node-version: '14'
-      - name: Install Snyk
-        run: |
-          npm install snyk -g
       - name: Upgrade Pip, Setuptools, and Wheel
         run: |
           pip install --upgrade pip setuptools wheel
@@ -39,10 +32,6 @@ jobs:
       - name: Install All Dependencies from Pipfile.lock
         run: |
           pipenv install
-      - name: Login to Snyk
-        run: snyk auth ${{ secrets.SNYK_TOKEN }}
-        env: 
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN}}
       - name: Run Snyk
         uses: snyk/actions/python-3.8@master
         continue-on-error: true # To make sure that SARIF upload gets called
@@ -50,9 +39,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --sarif-file-output=snyk.sarif
-      - name: Run Snyk Monitor 
-        run: |
-          snyk monitor
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v1
         with:
