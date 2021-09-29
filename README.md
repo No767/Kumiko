@@ -29,7 +29,7 @@ Option 2 (Preferred): Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
 
-*Note that Option 1 (Via Pip) is no longer tracked by dependabot, which means the dependencies can be outdated. It is recommended to use option 2 instead.
+*Note that Option 1 (Via Pip) is no longer tracked by dependabot, which means the dependencies can be outdated. It is recommended to use Option 2 instead.
 
 
 # Licensing
