@@ -23,13 +23,10 @@ jobs:
       - name: Upgrade Pip, Setuptools, and Wheel
         run: |
           pip install --upgrade pip setuptools wheel
-      - name: Install all Dependencies
+      - name: Install Pipenv
         run: |
-          pip install -r requirements.txt
-      - name: Install Colorama 
-        run: |
-          pipenv install colorama
-      - name: Install All Dependencies from Pipfile.lock
+          pip install pipenv
+      - name: Install Pipenv Dependencies 
         run: |
           pipenv install
       - name: Run Snyk
