@@ -23,22 +23,19 @@ jobs:
     - name: Install Pipenv
       run: |
         pip install pipenv
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
     - name: Install Pipenv Dependencies
       run: |
         pipenv install
     - name: Lint with Flake8
       run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        pipenv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Format with Black
       run: |
-        black Bot/Cogs
+        pipenv run black Bot/Cogs
     - name: Format with Isort
       run: |
-        isort Bot/Cogs
+        pipenv run isort Bot/Cogs
     - name: Format with AutoPEP8
       run: |
-        autopep8 -r --in-place Bot/Cogs
+        pipenv run autopep8 -r --in-place Bot/Cogs
