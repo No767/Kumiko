@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 "discord.py" = {version = "==1.7.3", extras = ["voice"]}
 python-dotenv = "==0.19.0"
-qrcode = "==7.3"
+qrcode = "==7.3.1"
 image = "==1.5.33"
 praw = "==7.4.0"
 deviantart = "==0.1.5"
