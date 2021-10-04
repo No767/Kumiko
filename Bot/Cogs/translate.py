@@ -1,6 +1,7 @@
-from discord.ext import commands
 import discord
 from deep_translator import GoogleTranslator
+from discord.ext import commands
+
 
 # made with https://github.com/nidhaloff/deep-translator
 class Utility(commands.Cog):

@@ -1,14 +1,15 @@
-from fake_useragent import UserAgent
 import bs4
 import discord
-from discord.ext import commands
-from discord import Embed
 import requests
+from discord import Embed
+from discord.ext import commands
+from fake_useragent import UserAgent
+
 
 class waifu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="waifu")
     async def on_message(self, ctx):
         headers = {"UserAgent": UserAgent().random}
@@ -22,6 +23,7 @@ class waifu(commands.Cog):
         embedVar.description = f"{description}"
         embedVar.set_image(url=image_url)
         await ctx.send(embed=embedVar)
-        
+
+
 def setup(bot):
     bot.add_cog(waifu(bot))

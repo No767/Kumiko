@@ -17,25 +17,25 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Upgrade Pip
+    - name: Upgrade Pip + Setuptools + Wheel
       run: |
-        pip install --upgrade pip
-    - name: Upgrade Setuptools + Wheel
+        pip install --upgrade pip setuptools wheel
+    - name: Install Pipenv
       run: |
-        pip install --upgrade setuptools wheel
-    - name: Install dependencies
+        pip install pipenv
+    - name: Install Pipenv Dependencies
       run: |
-        pip install -r requirements.txt
+        pipenv install
     - name: Lint with Flake8
       run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        pipenv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Format with Black
       run: |
-        black Bot/Cogs
+        pipenv run black Bot/Cogs
     - name: Format with Isort
       run: |
-        isort Bot/Cogs
+        pipenv run isort Bot/Cogs
     - name: Format with AutoPEP8
       run: |
-        autopep8 -r --in-place Bot/Cogs
+        pipenv run autopep8 -r --in-place Bot/Cogs

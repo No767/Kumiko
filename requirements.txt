@@ -20,10 +20,12 @@ yapf==0.31.0
 autopep8==1.5.7
 isort==5.9.3
 flake8==3.9.2
-pylint==2.10.2
+pylint==2.11.1
 autoflake==1.4
-pyupgrade==2.25.1
+pyupgrade==2.27.0
 selenium==3.141.0
 lxml==4.6.3
 scrapy==2.5.0
 fake-useragent==0.1.11
+searchtweets==1.7.6
+pipenv==2021.5.29
