@@ -1,7 +1,8 @@
+import typing
+
 import discord
 import discord.ext
 from discord.ext import commands
-import typing
 
 
 class rinhelp(commands.Cog):
@@ -10,7 +11,7 @@ class rinhelp(commands.Cog):
         self.last_member = None
 
     @commands.command(name="rinhelp", help="Rin's Help/Info Page")
-    async def on_message(self, ctx, *, search:typing.Optional[str]=None):
+    async def on_message(self, ctx, *, search: typing.Optional[str] = None):
         try:
             if search is None:
                 bot = self.bot
@@ -33,12 +34,13 @@ class rinhelp(commands.Cog):
                         """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "admin":
                 bot = self.bot
                 name = bot.user.name
                 id = bot.user.id
-                embedVar = discord.Embed(title="Rin Help - Admin", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Admin", color=14414079)
                 embedVar.description = """
                 `botgrowth` - Tips based on bot statistics on how to reach more people!
                 `prune` - Removes bot from servers smaller than the specified limit
@@ -49,10 +51,11 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "twitter":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Twitter", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Twitter", color=14414079)
                 embedVar.description = """
                 `rt` - Grabs Twitter user's timeline
                 `rtupdatestatus` - Updates Twitter user's status
@@ -62,10 +65,11 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
-            if str(search) == "reddit": 
+
+            if str(search) == "reddit":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Reddit", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Reddit", color=14414079)
                 embedVar.description = """
                 `reddit` - searches on reddit
                 `transmeme` - searches on reddit that include trans and other LGBTQ+ subreddits
@@ -73,7 +77,7 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "mc":
                 bot = self.bot
                 embedVar = discord.Embed(title="Rin Help - MC", color=14414079)
@@ -83,10 +87,11 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-                
+
             if str(search) == "fun":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Fun", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Fun", color=14414079)
                 embedVar.description = """
                 `pinger` - Annoys everyone with a message and allows for how much that message is sent for
                 `valid` - Provides some valid feedback
@@ -99,10 +104,11 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "instagram":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Instagram", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Instagram", color=14414079)
                 embedVar.description = """
                 `iguserinfo` - Uses the User's Client ID in order to obtain Instagram User Info
                 `igusersearch` - Searches for users on Instagram 
@@ -113,20 +119,22 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "chat":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Chat", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Chat", color=14414079)
                 embedVar.description = """
                 `chathelp` - The chat is automatically generated based on prewritten responses. Responses that are not documented will be ignored
                 `clear` - Clears number of messages specified from the channel in which the command was called
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "misc":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Misc", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Misc", color=14414079)
                 embedVar.description = """
                 `jisho` - Uses Jisho and JMDict in order to obtain info on a word in japanese
                 `translate` - Translates the given message
@@ -134,10 +142,11 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-                
+
             if str(search) == "deviantart":
                 bot = self.bot
-                embedVar = discord.Embed(title="Rin Help - Deviantart", color=14414079)
+                embedVar = discord.Embed(
+                    title="Rin Help - Deviantart", color=14414079)
                 embedVar.description = """
                 `devartfind` - Finds art on DeviantArt via their public API
                 `devartsearch` - Searches for art
@@ -151,6 +160,7 @@ class rinhelp(commands.Cog):
             embedVar.description = """The full list of commands can be found here: https://rin-docs.readthedocs.io/en/latest/rin-commands"""
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
-            
+
+
 def setup(bot):
     bot.add_cog(rinhelp(bot))

@@ -18,7 +18,8 @@ class disaccount:
         cur = con.cursor()
         while True:
             cur.execute(
-                f"SELECT xp FROM user WHERE id = ? AND gid = ?", (self.id, self.gid)
+                f"SELECT xp FROM user WHERE id = ? AND gid = ?", (
+                    self.id, self.gid)
             )
             xp = cur.fetchone()
             if xp == None:
@@ -37,7 +38,8 @@ class disaccount:
         con = sqlite3.connect("./disquest/user.db")
         cur = con.cursor()
         cur.execute(
-            f"UPDATE user SET xp = ? WHERE id = ? AND gid = ?", (xp, self.id, self.gid)
+            f"UPDATE user SET xp = ? WHERE id = ? AND gid = ?", (
+                xp, self.id, self.gid)
         )
         con.commit()
         cur.close()
@@ -100,7 +102,8 @@ class DisQuest(commands.Cog):
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         await ctx.send(
-            embed=plugin_tools.fast_embed(f"**Server Rankings**\n{''.join(members)}")
+            embed=plugin_tools.fast_embed(
+                f"**Server Rankings**\n{''.join(members)}")
         )
 
     @commands.command(
@@ -121,7 +124,8 @@ class DisQuest(commands.Cog):
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         await ctx.send(
-            embed=plugin_tools.fast_embed(f"**Global Rankings**\n{''.join(members)}")
+            embed=plugin_tools.fast_embed(
+                f"**Global Rankings**\n{''.join(members)}")
         )
 
     @commands.Cog.listener()

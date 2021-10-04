@@ -15,9 +15,12 @@ class waifu(commands.Cog):
         headers = {"UserAgent": UserAgent().random}
         URL = "https://www.mywaifulist.moe/random"
 
-        soup = bs4.BeautifulSoup(requests.get(URL, headers=headers).text, "html.parser")
-        waifu_title = soup.find("meta", attrs={"property": "og:title"}).attrs["content"]
-        image_url = soup.find("meta", attrs={"property": "og:image"}).attrs["content"]
+        soup = bs4.BeautifulSoup(requests.get(
+            URL, headers=headers).text, "html.parser")
+        waifu_title = soup.find(
+            "meta", attrs={"property": "og:title"}).attrs["content"]
+        image_url = soup.find(
+            "meta", attrs={"property": "og:image"}).attrs["content"]
         description = soup.find("p", id="description").get_text()
         embedVar = discord.Embed(title=waifu_title)
         embedVar.description = f"{description}"
