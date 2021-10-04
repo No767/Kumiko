@@ -34,7 +34,7 @@ Option 2 (Preferred): Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 # Licensing
 
-This project is licensed under the CC0-1.0 License. This project uses the [EasyBot.py](https://github.com/chisaku-dev/EasyBot.py) project, which is also licensed under the CC0-1.0 License. I do have plans to switch this into Apache-2.0...
+This project is licensed under Apache-2.0 License. This project uses the [EasyBot.py](https://github.com/chisaku-dev/EasyBot.py) project, which is also licensed under the CC0-1.0 License. All upstream changes are licensed under CC0-1.0. All private changes to the upstream code are licensed under Apache-2.0.
 
 # Contributing
 
