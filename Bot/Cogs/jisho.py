@@ -12,20 +12,68 @@ from jamdict import Jamdict
 load_dotenv()
 jam = Jamdict()
 
-def english_def_parser(search):
+def hiragana(search):
     search = search.replace(" ", "%")
     result = jam.lookup(search)
-    for word in result.entries:
-        return list(word)
+    resulter = result.text(separator=" | ").replace(", ", " ")
+    m = re.findall("[ぁ-ん]", resulter)
+    all = str(m).replace(",", "")[1:-1]
+    return all.replace("'", "").replace(" ", "")
     
-def kanji_finder(search): 
+def katakana(search):
     search = search.replace(" ", "%")
     result = jam.lookup(search)
-    for c in result.chars:
-        searcher = re.match("^\w", repr(c))
-        return searcher.group()
-            
+    resulter = result.text(separator=" | ").replace(", ", " ")
+    m = re.findall("[ァ-ン]", resulter)
+    all = str(m).replace(",", "")[1:-1]
+    return all.replace("'", "").replace(" ", "")
+
+def kanji(search): 
+    search = search.replace(" ", "%")
+    result = jam.lookup(search)
+    result_search = result.text(separator=" | ", with_chars=False).replace(", ", "")
+    m = re.findall("[一-龯]", result_search)
+    all_kanji = str(m).replace(",", "")[1:-1]
+    return all_kanji.replace("'", "").replace(" ", "")
     
+# Add Other English Definitions via JMDict's Low-Level SQL Feature 
+def english_def_part1(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_def = str(jisho['data'][0]['senses'][0]['english_definitions'])
+    jisho_replacer = str(jisho_def.replace("'", " "))
+    return jisho_replacer.replace("[", " ").replace("]", " ")
+
+def tag(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_tag = str(jisho['data'][0]['tags'])
+    return jisho_tag.replace("[", " ").replace("]", " ").replace("'", " ")
+
+def jlpt(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_jlpt = str(jisho['data'][0]['tags'])
+    return jisho_jlpt.replace("[", " ").replace("]", " ").replace("'", " ")
+
+def is_common(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jishov1 = str(jisho['data'][0]['is_common'])
+    return jishov1.replace("[", " ").replace("]", " ")
+
 class jisho_dict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -35,46 +83,35 @@ class jisho_dict(commands.Cog):
         try:
             search = search.replace(" ", "%20")
             link = f"https://jisho.org/api/v1/search/words?keyword={search}"
-            kanji_url = (
-                f"https://kanjialive-api.p.rapidapi.com/api/public/search/{search}" # May not need Kanji Alive since JMDict is replacing that for the Kanji lookup
-            )
-            headers = {
-                "x-rapidapi-host": "kanjialive-api.p.rapidapi.com",
-                "x-rapidapi-key": f"{os.getenv('Rapid_API_Key')}",
-            }
-            r = requests.get(link) # Only use Jisho for english def
+            r = requests.get(link)
             jisho_data = r.text
             jisho = json.loads(jisho_data)
-            kanji_alive = requests.request("GET", kanji_url, headers=headers)
-            kanji_parser = json.loads(kanji_alive.text)
-
             embedVar = discord.Embed()
             embedVar.description = f"""
-            Results: 
-
-            Kanji >> 
+            Kanji >> {kanji(search)}
+            Hiragana >> {hiragana(search)}
+            Katakana >> {katakana(search)}
             
-            {kanji_finder(search)}
+            English Def >> {english_def_part1(search)}
+            Is Common? >> {is_common(search)}
+            Tags >> {tag(search)}
+            JLPT >> {jlpt(search)}
             
+            **Attributions**
             
-            English Def >> {english_def_parser(search)}
-            Attributions
             JMDict >> {jisho['data'][0]['attribution']['jmdict']}
             JMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}
             DBPedia >> {jisho['data'][0]['attribution']['dbpedia']}
 
             **HTTP Status**
+            
             HTTP Status Code >> {jisho['meta']['status']}
-
-
             """
             await ctx.send(embed=embedVar)
         except:
             embed_discord = discord.Embed()
             embed_discord.description = 'An error has occurred. Please try again'
             await ctx.send(embed=embed_discord)
-
-
 
 def setup(bot):
     bot.add_cog(jisho_dict(bot))
