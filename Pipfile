@@ -35,7 +35,7 @@ colorama = ">=0.4.4"
 pipenv = "==2021.5.29"
 Pillow = ">=8.1.0"
 Django = ">=2.2.18"
-Scrapy = "==2.5.0"
+Scrapy = "==2.5.1"
 
 [dev-packages]
 
