@@ -35,6 +35,7 @@ initial_extensions = [
     "Cogs.chat_purge",
     "Cogs.mcsrvstats",
     "Cogs.waifu_generator",
+    "Cogs.hypixel",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
