@@ -108,6 +108,14 @@ class hypixel_api(commands.Cog):
             
             TNTGames >> {status['games']['TNTGAMES']['players']}
             
+                --> Gamemodes:
+                    PVPRun >> {status['games']['TNTGAMES']['modes']['PVPRUN']}
+                    TNTAG >> {status['games']['TNTGAMES']['modes']['TNTAG']}
+                    Capture >> {status['games']['TNTGAMES']['modes']['CAPTURE']}
+                    Bowspleef >> {status['games']['TNTGAMES']['modes']['BOWSPLEEF']}
+            
+            Bedwars >> {status['games']['BEDWARS']['players']}
+            
             """
 
             await ctx.send(embed=embedVar)
