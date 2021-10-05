@@ -102,7 +102,11 @@ class hypixel_api(commands.Cog):
             
             SMP >> {status['games']['SMP']['players']}
             
+            Housing >> {status['games']['HOUSING']['players']}
             
+            Pit >> {status['games']['PIT']['players']}
+            
+            TNTGames >> {status['games']['TNTGAMES']['players']}
             
             """
 
