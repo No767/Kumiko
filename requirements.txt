@@ -1,31 +1,32 @@
 discord.py[voice] == 1.7.3
-python-dotenv == 0.19.0
-qrcode==7.3
-image==1.5.33
-praw==7.4.0
-deviantart==0.1.5
-py3-pinterest==1.2.2 # This remains unused as of now. Will be adding in pinterest api support very soon...
-tweepy==3.10.0
-deep-translator==1.5.4
-pyinstrument==4.0.3
-black==21.9b0
-instagram-private-api==1.6.0
-pillow>=8.1.0 # not directly required, pinned by Snyk to avoid a vulnerability
-django>=2.2.18 # not directly required, pinned by Snyk to avoid a vulnerability
-jamdict==0.1a11.post2
-jamdict-data==1.5
-requests==2.26.0
-coverage==5.5
-yapf==0.31.0
-autopep8==1.5.7
-isort==5.9.3
-flake8==3.9.2
-pylint==2.11.1
-autoflake==1.4
-pyupgrade==2.27.0
-selenium==3.141.0
-lxml==4.6.3
-scrapy==2.5.0
-fake-useragent==0.1.11
-searchtweets==1.7.6
+python-dotenv ==0.19.0
+qrcode ==7.3.1
+image ==1.5.33
+praw ==7.4.0
+deviantart ==0.1.5
+py3-pinterest ==1.2.2
+tweepy ==4.0.1
+deep-translator ==1.5.4
+pyinstrument ==4.0.4
+black ==21.9b0
+instagram-private-api ==1.6.0
+jamdict ==0.1a11.post2
+jamdict-data ==1.5
+requests ==2.26.0
+coverage ==6.0
+yapf ==0.31.0
+autopep8 ==1.5.7
+isort == 5.9.3
+flake8 == 3.9.2
+pylint == 2.11.1
+autoflake ==1.4
+pyupgrade ==2.29.0
+selenium ==3.141.0
+lxml ==4.6.3
+fake-useragent ==0.1.11
+searchtweets ==1.7.6
+Pillow >=8.1.0
+Django >=2.2.18
+Scrapy == 2.5.0
+colorama >= 0.4.4
 pipenv==2021.5.29
