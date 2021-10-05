@@ -44,7 +44,7 @@ jobs:
       with:
         default_author: github_actions
         message: 'Format All Cogs'
-        add: 'Bot/ --force --all'
+        add: 'Bot/Cogs --force --all'
         push: true
         branch: dev
         pull: '--no-rebase'
