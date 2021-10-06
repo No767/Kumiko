@@ -18,7 +18,6 @@ black = "==21.9b0"
 instagram-private-api = "==1.6.0"
 jamdict = "==0.1a11.post2"
 jamdict-data = "==1.5"
-requests = "==2.26.0"
 coverage = "==6.0"
 yapf = "==0.31.0"
 autopep8 = "==1.5.7"
@@ -36,6 +35,7 @@ pipenv = "==2021.5.29"
 Pillow = ">=8.1.0"
 Django = ">=2.2.18"
 Scrapy = "==2.5.1"
+requests = "*"
 
 [dev-packages]
 

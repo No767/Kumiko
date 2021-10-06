@@ -65,6 +65,57 @@ class hypixel_api(commands.Cog):
                 """
             await ctx.send(embed=embedVar)
 
+class hypixel_player_count(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="hypixelcount")
+    async def on_message(self, ctx):
+        status = player_count()
+        if str(status["success"]) == "True":
+            embedVar = discord.Embed()
+            embedVar.description = f"""
+                **Games Player Count**
+
+                Main Lobby >> {status['games']['MAIN_LOBBY']['players']}
+
+                Tournament Lobby >> {status['games']['TOURNAMENT_LOBBY']['players']}
+
+                SMP >> {status['games']['SMP']['players']}
+
+                Housing >> {status['games']['HOUSING']['players']}
+
+                Pit >> {status['games']['PIT']['players']}
+
+                TNTGames >> {status['games']['TNTGAMES']['players']}
+
+                Replay >> {status['games']['REPLAY']['players']}
+
+                Bedwars >> {status['games']['BEDWARS']['players']}
+
+                Survival Games >> {status['games']['SURVIVAL_GAMES']['players']}
+
+                Skyblock >> {status['games']['SKYBLOCK']['players']}
+
+                Murder Mystery >> {status['games']['MURDER_MYSTERY']['players']}
+
+                Skywars >> {status['games']['SKYWARS']['players']}
+
+                UHC >> {status['games']['UHC']['players']}
+
+                Arcade >> {status['games']['ARCADE']['players']}
+
+                Build Battle >> {status['games']['BUILD_BATTLE']['players']}
+
+                Duels >> {status['games']['DUELS']['players']}
+                """
+
+            await ctx.send(embed=embedVar)
+
+class hypixel_status(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(name="hypixelplayerstatus")
     async def on_message(self, ctx, *, uuid: str):
         player_statusv3 = player_status(uuid)
@@ -80,46 +131,16 @@ class hypixel_api(commands.Cog):
             embedVar = discord.Embed()
             embedVar.description = f"""
             The query was not successful. 
-            
+
             Debug:
-            
+
             Success >> {player_statusv3['success']}
             Cause >> {player_statusv3['cause']}
             """
             await ctx.send(embed=embedVar)
 
-    @commands.command(name="hypixelcount")
-    async def on_message(self, ctx):
-        status = player_count()
-        if str(status["success"]) == "True":
-            embedVar = discord.Embed()
-            embedVar.description = f"""
-            **Games Player Count**
-            
-            Main Lobby >> {status['games']['MAIN_LOBBY']['players']}
-            
-            Tournament Lobby >> {status['games']['TOURNAMENT_LOBBY']['players']}
-            
-            SMP >> {status['games']['SMP']['players']}
-            
-            Housing >> {status['games']['HOUSING']['players']}
-            
-            Pit >> {status['games']['PIT']['players']}
-            
-            TNTGames >> {status['games']['TNTGAMES']['players']}
-            
-                --> Gamemodes:
-                    PVPRun >> {status['games']['TNTGAMES']['modes']['PVPRUN']}
-                    TNTAG >> {status['games']['TNTGAMES']['modes']['TNTAG']}
-                    Capture >> {status['games']['TNTGAMES']['modes']['CAPTURE']}
-                    Bowspleef >> {status['games']['TNTGAMES']['modes']['BOWSPLEEF']}
-            
-            Bedwars >> {status['games']['BEDWARS']['players']}
-            
-            """
-
-            await ctx.send(embed=embedVar)
-
 
 def setup(bot):
     bot.add_cog(hypixel_api(bot))
+    bot.add_cog(hypixel_status(bot))
+    bot.add_cog(hypixel_player_count(bot))
