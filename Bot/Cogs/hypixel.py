@@ -65,6 +65,7 @@ class hypixel_api(commands.Cog):
                 """
             await ctx.send(embed=embedVar)
 
+
 class hypixel_player_count(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -111,6 +112,7 @@ class hypixel_player_count(commands.Cog):
                 """
 
             await ctx.send(embed=embedVar)
+
 
 class hypixel_status(commands.Cog):
     def __init__(self, bot):
