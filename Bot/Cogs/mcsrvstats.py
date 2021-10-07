@@ -5,10 +5,11 @@ import requests
 from discord import Embed
 from discord.ext import commands
 
+
 class mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="javamcsrv")
     async def on_message(self, ctx, search: str):
         search = search.replace(" ", "%20")
@@ -18,8 +19,8 @@ class mcsrvstats(commands.Cog):
         mcsrv_data = r.text
         mcsrv = json.loads(mcsrv_data)
         try:
-            if "True" == str(mcsrv['online']):
-                embedVar = discord.Embed(color=0xc27c0e)
+            if "True" == str(mcsrv["online"]):
+                embedVar = discord.Embed(color=0xC27C0E)
                 embedVar.description = f"""
                 **Infomation (Java Edition)**
 
@@ -51,7 +52,7 @@ class mcsrvstats(commands.Cog):
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
             else:
-                embedVar = discord.Embed(color=0xc27c0e)
+                embedVar = discord.Embed(color=0xC27C0E)
                 embedVar.description = f"""
                 **Infomation (Java Edition)**
             
@@ -74,16 +75,17 @@ class mcsrvstats(commands.Cog):
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
         except:
-            embedVar = discord.Embed(color=0xc27c0e)
+            embedVar = discord.Embed(color=0xC27C0E)
             embedVar.description = f"""
             Your search for has failed. Please try again.
             """
             await ctx.send(embed=embedVar)
 
+
 class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="bedrockmcsrv")
     async def on_message(self, ctx, search: str):
         search = search.replace(" ", "%20")
@@ -92,9 +94,9 @@ class bedrock_mcsrvstats(commands.Cog):
         r = requests.get(link)
         bedmcsrv_data = r.text
         bedmcsrv = json.loads(bedmcsrv_data)
-        try: 
+        try:
             if "True" == str(bedmcsrv["online"]):
-                embedVar = discord.Embed(color=0x607d8b)
+                embedVar = discord.Embed(color=0x607D8B)
                 embedVar.description = f"""
                 **Information (Bedrock Edition)**
 
@@ -129,7 +131,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
             else:
-                embedVar = discord.Embed(color=0x607d8b)
+                embedVar = discord.Embed(color=0x607D8B)
                 embedVar.description = f"""
                 **Information (Bedrock Edition)**
 
@@ -152,12 +154,13 @@ class bedrock_mcsrvstats(commands.Cog):
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
         except:
-            embedVar = discord.Embed(color=0x607d8b)
+            embedVar = discord.Embed(color=0x607D8B)
             embedVar.description = f"""
             Your search has failed. Please try again.
             """
             await ctx.send(embed=embedVar)
-            
+
+
 def setup(bot):
     bot.add_cog(mcsrvstats(bot))
     bot.add_cog(bedrock_mcsrvstats(bot))
