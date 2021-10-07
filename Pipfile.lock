@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "852191a93f8cc81e2d96624b194e95e897a2e37f75230b299900cb42c3e0de68"
+            "sha256": "26b0492bf798930c35ce940ba466ed53ae43a3b8b14c562b22a6ba44ce9087b2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1253,11 +1253,11 @@
         },
         "tweepy": {
             "hashes": [
-                "sha256:3bbb14a0ddef1ca8c9e8686ab2f647163afa02a6bab83507335ce647e9653a90",
-                "sha256:e2fcc6e7e8cc6dc79b8e6678c5b108e515aff4699594462b08a1db7c08328621"
+                "sha256:42c63f5ee2210a8afc7178c74a6d800ef5911b007ad19e774d75dec4b777993e",
+                "sha256:88e2938de5ac7043c9ba8b8358996fbc5806059d63c96269d22527a40ca7d511"
             ],
             "index": "pypi",
-            "version": "==4.0.1"
+            "version": "==4.1.0"
         },
         "tweet-parser": {
             "hashes": [
