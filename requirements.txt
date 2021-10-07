@@ -27,6 +27,6 @@ fake-useragent ==0.1.11
 searchtweets ==1.7.6
 Pillow >=8.1.0
 Django >=2.2.18
-Scrapy == 2.5.0
+Scrapy >= 2.5.1
 colorama >= 0.4.4
 pipenv==2021.5.29
