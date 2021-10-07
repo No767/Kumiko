@@ -25,7 +25,7 @@ class rinhelp(commands.Cog):
                         - `admin`
                         - `twitter`
                         - `reddit`
-                        - `mc`
+                        - `minecraft`
                         - `fun`
                         - `instagram`
                         - `chat`
@@ -78,12 +78,16 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "mc":
+            if str(search) == "minecraft":
                 bot = self.bot
                 embedVar = discord.Embed(title="Rin Help - MC", color=14414079)
                 embedVar.description = """
                 `javamcsrv` - Obtains Java server status
                 `bedrockmcsrc` - Obtains Bedrock server status
+                `hypixel` - Gain Insight in Hypixel's player data
+                `hypixelcount` - Obtain the amount of players online within the servers
+                `hypixelplayerstatus` - Determine if the player is online or not
+                `skywarsinfo` - Get the position and score of the player within **ranked** skywars
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
