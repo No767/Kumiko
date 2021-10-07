@@ -36,12 +36,14 @@ def player_count():
     player_countv2 = json.loads(player_data)
     return player_countv2
 
+
 def player_ranked_skywars(uuid):
     link = f"https://api.hypixel.net/player/ranked/skywars?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
     ranked_skywars = r.text
     skywars = json.loads(ranked_skywars)
     return skywars
+
 
 class hypixel_api(commands.Cog):
     def __init__(self, bot):
@@ -53,7 +55,9 @@ class hypixel_api(commands.Cog):
         online = player_status(uuid)
         skywars = player_ranked_skywars(uuid)
         if str(player["success"]) == "True":
-            discord_embed = discord.Embed(title=f"Info on {player['player']['displayname']}")
+            discord_embed = discord.Embed(
+                title=f"Info on {player['player']['displayname']}"
+            )
             discord_embed.description = f"""
                 Username >> {player['player']['displayname']}
                 ID >> {player['player']['_id']}
@@ -136,14 +140,15 @@ class hypixel_status(commands.Cog):
             """
             await ctx.send(embed=embedVar)
 
+
 class skywars(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command(name="skywarsinfo")
-    async def on_message(self, ctx, *, uuid:str):
+    async def on_message(self, ctx, *, uuid: str):
         skywars = player_ranked_skywars(uuid)
-        if str(skywars['success']) == "True":
+        if str(skywars["success"]) == "True":
             embedVar = discord.Embed()
             embedVar.description = f"""
             **Skywars Position**
@@ -164,6 +169,7 @@ class skywars(commands.Cog):
             Cause >> {skywars['cause']}
             """
             await ctx.send(embed=embedVar)
+
 
 def setup(bot):
     bot.add_cog(hypixel_api(bot))
