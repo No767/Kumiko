@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def advice():
     link = f"https://api.adviceslip.com/advice"
     r = requests.get(link)
@@ -17,10 +18,11 @@ def advice():
     advice = json.loads(advice_data)
     return advice
 
+
 class advice_slip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command(name="advice")
     async def on_message(self, ctx):
         advice_slip = advice()
@@ -33,5 +35,6 @@ class advice_slip(commands.Cog):
             embedVar.description = "The query was unsuccessful"
             await ctx.send(embed=embedVar)
 
+
 def setup(bot):
-    bot.add_cog(advice_slip(bot))   
+    bot.add_cog(advice_slip(bot))
