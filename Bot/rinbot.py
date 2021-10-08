@@ -36,6 +36,7 @@ initial_extensions = [
     "Cogs.mcsrvstats",
     "Cogs.waifu_generator",
     "Cogs.hypixel",
+    "Cogs.waifu-pics",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

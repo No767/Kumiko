@@ -12,4 +12,5 @@
 
 - Pipenv support
 - Hypixel API support
+- Waifu.pics API Support
 # Removals
