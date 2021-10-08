@@ -22,7 +22,7 @@ class advice_slip(commands.Cog):
         self.bot = bot
         
     @commands.command(name="advice")
-    async def on_message(self, ctx)
+    async def on_message(self, ctx):
         advice_slip = advice()
         try:
             embedVar = discord.Embed()
