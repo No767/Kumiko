@@ -1,0 +1,29 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+jobs:
+  release:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Create Tag + Bump Version
+      uses: mathieudutour/github-tag-action@v5.6
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        release_branches: master
+        default_bump: false
+        tag_prefix: Beta-
+        custom_release_rules: "Release:major, Update:minor, Fix:patch"
+      id: tag_version
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        bodyFile: "changelog.md"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: ${{ steps.tag_version.outputs.new_tag }}
