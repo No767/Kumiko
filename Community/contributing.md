@@ -43,7 +43,7 @@ If there is an issue or a feature you want to be added, use the built-in GitHub 
 In order to automate the release system, you have to make sure that in order to use it, the git commit message must be done correctly. Only use this if there is a new update that is ready to be released. These are pretty similar to [Angular's Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines). Here's a table that should help with explaining this:
 
 | Type of Release, Update, or Patch | Example |
-|              :--:                 | :--     | 
+|              :--:                 | :--:    | 
 | Major Release                     | `Release: v2.5` | 
 | Minor Release                     | `Update: v2.5.1`|
 | Patch Release                     | `Fix: Instagram API Cog removal` |
