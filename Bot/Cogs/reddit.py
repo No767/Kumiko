@@ -14,11 +14,12 @@ reddit_id = os.getenv("Reddit_ID")
 reddit_secret = os.getenv("Reddit_Secret")
 
 redditapi = praw.Reddit(
-    client_id=f'{os.getenv("Reddit_ID")}',
-    client_secret=f'{os.getenv("Reddit_Secret")}',
+    client_id=reddit_id,
+    client_secret=reddit_secret,
     # the user_agent just identifies to reddit what browser it's connecting from.
     user_agent="Discord",
-    # asyncpraw is causing issues and will be worked upon
+    
+    # Disables Async PRAW
     check_for_async=False,
 )
 
