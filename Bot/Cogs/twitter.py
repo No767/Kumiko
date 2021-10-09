@@ -15,7 +15,13 @@ Access_Token = os.getenv("Access_Token")
 Access_Token_Secret = os.getenv("Access_Token_Secret")
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
 
-auth = tweepy.Client(bearer_token=Bearer_Token, consumer_key=Twitter_API_Key, consumer_secret=API_Secret_Key, access_token=Access_Token, access_token_secret=Access_Token_Secret)
+auth = tweepy.Client(
+    bearer_token=Bearer_Token,
+    consumer_key=Twitter_API_Key,
+    consumer_secret=API_Secret_Key,
+    access_token=Access_Token,
+    access_token_secret=Access_Token_Secret,
+)
 
 api = tweepy.API(auth)
 
