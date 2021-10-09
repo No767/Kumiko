@@ -31,6 +31,7 @@ class rinhelp(commands.Cog):
                         - `chat`
                         - `misc`
                         - `deviantart`
+                        - `anime`
                         """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -99,7 +100,6 @@ class rinhelp(commands.Cog):
                 embedVar.description = """
                 `pinger` - Annoys everyone with a message and allows for how much that message is sent for
                 `valid` - Provides some valid feedback
-                `waifu` - Randomly selects a waifu
                 `mylvl` - Displays DisQuest Level
                 `makeyourownbot` - Make your own discord bot with EasyBot framework by Chisaku-Dev
                 `image` - Scraps Images on Deviantart
@@ -155,6 +155,16 @@ class rinhelp(commands.Cog):
                 `devartfind` - Finds art on DeviantArt via their public API
                 `devartsearch` - Searches for art
                 `devartuserget` - Obtains info on a user on DeviantArt
+                """
+                embedVar.set_thumbnail(url=bot.user.avatar_url)
+                await ctx.send(embed=embedVar)
+            if str(search) == "anime":
+                bot = self.bot
+                embedVar = discord.Embed(
+                    title="Rin Help - Anime", color=14414079)
+                embedVar.description = """
+                `waifu` - Randomly selects a waifu from MyWaifuList
+                `waifupics` - Searches for art from Waifiu.pics
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
