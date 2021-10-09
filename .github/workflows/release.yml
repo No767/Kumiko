@@ -5,7 +5,6 @@ on:
       - master
 jobs:
   release:
-
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,11 +15,11 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         release_branches: master
-        default_bump: false
+        default_bump: minor
         tag_prefix: Beta-
-        custom_release_rules: "Release:major, Update:minor, Fix:patch"
+        custom_release_rules: "Release:major,Update:minor,Fix:patch"
       id: tag_version
-    - name: Release
+    - name: Release New Version
       uses: ncipollo/release-action@v1
       with:
         bodyFile: "changelog.md"
