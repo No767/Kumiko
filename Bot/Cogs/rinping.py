@@ -2,7 +2,6 @@ import discord
 from discord import Embed
 from discord.ext import commands
 
-
 class rinping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -11,9 +10,14 @@ class rinping(commands.Cog):
         name="ping",
     )
     async def on_message(self, ctx):
-        ping_embed = discord.Embed()
-        ping_embed.description = f"Ping >> {self.bot.latency} seconds"
-        await ctx.send(embed=ping_embed)
+        try:
+            ping_embed = discord.Embed()
+            ping_embed.description = f"Ping >> {round(self.bot.latency * 1000)} ms"
+            await ctx.send(embed=ping_embed)
+        except:
+            ping_embed = discord.Embed()
+            ping_embed.description = "The command was not successful"
+            await ctx.send(embed=ping_embed)
 
 
 def setup(bot):
