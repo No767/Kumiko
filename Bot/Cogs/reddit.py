@@ -18,7 +18,6 @@ redditapi = praw.Reddit(
     client_secret=reddit_secret,
     # the user_agent just identifies to reddit what browser it's connecting from.
     user_agent="Discord",
-    
     # Disables Async PRAW
     check_for_async=False,
 )
