@@ -31,7 +31,6 @@ class Utility(commands.Cog):
     async def botinfo(self, ctx):
         bot = self.bot
         name = bot.user.name
-        id = bot.user.id
         guilds = bot.guilds
         total_members = 0
         for guild in guilds:
@@ -41,7 +40,6 @@ class Utility(commands.Cog):
         embed.title = f"Bot Info"
         embed.description = f"""
         Name: {name}\n
-        ID: {id}\n
         Servers: {len(guilds)}\n
         Total Users: {total_members}\n
         Average Users Per Server: {average_members_per_guild}\n

@@ -27,7 +27,6 @@ initial_extensions = [
     "Cogs.disquest",
     "Cogs.images",
     "Cogs.pinger",
-    "Cogs.delete",
     "Cogs.chat",
     "Cogs.invitation",
     "Cogs.jisho",

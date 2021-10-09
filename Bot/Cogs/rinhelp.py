@@ -22,16 +22,16 @@ class rinhelp(commands.Cog):
                         Remember, the command prefix for this bot is `.`
                         In order to access the different categories, type the category name after the command. Here are the are the different categories that are available:
                         
-                        - `admin`
-                        - `twitter`
-                        - `reddit`
-                        - `minecraft`
-                        - `fun`
-                        - `instagram`
-                        - `chat`
-                        - `misc`
-                        - `deviantart`
-                        - `anime`
+                        - `admin`\n
+                        - `twitter`\n
+                        - `reddit`\n
+                        - `minecraft`\n
+                        - `fun`\n
+                        - `instagram`\n
+                        - `chat`\n
+                        - `misc`\n
+                        - `deviantart`\n
+                        - `anime`\n
                         """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -43,12 +43,12 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Admin", color=14414079)
                 embedVar.description = """
-                `botgrowth` - Tips based on bot statistics on how to reach more people!
-                `prune` - Removes bot from servers smaller than the specified limit
-                `botinfo` - Statistics about this bot
-                `serverinfo` - Known server information
-                `rinping` - Checks the ping for the bot
-                `ban` - Bans the specified user
+                `botgrowth` - Tips based on bot statistics on how to reach more people!\n
+                `prune` - Removes bot from servers smaller than the specified limit\n
+                `botinfo` - Statistics about this bot\n
+                `serverinfo` - Known server information\n
+                `ping` - Checks the ping for the bot\n
+                `ban` - Bans the specified user\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -58,9 +58,9 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Twitter", color=14414079)
                 embedVar.description = """
-                `rt` - Grabs Twitter user's timeline
-                `rtupdatestatus` - Updates Twitter user's status
-                `rtsearch` - Searches for twitter users
+                `rt` - Grabs Twitter user's timeline\n
+                `rtupdatestatus` - Updates Twitter user's status\n
+                `rtsearch` - Searches for twitter users\n
                 
                 **Note: Currently the Twitter Cog is broken. Reworking it soon**
                 """
@@ -72,9 +72,9 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Reddit", color=14414079)
                 embedVar.description = """
-                `reddit` - searches on reddit
-                `transmeme` - searches on reddit that include trans and other LGBTQ+ subreddits
-                `meme` - searches on reddit that include defined search topics regarding memes
+                `reddit` - searches on reddit\n
+                `transmeme` - searches on reddit that include trans and other LGBTQ+ subreddits\n
+                `meme` - searches on reddit that include defined search topics regarding memes\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -83,12 +83,12 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(title="Rin Help - MC", color=14414079)
                 embedVar.description = """
-                `javamcsrv` - Obtains Java server status
-                `bedrockmcsrc` - Obtains Bedrock server status
-                `hypixel` - Gain Insight in Hypixel's player data
-                `hypixelcount` - Obtain the amount of players online within the servers
-                `hypixelplayerstatus` - Determine if the player is online or not
-                `skywarsinfo` - Get the position and score of the player within **ranked** skywars
+                `javamcsrv` - Obtains Java server status\n
+                `bedrockmcsrc` - Obtains Bedrock server status\n
+                `hypixel` - Gain Insight in Hypixel's player data\n
+                `hypixelcount` - Obtain the amount of players online within the servers\n
+                `hypixelplayerstatus` - Determine if the player is online or not\n
+                `skywarsinfo` - Get the position and score of the player within **ranked** skywars\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -98,13 +98,13 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Fun", color=14414079)
                 embedVar.description = """
-                `pinger` - Annoys everyone with a message and allows for how much that message is sent for
-                `valid` - Provides some valid feedback
-                `mylvl` - Displays DisQuest Level
-                `makeyourownbot` - Make your own discord bot with EasyBot framework by Chisaku-Dev
-                `image` - Scraps Images on Deviantart
-                `rank` - Displays the most active members of your server!
-                `globalrank` - Displays the most active members of all servers that this bot is connected to!
+                `pinger` - Annoys everyone with a message and allows for how much that message is sent for\n
+                `valid` - Provides some valid feedback\n
+                `mylvl` - Displays DisQuest Level\n
+                `makeyourownbot` - Make your own discord bot with EasyBot framework by Chisaku-Dev\n
+                `image` - Scraps Images on Deviantart\n
+                `rank` - Displays the most active members of your server!\n
+                `globalrank` - Displays the most active members of all servers that this bot is connected to!\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -114,9 +114,9 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Instagram", color=14414079)
                 embedVar.description = """
-                `iguserinfo` - Uses the User's Client ID in order to obtain Instagram User Info
-                `igusersearch` - Searches for users on Instagram 
-                `igtaginfo` - Obtains Tag Info
+                `iguserinfo` - Uses the User's Client ID in order to obtain Instagram User Info\n
+                `igusersearch` - Searches for users on Instagram \n
+                `igtaginfo` - Obtains Tag Info\n
                 `igusernamecheck` - Checks if the specified username is taken or not
                 
                 **Note: Instagram likes to rate limit users like me with their private API. Make sure not to send too much requests, or else this cog will not work**
@@ -129,8 +129,8 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Chat", color=14414079)
                 embedVar.description = """
-                `chathelp` - The chat is automatically generated based on prewritten responses. Responses that are not documented will be ignored
-                `clear` - Clears number of messages specified from the channel in which the command was called
+                `chathelp` - The chat is automatically generated based on prewritten responses. Responses that are not documented will be ignored\n
+                `clear` - Clears number of messages specified from the channel in which the command was called\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -140,9 +140,9 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Misc", color=14414079)
                 embedVar.description = """
-                `jisho` - Uses Jisho and JMDict in order to obtain info on a word in japanese
-                `translate` - Translates the given message
-                `rinhelp` - Rin's Help command
+                `jisho` - Uses Jisho and JMDict in order to obtain info on a word in japanese\n
+                `translate` - Translates the given message\n
+                `rinhelp` - Rin's Help command\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -152,9 +152,9 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Deviantart", color=14414079)
                 embedVar.description = """
-                `devartfind` - Finds art on DeviantArt via their public API
-                `devartsearch` - Searches for art
-                `devartuserget` - Obtains info on a user on DeviantArt
+                `devartfind` - Finds art on DeviantArt via their public API\n
+                `devartsearch` - Searches for art\n
+                `devartuserget` - Obtains info on a user on DeviantArt\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
@@ -163,8 +163,8 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(
                     title="Rin Help - Anime", color=14414079)
                 embedVar.description = """
-                `waifu` - Randomly selects a waifu from MyWaifuList
-                `waifupics` - Searches for art from Waifiu.pics
+                `waifu` - Randomly selects a waifu from MyWaifuList\n
+                `waifupics` - Searches for art from Waifiu.pics\n
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
