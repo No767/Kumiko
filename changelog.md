@@ -16,3 +16,4 @@
 - Advice Slip API Support
 
 # Removals
+- Delete Cog (Chat_Purge will be replacing that Cog)s
