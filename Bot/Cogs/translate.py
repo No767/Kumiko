@@ -13,8 +13,12 @@ class Utility(commands.Cog):
     )
     async def translate(self, ctx):
         try:
+
             def check(ms):
-                return ms.channel == ctx.message.channel and ms.author == ctx.message.author
+                return (
+                    ms.channel == ctx.message.channel
+                    and ms.author == ctx.message.author
+                )
 
             await ctx.send("Enter the message you wish to be translated:")
             msg = await self.bot.wait_for("message", check=check)
