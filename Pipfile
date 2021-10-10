@@ -38,6 +38,7 @@ Scrapy = "==2.5.1"
 requests = "*"
 pymojang = "*"
 searchtweets-v2 = "*"
+numpy = "*"
 
 [dev-packages]
 
