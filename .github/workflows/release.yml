@@ -16,7 +16,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         release_branches: master
         default_bump: minor
-        tag_prefix: Beta-
         custom_release_rules: "Release:major,Update:minor,Fix:patch"
       id: tag_version
     - name: Release New Version
