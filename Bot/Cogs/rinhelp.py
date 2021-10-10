@@ -168,10 +168,13 @@ class rinhelp(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
-        except:
+        except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
-            embedVar.description = """The full list of commands can be found here: https://rin-docs.readthedocs.io/en/latest/rin-commands"""
+            embedVar.description = f"""
+            The query failed. \n
+            Reason: {e}
+            """
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
 

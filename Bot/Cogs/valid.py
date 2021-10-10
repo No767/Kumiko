@@ -19,7 +19,7 @@ class valid(commands.Cog):
             await ctx.send(embed=embedVar)
         except Exception as e:
             embedVar = discord.Embed(color=14414079)
-            embedVar.description = f"There seems to be an error. Please try again."
+            embedVar.description = f"There seems to be an error. Please try again.\n Reason: {e}"
             await ctx.send(embed=embedVar)
 
 

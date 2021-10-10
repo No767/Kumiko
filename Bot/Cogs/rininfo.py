@@ -1,18 +1,14 @@
-import datetime
-
 import discord
 from discord.ext import commands
 
 
-class rininfo(commands.Cog):
+class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(name="rininfo", help="Server Info")
-    async def rininfo(self, message):
+    async def on_message(self, message):
         bot = self.bot
-        name = bot.user.name
-        id = bot.user.id
         embedVar = discord.Embed(title="Rin Info", color=14414079)
         embedVar.description = """
         Welcome! Thanks for using this bot, and as of now, it is under heavy development.
@@ -28,4 +24,4 @@ class rininfo(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(rininfo(bot))
+    bot.add_cog(info(bot))

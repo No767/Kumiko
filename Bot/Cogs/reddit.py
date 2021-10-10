@@ -96,9 +96,12 @@ class reddit(commands.Cog):
             reddit_embed.set_image(url=submission.url)
             await ctx.send(embed=reddit_embed)
             return
-        except:
+        except Exception as e:
             await ctx.send(
-                f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again."
+                f"""
+                There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.
+                Reason: {e}
+                """
             )
 
 

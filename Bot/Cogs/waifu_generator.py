@@ -22,7 +22,7 @@ class waifu(commands.Cog):
         image_url = soup.find(
             "meta", attrs={"property": "og:image"}).attrs["content"]
         description = soup.find("p", id="description").get_text()
-        embedVar = discord.Embed(title=waifu_title)
+        embedVar = discord.Embed(title=waifu_title, color=discord.Color.from_rgb(208, 189, 255))
         embedVar.description = f"{description}"
         embedVar.set_image(url=image_url)
         await ctx.send(embed=embedVar)

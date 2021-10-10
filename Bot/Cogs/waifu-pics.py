@@ -64,10 +64,10 @@ class waifu(commands.Cog):
         waifu_pics = anime_pics(waifu_search)
         try:
             await ctx.send(waifu_pics["url"])
-        except:
+        except Exception as e:
             embedVar = discord.Embed()
             embedVar.description = f"""
-            The query was not successful.
+            The query was not successful.\n Reason: {e}
             """
             await ctx.send(embed=embedVar)
 

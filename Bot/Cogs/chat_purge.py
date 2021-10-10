@@ -21,7 +21,7 @@ class Utility(commands.Cog):
         owner = guild.owner_id
         explicit = guild.explicit_content_filter
         embed = discord.Embed(color=plugin_tools.discord_colors())
-        embed.title = f"Server Info"
+        embed.title = "Server Info"
         embed.description = f"""
         Name: {name}\n
         ID: {id}\n

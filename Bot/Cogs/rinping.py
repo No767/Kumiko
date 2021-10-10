@@ -1,5 +1,4 @@
 import discord
-from discord import Embed
 from discord.ext import commands
 
 
@@ -15,9 +14,9 @@ class rinping(commands.Cog):
             ping_embed = discord.Embed()
             ping_embed.description = f"Ping >> {round(self.bot.latency * 1000)} ms"
             await ctx.send(embed=ping_embed)
-        except:
+        except Exception as e:
             ping_embed = discord.Embed()
-            ping_embed.description = "The command was not successful"
+            ping_embed.description = f"The command was not successful\n Reason: {e}"
             await ctx.send(embed=ping_embed)
 
 

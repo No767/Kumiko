@@ -1,23 +1,14 @@
 import json
-import os
-import re
 
 import discord
 import requests
-from discord import Embed
 from discord.ext import commands
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 def advice():
-    link = f"https://api.adviceslip.com/advice"
+    link = "https://api.adviceslip.com/advice"
     r = requests.get(link)
     advice_data = r.text
-    advice = json.loads(advice_data)
-    return advice
-
+    return json.loads(advice_data)
 
 class advice_slip(commands.Cog):
     def __init__(self, bot):
@@ -27,12 +18,16 @@ class advice_slip(commands.Cog):
     async def on_message(self, ctx):
         advice_slip = advice()
         try:
-            embedVar = discord.Embed()
+            embedVar = discord.Embed(color=discord.Color.from_rgb(251, 204, 255))
             embedVar.description = f"{advice_slip['slip']['advice']}"
+            embedVar.set_footer(text=f"Requested by {ctx.message.author.name}", icon_url=ctx.message.author.avatar_url)
             await ctx.send(embed=embedVar)
-        except:
+        except Exception as e:
             embedVar = discord.Embed()
-            embedVar.description = "The query was unsuccessful"
+            embedVar.description = f"""
+            The query was unsuccessful
+            Reason: {e}
+            """
             await ctx.send(embed=embedVar)
 
 
