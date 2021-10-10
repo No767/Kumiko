@@ -14,11 +14,11 @@ def image_scrape(link):
     for item in soup.find_all("img"):
         # if src is the link
         if (
-            not "avatar" in item["src"]
-            and not "hover" in item["src"]
-            and not "logo" in item["src"]
-            and not "icon" in item["src"]
-            and not "data" in item["src"]
+            "avatar" not in item["src"]
+            and "hover" not in item["src"]
+            and "logo" not in item["src"]
+            and "icon" not in item["src"]
+            and "data" not in item["src"]
         ):
             if "//" in item["src"]:
                 links.append(item["src"])
