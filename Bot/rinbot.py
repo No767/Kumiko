@@ -26,9 +26,7 @@ initial_extensions = [
     "Cogs.reddit",
     "Cogs.disquest",
     "Cogs.images",
-    "Cogs.jmdict",
     "Cogs.pinger",
-    "Cogs.delete",
     "Cogs.chat",
     "Cogs.invitation",
     "Cogs.jisho",
@@ -36,6 +34,9 @@ initial_extensions = [
     "Cogs.chat_purge",
     "Cogs.mcsrvstats",
     "Cogs.waifu_generator",
+    "Cogs.hypixel",
+    "Cogs.waifu-pics",
+    "Cogs.advice",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

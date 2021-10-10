@@ -3,13 +3,6 @@
 import os
 
 import discord
-import image
-
-# external
-import qrcode
-from deep_translator import GoogleTranslator
-
-# Main classes that will be using...
 from discord.ext import commands
 
 
@@ -33,7 +26,6 @@ class Utility(commands.Cog):
     async def botinfo(self, ctx):
         bot = self.bot
         name = bot.user.name
-        id = bot.user.id
         guilds = bot.guilds
         total_members = 0
         for guild in guilds:
@@ -43,7 +35,6 @@ class Utility(commands.Cog):
         embed.title = f"Bot Info"
         embed.description = f"""
         Name: {name}\n
-        ID: {id}\n
         Servers: {len(guilds)}\n
         Total Users: {total_members}\n
         Average Users Per Server: {average_members_per_guild}\n
@@ -141,34 +132,11 @@ class Bot_Admin(commands.Cog):
                 try:
                     await channel.send(embed=embed)
                     break
-                except:
+                except Exception as e:
                     pass
         await ctx.send(f"Message broadcasted to all servers connected")
 
 
-class Misc(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(
-        name="makeyourownbot",
-        help="Make your own discord bot with EasyBot framework by Chisaku-Dev",
-    )
-    async def makeyourownbot(self, ctx):
-        link = f"https://github.com/chisaku-dev/EasyBot.py"
-        if not os.path.isfile("./cogs/plugin_tools/makeyourownbot.png"):
-            img = qrcode.make(link)
-            img.save("./cogs/plugin_tools/makeyourownbot.png")
-        file = discord.File("./cogs/plugin_tools/makeyourownbot.png")
-        embed = discord.Embed(color=discord_colors())
-        embed.title = f"Make a bot like {self.bot.user.name}!"
-        embed.description = link
-        embed.set_thumbnail(url=self.bot.user.avatar_url)
-        embed.set_image(url="attachment://makeyourownbot.png")
-        await ctx.send(embed=embed, file=file)
-
-
 def setup(bot):
     bot.add_cog(Utility(bot))
-    bot.add_cog(Misc(bot))
     bot.add_cog(Bot_Admin(bot))

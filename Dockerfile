@@ -1,6 +1,8 @@
-FROM python:3.9.7
+FROM python:3.10.0
 WORKDIR /Bot
-COPY requirements.txt ./ /Bot/
+COPY Pipfile ./ /Bot/
+COPY Pipfile.lock ./ /Bot/
 RUN pip install --upgrade pip setuptools wheel
-RUN pip install -r requirements.txt 
-CMD ["python", "./Bot/rinbot.py"]
+RUN pip install pipenv
+RUN pipenv install
+CMD ["pipenv", "run", "python", "./Bot/rinbot.py"]

@@ -1,7 +1,0 @@
-# New
-
-# Changes
-
-# Removals
-
-# Fixes

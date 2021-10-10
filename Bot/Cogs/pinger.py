@@ -7,15 +7,17 @@ class pinger(commands.Cog):
 
     # Note that you need to wrap the message around in "" marks. Which is just making it a string
     @commands.command(name="pinger")
-    async def on_message(self, ctx, replace: int, *, search: str):
-        pinger_search = search
-        for x in range(replace):
-            await ctx.send(f"@everyone {search}")
-
-    async def on_error(self, ctx):
-        await ctx.send(
-            f"There is something wrong with the pinger module. Please Try Again..."
-        )
+    async def on_message(self, ctx, replace: int, *, reason: str):
+        try:
+            for x in range(replace):
+                await ctx.send(f"@everyone {reason}")
+        except Exception as e:
+            await ctx.send(
+                f"""
+                           The pinger cog didnt work. Please try again.\n
+                           Reason: {e}
+                           """
+            )
 
 
 def setup(bot):

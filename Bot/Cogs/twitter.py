@@ -13,9 +13,15 @@ Twitter_API_Key = os.getenv("Twitter_API_Key")
 API_Secret_Key = os.getenv("API_Secret_Key")
 Access_Token = os.getenv("Access_Token")
 Access_Token_Secret = os.getenv("Access_Token_Secret")
+Bearer_Token = os.getenv("Twitter_Bearer_Token")
 
-auth = tweepy.OAuthHandler(Twitter_API_Key, API_Secret_Key)
-auth.set_access_token(Access_Token, Access_Token_Secret)
+auth = tweepy.Client(
+    bearer_token=Bearer_Token,
+    consumer_key=Twitter_API_Key,
+    consumer_secret=API_Secret_Key,
+    access_token=Access_Token,
+    access_token_secret=Access_Token_Secret,
+)
 
 api = tweepy.API(auth)
 
@@ -53,7 +59,7 @@ class rtgetsaved(commands.Cog):
 
     # Make sure that the search input is a string, by wrapping it in '' or ""
     @commands.command(name="rtsearch")
-    async def rtgetsaved(self, ctx, search: str):
+    async def rtgetsaved(self, ctx, *, search: str):
         getcursor = api.get_user(search)
         search_embed = discord.Embed()
         search_embed.description = f"{api.get_user(search)}"

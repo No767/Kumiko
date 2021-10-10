@@ -28,3 +28,6 @@ chat
 jisho.py~
 .gitignore~
 ..gitignore.un~
+kanji_jmdict.py
+tester.py
+twitterv2_cred.yaml

@@ -14,11 +14,11 @@ reddit_id = os.getenv("Reddit_ID")
 reddit_secret = os.getenv("Reddit_Secret")
 
 redditapi = praw.Reddit(
-    client_id=f'{os.getenv("Reddit_ID")}',
-    client_secret=f'{os.getenv("Reddit_Secret")}',
+    client_id=reddit_id,
+    client_secret=reddit_secret,
     # the user_agent just identifies to reddit what browser it's connecting from.
     user_agent="Discord",
-    # asyncpraw is causing issues and will be worked upon
+    # Disables Async PRAW
     check_for_async=False,
 )
 
@@ -96,9 +96,12 @@ class reddit(commands.Cog):
             reddit_embed.set_image(url=submission.url)
             await ctx.send(embed=reddit_embed)
             return
-        except:
+        except Exception as e:
             await ctx.send(
-                f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again."
+                f"""
+                There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.
+                Reason: {e}
+                """
             )
 
 
