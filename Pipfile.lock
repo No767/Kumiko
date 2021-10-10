@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e72bf3abf6d243ed3eb472bbf5aed6a8c423ee48876e865370faf5d6792da2b3"
+            "sha256": "d97f764713e84a23ac0449fcc61749beede2dfa79093ad94162c1efec82c114c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -219,11 +219,11 @@
         },
         "click": {
             "hashes": [
-                "sha256:3fab8aeb8f15f5452ae7511ad448977b3417325bceddd53df87e0bb81f3a8cf8",
-                "sha256:7027bc7bbafaab8b2c2816861d8eb372429ee3c02e193fc2f93d6c4ab9de49c5"
+                "sha256:353f466495adaeb40b6b5f592f9f91cb22372351c84caeb068132442a4518ef3",
+                "sha256:410e932b050f5eed773c4cda94de75971c89cdb3155a72a0831139a79e5ecb5b"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==8.0.2"
+            "version": "==8.0.3"
         },
         "colorama": {
             "hashes": [
@@ -1127,6 +1127,9 @@
             "version": "==5.4.1"
         },
         "qrcode": {
+            "extras": [
+                "pil"
+            ],
             "hashes": [
                 "sha256:375a6ff240ca9bd41adc070428b5dfc1dcfbb0f2507f1ac848f6cded38956578"
             ],
