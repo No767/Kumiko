@@ -1,8 +1,9 @@
 # EasyBot.py file
 # built in
 import os
-import qrcode
+
 import discord
+import qrcode
 from discord.ext import commands
 
 

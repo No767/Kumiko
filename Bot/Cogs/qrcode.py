@@ -16,7 +16,7 @@ class qrcode_maker(commands.Cog):
         if not os.path.isfile("/qrcode/qrcode.png"):
             img = qrcode.make(link)
             img.save("./qrcode/qrcode.png")
-        else: 
+        else:
             img = qrcode.make(link)
             img.save("./qrcode/qrcode.png")
         file = discord.File("./qrcode/qrcode.png")
