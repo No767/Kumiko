@@ -1,6 +1,6 @@
-# Rin
-
 <div align=center>
+
+# Rin
 
 <img src="./assets/Rin Logo V4 (GitHub).png">
 
