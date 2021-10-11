@@ -36,6 +36,7 @@ initial_extensions = [
     "Cogs.hypixel",
     "Cogs.waifu-pics",
     "Cogs.advice",
+    "Cogs.qrcode",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
