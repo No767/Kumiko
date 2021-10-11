@@ -13,10 +13,10 @@ class qrcode_maker(commands.Cog):
     @commands.command(name="qrcode")
     async def on_message(self, ctx, *, link: str):
         img = qrcode.make(link)
-        img.save(f"./qrcode/qrcode.png")
-        file = discord.File(f"./qrcode/qrcode.png")
+        img.save("./qrcode/qrcode.png")
+        file = discord.File("./qrcode/qrcode.png")
         embedVar = discord.Embed()
-        embedVar.set_image(url=f"attachment://qrcode.png")
+        embedVar.set_image(url="attachment://qrcode.png")
         await ctx.send(embed=embedVar, file=file)
 
 

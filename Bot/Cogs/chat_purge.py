@@ -11,7 +11,6 @@ class Utility(commands.Cog):
     async def serverinfo(self, ctx):
         guild = ctx.guild
         name = guild.name
-        id = guild.id
         channels = guild.channels
         members = guild.member_count
         premium_members = guild.premium_subscription_count
@@ -24,7 +23,6 @@ class Utility(commands.Cog):
         embed.title = "Server Info"
         embed.description = f"""
         Name: {name}\n
-        ID: {id}\n
         # of channels: {len(channels)}\n
         # of nitro boosted members: {premium_members}\n
         # of members: {members}/{max_members}\n
@@ -42,7 +40,7 @@ class Utility(commands.Cog):
     )
     async def clear(self, ctx, number_of_messages: int):
         await ctx.channel.purge(limit=number_of_messages + 1)
-        deletemessage = await ctx.send(
+        await ctx.send(
             embed=plugin_tools.fast_embed(
                 f"{number_of_messages} messages were deleted"
             ),
