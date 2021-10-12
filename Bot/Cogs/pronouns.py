@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands
-
-
-def check(reaction):
-    return str(reaction.emoji) == ":orange_heart:"
+from discord.utils import get
 
 
 class check_pronouns(commands.Cog):
@@ -12,7 +9,7 @@ class check_pronouns(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if not ctx.author.id == self.bot.user.id and ctx.channel.name == "roles":
+        if ctx.author.id != self.bot.user.id and ctx.channel.name == "roles":
             bot = self.bot
             embedVar = discord.Embed(title="What are your pronouns?")
             embedVar.set_thumbnail(url=bot.user.avatar_url)
@@ -29,9 +26,14 @@ class check_pronouns(commands.Cog):
                 text="React to those emojis to get a role assigned with those pronouns!"
             )
             await ctx.channel.send(embed=embedVar)
-            reaction = await bot.wait_for("reaction_add", check=check)
-            if reaction == ":orange_heart:" and ctx.author == self.bot.user:
-                await ctx.channel.send("It is working")
+            reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: reaction.emoji == '🧡')
+            emoji = "🧡"
+            if any(reaction.emoji == emoji for reaction in ctx.reactions):
+                guild = ctx.guild
+                await guild.create_role(name="He/Him", color=0xe67e22)
+                member = ctx.message.author
+                role = get(member.server.roles, name="He/Him")
+                await bot.add_roles(member, role)
 
 
 def setup(bot):
