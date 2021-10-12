@@ -33,9 +33,11 @@ class Chat(commands.Cog):
                         os.chdir(os.path.dirname(os.path.abspath(__file__)))
                         path_name = "./chat/responses.json"
                         if os.path.isfile(path_name) == "True":
-                            msg_responses = dict(ping=inputs[0], pong=inputs[1])
+                            msg_responses = dict(
+                                ping=inputs[0], pong=inputs[1])
                             response_file = open("./chat/responses.json", "a")
-                            response_file.write(f"{json.dumps(msg_responses)}\n")
+                            response_file.write(
+                                f"{json.dumps(msg_responses)}\n")
                     except Exception as e:
                         await message.channel.send(
                             'The syntax is incorrect. Please type in the format "update [input word], [response]". \nThis will make it so that when a user types [input word], the bot will say [response].'
