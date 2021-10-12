@@ -16,6 +16,10 @@ class valid(commands.Cog):
             You are valid no matter what! You got this {user_search}! 
             I just want to tell you can do this! You have my support!
             """
+            embedVar.set_footer(
+                text=f"Requested by {ctx.message.author.name}",
+                icon_url=ctx.message.author.avatar_url,
+            )
             await ctx.send(embed=embedVar)
         except Exception as e:
             embedVar = discord.Embed(color=14414079)
