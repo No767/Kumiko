@@ -26,11 +26,13 @@ class check_pronouns(commands.Cog):
                 text="React to those emojis to get a role assigned with those pronouns!"
             )
             await ctx.channel.send(embed=embedVar)
-            reaction, user = await bot.wait_for("reaction_add", check=lambda reaction, user: reaction.emoji == '🧡')
+            reaction, user = await bot.wait_for(
+                "reaction_add", check=lambda reaction, user: reaction.emoji == "🧡"
+            )
             emoji = "🧡"
             if any(reaction.emoji == emoji for reaction in ctx.reactions):
                 guild = ctx.guild
-                await guild.create_role(name="He/Him", color=0xe67e22)
+                await guild.create_role(name="He/Him", color=0xE67E22)
                 member = ctx.message.author
                 role = get(member.server.roles, name="He/Him")
                 await bot.add_roles(member, role)
