@@ -12,11 +12,13 @@ from jamdict import Jamdict
 load_dotenv()
 jam = Jamdict()
 
+
 def sql_search(search):
     search = search.replace(" ", "%")
     result = jam.lookup(search)
     for word in result.entries:
         return word
+
 
 def hiragana(search):
     search = search.replace(" ", "%")
