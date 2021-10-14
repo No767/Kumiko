@@ -27,7 +27,7 @@ class check_pronouns(commands.Cog):
             )
             await ctx.channel.send(embed=embedVar)
             reaction, user = await bot.wait_for(
-                "reaction_add", check=lambda reaction, user: reaction.emoji == "🧡"
+                "reaction_add", check=lambda reaction, user: reaction.emoji == "🧡" # Only meant to test
             )
             emoji = "🧡"
             if any(reaction.emoji == emoji for reaction in ctx.reactions):
