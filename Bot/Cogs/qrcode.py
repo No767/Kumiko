@@ -13,7 +13,7 @@ class qrcode_maker(commands.Cog):
     @commands.command(name="qrcode")
     async def on_message(self, ctx, *, link: str):
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        if not os.path.isfile("/qrcode/qrcode.png"):
+        if str(os.path.isfile("/qrcode/qrcode.png")) == "False":
             img = qrcode.make(link)
             img.save("./qrcode/qrcode.png")
         else:
