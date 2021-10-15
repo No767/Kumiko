@@ -30,9 +30,6 @@ jobs:
       run: |
         pipenv run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         pipenv run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Lint with Bandit
-      run: |
-        pipenv run bandit -r Bot/Cogs -s B311
     - name: Format with Black
       run: |
         pipenv run black Bot/Cogs
