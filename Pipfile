@@ -39,6 +39,7 @@ requests = "*"
 pymojang = "*"
 searchtweets-v2 = "*"
 numpy = "*"
+pyflakes = "*"
 
 [dev-packages]
 
