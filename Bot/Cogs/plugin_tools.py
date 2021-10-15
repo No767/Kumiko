@@ -132,9 +132,8 @@ class Bot_Admin(commands.Cog):
             for channel in guild.channels:
                 try:
                     await channel.send(embed=embed)
-                    break
                 except Exception as e:
-                    pass
+                    await channel.send(f"There has been something wrong.\nReason: {e}")
         await ctx.send(f"Message broadcasted to all servers connected")
 
 
