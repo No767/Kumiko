@@ -15,7 +15,7 @@ class pinterest_api(commands.Cog):
         self.bot = bot
         
     @commands.command(name="pinterestsearch")
-    async def on_message(self, ctx)
+    async def on_message(self, ctx):
         await ctx.send("The Pinterest Cog is under development rn. Please come back later")
 
 def setup(bot):
