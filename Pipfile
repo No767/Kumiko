@@ -41,6 +41,7 @@ searchtweets-v2 = "*"
 numpy = "*"
 pyflakes = "*"
 pydocstyle = "*"
+bandit = "*"
 
 [dev-packages]
 
