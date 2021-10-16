@@ -40,9 +40,8 @@ class Chat(commands.Cog):
                                 f"{json.dumps(msg_responses)}\n")
                     except Exception as e:
                         await message.channel.send(
-                            'The syntax is incorrect. Please type in the format "update [input word], [response]". \nThis will make it so that when a user types [input word], the bot will say [response].'
+                            f'The syntax is incorrect. Please type in the format "update [input word], [response]". \nThis will make it so that when a user types [input word], the bot will say [response]. \nReason: {e}'
                         )
-                        print(e)
                 else:
                     os.chdir(os.path.dirname(os.path.abspath(__file__)))
                     path_name = "./chat/responses.json"

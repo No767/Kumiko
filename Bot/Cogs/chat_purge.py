@@ -19,6 +19,7 @@ class Utility(commands.Cog):
         epox = guild.created_at
         owner = guild.owner_id
         explicit = guild.explicit_content_filter
+        emojis = guild.emojis
         embed = discord.Embed(color=plugin_tools.discord_colors())
         embed.title = "Server Info"
         embed.description = f"""
@@ -30,6 +31,7 @@ class Utility(commands.Cog):
         Created on {epox}\n
         Owned by UID: {owner}\n
         Explicit content filter enabled for {explicit}\n
+        List of all emojis: {emojis}\n
         """
         embed.set_thumbnail(url=guild.icon_url)
         await ctx.send(embed=embed)
