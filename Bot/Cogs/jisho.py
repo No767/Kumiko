@@ -19,33 +19,35 @@ def sql_search(search):
     for word in result.entries:
         return word
 
-
+def kanjiv2(search):
+    res = jam.lookup(search.replace("\n", " "))
+    for c in res.chars:
+        return c
+    
 def hiragana(search):
-    search = search.replace(" ", "%")
-    result = jam.lookup(search)
-    resulter = result.text(separator=" | ").replace(", ", " ")
-    m = re.findall("[ぁ-ん]", resulter)
-    all = str(m).replace(",", "")[1:-1]
-    return all.replace("'", "").replace(" ", "")
+    result = jam.lookup(search.replace("\n", " "))
+    for entry in result.entries:
+        m = re.findall("[ぁ-ん]", str(entry))
+        r = str(m).replace("[", " ").replace("]", " ").replace("'", " ").replace(",", "").replace(" ", "")
+        return str(r)
 
 
 def katakana(search):
-    search = search.replace(" ", "%")
-    result = jam.lookup(search)
-    resulter = result.text(separator=" | ").replace(", ", " ")
-    m = re.findall("[ァ-ン]", resulter)
-    all = str(m).replace(",", "")[1:-1]
-    return all.replace("'", "").replace(" ", "")
+    result = jam.lookup(search.replace("\n", " "))
+    for entry in result.entries:
+        m = re.findall("[ァ-ン]", str(entry))
+        r = str(m).replace("[", " ").replace("]", " ").replace("'", " ").replace(",", "").replace(" ", "")
+        return str(r)
 
-
+# old kanji lookup system. use the function kanjiv2 instead
 def kanji(search):
-    search = search.replace(" ", "%")
     result = jam.lookup(search)
     result_search = result.text(
         separator=" | ", with_chars=False).replace(", ", "")
-    m = re.findall("[一-龯]", result_search)
+    m = re.findall(".[一-龯]", result_search)
     all_kanji = str(m).replace(",", "")[1:-1]
-    return all_kanji.replace("'", "").replace(" ", "")
+    return all_kanji.replace("'", "").replace(" ", "").replace("", ", ")
+
 
 
 # Add Other English Definitions via JMDict's Low-Level SQL Feature
@@ -104,7 +106,7 @@ class jisho_dict(commands.Cog):
             jisho = json.loads(jisho_data)
             embedVar = discord.Embed()
             embedVar.description = f"""
-            Kanji >> {kanji(search)}
+            Kanji >> {kanjiv2(search)}
             Hiragana >> {hiragana(search)}
             Katakana >> {katakana(search)}
             
@@ -124,9 +126,9 @@ class jisho_dict(commands.Cog):
             HTTP Status Code >> {jisho['meta']['status']}
             """
             await ctx.send(embed=embedVar)
-        except:
+        except Exception as e:
             embed_discord = discord.Embed()
-            embed_discord.description = "An error has occurred. Please try again"
+            embed_discord.description = f"An error has occurred. Please try again \nReason: {e}"
             await ctx.send(embed=embed_discord)
 
 
