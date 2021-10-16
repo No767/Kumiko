@@ -27,16 +27,14 @@ def kanjiv2(search):
 
 
 def hiragana(search):
-    result = jam.lookup(search.replace("\n", " "))
-    for entry in result.entries:
-        m = re.findall("[ぁ-ん]", str(entry))
+    result = jam.lookup(search)
+    for word in result.entries:
+        m = re.findall("[ぁ-ん]", str(word))
         r = (
             str(m)
             .replace("[", " ")
             .replace("]", " ")
             .replace("'", " ")
-            .replace(",", "")
-            .replace(" ", "")
         )
         return str(r)
 
@@ -124,6 +122,7 @@ class jisho_dict(commands.Cog):
             embedVar.description = f"""
             Kanji >> {kanjiv2(search)}
             Hiragana >> {hiragana(search)}
+            
             Katakana >> {katakana(search)}
             
             English Def >> {english_def_part1(search)}
