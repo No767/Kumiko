@@ -19,16 +19,25 @@ def sql_search(search):
     for word in result.entries:
         return word
 
+
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
     for c in res.chars:
         return c
-    
+
+
 def hiragana(search):
     result = jam.lookup(search.replace("\n", " "))
     for entry in result.entries:
         m = re.findall("[ぁ-ん]", str(entry))
-        r = str(m).replace("[", " ").replace("]", " ").replace("'", " ").replace(",", "").replace(" ", "")
+        r = (
+            str(m)
+            .replace("[", " ")
+            .replace("]", " ")
+            .replace("'", " ")
+            .replace(",", "")
+            .replace(" ", "")
+        )
         return str(r)
 
 
@@ -36,8 +45,16 @@ def katakana(search):
     result = jam.lookup(search.replace("\n", " "))
     for entry in result.entries:
         m = re.findall("[ァ-ン]", str(entry))
-        r = str(m).replace("[", " ").replace("]", " ").replace("'", " ").replace(",", "").replace(" ", "")
+        r = (
+            str(m)
+            .replace("[", " ")
+            .replace("]", " ")
+            .replace("'", " ")
+            .replace(",", "")
+            .replace(" ", "")
+        )
         return str(r)
+
 
 # old kanji lookup system. use the function kanjiv2 instead
 def kanji(search):
@@ -47,7 +64,6 @@ def kanji(search):
     m = re.findall(".[一-龯]", result_search)
     all_kanji = str(m).replace(",", "")[1:-1]
     return all_kanji.replace("'", "").replace(" ", "").replace("", ", ")
-
 
 
 # Add Other English Definitions via JMDict's Low-Level SQL Feature
@@ -128,7 +144,9 @@ class jisho_dict(commands.Cog):
             await ctx.send(embed=embedVar)
         except Exception as e:
             embed_discord = discord.Embed()
-            embed_discord.description = f"An error has occurred. Please try again \nReason: {e}"
+            embed_discord.description = (
+                f"An error has occurred. Please try again \nReason: {e}"
+            )
             await ctx.send(embed=embed_discord)
 
 
