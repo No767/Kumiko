@@ -19,7 +19,10 @@ class info(commands.Cog):
         """
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
         embedVar.set_footer(
-            text="Project Lead Maintainer and Original Creator: No767")
+            text="""
+            Project Lead Maintainer and Original Creator: [No767](https://github.com/No767)
+            Original Creator of EasyBot.py and EasyBot Plugins: [Chisaku-dev](https://github.com/chisaku-dev)
+            """)
         await message.channel.send(embed=embedVar)
 
 
