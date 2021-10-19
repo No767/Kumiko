@@ -18,7 +18,8 @@ class info(commands.Cog):
         Rin is a Discord bot built with EasyBot.py plugin support. Its function is to be a general-purpose bot, which mostly focuses on third-party API support.
         """
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
-        embedVar.set_footer(text="Project Lead Maintainer and Original Creator: No767")
+        embedVar.set_footer(
+            text="Project Lead Maintainer and Original Creator: No767")
         await message.channel.send(embed=embedVar)
 
 
