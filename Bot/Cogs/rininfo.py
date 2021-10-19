@@ -11,7 +11,7 @@ class info(commands.Cog):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
         embedVar.description = """
-        [GitHub](https://github.com/No767/Rin) | [Docs](https://rin-docs.readthedocs.io/en/latest/)
+        [GitHub](https://github.com/No767/Rin) | [Docs](https://rin-docs.readthedocs.io/en/latest/) | Invite
         
         Welcome! Thanks for using this bot. As of now, it is under v0 Beta, but will be releasing soon if the project maintainer can find a place to officially host it. 
         
@@ -20,7 +20,7 @@ class info(commands.Cog):
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
         embedVar.set_footer(
             text="""
-            Project Lead Maintainer and Original Creator: [No767](https://github.com/No767)
+            Project Lead Maintainer and Original Creator of Rin: [No767](https://github.com/No767)
             Original Creator of EasyBot.py and EasyBot Plugins: [Chisaku-dev](https://github.com/chisaku-dev)
             """
         )
