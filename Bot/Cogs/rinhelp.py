@@ -28,7 +28,7 @@ class rinhelp(commands.Cog):
                     name="Reddit", value="`.rinhelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.rinhelp minecraft", inline=True
+                    name="Minecraft", value="`.rinhelp minecraft`", inline=True
                 )
                 embedVar.add_field(
                     name="Fun", value="`.rinhelp fun`", inline=True)
