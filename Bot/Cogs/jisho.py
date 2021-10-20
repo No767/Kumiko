@@ -23,14 +23,14 @@ def sql_search(search):
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
     for c in res.chars:
-        return c
+        return str(c).replace("\n", " ")
 
 
 def hiragana(search):
     result = jam.lookup(search)
     for word in result.entries:
         m = re.findall("[ぁ-ん]", str(word))
-        r = str(m).replace("[", " ").replace("]", " ").replace("'", " ")
+        r = str(m).replace("[", " ").replace("]", " ").replace("'", " ").replace(",", "").replace(" ", "")
         return str(r)
 
 

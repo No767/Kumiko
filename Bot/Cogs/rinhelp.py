@@ -74,9 +74,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`ban`", value="Bans the specified user", inline=True
                 )
-                embedVar.add_field(
-                    name="`mute`", value="Mutes that specified user", inline=True
-                )
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
@@ -121,7 +118,7 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "minecraft" or str(search) == "mc":
+            if str(search) in ("minecraft", "mc"):
                 bot = self.bot
                 embedVar = discord.Embed(title="Rin Help - MC", color=14414079)
                 embedVar.add_field(
@@ -192,7 +189,7 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "instagram" or str(search) == "ig":
+            if str(search) in ("instagram", "ig"):
                 bot = self.bot
                 embedVar = discord.Embed(
                     title="Rin Help - Instagram", color=14414079)
@@ -233,6 +230,9 @@ class rinhelp(commands.Cog):
                     name="`clear`",
                     value="Clears number of messages specified from the channel in which int he command was called",
                 )
+                embedVar.add_field(
+                    name="`mute`", value="Mutes that specified user", inline=True
+                )
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
@@ -256,7 +256,7 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "deviantart" or str(search) == "da":
+            if str(search) in ("deviantart", "da"):
                 bot = self.bot
                 embedVar = discord.Embed(
                     title="Rin Help - Deviantart", color=14414079)
