@@ -28,13 +28,11 @@ class rinhelp(commands.Cog):
                     name="Reddit", value="`.rinhelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.rinhelp mc`", inline=True
-                )
+                    name="Minecraft", value="`.rinhelp mc`", inline=True)
                 embedVar.add_field(
                     name="Fun", value="`.rinhelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Instagram", value="`.rinhelp ig`", inline=True
-                )
+                    name="Instagram", value="`.rinhelp ig`", inline=True)
                 embedVar.add_field(
                     name="Chat", value="`.rinhelp chat`", inline=True)
                 embedVar.add_field(
