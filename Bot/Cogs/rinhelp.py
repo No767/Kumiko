@@ -28,19 +28,19 @@ class rinhelp(commands.Cog):
                     name="Reddit", value="`.rinhelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.rinhelp minecraft`", inline=True
+                    name="Minecraft", value="`.rinhelp mc`", inline=True
                 )
                 embedVar.add_field(
                     name="Fun", value="`.rinhelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Instagram", value="`.rinhelp instagram`", inline=True
+                    name="Instagram", value="`.rinhelp ig`", inline=True
                 )
                 embedVar.add_field(
                     name="Chat", value="`.rinhelp chat`", inline=True)
                 embedVar.add_field(
                     name="Misc", value="`.rinhelp misc`", inline=True)
                 embedVar.add_field(
-                    name="Deviantart", value="`.rinhelp deviantart`", inline=True
+                    name="Deviantart", value="`.rinhelp da`", inline=True
                 )
                 embedVar.add_field(
                     name="Anime", value="`.rinhelp anime`", inline=True)
@@ -123,7 +123,7 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "minecraft":
+            if str(search) == "minecraft" or str(search) == "mc":
                 bot = self.bot
                 embedVar = discord.Embed(title="Rin Help - MC", color=14414079)
                 embedVar.add_field(
@@ -194,7 +194,7 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "instagram":
+            if str(search) == "instagram" or str(search) == "ig":
                 bot = self.bot
                 embedVar = discord.Embed(
                     title="Rin Help - Instagram", color=14414079)
@@ -258,15 +258,10 @@ class rinhelp(commands.Cog):
                 embedVar.set_thumbnail(url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "deviantart":
+            if str(search) == "deviantart" or str(search) == "da":
                 bot = self.bot
                 embedVar = discord.Embed(
                     title="Rin Help - Deviantart", color=14414079)
-                embedVar.description = """
-                `devartfind` - Finds art on DeviantArt via their public API\n
-                `devartsearch` - Searches for art\n
-                `devartuserget` - Obtains info on a user on DeviantArt\n
-                """
                 embedVar.add_field(
                     name="`devartfind`", value="Finds art on DeviantArt", inline=True
                 )
@@ -301,10 +296,7 @@ class rinhelp(commands.Cog):
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
-            embedVar.description = f"""
-            The query failed. \n
-            Reason: {e}
-            """
+            embedVar.description = f"The query failed.\nReason: {e}"
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
 
