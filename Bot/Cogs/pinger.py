@@ -1,5 +1,6 @@
-from discord.ext import commands
 import discord
+from discord.ext import commands
+
 
 class rinpinger(commands.Cog):
     def __init__(self, bot):
@@ -11,9 +12,7 @@ class rinpinger(commands.Cog):
             for x in range(replace):
                 await ctx.send(f"@everyone {reason}")
         except Exception as e:
-            await ctx.send(
-                f"The pinger cog didnt work. Please try again.\nReason: {e}"
-            )
+            await ctx.send(f"The pinger cog didnt work. Please try again.\nReason: {e}")
 
 
 def setup(bot):
