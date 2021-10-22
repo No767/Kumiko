@@ -4,7 +4,6 @@ from discord.ext import commands
 from googletrans import Translator
 
 
-
 # made with https://github.com/nidhaloff/deep-translator
 class Utility(commands.Cog):
     def __init__(self, bot):
@@ -27,9 +26,10 @@ class Utility(commands.Cog):
             await ctx.send("Enter the language you wish to have translated:")
             msgv2 = await self.bot.wait_for("message", check=check)
             translate = Translator()
-            translatev2 = translate.translate(msg.content, dest=f'{msgv2}')
+            translatev2 = translate.translate(msg.content, dest=f"{msgv2}")
             translate_embed = discord.Embed(
-                title="Translation", description=translatev2)
+                title="Translation", description=translatev2
+            )
             translate_embed.set_author(
                 name=ctx.message.author.name, icon_url=ctx.message.author.avatar_url
             )

@@ -42,7 +42,8 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Anime", value="`.rinhelp anime`", inline=True)
-                embedVar.set_author(name="Rin Help", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -73,7 +74,9 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`ban`", value="Bans the specified user", inline=True
                 )
-                embedVar.set_author(name="Rin Help - Admin", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Admin", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) == "twitter":
@@ -90,7 +93,9 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`rtsearch`", value="Searches for twitter users", inline=True
                 )
-                embedVar.set_author(name="Rin Help - Twitter", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Twitter", icon_url=bot.user.avatar_url
+                )
                 embedVar.set_footer(
                     text="Note: Currently the Twitter Cog is broken. Reworking it soon"
                 )
@@ -112,7 +117,9 @@ class rinhelp(commands.Cog):
                     value="searches on reddit that include defined search topics regarding memes",
                     inline=True,
                 )
-                embedVar.set_author(name="Rin Help - Reddit", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Reddit", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) in ("minecraft", "mc"):
@@ -147,7 +154,9 @@ class rinhelp(commands.Cog):
                     "**ranked** skywars",
                     inline=True,
                 )
-                embedVar.set_author(name="Rin Help - Minecraft", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Minecraft", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) == "fun":
@@ -182,7 +191,8 @@ class rinhelp(commands.Cog):
                     value="Returns some advice from Advice Slip",
                     inline=True,
                 )
-                embedVar.set_author(name="Rin Help - Fun", icon_url=bot.user.avatar_url)
+                embedVar.set_author(name="Rin Help - Fun",
+                                    icon_url=bot.user.avatar_url)
                 await ctx.send(embed=embedVar)
 
             if str(search) in ("instagram", "ig"):
@@ -209,7 +219,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_footer(
                     text="Note: Instagram likes to rate limit users like me with their private API. Make sure not to send too much requests, or else this cog will not work. A cooldown system is being worked on to address this issue."
                 )
-                embedVar.set_author(name="Rin Help - Instagram", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Instagram", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) == "chat":
@@ -227,7 +239,9 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`mute`", value="Mutes that specified user", inline=True
                 )
-                embedVar.set_author(name="Rin Help - Chat", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Chat", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) == "misc":
@@ -246,7 +260,9 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`rinhelp`", value="Rin's Help command", inline=True
                 )
-                embedVar.set_author(name="Rin Help - Misc", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Misc", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) in ("deviantart", "da"):
@@ -265,7 +281,9 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.set_footer(
                     text="Note: currently this feature is broken")
-                embedVar.set_author(name="Rin Help - Deviantart", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
             if str(search) == "anime":
                 bot = self.bot
@@ -280,7 +298,9 @@ class rinhelp(commands.Cog):
                     value="Search for art from Waifu.pics",
                     inline=True,
                 )
-                embedVar.set_author(name="Rin Help - Anime", icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Rin Help - Anime", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
         except Exception as e:
             bot = self.bot
