@@ -43,6 +43,7 @@ pyflakes = "*"
 pydocstyle = "*"
 bandit = "*"
 googletrans = "*"
+cffi = "*"
 
 [dev-packages]
 
