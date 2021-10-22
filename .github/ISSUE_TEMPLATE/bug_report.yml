@@ -35,10 +35,12 @@ body:
         - **OS**: Ubuntu 20.04
         - **Python Version**: 3.9.6
         - **pip version**: 21.2.2
+        - **pipenv version**: 2021.5.29
     value: |
         - OS:
         - Python Version:
         - pip version:
+        - pipenv version:
     render: markdown
   validations:
     required: false
