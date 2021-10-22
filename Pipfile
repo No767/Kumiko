@@ -42,6 +42,7 @@ numpy = "*"
 pyflakes = "*"
 pydocstyle = "*"
 bandit = "*"
+googletrans = "*"
 
 [dev-packages]
 
