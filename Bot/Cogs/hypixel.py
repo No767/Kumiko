@@ -44,6 +44,10 @@ def player_ranked_skywars(uuid):
     skywars = json.loads(ranked_skywars)
     return skywars
 
+def http_status():
+    link = f"https://api.hypixel.net/status?key={hypixel_api_key}"
+    r = requests.get(link)
+    return r.status_code
 
 class hypixel_api(commands.Cog):
     def __init__(self, bot):
@@ -56,7 +60,7 @@ class hypixel_api(commands.Cog):
         skywars = player_ranked_skywars(uuid)
         if str(player["success"]) == "True":
             discord_embed = discord.Embed(
-                title=f"Info on {player['player']['displayname']}"
+                title=f"Player Info"
             )
             discord_embed.description = f"""
                 Username >> {player['player']['displayname']}
@@ -67,7 +71,7 @@ class hypixel_api(commands.Cog):
                 
                 **Success or Not?**
                 Success >> {player['success']}
-
+                HTTP Status >> {http_status()}
                 """
             await ctx.send(embed=discord_embed)
         else:
@@ -78,6 +82,7 @@ class hypixel_api(commands.Cog):
                 Debug:
                 Success (Player) >> {player['success']}
                 Cause (Player) >> {player['cause']}
+                HTTP Status >> {http_status()}
                 """
             await ctx.send(embed=embedVar)
 
@@ -109,6 +114,7 @@ class hypixel_player_count(commands.Cog):
                 Build Battle >> {status['games']['BUILD_BATTLE']['players']}
                 Duels >> {status['games']['DUELS']['players']}
                 """
+            embedVar.add_field(name="HTTP Status", value=http_status, inline=False)
             await ctx.send(embed=embedVar)
 
 
@@ -127,6 +133,7 @@ class hypixel_status(commands.Cog):
             
             **Success or Not?**
             Success >> {player_statusv3['success']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
         else:
@@ -137,6 +144,7 @@ class hypixel_status(commands.Cog):
             Debug:
             Success >> {player_statusv3['success']}
             Cause >> {player_statusv3['cause']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
 
@@ -157,6 +165,7 @@ class skywars(commands.Cog):
             
             **Success or Not?**
             Success >> {skywars['success']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
         else:
@@ -167,6 +176,7 @@ class skywars(commands.Cog):
             Debug:
             Success >> {skywars['success']}
             Cause >> {skywars['cause']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
 
