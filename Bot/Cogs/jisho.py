@@ -12,14 +12,6 @@ from jamdict import Jamdict
 load_dotenv()
 jam = Jamdict()
 
-
-def sql_search(search):
-    search = search.replace(" ", "%")
-    result = jam.lookup(search)
-    for word in result.entries:
-        return word
-
-
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
     for c in res.chars:
@@ -34,9 +26,7 @@ def hiragana(search):
             str(m)
             .replace("[", " ")
             .replace("]", " ")
-            .replace("'", " ")
-            .replace(",", "")
-            .replace(" ", "")
+
         )
         return str(r)
 
@@ -60,23 +50,23 @@ def katakana(search):
 def kanji(search):
     result = jam.lookup(search)
     result_search = result.text(
-        separator=" | ", with_chars=False).replace(", ", "")
+        separator=" | ", with_chars=False, no_id=True)
     m = re.findall(".[一-龯]", result_search)
     all_kanji = str(m).replace(",", "")[1:-1]
-    return all_kanji.replace("'", "").replace(" ", "").replace("", ", ")
+    all_kanjiv2 = all_kanji.replace("'", "").replace(" ", "").replace("", ", ")
+    return all_kanjiv2
 
 
-# Add Other English Definitions via JMDict's Low-Level SQL Feature
-def english_def_part1(search):
-    search = search.replace(" ", "%20")
-    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
-    r = requests.get(link)
-    jisho_data = r.text
-    jisho = json.loads(jisho_data)
-    jisho_def = str(jisho["data"][0]["senses"][0]["english_definitions"])
-    jisho_replacer = str(jisho_def.replace("'", " "))
-    return jisho_replacer.replace("[", " ").replace("]", " ")
-
+def english_def_part2(search):
+    result = jam.lookup(search.replace(" ", "\n"))
+    return (
+        str(result.chars)
+        .replace("[", " ")
+        .replace("]", " ")
+        .replace(" ", "\n")
+        .replace(",", ", ")
+        .replace(":", " ")
+    )
 
 def tag(search):
     search = search.replace(" ", "%20")
@@ -107,7 +97,41 @@ def is_common(search):
     jishov1 = str(jisho["data"][0]["is_common"])
     return jishov1.replace("[", " ").replace("]", " ")
 
+def pos(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_sorted = jisho['data'][0]['senses'][0]['parts_of_speech']
+    return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
 
+def see_also(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_sorted = jisho['data'][0]['senses'][0]['see_also']
+    return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
+
+def antonyms(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_sorted = jisho['data'][0]['senses'][0]['antonyms']
+    return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
+
+def links(search):
+    search = search.replace(" ", "%20")
+    link = f"https://jisho.org/api/v1/search/words?keyword={search}"
+    r = requests.get(link)
+    jisho_data = r.text
+    jisho = json.loads(jisho_data)
+    jisho_sorted = jisho['data'][0]['senses'][0]['links']
+    return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
 class jisho_dict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -115,38 +139,22 @@ class jisho_dict(commands.Cog):
     @commands.command(name="jisho")
     async def on_message(self, ctx, search: str):
         try:
-            search = search.replace(" ", "%20")
             link = f"https://jisho.org/api/v1/search/words?keyword={search}"
             r = requests.get(link)
             jisho_data = r.text
             jisho = json.loads(jisho_data)
             embedVar = discord.Embed()
-            embedVar.description = f"""
-            Kanji >> {kanjiv2(search)}
-            Hiragana >> {hiragana(search)}
-            
-            Katakana >> {katakana(search)}
-            
-            English Def >> {english_def_part1(search)}
-            Is Common? >> {is_common(search)}
-            Tags >> {tag(search)}
-            JLPT >> {jlpt(search)}
-            
-            **Attributions**
-            
-            JMDict >> {jisho['data'][0]['attribution']['jmdict']}
-            JMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}
-            DBPedia >> {jisho['data'][0]['attribution']['dbpedia']}
-
-            **HTTP Status**
-            
-            HTTP Status Code >> {jisho['meta']['status']}
-            """
+            embedVar.add_field(name="Info", value=f"**Kanji** >> {kanjiv2(search)}\n**Hiragana** >> {hiragana(search)}\n**Katakana** >> {katakana(search)}\n**Position of Speech (POS)** >> {pos(search)}", inline=False)
+            embedVar.add_field(name="English Defintion(s)", value=english_def_part2(search), inline=False)
+            embedVar.add_field(name="Is Common?", value=is_common(search), inline=False)
+            embedVar.add_field(name="Other Info", value=f"Tags >> {tag(search)}\nJLPT >> {jlpt(search)}\nAntonyms >> {antonyms(search)}\nSee Also >> {see_also(search)}\nLinks >> {links(search)}", inline=False)
+            embedVar.add_field(name="Attributions", value=f"JMDict >> {jisho['data'][0]['attribution']['jmdict']}\nJMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}\nDBPedia >> {jisho['data'][0]['attribution']['dbpedia']}", inline=False)
+            embedVar.add_field(name="HTTP Status", value=f"{jisho['meta']['status']}", inline=False)
             await ctx.send(embed=embedVar)
         except Exception as e:
             embed_discord = discord.Embed()
             embed_discord.description = (
-                f"An error has occurred. Please try again \nReason: {e}"
+                f"An error has occurred. Please try again\nReason: {e}"
             )
             await ctx.send(embed=embed_discord)
 
