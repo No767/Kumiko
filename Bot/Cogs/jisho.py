@@ -12,6 +12,7 @@ from jamdict import Jamdict
 load_dotenv()
 jam = Jamdict()
 
+
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
     for c in res.chars:
@@ -22,12 +23,7 @@ def hiragana(search):
     result = jam.lookup(search)
     for word in result.entries:
         m = re.findall("[ぁ-ん]", str(word))
-        r = (
-            str(m)
-            .replace("[", " ")
-            .replace("]", " ")
-
-        )
+        r = str(m).replace("[", " ").replace("]", " ")
         return str(r)
 
 
@@ -49,8 +45,7 @@ def katakana(search):
 # old kanji lookup system. use the function kanjiv2 instead
 def kanji(search):
     result = jam.lookup(search)
-    result_search = result.text(
-        separator=" | ", with_chars=False, no_id=True)
+    result_search = result.text(separator=" | ", with_chars=False, no_id=True)
     m = re.findall(".[一-龯]", result_search)
     all_kanji = str(m).replace(",", "")[1:-1]
     all_kanjiv2 = all_kanji.replace("'", "").replace(" ", "").replace("", ", ")
@@ -67,6 +62,7 @@ def english_def_part2(search):
         .replace(",", ", ")
         .replace(":", " ")
     )
+
 
 def tag(search):
     search = search.replace(" ", "%20")
@@ -97,14 +93,16 @@ def is_common(search):
     jishov1 = str(jisho["data"][0]["is_common"])
     return jishov1.replace("[", " ").replace("]", " ")
 
+
 def pos(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
     jisho_data = r.text
     jisho = json.loads(jisho_data)
-    jisho_sorted = jisho['data'][0]['senses'][0]['parts_of_speech']
+    jisho_sorted = jisho["data"][0]["senses"][0]["parts_of_speech"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
+
 
 def see_also(search):
     search = search.replace(" ", "%20")
@@ -112,8 +110,9 @@ def see_also(search):
     r = requests.get(link)
     jisho_data = r.text
     jisho = json.loads(jisho_data)
-    jisho_sorted = jisho['data'][0]['senses'][0]['see_also']
+    jisho_sorted = jisho["data"][0]["senses"][0]["see_also"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
+
 
 def antonyms(search):
     search = search.replace(" ", "%20")
@@ -121,8 +120,9 @@ def antonyms(search):
     r = requests.get(link)
     jisho_data = r.text
     jisho = json.loads(jisho_data)
-    jisho_sorted = jisho['data'][0]['senses'][0]['antonyms']
+    jisho_sorted = jisho["data"][0]["senses"][0]["antonyms"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
+
 
 def links(search):
     search = search.replace(" ", "%20")
@@ -130,8 +130,10 @@ def links(search):
     r = requests.get(link)
     jisho_data = r.text
     jisho = json.loads(jisho_data)
-    jisho_sorted = jisho['data'][0]['senses'][0]['links']
+    jisho_sorted = jisho["data"][0]["senses"][0]["links"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
+
+
 class jisho_dict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -144,12 +146,31 @@ class jisho_dict(commands.Cog):
             jisho_data = r.text
             jisho = json.loads(jisho_data)
             embedVar = discord.Embed()
-            embedVar.add_field(name="Info", value=f"**Kanji** >> {kanjiv2(search)}\n**Hiragana** >> {hiragana(search)}\n**Katakana** >> {katakana(search)}\n**Position of Speech (POS)** >> {pos(search)}", inline=False)
-            embedVar.add_field(name="English Defintion(s)", value=english_def_part2(search), inline=False)
-            embedVar.add_field(name="Is Common?", value=is_common(search), inline=False)
-            embedVar.add_field(name="Other Info", value=f"Tags >> {tag(search)}\nJLPT >> {jlpt(search)}\nAntonyms >> {antonyms(search)}\nSee Also >> {see_also(search)}\nLinks >> {links(search)}", inline=False)
-            embedVar.add_field(name="Attributions", value=f"JMDict >> {jisho['data'][0]['attribution']['jmdict']}\nJMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}\nDBPedia >> {jisho['data'][0]['attribution']['dbpedia']}", inline=False)
-            embedVar.add_field(name="HTTP Status", value=f"{jisho['meta']['status']}", inline=False)
+            embedVar.add_field(
+                name="Info",
+                value=f"**Kanji** >> {kanjiv2(search)}\n**Hiragana** >> {hiragana(search)}\n**Katakana** >> {katakana(search)}\n**Position of Speech (POS)** >> {pos(search)}",
+                inline=False,
+            )
+            embedVar.add_field(
+                name="English Defintion(s)",
+                value=english_def_part2(search),
+                inline=False,
+            )
+            embedVar.add_field(name="Is Common?",
+                               value=is_common(search), inline=False)
+            embedVar.add_field(
+                name="Other Info",
+                value=f"Tags >> {tag(search)}\nJLPT >> {jlpt(search)}\nAntonyms >> {antonyms(search)}\nSee Also >> {see_also(search)}\nLinks >> {links(search)}",
+                inline=False,
+            )
+            embedVar.add_field(
+                name="Attributions",
+                value=f"JMDict >> {jisho['data'][0]['attribution']['jmdict']}\nJMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}\nDBPedia >> {jisho['data'][0]['attribution']['dbpedia']}",
+                inline=False,
+            )
+            embedVar.add_field(
+                name="HTTP Status", value=f"{jisho['meta']['status']}", inline=False
+            )
             await ctx.send(embed=embedVar)
         except Exception as e:
             embed_discord = discord.Embed()

@@ -25,7 +25,9 @@ class Utility(commands.Cog):
             msg = await self.bot.wait_for("message", check=check)
             await ctx.send("Enter the language you wish to have translated:")
             msgv2 = await self.bot.wait_for("message", check=check)
-            translatev2 = GoogleTranslator(source='auto', target=msgv2).translate(text=str(msg.content))
+            translatev2 = GoogleTranslator(source="auto", target=msgv2).translate(
+                text=str(msg.content)
+            )
             translate_embed = discord.Embed(
                 title="Translation", description=translatev2
             )
