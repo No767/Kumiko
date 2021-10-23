@@ -44,10 +44,12 @@ def player_ranked_skywars(uuid):
     skywars = json.loads(ranked_skywars)
     return skywars
 
+
 def http_status():
     link = f"https://api.hypixel.net/status?key={hypixel_api_key}"
     r = requests.get(link)
     return r.status_code
+
 
 class hypixel_api(commands.Cog):
     def __init__(self, bot):
@@ -59,9 +61,7 @@ class hypixel_api(commands.Cog):
         online = player_status(uuid)
         skywars = player_ranked_skywars(uuid)
         if str(player["success"]) == "True":
-            discord_embed = discord.Embed(
-                title=f"Player Info"
-            )
+            discord_embed = discord.Embed(title=f"Player Info")
             discord_embed.description = f"""
                 Username >> {player['player']['displayname']}
                 ID >> {player['player']['_id']}
@@ -114,7 +114,8 @@ class hypixel_player_count(commands.Cog):
                 Build Battle >> {status['games']['BUILD_BATTLE']['players']}
                 Duels >> {status['games']['DUELS']['players']}
                 """
-            embedVar.add_field(name="HTTP Status", value=http_status, inline=False)
+            embedVar.add_field(name="HTTP Status",
+                               value=http_status, inline=False)
             await ctx.send(embed=embedVar)
 
 
