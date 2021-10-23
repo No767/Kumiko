@@ -36,7 +36,8 @@ initial_extensions = [
     "Cogs.waifu-pics",
     "Cogs.advice",
     "Cogs.qrcode",
-    "Cogs.pronouns"
+    "Cogs.pronouns",
+    "Cogs.spiget",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
