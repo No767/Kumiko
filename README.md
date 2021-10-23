@@ -7,7 +7,7 @@
 <br/>
 
 ![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white) [![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Rin/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/snyk.yml) [![Lint + Format](https://github.com/No767/Rin/actions/workflows/lint+format.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/lint+format.yml) [![Docker CI](https://github.com/No767/Rin/actions/workflows/docker.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/docker.yml)
-[![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) ![Read the Docs](https://img.shields.io/readthedocs/rin-docs?logo=read-the-docs) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin?label=Release&logo=github)
+[![CodeFactor](https://www.codefactor.io/repository/github/no767/rin/badge)](https://www.codefactor.io/repository/github/no767/rin) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/c70b0534156045268026e4af8cde61e8)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) ![Read the Docs](https://img.shields.io/readthedocs/rin-docs?logo=read-the-docs) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin?label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
 
 A Discord bot with EasyBot.py plugin support and third party API support
 
@@ -42,4 +42,4 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 # Links 
 
 - [Documentation](https://rin-docs.readthedocs.io/en/latest/)
-- [Docker Image](https://hub.docker.com/repository/docker/no767/rin)
+- [Docker Image](https://hub.docker.com/repository/docker/no767/rin) (Note that the Docker Repo is now private due to risks of unauthorized users attempting to host the bot)
