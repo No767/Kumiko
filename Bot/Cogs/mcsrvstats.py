@@ -18,6 +18,7 @@ class mcsrvstats(commands.Cog):
         r = requests.get(link)
         mcsrv_data = r.text
         mcsrv = json.loads(mcsrv_data)
+        mcsrv_status_code = r.status_code
         try:
             if "True" == str(mcsrv["online"]):
                 embedVar = discord.Embed(color=0xC27C0E)
@@ -36,7 +37,7 @@ class mcsrvstats(commands.Cog):
 
                 **MOTD**
 
-                {mcsrv['motd']['clean']}
+                {str(mcsrv['motd']['clean']).replace("[", "").replace("]", "").replace("'", "")}
 
                 **Debug**
                 Ping >> {mcsrv['debug']['ping']}
@@ -48,6 +49,7 @@ class mcsrvstats(commands.Cog):
                 Animated MOTD >> {mcsrv['debug']['animatedmotd']}
                 Cache Time >> {mcsrv['debug']['cachetime']}
                 API Version >> {mcsrv['debug']['apiversion']}
+                HTTP Status >> {mcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
@@ -71,6 +73,7 @@ class mcsrvstats(commands.Cog):
                 CNAME in SRV >> {mcsrv['debug']['cnameinsrv']}
                 Animated MOTD >> {mcsrv['debug']['animatedmotd']}
                 Cache Time >> {mcsrv['debug']['cachetime']}
+                HTTP Status >> {mcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
@@ -94,6 +97,7 @@ class bedrock_mcsrvstats(commands.Cog):
         r = requests.get(link)
         bedmcsrv_data = r.text
         bedmcsrv = json.loads(bedmcsrv_data)
+        bedmcsrv_status_code = r.status_code
         try:
             if "True" == str(bedmcsrv["online"]):
                 embedVar = discord.Embed(color=0x607D8B)
@@ -114,7 +118,7 @@ class bedrock_mcsrvstats(commands.Cog):
 
                 **MOTD**
 
-                {bedmcsrv['motd']['clean']}
+                {str(bedmcsrv['motd']['clean']).replace("[", "").replace("]", "").replace("'", "")}
 
                 **Debug**
 
@@ -127,6 +131,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 Animated MOTD >> {bedmcsrv['debug']['animatedmotd']}
                 Cache Time >> {bedmcsrv['debug']['cachetime']}
                 API Version >> {bedmcsrv['debug']['apiversion']}
+                HTTP Status >> {bedmcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
@@ -150,6 +155,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 CNAME in SRV >> {bedmcsrv['debug']['cnameinsrv']}
                 Animated MOTD >> {bedmcsrv['debug']['animatedmotd']}
                 Cache Time >> {bedmcsrv['debug']['cachetime']}
+                HTTP Status >> {bedmcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
