@@ -46,7 +46,7 @@ def player_ranked_skywars(uuid):
 
 
 def http_status():
-    link = f"https://api.hypixel.net/status?key={hypixel_api_key}"
+    link = f"https://api.hypixel.net/"
     r = requests.get(link)
     return r.status_code
 
