@@ -16,8 +16,7 @@ def resource_search(search):
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(link, headers=headers)
     data = r.text
-    spiget = json.loads(data)
-    return spiget
+    return json.loads(data)
 
 
 def resource_author(search):
@@ -28,16 +27,14 @@ def resource_author(search):
     spigetv2 = json.loads(data)
     return spigetv2
 
-
-def latest_resource_version(search):
-    link = f"https://api.spiget.org/v2/search/resources/{search}/versions/latest"
+def plugin_version(resource_id):
+    link = f"https://api.spiget.org/v2/resources/{resource_id}/versions/latest"
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(link, headers=headers)
     data = r.text
-    spigetv3 = json.loads(data)
-    return spigetv3
-
-
+    spigetv4 = json.loads(data)
+    return spigetv4
+    
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -45,20 +42,24 @@ class SpigetV2(commands.Cog):
     @commands.command(name="spiget-search")
     async def on_message(self, ctx, *, search: str):
         resource = resource_search(search)
-        resourcev2 = resource_author(search)
-        resourcev3 = latest_resource_version(search)
+        resource_id = resource[0]["id"]
         thumbnail = "https://www.spigotmc.org/" + resource[0]["icon"]["url"]
         file_size = str(resource[0]["file"]["size"]) + str(
             resource[0]["file"]["sizeUnit"]
         )
-        download_url_false = "https://spigotmc.org/" + \
-            str(resource[0]["file"]["url"])
+        download_url_external_false = "https://spigotmc.org/" + str(resource[0]["file"]["url"])
+        
+        link = f"https://api.spiget.org/v2/resources/{resource_id}/versions"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        r = requests.get(link, headers=headers)
+        data = r.text
+        spigetv3 = json.loads(data)
         try:
-            if str(resource[0]["file"]["type"]) == "external":
+            if resource[0]["file"]["type"] in "external":
                 embedVar = discord.Embed()
                 embedVar.add_field(
                     name="Plugin Info",
-                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resourcev2[0]['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resource[0]['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                     inline=False,
                 )
                 embedVar.add_field(
@@ -69,19 +70,16 @@ class SpigetV2(commands.Cog):
                     .replace("'", ""),
                     inline=False,
                 )
+                embedVar.add_field(name="Latest Plugin Version", value=str(plugin_version(resource_id)["name"]), inline=False)
+                embedVar.add_field(name="Plugin Versions", value=str([name['name'] for name in spigetv3]).replace("[", "").replace("]", "").replace("'", ""), inline=False)
                 embedVar.add_field(
-                    name="Supported Languages",
-                    value=f"{resource[0]['supportedLanguages']}",
+                    name="Download Info",
+                    value=f"Type >> {resource[0]['file']['type']}\nSize >> {file_size}",
                     inline=False,
                 )
                 embedVar.add_field(
-                    name="Latest Plugin Version",
-                    value=f"{resourcev3[0]['name']}",
-                    inline=False,
-                )
-                embedVar.add_field(
-                    name="Downloads",
-                    value=f"Type >> {resource[0]['file']['type']}\nSize >> {file_size}\nURL >> {resource[0]['file']['url']}",
+                    name="Download URL",
+                    value=f"{resource[0]['file']['externalUrl']}",
                     inline=False,
                 )
                 embedVar.set_thumbnail(url=str(thumbnail))
@@ -90,7 +88,7 @@ class SpigetV2(commands.Cog):
                 embedVar = discord.Embed()
                 embedVar.add_field(
                     name="Plugin Info",
-                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resourcev2[0]['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resource[0]['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                     inline=False,
                 )
                 embedVar.add_field(
@@ -101,19 +99,16 @@ class SpigetV2(commands.Cog):
                     .replace("'", ""),
                     inline=False,
                 )
+                embedVar.add_field(name="Latest Plugin Version", value=str(plugin_version(resource_id)["name"]), inline=False)
+                embedVar.add_field(name="Plugin Versions", value=str([name['name'] for name in spigetv3]).replace("[", "").replace("]", "").replace("'", ""), inline=False)
                 embedVar.add_field(
-                    name="Supported Languages",
-                    value=f"{resource[0]['supportedLanguages']}",
+                    name="Download Info",
+                    value=f"Type >> {resource[0]['file']['type']}\nSize >> {file_size}",
                     inline=False,
                 )
                 embedVar.add_field(
-                    name="Latest Plugin Version",
-                    value=f"{resourcev3[0]['name']}",
-                    inline=False,
-                )
-                embedVar.add_field(
-                    name="Downloads",
-                    value=f"Type >> {resource[0]['file']['type']}\nSize >> {file_size}\nURL >> {download_url_false}",
+                    name="Download URL",
+                    value=f"{download_url_external_false}",
                     inline=False,
                 )
                 embedVar.set_thumbnail(url=str(thumbnail))
