@@ -27,6 +27,7 @@ def resource_author(search):
     spigetv2 = json.loads(data)
     return spigetv2
 
+
 def plugin_version(resource_id):
     link = f"https://api.spiget.org/v2/resources/{resource_id}/versions/latest"
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -34,7 +35,8 @@ def plugin_version(resource_id):
     data = r.text
     spigetv4 = json.loads(data)
     return spigetv4
-    
+
+
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -47,8 +49,10 @@ class SpigetV2(commands.Cog):
         file_size = str(resource[0]["file"]["size"]) + str(
             resource[0]["file"]["sizeUnit"]
         )
-        download_url_external_false = "https://spigotmc.org/" + str(resource[0]["file"]["url"])
-        
+        download_url_external_false = "https://spigotmc.org/" + str(
+            resource[0]["file"]["url"]
+        )
+
         link = f"https://api.spiget.org/v2/resources/{resource_id}/versions"
         headers = {"User-Agent": "Mozilla/5.0"}
         r = requests.get(link, headers=headers)
@@ -70,8 +74,19 @@ class SpigetV2(commands.Cog):
                     .replace("'", ""),
                     inline=False,
                 )
-                embedVar.add_field(name="Latest Plugin Version", value=str(plugin_version(resource_id)["name"]), inline=False)
-                embedVar.add_field(name="Plugin Versions", value=str([name['name'] for name in spigetv3]).replace("[", "").replace("]", "").replace("'", ""), inline=False)
+                embedVar.add_field(
+                    name="Latest Plugin Version",
+                    value=str(plugin_version(resource_id)["name"]),
+                    inline=False,
+                )
+                embedVar.add_field(
+                    name="Plugin Versions",
+                    value=str([name["name"] for name in spigetv3])
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace("'", ""),
+                    inline=False,
+                )
                 embedVar.add_field(
                     name="Download Info",
                     value=f"Type >> {resource[0]['file']['type']}\nSize >> {file_size}",
@@ -99,8 +114,19 @@ class SpigetV2(commands.Cog):
                     .replace("'", ""),
                     inline=False,
                 )
-                embedVar.add_field(name="Latest Plugin Version", value=str(plugin_version(resource_id)["name"]), inline=False)
-                embedVar.add_field(name="Plugin Versions", value=str([name['name'] for name in spigetv3]).replace("[", "").replace("]", "").replace("'", ""), inline=False)
+                embedVar.add_field(
+                    name="Latest Plugin Version",
+                    value=str(plugin_version(resource_id)["name"]),
+                    inline=False,
+                )
+                embedVar.add_field(
+                    name="Plugin Versions",
+                    value=str([name["name"] for name in spigetv3])
+                    .replace("[", "")
+                    .replace("]", "")
+                    .replace("'", ""),
+                    inline=False,
+                )
                 embedVar.add_field(
                     name="Download Info",
                     value=f"Type >> {resource[0]['file']['type']}\nSize >> {file_size}",
