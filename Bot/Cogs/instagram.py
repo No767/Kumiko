@@ -1,8 +1,8 @@
 import os
 
 import discord
-from discord.ext import commands
 import discord.ext
+from discord.ext import commands
 from dotenv import load_dotenv
 from instagram_private_api import Client
 
@@ -53,7 +53,10 @@ class instagram(commands.Cog):
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title="You have reached the rate limit", description=f"Try again in {error.retry_after:.2f}s.")
+            em = discord.Embed(
+                title="You have reached the rate limit",
+                description=f"Try again in {error.retry_after:.2f}s.",
+            )
             await ctx.send(embed=em)
 
 
@@ -88,6 +91,7 @@ class iginfo(commands.Cog):
         embedVar.set_thumbnail(url=embedpfp)
         await ctx.send(embed=embedVar)
 
+
 class top_search(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -115,7 +119,8 @@ class top_search(commands.Cog):
         embedVar = discord.Embed(title="Instagram Tag Search")
         embedVar.description = f"{tag_info_formatted}"
         await ctx.send(embed=embedVar)
-    
+
+
 class username_checker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -139,7 +144,8 @@ class username_checker(commands.Cog):
         embedVar = discord.Embed(title="Instagram Username Checker")
         embedVar.description = f"{username_check_formatter}"
         await ctx.send(embed=embedVar)
-    
+
+
 class userfeed(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
