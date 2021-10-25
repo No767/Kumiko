@@ -7,4 +7,5 @@
 # Additions
 - Pronouns Cog
 - Mute Cog
+- Spiget API Support
 # Removals
