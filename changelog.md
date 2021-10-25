@@ -9,3 +9,5 @@
 - Mute Cog
 - Spiget API Support
 # Removals
+- Invitation Cog
+- A bunch of break-pass expections
