@@ -2,9 +2,9 @@ import os
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import BucketType, cooldown
+import discord.ext
 from dotenv import load_dotenv
-from instagram_private_api import Client, ClientCompatPatch
+from instagram_private_api import Client
 
 load_dotenv()
 
@@ -21,7 +21,7 @@ class instagram(commands.Cog):
         self.bot = bot
 
     @commands.command(name="iguserinfo")
-    @commands.cooldown(5, 15)
+    @commands.cooldown(1, 15)
     async def on_message(self, ctx, search: str):
         username_info_format = f"""
         **Basic Information**
@@ -50,6 +50,11 @@ class instagram(commands.Cog):
         embedurl = api.user_info(search)["user"]["profile_pic_url"]
         embedVar.set_thumbnail(url=embedurl)
         await ctx.send(embed=embedVar)
+
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            em = discord.Embed(title="You have reached the rate limit", description=f"Try again in {error.retry_after:.2f}s.")
+            await ctx.send(embed=em)
 
 
 class iginfo(commands.Cog):
@@ -83,7 +88,6 @@ class iginfo(commands.Cog):
         embedVar.set_thumbnail(url=embedpfp)
         await ctx.send(embed=embedVar)
 
-
 class top_search(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -111,14 +115,13 @@ class top_search(commands.Cog):
         embedVar = discord.Embed(title="Instagram Tag Search")
         embedVar.description = f"{tag_info_formatted}"
         await ctx.send(embed=embedVar)
-
-
+    
 class username_checker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(name="igusernamecheck")
-    @commands.cooldown(5, 15)
+    @commands.cooldown(rate=5, per=15)
     async def on_message(self, ctx, search: str):
         username_check_formatter = """
         Username >> {username}
@@ -136,8 +139,7 @@ class username_checker(commands.Cog):
         embedVar = discord.Embed(title="Instagram Username Checker")
         embedVar.description = f"{username_check_formatter}"
         await ctx.send(embed=embedVar)
-
-
+    
 class userfeed(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

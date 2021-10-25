@@ -19,8 +19,8 @@ def resource_search(search):
     return json.loads(data)
 
 
-def resource_author(search):
-    link = f"https://api.spiget.org/v2/search/resources/{search}/author"
+def resource_author(resource_creator):
+    link = f"https://api.spiget.org/v2/search/resources/{resource_creator}/author"
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(link, headers=headers)
     data = r.text
@@ -36,6 +36,13 @@ def plugin_version(resource_id):
     spigetv4 = json.loads(data)
     return spigetv4
 
+def author_search(author_id):
+    link = f"https://api.spiget.org/v2/search/authors/{author_id}"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    r = requests.get(link, headers=headers)
+    data = r.text
+    spigetv5 = json.loads(data)
+    return spigetv5
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
@@ -44,6 +51,10 @@ class SpigetV2(commands.Cog):
     @commands.command(name="spiget-search")
     async def on_message(self, ctx, *, search: str):
         resource = resource_search(search)
+        resource_creator = resource[0]['author']['id']
+        resource_creatorv2 = resource_author(resource_creator)
+        author = author_search(search)
+        author_id = author[0]["id"]
         resource_id = resource[0]["id"]
         thumbnail = "https://www.spigotmc.org/" + resource[0]["icon"]["url"]
         file_size = str(resource[0]["file"]["size"]) + str(
@@ -63,7 +74,7 @@ class SpigetV2(commands.Cog):
                 embedVar = discord.Embed()
                 embedVar.add_field(
                     name="Plugin Info",
-                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resource[0]['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                     inline=False,
                 )
                 embedVar.add_field(
@@ -142,6 +153,28 @@ class SpigetV2(commands.Cog):
         except Exception as e:
             await ctx.send(e)
 
-
+class Spigetv3(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        
+    @commands.command(name="spiget-author")
+    async def on_message(self, ctx, *, search:str):
+        author = author_search(search)
+        author_id = author[0]["id"]
+        author_thumbnail = author[0]['icon']['url']
+        linkv2 = f"https://api.spiget.org/v2/authors/{author_id}/resources"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        author_request = requests.get(linkv2, headers=headers)
+        datav2 = author_request.text
+        spigetv4 = json.loads(datav2)
+        try:
+            embedVar = discord.Embed()
+            embedVar.add_field(name="Author Name", value=f"{author[0]['name']}", inline=False)
+            embedVar.add_field(name="Author Resources", value=str([name["name"] for name in spigetv4]).replace("[", "").replace("]", "").replace("'", ""), inline=False)
+            embedVar.set_thumbnail(url=str(author_thumbnail))
+            await ctx.send(embed=embedVar)
+        except Exception as e:
+            await ctx.send(e)
 def setup(bot):
     bot.add_cog(SpigetV2(bot))
+    bot.add_cog(Spigetv3(bot))

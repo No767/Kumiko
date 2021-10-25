@@ -154,6 +154,7 @@ class rinhelp(commands.Cog):
                     "**ranked** skywars",
                     inline=True,
                 )
+                embedVar.add_field(name="`spiget-search`", value="Searches for plugins and returns info for that requested plugin", inline=True)
                 embedVar.set_author(
                     name="Rin Help - Minecraft", icon_url=bot.user.avatar_url
                 )

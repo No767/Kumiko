@@ -4,19 +4,10 @@ import random
 
 import discord
 import requests
-from discord import Embed
 from discord.ext import commands
 
 
-def anime_pics(waifu_list):
-    link = f"https://api.waifu.pics/sfw/{waifu_list}"
-    r = requests.get(link)
-    anime_data = r.text
-    waifu = json.loads(anime_data)
-    return waifu
-
-
-def waifu_picker():
+def anime_pics():
     waifu_list = [
         "waifu",
         "neko",
@@ -51,7 +42,10 @@ def waifu_picker():
         "cringe",
     ]
     searchterm = random.choice(waifu_list)
-    return searchterm
+    link = f"https://api.waifu.pics/sfw/{searchterm}"
+    r = requests.get(link)
+    anime_data = r.text
+    return json.loads(anime_data)
 
 
 class waifu(commands.Cog):
@@ -60,8 +54,7 @@ class waifu(commands.Cog):
 
     @commands.command(name="waifupics")
     async def on_messsage(self, ctx):
-        waifu_search = waifu_picker()
-        waifu_pics = anime_pics(waifu_search)
+        waifu_pics = anime_pics()
         try:
             await ctx.send(waifu_pics["url"])
         except Exception as e:
