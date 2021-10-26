@@ -46,6 +46,7 @@ def author_search(search):
     spigetv5 = json.loads(data)
     return spigetv5
 
+
 def author_details(author_id):
     link = f"https://api.spiget.org/v2/authors/{author_id}"
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -53,6 +54,7 @@ def author_details(author_id):
     data = r.text
     spigetv6 = json.loads(data)
     return spigetv6
+
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
@@ -65,11 +67,11 @@ class SpigetV2(commands.Cog):
         resource_creator = resource[0]["author"]["id"]
         resource_creatorv2 = resource_author(resource_creator)
         resource_creatorv2_name = resource_creatorv2[0]["name"]
-        
+
         author = author_search(search)
         author_id = author[0]["id"]
         author_details_v1 = author_details(author_id)
-        
+
         resource_id = resource[0]["id"]
         thumbnail = "https://www.spigotmc.org/" + resource[0]["icon"]["url"]
         file_size = str(resource[0]["file"]["size"]) + str(
@@ -84,8 +86,7 @@ class SpigetV2(commands.Cog):
         r = requests.get(link, headers=headers)
         data = r.text
         spigetv3 = json.loads(data)
-        
-        
+
         try:
             if resource[0]["file"]["type"] in "external":
                 embedVar = discord.Embed()
