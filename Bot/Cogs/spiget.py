@@ -16,11 +16,12 @@ def resource_search(search):
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(link, headers=headers)
     data = r.text
-    return json.loads(data)
+    spiget = json.loads(data)
+    return spiget
 
 
 def resource_author(resource_creator):
-    link = f"https://api.spiget.org/v2/search/resources/{resource_creator}/author"
+    link = f"https://api.spiget.org/v2/resources/{resource_creator}/author"
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(link, headers=headers)
     data = r.text
@@ -37,14 +38,21 @@ def plugin_version(resource_id):
     return spigetv4
 
 
-def author_search(author_id):
-    link = f"https://api.spiget.org/v2/search/authors/{author_id}"
+def author_search(search):
+    link = f"https://api.spiget.org/v2/search/authors/{search}"
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(link, headers=headers)
     data = r.text
     spigetv5 = json.loads(data)
     return spigetv5
 
+def author_details(author_id):
+    link = f"https://api.spiget.org/v2/authors/{author_id}"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    r = requests.get(link, headers=headers)
+    data = r.text
+    spigetv6 = json.loads(data)
+    return spigetv6
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
@@ -52,11 +60,16 @@ class SpigetV2(commands.Cog):
 
     @commands.command(name="spiget-search")
     async def on_message(self, ctx, *, search: str):
+        # Note to self: Please dont use this function in order to call dict items...
         resource = resource_search(search)
         resource_creator = resource[0]["author"]["id"]
         resource_creatorv2 = resource_author(resource_creator)
+        resource_creatorv2_name = resource_creatorv2[0]["name"]
+        
         author = author_search(search)
         author_id = author[0]["id"]
+        author_details_v1 = author_details(author_id)
+        
         resource_id = resource[0]["id"]
         thumbnail = "https://www.spigotmc.org/" + resource[0]["icon"]["url"]
         file_size = str(resource[0]["file"]["size"]) + str(
@@ -71,12 +84,14 @@ class SpigetV2(commands.Cog):
         r = requests.get(link, headers=headers)
         data = r.text
         spigetv3 = json.loads(data)
+        
+        
         try:
             if resource[0]["file"]["type"] in "external":
                 embedVar = discord.Embed()
                 embedVar.add_field(
                     name="Plugin Info",
-                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resource_creatorv2_name}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                     inline=False,
                 )
                 embedVar.add_field(
@@ -116,7 +131,7 @@ class SpigetV2(commands.Cog):
                 embedVar = discord.Embed()
                 embedVar.add_field(
                     name="Plugin Info",
-                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resource[0]['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                    value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {resource_creatorv2_name}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                     inline=False,
                 )
                 embedVar.add_field(

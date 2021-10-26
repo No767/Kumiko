@@ -49,7 +49,7 @@ class mcsrvstats(commands.Cog):
                 Animated MOTD >> {mcsrv['debug']['animatedmotd']}
                 Cache Time >> {mcsrv['debug']['cachetime']}
                 API Version >> {mcsrv['debug']['apiversion']}
-                HTTP Status >> {mcsrv_status_code}
+                HTTP Status (MCSrvStat) >> {mcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
@@ -73,7 +73,7 @@ class mcsrvstats(commands.Cog):
                 CNAME in SRV >> {mcsrv['debug']['cnameinsrv']}
                 Animated MOTD >> {mcsrv['debug']['animatedmotd']}
                 Cache Time >> {mcsrv['debug']['cachetime']}
-                HTTP Status >> {mcsrv_status_code}
+                HTTP Status (MCSrvStat) >> {mcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
@@ -131,7 +131,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 Animated MOTD >> {bedmcsrv['debug']['animatedmotd']}
                 Cache Time >> {bedmcsrv['debug']['cachetime']}
                 API Version >> {bedmcsrv['debug']['apiversion']}
-                HTTP Status >> {bedmcsrv_status_code}
+                HTTP Status (MCSrvStat) >> {bedmcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
@@ -155,7 +155,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 CNAME in SRV >> {bedmcsrv['debug']['cnameinsrv']}
                 Animated MOTD >> {bedmcsrv['debug']['animatedmotd']}
                 Cache Time >> {bedmcsrv['debug']['cachetime']}
-                HTTP Status >> {bedmcsrv_status_code}
+                HTTP Status (MCSrvStat) >> {bedmcsrv_status_code}
                 """
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
