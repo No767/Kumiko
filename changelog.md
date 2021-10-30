@@ -8,6 +8,7 @@
 - Pronouns Cog
 - Mute Cog
 - Spiget API Support
+- Switched out the Python JSON lib for UJSON
 # Removals
 - Invitation Cog
 - A bunch of break-pass expections
