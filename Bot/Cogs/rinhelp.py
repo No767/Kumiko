@@ -129,7 +129,7 @@ class rinhelp(commands.Cog):
                     name="`javamcsrv`", value="Obtains Java server status", inline=True
                 )
                 embedVar.add_field(
-                    name="`bedrockmcsrc`",
+                    name="`bedrockmcsrv`",
                     value="Obtains bedrock server status",
                     inline=True,
                 )
@@ -156,7 +156,22 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`spiget-search`",
-                    value="Searches for plugins and returns info for that requested plugin",
+                    value="Searches for Minecraft plugins via Spiget and returns information on such plugin",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`spiget-author`",
+                    value="Searches for given author and returns name and resources from the author",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`spiget-stats`",
+                    value="Returns stats for Spiget (total resources created, etc)",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`spiget-status`",
+                    value="Returns HTTP Status of the Spiget API",
                     inline=True,
                 )
                 embedVar.set_author(
