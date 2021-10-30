@@ -38,6 +38,7 @@ initial_extensions = [
     "Cogs.qrcode",
     "Cogs.pronouns",
     "Cogs.spiget",
+    "Cogs.jikan",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
