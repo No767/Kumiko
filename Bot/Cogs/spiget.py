@@ -1,8 +1,8 @@
 import json
 
-import ujson
 import discord
 import requests
+import ujson
 from discord.ext import commands
 
 
@@ -50,6 +50,7 @@ def author_details(author_id):
     spigetv6 = ujson.loads(data)
     return spigetv6
 
+
 def stats():
     link = "https://api.spiget.org/v2/status"
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -57,6 +58,7 @@ def stats():
     data = r.text
     spigetv7 = ujson.loads(data)
     return spigetv7
+
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
@@ -84,7 +86,8 @@ class SpigetV2(commands.Cog):
 
         try:
             if resource[0]["file"]["type"] in "external":
-                embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+                embedVar = discord.Embed(
+                    color=discord.Color.from_rgb(173, 156, 255))
                 embedVar.add_field(
                     name="Plugin Info",
                     value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
@@ -124,7 +127,8 @@ class SpigetV2(commands.Cog):
                 embedVar.set_thumbnail(url=str(thumbnail))
                 await ctx.send(embed=embedVar)
             else:
-                embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+                embedVar = discord.Embed(
+                    color=discord.Color.from_rgb(173, 156, 255))
                 embedVar.add_field(
                     name="Plugin Info",
                     value=f"Name >> {resource[0]['name']}\nTag >> {resource[0]['tag']}\nAuthor >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
@@ -164,7 +168,8 @@ class SpigetV2(commands.Cog):
                 embedVar.set_thumbnail(url=str(thumbnail))
                 await ctx.send(embed=embedVar)
         except Exception as e:
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
             embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
             await ctx.send(embed=embedVar)
 
@@ -184,7 +189,8 @@ class Spigetv3(commands.Cog):
         datav2 = author_request.text
         spigetv4 = ujson.loads(datav2)
         try:
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
             embedVar.add_field(
                 name="Author Name", value=f"{author[0]['name']}", inline=False
             )
@@ -199,48 +205,72 @@ class Spigetv3(commands.Cog):
             embedVar.set_thumbnail(url=str(author_thumbnail))
             await ctx.send(embed=embedVar)
         except Exception as e:
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
             embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
             await ctx.send(embed=embedVar)
+
 
 class SpigetV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="spiget-stats")
     async def on_message(self, ctx):
         try:
             total_stats = stats()
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
-            embedVar.add_field(name="Resources", value=total_stats['stats']["resources"], inline=True)
-            embedVar.add_field(name="Authors", value=total_stats['stats']["authors"], inline=True)
-            embedVar.add_field(name="Categories", value=total_stats['stats']["categories"], inline=True)
-            embedVar.add_field(name="Resource Updates", value=total_stats['stats']["resource_updates"], inline=True)
-            embedVar.add_field(name="Resource Versions", value=total_stats['stats']["resource_versions"], inline=True)
-            embedVar.add_field(name="Reviews", value=total_stats['stats']["reviews"], inline=True)
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
+            embedVar.add_field(
+                name="Resources", value=total_stats["stats"]["resources"], inline=True
+            )
+            embedVar.add_field(
+                name="Authors", value=total_stats["stats"]["authors"], inline=True
+            )
+            embedVar.add_field(
+                name="Categories", value=total_stats["stats"]["categories"], inline=True
+            )
+            embedVar.add_field(
+                name="Resource Updates",
+                value=total_stats["stats"]["resource_updates"],
+                inline=True,
+            )
+            embedVar.add_field(
+                name="Resource Versions",
+                value=total_stats["stats"]["resource_versions"],
+                inline=True,
+            )
+            embedVar.add_field(
+                name="Reviews", value=total_stats["stats"]["reviews"], inline=True
+            )
             await ctx.send(embed=embedVar)
         except Exception as e:
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
             embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
             await ctx.send(embed=embedVar)
-            
+
+
 class SpigetV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="spiget-status")
     async def on_message(self, ctx):
         try:
             link = "https://api.spiget.org/v2/"
             headers = {"User-Agent": "Mozilla/5.0"}
             r = requests.get(link, headers=headers)
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
             embedVar.add_field(name="Status", value=r.status_code, inline=True)
             await ctx.send(embed=embedVar)
         except Exception as e:
-            embedVar = discord.Embed(color=discord.Color.from_rgb(173, 156, 255))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(173, 156, 255))
             embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
             await ctx.send(embed=embedVar)
+
 
 def setup(bot):
     bot.add_cog(SpigetV2(bot))
