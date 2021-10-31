@@ -10,6 +10,11 @@ def get_anime_info(search):
     r = requests.get(link)
     return ujson.loads(r.text)
 
+def get_related_anime_info_pictures(id):
+    link = f"https://api.jikan.moe/v3/anime/{id}/pictures"
+    r = requests.get(link)
+    return ujson.loads(r.text)
+    
 
 class JikanV1(commands.Cog):
     def __init__(self, bot):
@@ -60,7 +65,6 @@ class JikanV1(commands.Cog):
                 f"The query could not be performed. Please try again.\nReason: {e}"
             )
             await ctx.send(embed=embedVar)
-
 
 def setup(bot):
     bot.add_cog(JikanV1(bot))

@@ -46,6 +46,7 @@ googletrans = "*"
 cffi = "*"
 pykakasi = "==2.2.1"
 ujson = "*"
+jikanpy = "*"
 
 [dev-packages]
 
