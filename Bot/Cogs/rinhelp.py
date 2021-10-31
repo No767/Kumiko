@@ -318,6 +318,7 @@ class rinhelp(commands.Cog):
                     value="Search for art from Waifu.pics",
                     inline=True,
                 )
+                embedVar.add_field(name"jikan-search", value="Searches on Jikan/MAL and returns info about your selected anime", inline=True)
                 embedVar.set_author(
                     name="Rin Help - Anime", icon_url=bot.user.avatar_url
                 )
