@@ -1,10 +1,8 @@
-import json
 import os
-import re
 
 import discord
 import requests
-from discord import Embed
+import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -16,33 +14,31 @@ hypixel_api_key = os.getenv("Hypixel_API_Key")
 def hypixel_lookup(uuid):
     link = f"https://api.hypixel.net/player?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
-    player_data = r.text
-    hypixel_player = json.loads(player_data)
-    return hypixel_player
+    return ujson.loads(r.text)
 
 
 def player_status(uuid):
     link = f"https://api.hypixel.net/status?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
-    player_data = r.text
-    player_statusv2 = json.loads(player_data)
-    return player_statusv2
+    return ujson.loads(r.text)
 
 
 def player_count():
     link = f"https://api.hypixel.net/counts?key={hypixel_api_key}"
     r = requests.get(link)
-    player_data = r.text
-    player_countv2 = json.loads(player_data)
-    return player_countv2
+    return ujson.loads(r.text)
 
 
 def player_ranked_skywars(uuid):
     link = f"https://api.hypixel.net/player/ranked/skywars?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
-    ranked_skywars = r.text
-    skywars = json.loads(ranked_skywars)
-    return skywars
+    return ujson.loads(r.text)
+
+
+def http_status():
+    link = "https://api.hypixel.net/"
+    r = requests.get(link)
+    return r.status_code
 
 
 class hypixel_api(commands.Cog):
@@ -53,11 +49,8 @@ class hypixel_api(commands.Cog):
     async def on_message(self, ctx, *, uuid: str):
         player = hypixel_lookup(uuid)
         online = player_status(uuid)
-        skywars = player_ranked_skywars(uuid)
         if str(player["success"]) == "True":
-            discord_embed = discord.Embed(
-                title=f"Info on {player['player']['displayname']}"
-            )
+            discord_embed = discord.Embed(title="Player Info")
             discord_embed.description = f"""
                 Username >> {player['player']['displayname']}
                 ID >> {player['player']['_id']}
@@ -67,7 +60,7 @@ class hypixel_api(commands.Cog):
                 
                 **Success or Not?**
                 Success >> {player['success']}
-
+                HTTP Status >> {http_status()}
                 """
             await ctx.send(embed=discord_embed)
         else:
@@ -78,6 +71,7 @@ class hypixel_api(commands.Cog):
                 Debug:
                 Success (Player) >> {player['success']}
                 Cause (Player) >> {player['cause']}
+                HTTP Status >> {http_status()}
                 """
             await ctx.send(embed=embedVar)
 
@@ -109,6 +103,8 @@ class hypixel_player_count(commands.Cog):
                 Build Battle >> {status['games']['BUILD_BATTLE']['players']}
                 Duels >> {status['games']['DUELS']['players']}
                 """
+            embedVar.add_field(name="HTTP Status",
+                               value=http_status, inline=False)
             await ctx.send(embed=embedVar)
 
 
@@ -127,6 +123,7 @@ class hypixel_status(commands.Cog):
             
             **Success or Not?**
             Success >> {player_statusv3['success']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
         else:
@@ -137,6 +134,7 @@ class hypixel_status(commands.Cog):
             Debug:
             Success >> {player_statusv3['success']}
             Cause >> {player_statusv3['cause']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
 
@@ -157,6 +155,7 @@ class skywars(commands.Cog):
             
             **Success or Not?**
             Success >> {skywars['success']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
         else:
@@ -167,6 +166,7 @@ class skywars(commands.Cog):
             Debug:
             Success >> {skywars['success']}
             Cause >> {skywars['cause']}
+            HTTP Status >> {http_status()}
             """
             await ctx.send(embed=embedVar)
 

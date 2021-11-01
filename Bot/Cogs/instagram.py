@@ -1,9 +1,10 @@
 import os
 
 import discord
+import discord.ext
 from discord.ext import commands
 from dotenv import load_dotenv
-from instagram_private_api import Client, ClientCompatPatch
+from instagram_private_api import Client
 
 load_dotenv()
 
@@ -20,8 +21,8 @@ class instagram(commands.Cog):
         self.bot = bot
 
     @commands.command(name="iguserinfo")
+    @commands.cooldown(1, 15)
     async def on_message(self, ctx, search: str):
-        username_feed = api.user_info(search)
         username_info_format = f"""
         **Basic Information**
 
@@ -50,14 +51,22 @@ class instagram(commands.Cog):
         embedVar.set_thumbnail(url=embedurl)
         await ctx.send(embed=embedVar)
 
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            em = discord.Embed(
+                title="You have reached the rate limit",
+                description=f"Try again in {error.retry_after:.2f}s.",
+            )
+            await ctx.send(embed=em)
+
 
 class iginfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(name="igusersearch")
+    @commands.cooldown(5, 15)
     async def on_message(self, ctx, search: str):
-        top_search = api.search_users(search)
         search_users_formatted = f"""
         **Results**
 
@@ -88,8 +97,8 @@ class top_search(commands.Cog):
         self.bot = bot
 
     @commands.command(name="igtaginfo")
+    @commands.cooldown(5, 15)
     async def on_message(self, ctx, search: str):
-        best_search = api.tag_info(search)
         tag_info_formatted = """
         Tag ID >> {id}
         Name >> {name}
@@ -117,8 +126,8 @@ class username_checker(commands.Cog):
         self.bot = bot
 
     @commands.command(name="igusernamecheck")
+    @commands.cooldown(rate=5, per=15)
     async def on_message(self, ctx, search: str):
-        username_check = api.check_username(search)
         username_check_formatter = """
         Username >> {username}
         Available >> {available}
@@ -142,6 +151,7 @@ class userfeed(commands.Cog):
         self.bot = bot
 
     @commands.command(name="iguserfeed")
+    @commands.cooldown(5, 15)
     async def on_message(self, ctx, search: str):
         userfeed_formatter = f"""
         {api.user_feed(search)["items"][0]['caption']['text']}

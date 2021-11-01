@@ -1,7 +1,3 @@
-# EasyBot.py file
-# built in
-import os
-
 import discord
 from discord.ext import commands
 
@@ -32,7 +28,7 @@ class Utility(commands.Cog):
             total_members += guild.member_count
         average_members_per_guild = total_members / len(guilds)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f"Bot Info"
+        embed.title = "Bot Info"
         embed.description = f"""
         Name: {name}\n
         Servers: {len(guilds)}\n
@@ -58,7 +54,7 @@ class Bot_Admin(commands.Cog):
             total_users += guild.member_count
         total_guilds = len(self.bot.guilds)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f"Tips"
+        embed.title = "Tips"
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         if total_guilds > 75:
             if total_users / total_guilds > 150:
@@ -131,10 +127,9 @@ class Bot_Admin(commands.Cog):
             for channel in guild.channels:
                 try:
                     await channel.send(embed=embed)
-                    break
                 except Exception as e:
-                    pass
-        await ctx.send(f"Message broadcasted to all servers connected")
+                    await channel.send(f"There has been something wrong.\nReason: {e}")
+        await ctx.send("Message broadcasted to all servers connected")
 
 
 def setup(bot):

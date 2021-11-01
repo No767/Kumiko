@@ -1,7 +1,6 @@
 import bs4
 import discord
 import requests
-from discord import Embed
 from discord.ext import commands
 from fake_useragent import UserAgent
 

@@ -24,11 +24,9 @@ initial_extensions = [
     "Cogs.rinhelp",
     "Cogs.twitter",
     "Cogs.reddit",
-    "Cogs.disquest",
     "Cogs.images",
     "Cogs.pinger",
     "Cogs.chat",
-    "Cogs.invitation",
     "Cogs.jisho",
     "Cogs.translate",
     "Cogs.chat_purge",
@@ -37,6 +35,10 @@ initial_extensions = [
     "Cogs.hypixel",
     "Cogs.waifu-pics",
     "Cogs.advice",
+    "Cogs.qrcode",
+    "Cogs.pronouns",
+    "Cogs.spiget",
+    "Cogs.jikan",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

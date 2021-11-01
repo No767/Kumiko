@@ -1,9 +1,7 @@
-import asyncio
 import os
 
 import deviantart
 import discord
-from discord import Client
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -47,7 +45,6 @@ class devartsearcher(commands.Cog):
 
     @commands.command(name="devartsearch")
     async def on_message(message, ctx, search: str):
-        devsearch = search
         devart = da.search_tags(search)
         devart_embed = discord.Embed()
         devart_embed.description = f"{devart}"
