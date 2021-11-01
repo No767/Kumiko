@@ -26,7 +26,7 @@ class check_pronouns(commands.Cog):
                 text="React to those emojis to get a role assigned with those pronouns!"
             )
             await ctx.channel.send(embed=embedVar)
-            reaction, user = await bot.wait_for(
+            reaction, _ = await bot.wait_for(
                 "reaction_add",
                 check=lambda reaction, user: reaction.emoji
                 == "🧡",  # Only meant to test

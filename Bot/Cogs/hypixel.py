@@ -1,9 +1,9 @@
-import json
 import os
 
 import discord
 import requests
 from discord.ext import commands
+import ujson
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,37 +14,28 @@ hypixel_api_key = os.getenv("Hypixel_API_Key")
 def hypixel_lookup(uuid):
     link = f"https://api.hypixel.net/player?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
-    player_data = r.text
-    hypixel_player = json.loads(player_data)
-    return hypixel_player
-
+    return ujson.loads(r.text)
 
 def player_status(uuid):
     link = f"https://api.hypixel.net/status?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
-    player_data = r.text
-    player_statusv2 = json.loads(player_data)
-    return player_statusv2
+    return ujson.loads(r.text)
 
 
 def player_count():
     link = f"https://api.hypixel.net/counts?key={hypixel_api_key}"
     r = requests.get(link)
-    player_data = r.text
-    player_countv2 = json.loads(player_data)
-    return player_countv2
+    return ujson.loads(r.text)
 
 
 def player_ranked_skywars(uuid):
     link = f"https://api.hypixel.net/player/ranked/skywars?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
-    ranked_skywars = r.text
-    skywars = json.loads(ranked_skywars)
-    return skywars
+    return ujson.loads(r.text)
 
 
 def http_status():
-    link = f"https://api.hypixel.net/"
+    link = "https://api.hypixel.net/"
     r = requests.get(link)
     return r.status_code
 
@@ -57,9 +48,8 @@ class hypixel_api(commands.Cog):
     async def on_message(self, ctx, *, uuid: str):
         player = hypixel_lookup(uuid)
         online = player_status(uuid)
-        skywars = player_ranked_skywars(uuid)
         if str(player["success"]) == "True":
-            discord_embed = discord.Embed(title=f"Player Info")
+            discord_embed = discord.Embed(title="Player Info")
             discord_embed.description = f"""
                 Username >> {player['player']['displayname']}
                 ID >> {player['player']['_id']}

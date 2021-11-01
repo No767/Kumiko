@@ -1,7 +1,6 @@
 import discord
 from deep_translator import GoogleTranslator
 from discord.ext import commands
-from googletrans import Translator
 
 
 # made with https://github.com/nidhaloff/deep-translator
