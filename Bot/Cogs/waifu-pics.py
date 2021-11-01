@@ -1,7 +1,6 @@
-import json
-import os
 import random
 
+import ujson
 import discord
 import requests
 from discord.ext import commands
@@ -44,8 +43,7 @@ def anime_pics():
     searchterm = random.choice(waifu_list)
     link = f"https://api.waifu.pics/sfw/{searchterm}"
     r = requests.get(link)
-    anime_data = r.text
-    return json.loads(anime_data)
+    return ujson.loads(r.text)
 
 
 class waifu(commands.Cog):
@@ -60,7 +58,7 @@ class waifu(commands.Cog):
         except Exception as e:
             embedVar = discord.Embed()
             embedVar.description = f"""
-            The query was not successful.\n Reason: {e}
+            The query was not successful.\nReason: {e}
             """
             await ctx.send(embed=embedVar)
 

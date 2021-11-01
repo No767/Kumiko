@@ -1,8 +1,6 @@
-import json
-
+import ujson
 import discord
 import requests
-from discord import Embed
 from discord.ext import commands
 
 
@@ -16,11 +14,10 @@ class mcsrvstats(commands.Cog):
         link = f"https://api.mcsrvstat.us/2/{search}"
         image_link = f"https://api.mcsrvstat.us/icon/{search}"
         r = requests.get(link)
-        mcsrv_data = r.text
-        mcsrv = json.loads(mcsrv_data)
+        mcsrv = ujson.loads(r.text)
         mcsrv_status_code = r.status_code
         try:
-            if "True" == str(mcsrv["online"]):
+            if "True" in str(mcsrv["online"]):
                 embedVar = discord.Embed(color=0xC27C0E)
                 embedVar.description = f"""
                 **Infomation (Java Edition)**
@@ -77,10 +74,10 @@ class mcsrvstats(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
-        except:
+        except Exception as e:
             embedVar = discord.Embed(color=0xC27C0E)
             embedVar.description = f"""
-            Your search for has failed. Please try again.
+            Your search for has failed. Please try again.\nReason: {e}
             """
             await ctx.send(embed=embedVar)
 
@@ -95,11 +92,10 @@ class bedrock_mcsrvstats(commands.Cog):
         link = f"https://api.mcsrvstat.us/bedrock/2/{search}"
         bedimage_link = f"https://api.mcsrvstat.us/icon/{search}"
         r = requests.get(link)
-        bedmcsrv_data = r.text
-        bedmcsrv = json.loads(bedmcsrv_data)
+        bedmcsrv = ujson.loads(r.text)
         bedmcsrv_status_code = r.status_code
         try:
-            if "True" == str(bedmcsrv["online"]):
+            if "True" in str(bedmcsrv["online"]):
                 embedVar = discord.Embed(color=0x607D8B)
                 embedVar.description = f"""
                 **Information (Bedrock Edition)**
@@ -159,10 +155,10 @@ class bedrock_mcsrvstats(commands.Cog):
                 """
                 embedVar.set_thumbnail(url=bedimage_link)
                 await ctx.send(embed=embedVar)
-        except:
+        except Exception as e:
             embedVar = discord.Embed(color=0x607D8B)
             embedVar.description = f"""
-            Your search has failed. Please try again.
+            Your search has failed. Please try again.\nReason: {e}
             """
             await ctx.send(embed=embedVar)
 
