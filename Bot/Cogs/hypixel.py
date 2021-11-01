@@ -2,8 +2,8 @@ import os
 
 import discord
 import requests
-from discord.ext import commands
 import ujson
+from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -15,6 +15,7 @@ def hypixel_lookup(uuid):
     link = f"https://api.hypixel.net/player?uuid={uuid}&key={hypixel_api_key}"
     r = requests.get(link)
     return ujson.loads(r.text)
+
 
 def player_status(uuid):
     link = f"https://api.hypixel.net/status?uuid={uuid}&key={hypixel_api_key}"
