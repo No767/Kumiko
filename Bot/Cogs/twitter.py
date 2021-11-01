@@ -2,7 +2,6 @@ import os
 
 import discord
 import tweepy
-from discord import Embed
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -60,7 +59,6 @@ class rtgetsaved(commands.Cog):
     # Make sure that the search input is a string, by wrapping it in '' or ""
     @commands.command(name="rtsearch")
     async def rtgetsaved(self, ctx, *, search: str):
-        getcursor = api.get_user(search)
         search_embed = discord.Embed()
         search_embed.description = f"{api.get_user(search)}"
         await ctx.send(embed=search_embed)

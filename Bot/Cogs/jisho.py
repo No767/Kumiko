@@ -1,11 +1,9 @@
 import json
-import os
 import re
 
 import discord
 import requests
 import ujson
-from discord import Embed
 from discord.ext import commands
 from dotenv import load_dotenv
 from jamdict import Jamdict

@@ -54,7 +54,7 @@ class Bot_Admin(commands.Cog):
             total_users += guild.member_count
         total_guilds = len(self.bot.guilds)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f"Tips"
+        embed.title = "Tips"
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         if total_guilds > 75:
             if total_users / total_guilds > 150:
