@@ -1,9 +1,4 @@
-# EasyBot.py file
-# built in
-import os
-
 import discord
-import qrcode
 from discord.ext import commands
 
 
@@ -33,7 +28,7 @@ class Utility(commands.Cog):
             total_members += guild.member_count
         average_members_per_guild = total_members / len(guilds)
         embed = discord.Embed(color=discord_colors())
-        embed.title = f"Bot Info"
+        embed.title = "Bot Info"
         embed.description = f"""
         Name: {name}\n
         Servers: {len(guilds)}\n
@@ -134,7 +129,7 @@ class Bot_Admin(commands.Cog):
                     await channel.send(embed=embed)
                 except Exception as e:
                     await channel.send(f"There has been something wrong.\nReason: {e}")
-        await ctx.send(f"Message broadcasted to all servers connected")
+        await ctx.send("Message broadcasted to all servers connected")
 
 
 def setup(bot):

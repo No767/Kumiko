@@ -1,5 +1,4 @@
 import discord
-from discord import Client
 from discord.ext import commands
 
 
