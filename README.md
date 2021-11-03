@@ -42,4 +42,3 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 # Links 
 
 - [Documentation](https://rin-docs.readthedocs.io/en/latest/)
-- [Docker Image](https://hub.docker.com/repository/docker/no767/rin) (Note that the Docker Repo is now private due to risks of unauthorized users attempting to host the bot)
