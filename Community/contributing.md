@@ -27,7 +27,7 @@ You have 2 options on how you want to install the dependencies: via [Pip](https:
 
 ## Pull Requests and Commits
 
-You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred.
+You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred. **If it's not for any fixes including any hotfixes, please submitting it to the dev branch, not the master branch**
 
 ## Formatting
 
