@@ -16,7 +16,7 @@ class info(commands.Cog):
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
         embedVar.add_field(
             name="Welcome!",
-            value="Thanks for using this bot. As of now, it is under v0 Beta, but will be releasing soon if the project maintainer can find a place to officially host it.",
+            value="Thanks for using this bot. As of now, it is under v0 Beta, which means it's still undergoing changes. Rin is also almost ready for production release",
             inline=False,
         )
         embedVar.add_field(
