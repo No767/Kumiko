@@ -49,6 +49,7 @@ class hypixel_api(commands.Cog):
     async def on_message(self, ctx, *, uuid: str):
         player = hypixel_lookup(uuid)
         online = player_status(uuid)
+        http_statusv1 = http_status()
         if str(player["success"]) == "True":
             discord_embed = discord.Embed(title="Player Info")
             discord_embed.description = f"""
@@ -60,7 +61,7 @@ class hypixel_api(commands.Cog):
                 
                 **Success or Not?**
                 Success >> {player['success']}
-                HTTP Status >> {http_status()}
+                HTTP Status >> {http_statusv1}
                 """
             await ctx.send(embed=discord_embed)
         else:
@@ -84,6 +85,7 @@ class hypixel_player_count(commands.Cog):
     async def on_message(self, ctx):
         status = player_count()
         if str(status["success"]) == "True":
+            http_statusv1 = http_status()
             embedVar = discord.Embed(title="Games Player Count")
             embedVar.description = f"""
                 Main Lobby >> {status['games']['MAIN_LOBBY']['players']}
@@ -104,7 +106,7 @@ class hypixel_player_count(commands.Cog):
                 Duels >> {status['games']['DUELS']['players']}
                 """
             embedVar.add_field(name="HTTP Status",
-                               value=http_status, inline=False)
+                               value=http_statusv1, inline=False)
             await ctx.send(embed=embedVar)
 
 
@@ -115,6 +117,7 @@ class hypixel_status(commands.Cog):
     @commands.command(name="hypixelplayerstatus")
     async def on_message(self, ctx, *, uuid: str):
         player_statusv3 = player_status(uuid)
+        http_statusv1 = http_status()
         if str(player_statusv3["success"]) == "True":
             embedVar = discord.Embed()
             embedVar.description = f"""
@@ -123,7 +126,7 @@ class hypixel_status(commands.Cog):
             
             **Success or Not?**
             Success >> {player_statusv3['success']}
-            HTTP Status >> {http_status()}
+            HTTP Status >> {http_statusv1}
             """
             await ctx.send(embed=embedVar)
         else:
@@ -146,6 +149,7 @@ class skywars(commands.Cog):
     @commands.command(name="skywarsinfo")
     async def on_message(self, ctx, *, uuid: str):
         skywars = player_ranked_skywars(uuid)
+        http_statusv1 = http_status()
         if str(skywars["success"]) == "True":
             embedVar = discord.Embed()
             embedVar.description = f"""
@@ -166,7 +170,7 @@ class skywars(commands.Cog):
             Debug:
             Success >> {skywars['success']}
             Cause >> {skywars['cause']}
-            HTTP Status >> {http_status()}
+            HTTP Status >> {http_statusv1}
             """
             await ctx.send(embed=embedVar)
 
