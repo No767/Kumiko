@@ -17,11 +17,13 @@ def get_related_anime_info_pictures(id):
     r = requests.get(link)
     return ujson.loads(r.text)
 
+
 def get_anime_infov2(id):
     link = f"https://api.jikan.moe/v3/anime/{id}"
     r = requests.get(link)
     anime_info_v2 = ujson.loads(r.text)
     return anime_info_v2
+
 
 class JikanV1(commands.Cog):
     def __init__(self, bot):
@@ -30,29 +32,69 @@ class JikanV1(commands.Cog):
     @commands.command(name="jikan-search")
     async def anime(self, ctx, *, search: str):
         anime_info = get_anime_info(search)
-        id = anime_info['results'][0]['mal_id']
+        id = anime_info["results"][0]["mal_id"]
         anime_info_v2 = get_anime_infov2(id)
         try:
-            embedVar = discord.Embed(title=anime_info_v2['title'])
+            embedVar = discord.Embed(title=anime_info_v2["title"])
             embedVar.add_field(
-                name="English Title", value=anime_info_v2['title_english'], inline=False
+                name="English Title", value=anime_info_v2["title_english"], inline=False
             )
-            embedVar.add_field(name="Japanese Title", value=anime_info_v2['title_japanese'], inline=False)
-            embedVar.add_field(name="Title Synonyms", value=str(anime_info_v2['title_synonyms']).replace("[", "").replace("]", "").replace("'", ""), inline=False)
-            embedVar.add_field(name="Synopsis", value=str(anime_info_v2["synopsis"]).replace("[Written by MAL Rewrite]", ""), inline=False)
-            embedVar.add_field(name="Background", value=anime_info_v2["background"], inline=False)
-            embedVar.add_field(name="Type", value=anime_info_v2["type"], inline=False)
-            embedVar.add_field(name="Source", value=anime_info_v2["source"], inline=False)
-            embedVar.add_field(name="Status", value=anime_info_v2["status"], inline=False)
-            embedVar.add_field(name="Aired", value=anime_info_v2['aired']['string'], inline=False)
-            embedVar.add_field(name="Premiered", value=anime_info_v2['premiered'], inline=False)
-            embedVar.add_field(name="Rating", value=anime_info_v2['rating'], inline=False)
-            embedVar.add_field(name="Score", value=anime_info_v2['score'], inline=False)
-            embedVar.add_field(name="Scored By", value=anime_info_v2['scored_by'], inline=False)
-            embedVar.add_field(name="Rank", value=anime_info_v2['rank'], inline=False)
-            embedVar.add_field(name="Popularity", value=anime_info_v2['popularity'], inline=False)
-            embedVar.add_field(name="Members", value=anime_info_v2['members'], inline=False)
-            embedVar.add_field(name="Favorites", value=anime_info_v2['favorites'], inline=False) 
+            embedVar.add_field(
+                name="Japanese Title",
+                value=anime_info_v2["title_japanese"],
+                inline=False,
+            )
+            embedVar.add_field(
+                name="Title Synonyms",
+                value=str(anime_info_v2["title_synonyms"])
+                .replace("[", "")
+                .replace("]", "")
+                .replace("'", ""),
+                inline=False,
+            )
+            embedVar.add_field(
+                name="Synopsis",
+                value=str(anime_info_v2["synopsis"]).replace(
+                    "[Written by MAL Rewrite]", ""
+                ),
+                inline=False,
+            )
+            embedVar.add_field(
+                name="Background", value=anime_info_v2["background"], inline=False
+            )
+            embedVar.add_field(
+                name="Type", value=anime_info_v2["type"], inline=False)
+            embedVar.add_field(
+                name="Source", value=anime_info_v2["source"], inline=False
+            )
+            embedVar.add_field(
+                name="Status", value=anime_info_v2["status"], inline=False
+            )
+            embedVar.add_field(
+                name="Aired", value=anime_info_v2["aired"]["string"], inline=False
+            )
+            embedVar.add_field(
+                name="Premiered", value=anime_info_v2["premiered"], inline=False
+            )
+            embedVar.add_field(
+                name="Rating", value=anime_info_v2["rating"], inline=False
+            )
+            embedVar.add_field(
+                name="Score", value=anime_info_v2["score"], inline=False)
+            embedVar.add_field(
+                name="Scored By", value=anime_info_v2["scored_by"], inline=False
+            )
+            embedVar.add_field(
+                name="Rank", value=anime_info_v2["rank"], inline=False)
+            embedVar.add_field(
+                name="Popularity", value=anime_info_v2["popularity"], inline=False
+            )
+            embedVar.add_field(
+                name="Members", value=anime_info_v2["members"], inline=False
+            )
+            embedVar.add_field(
+                name="Favorites", value=anime_info_v2["favorites"], inline=False
+            )
             embedVar.set_thumbnail(url=anime_info_v2["image_url"])
             await ctx.send(embed=embedVar)
         except Exception as e:
