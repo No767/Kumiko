@@ -7,7 +7,6 @@ on:
     
   pull_request:
     branches:
-      - master
       - dev
   schedule:
     - cron: '36 7 * * 0'
@@ -16,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.9
+      - name: Set up Python 3.10.0
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.10.0
       - name: Upgrade Pip, Setuptools, and Wheel
         run: |
           pip install --upgrade pip setuptools wheel
