@@ -1,9 +1,9 @@
 import os
 import random
 
-import ujson
 import discord
 import requests
+import ujson
 from discord import Embed
 from discord.ext import commands
 from dotenv import load_dotenv
