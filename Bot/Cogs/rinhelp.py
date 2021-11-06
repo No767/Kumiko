@@ -319,10 +319,14 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`jikan-search`",
-                    value="Searches on Jikan/MAL and returns info about yourselected anime",
+                    name="`jikan-anime`",
+                    value="Searches on Jikan/MyAnimeList and provides info about the given anime",
                     inline=True,
                 )
+                embedVar.add_field(name="`jikan-manga`", value="Seaches on Jikan/MyAnimeList and provides info about the given manga", inline=True)
+                embedVar.add_field(name="`jikan-top`", value="Returns the Top 10 items on Jikan/MAL", inline=True)
+                embedVar.add_field(name="`jikan-season`", value="Returns 5 animes within those given years and seasons", inline=True)
+                embedVar.add_field(name="`jikan-season-later`", value="Returns 5 animes that are already planned for viewing in the future", inline=True)
                 embedVar.set_author(
                     name="Rin Help - Anime", icon_url=bot.user.avatar_url
                 )

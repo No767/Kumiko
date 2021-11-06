@@ -39,6 +39,7 @@ initial_extensions = [
     "Cogs.pronouns",
     "Cogs.spiget",
     "Cogs.jikan",
+    "Cogs.disquest",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
