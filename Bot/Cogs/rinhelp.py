@@ -237,7 +237,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text="Note: Instagram likes to rate limit users like me with their private API. Make sure not to send too much requests, or else this cog will not work. A cooldown system is being worked on to address this issue."
+                    text="Note: There is a 20 sec cooldowm for each command. This is to prevent rate limiting."
                 )
                 embedVar.set_author(
                     name="Rin Help - Instagram", icon_url=bot.user.avatar_url

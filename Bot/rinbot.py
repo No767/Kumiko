@@ -40,6 +40,7 @@ initial_extensions = [
     "Cogs.spiget",
     "Cogs.jikan",
     "Cogs.disquest",
+    "Cogs.instagram",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
