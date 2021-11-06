@@ -1,7 +1,7 @@
-import json
 import os
 import random
 
+import ujson
 import discord
 import requests
 from discord import Embed
