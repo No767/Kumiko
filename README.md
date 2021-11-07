@@ -16,7 +16,7 @@ A Discord bot with EasyBot.py plugin support and third party API support
 
 # Inviting the Bot
 
-Via Top.gg. Not publicly available and ready for invites yet.
+Via Top.gg. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite)
 
 # Building
 
