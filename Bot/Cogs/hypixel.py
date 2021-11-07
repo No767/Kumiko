@@ -106,7 +106,7 @@ class hypixel_player_count(commands.Cog):
                 Duels >> {status['games']['DUELS']['players']}
                 """
             embedVar.add_field(name="HTTP Status",
-                               value=http_statusv1, inline=False)
+                               value=str(http_statusv1), inline=False)
             await ctx.send(embed=embedVar)
 
 
