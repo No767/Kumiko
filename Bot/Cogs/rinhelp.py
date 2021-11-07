@@ -194,9 +194,6 @@ class rinhelp(commands.Cog):
                     name="`mylvl`", value="Displays DisQuest Level", inline=True
                 )
                 embedVar.add_field(
-                    name="`image`", value="Scraps Images on Deviantart", inline=True
-                )
-                embedVar.add_field(
                     name="`rank`",
                     value="Displays the most active members of your server",
                     inline=True,
