@@ -1,5 +1,5 @@
 # Changes 
-- Hosting on Azure (not production ready yet...)
+- Hosting on Azure
 - Switched from using the Python JSON module to UJSON
 - Instagram cog cooldown (prevents rate limiting)
 - Finished Jikan/MAL API Support
