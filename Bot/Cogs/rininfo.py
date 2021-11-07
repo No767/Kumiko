@@ -11,17 +11,17 @@ class info(commands.Cog):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
         embedVar.description = """
-        **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **Invite**
+        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)**
         """
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
         embedVar.add_field(
             name="Welcome!",
-            value="Thanks for using this bot. As of now, it is under v0 Beta, which means it's still undergoing changes. Rin is also almost ready for production release",
+            value="Thanks for using this bot. Rin is officially ready for production use.",
             inline=False,
         )
         embedVar.add_field(
             name="About",
-            value="Rin is a Discord bot built with EasyBot.py plugin support. Its function is to be a general-purpose bot, which mostly focuses on third-party API support.",
+            value="Rin is a Discord bot built with EasyBot.py plugin support. Its function is to be a general-purpose bot, which mostly focuses on third-party API support. Some of them include Hypixel, MyAnimeList, Instagram, and many others.",
             inline=False,
         )
         embedVar.add_field(

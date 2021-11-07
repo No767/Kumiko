@@ -17,7 +17,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **Invite**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
