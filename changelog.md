@@ -10,4 +10,4 @@
 - Jikan/MAL API Support
 
 # Removals
-
+- Image Cog (Violates Top.gg Rules)

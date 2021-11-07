@@ -24,7 +24,6 @@ initial_extensions = [
     "Cogs.rinhelp",
     "Cogs.twitter",
     "Cogs.reddit",
-    "Cogs.images",
     "Cogs.pinger",
     "Cogs.chat",
     "Cogs.jisho",
