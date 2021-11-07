@@ -212,7 +212,9 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`nb-pride`", value="Sends a non-binary flag and a trans flag into the channel", inline=True
+                    name="`nb-pride`",
+                    value="Sends a non-binary flag and a trans flag into the channel",
+                    inline=True,
                 )
                 embedVar.set_author(name="Rin Help - Fun",
                                     icon_url=bot.user.avatar_url)
