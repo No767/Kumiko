@@ -1,7 +1,6 @@
-import json
-
 import discord
 import requests
+import ujson
 from discord.ext import commands
 
 
@@ -9,7 +8,7 @@ def advice():
     link = "https://api.adviceslip.com/advice"
     r = requests.get(link)
     advice_data = r.text
-    return json.loads(advice_data)
+    return ujson.loads(advice_data)
 
 
 class advice_slip(commands.Cog):

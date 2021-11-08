@@ -1,4 +1,3 @@
-import json
 import re
 
 import discord
@@ -136,7 +135,7 @@ class jisho_dict(commands.Cog):
             link = f"https://jisho.org/api/v1/search/words?keyword={search}"
             r = requests.get(link)
             jisho_data = r.text
-            jisho = json.loads(jisho_data)
+            jisho = ujson.loads(jisho_data)
             embedVar = discord.Embed()
             embedVar.add_field(
                 name="Info",

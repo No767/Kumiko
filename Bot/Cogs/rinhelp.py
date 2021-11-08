@@ -17,7 +17,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **Invite**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
@@ -194,9 +194,6 @@ class rinhelp(commands.Cog):
                     name="`mylvl`", value="Displays DisQuest Level", inline=True
                 )
                 embedVar.add_field(
-                    name="`image`", value="Scraps Images on Deviantart", inline=True
-                )
-                embedVar.add_field(
                     name="`rank`",
                     value="Displays the most active members of your server",
                     inline=True,
@@ -209,6 +206,11 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`advice`",
                     value="Returns some advice from Advice Slip",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`nb-pride`",
+                    value="Sends a non-binary flag and a trans flag into the channel",
                     inline=True,
                 )
                 embedVar.set_author(name="Rin Help - Fun",
@@ -237,7 +239,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text="Note: Instagram likes to rate limit users like me with their private API. Make sure not to send too much requests, or else this cog will not work. A cooldown system is being worked on to address this issue."
+                    text="Note: There is a 20 sec cooldowm for each command. This is to prevent rate limiting."
                 )
                 embedVar.set_author(
                     name="Rin Help - Instagram", icon_url=bot.user.avatar_url
@@ -319,8 +321,28 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`jikan-search`",
-                    value="Searches on Jikan/MAL and returns info about yourselected anime",
+                    name="`jikan-anime`",
+                    value="Searches on Jikan/MyAnimeList and provides info about the given anime",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`jikan-manga`",
+                    value="Seaches on Jikan/MyAnimeList and provides info about the given manga",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`jikan-top`",
+                    value="Returns the Top 10 items on Jikan/MAL",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`jikan-season`",
+                    value="Returns 5 animes within those given years and seasons",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`jikan-season-later`",
+                    value="Returns 5 animes that are already planned for viewing in the future",
                     inline=True,
                 )
                 embedVar.set_author(

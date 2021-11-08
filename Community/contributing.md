@@ -7,7 +7,8 @@ We are glad that you're willing to contribute to this project. We are usually ve
 To get started, you'll need these things installed: 
 
 - Git
-- Python 3.6 and above (Made in 3.9.6 and 3.9.7)
+- Python 3.10 or higher
+- Pipenv
 
 ## Installing Dependencies
 
@@ -27,7 +28,7 @@ You have 2 options on how you want to install the dependencies: via [Pip](https:
 
 ## Pull Requests and Commits
 
-You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred.
+You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred. **If it's not for any fixes including any hotfixes, please submitting it to the dev branch, not the master branch**
 
 ## Formatting
 
