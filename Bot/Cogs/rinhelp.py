@@ -309,7 +309,7 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "anime":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -352,7 +352,7 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Anime", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) == "topgg":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -367,7 +367,9 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`topgg-search-user`", value="Returns info about user on Top.gg", inline=True
+                    name="`topgg-search-user`",
+                    value="Returns info about user on Top.gg",
+                    inline=True,
                 )
                 embedVar.set_author(
                     name="Rin Help - Admin", icon_url=bot.user.avatar_url
