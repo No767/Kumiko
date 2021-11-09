@@ -358,11 +358,6 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
                     name="`topgg-search`",
-                    value="Returns details about 3 bots searched on Top.gg",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`topgg-search-one`",
                     value="Returns details about 1 bot searched on Top.gg",
                     inline=True,
                 )
