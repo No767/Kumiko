@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("Hanako_Token")
+TOKEN = os.getenv("TOKEN")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".")
 
