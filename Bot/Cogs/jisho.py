@@ -10,7 +10,7 @@ from jamdict import Jamdict
 load_dotenv()
 jam = Jamdict()
 
-
+# Use Array Loop Instead
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
     for c in res.chars:
@@ -21,7 +21,7 @@ def hiragana(search):
     result = jam.lookup(search)
     for word in result.entries:
         m = re.findall("[ぁ-ん]", str(word))
-        r = str(m).replace("[", " ").replace("]", " ")
+        r = str(m).replace("'", "").replace(",", "").replace(" ", "")
         return str(r)
 
 
@@ -56,7 +56,6 @@ def english_def_part2(search):
         str(result.chars)
         .replace("[", " ")
         .replace("]", " ")
-        .replace(" ", "\n")
         .replace(",", ", ")
         .replace(":", " ")
     )
@@ -130,16 +129,17 @@ class jisho_dict(commands.Cog):
         self.bot = bot
 
     @commands.command(name="jisho")
-    async def on_message(self, ctx, search: str):
+    async def jisho(self, ctx, search: str):
         try:
             link = f"https://jisho.org/api/v1/search/words?keyword={search}"
             r = requests.get(link)
             jisho_data = r.text
             jisho = ujson.loads(jisho_data)
+            res = jam.lookup(search.replace("\n", " "))
             embedVar = discord.Embed()
             embedVar.add_field(
                 name="Info",
-                value=f"**Kanji** >> {kanjiv2(search)}\n**Hiragana** >> {hiragana(search)}\n**Katakana** >> {katakana(search)}\n**Position of Speech (POS)** >> {pos(search)}",
+                value=f"**Kanji** >> {[str(c) for c in res.chars]}\n**Hiragana** >> {hiragana(search)}\n**Katakana** >> {katakana(search)}\n**Position of Speech (POS)** >> {pos(search)}",
                 inline=False,
             )
             embedVar.add_field(
@@ -160,7 +160,7 @@ class jisho_dict(commands.Cog):
                 inline=False,
             )
             embedVar.add_field(
-                name="HTTP Status", value=f"{jisho['meta']['status']}", inline=False
+                name="HTTP Status (Jisho API)", value=f"{jisho['meta']['status']}", inline=False
             )
             await ctx.send(embed=embedVar)
         except Exception as e:
@@ -170,6 +170,14 @@ class jisho_dict(commands.Cog):
             )
             await ctx.send(embed=embed_discord)
 
+    @jisho.error
+    async def on_message_error(self, ctx: commands.Context, error: commands.CommandError):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embed_discord = discord.Embed()
+            embed_discord.description = (
+                f"Missing a requireed argument: {error.param}"
+            )
+            await ctx.send(embed=embed_discord)
 
 def setup(bot):
     bot.add_cog(jisho_dict(bot))
