@@ -11,6 +11,8 @@ load_dotenv()
 jam = Jamdict()
 
 # Use Array Loop Instead
+
+
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
     for c in res.chars:
@@ -160,7 +162,9 @@ class jisho_dict(commands.Cog):
                 inline=False,
             )
             embedVar.add_field(
-                name="HTTP Status (Jisho API)", value=f"{jisho['meta']['status']}", inline=False
+                name="HTTP Status (Jisho API)",
+                value=f"{jisho['meta']['status']}",
+                inline=False,
             )
             await ctx.send(embed=embedVar)
         except Exception as e:
@@ -171,13 +175,14 @@ class jisho_dict(commands.Cog):
             await ctx.send(embed=embed_discord)
 
     @jisho.error
-    async def on_message_error(self, ctx: commands.Context, error: commands.CommandError):
+    async def on_message_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
         if isinstance(error, commands.MissingRequiredArgument):
             embed_discord = discord.Embed()
-            embed_discord.description = (
-                f"Missing a requireed argument: {error.param}"
-            )
+            embed_discord.description = f"Missing a requireed argument: {error.param}"
             await ctx.send(embed=embed_discord)
+
 
 def setup(bot):
     bot.add_cog(jisho_dict(bot))
