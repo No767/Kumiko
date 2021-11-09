@@ -39,7 +39,9 @@ class TopGGV1(commands.Cog):
             )
             embedVar.add_field(
                 name="Long Description",
-                value=str(getOneBotInfo["longdesc"]).replace("\r", "").replace("\n", ""),
+                value=str(getOneBotInfo["longdesc"])
+                .replace("\r", "")
+                .replace("\n", ""),
                 inline=False,
             )
             embedVar.add_field(
@@ -52,12 +54,14 @@ class TopGGV1(commands.Cog):
             )
             embedVar.add_field(
                 name="GitHub",
-                value=str(getOneBotInfo["github"]).replace('"', "").replace("'", ""),
+                value=str(getOneBotInfo["github"]).replace(
+                    '"', "").replace("'", ""),
                 inline=True,
             )
             embedVar.add_field(
                 name="Website",
-                value=str(getOneBotInfo["website"]).replace('"', "").replace("'", ""),
+                value=str(getOneBotInfo["website"]).replace(
+                    '"', "").replace("'", ""),
                 inline=True,
             )
             embedVar.add_field(
@@ -77,14 +81,12 @@ class TopGGV1(commands.Cog):
             )
             embedVar.add_field(
                 name="Owners",
-                value=str(getOneBotInfo
-                          ["owners"]).replace("'", ""),
+                value=str(getOneBotInfo["owners"]).replace("'", ""),
                 inline=True,
             )
             embedVar.add_field(
                 name="Tags",
-                value=str(getOneBotInfo
-                          ["tags"]).replace("'", ""),
+                value=str(getOneBotInfo["tags"]).replace("'", ""),
                 inline=True,
             )
             await ctx.send(embed=embedVar)
