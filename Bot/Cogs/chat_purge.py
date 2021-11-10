@@ -26,13 +26,23 @@ class Utility(commands.Cog):
         embed.title = "Server Info"
         embed.add_field(name="Name", value=name, inline=True)
         embed.add_field(name="# of channels", value=len(channels), inline=True)
-        embed.add_field(name="# of text channels", value=len(text_channels), inline=True)
-        embed.add_field(name="# of voice channels", value=len(voice_channels), inline=True)
-        embed.add_field(name="# of nitro boosted members", value=premium_members, inline=True)
-        embed.add_field(name="# of members", value=f"{members}/{max_members}", inline=True)
+        embed.add_field(
+            name="# of text channels", value=len(text_channels), inline=True
+        )
+        embed.add_field(
+            name="# of voice channels", value=len(voice_channels), inline=True
+        )
+        embed.add_field(
+            name="# of nitro boosted members", value=premium_members, inline=True
+        )
+        embed.add_field(
+            name="# of members", value=f"{members}/{max_members}", inline=True
+        )
         embed.add_field(name="Located in", value=location, inline=True)
         embed.add_field(name="Created on", value=epox, inline=True)
-        embed.add_field(name="Explicit content filter enabled for", value=explicit, inline=True)
+        embed.add_field(
+            name="Explicit content filter enabled for", value=explicit, inline=True
+        )
         embed.add_field(name="List of all emojis", value=emojis, inline=True)
         embed.set_thumbnail(url=guild.icon_url)
         await ctx.send(embed=embed)
