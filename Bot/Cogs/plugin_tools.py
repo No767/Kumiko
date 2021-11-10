@@ -29,12 +29,10 @@ class Utility(commands.Cog):
         average_members_per_guild = total_members / len(guilds)
         embed = discord.Embed(color=discord_colors())
         embed.title = "Bot Info"
-        embed.description = f"""
-        Name: {name}\n
-        Servers: {len(guilds)}\n
-        Total Users: {total_members}\n
-        Average Users Per Server: {average_members_per_guild}\n
-        """
+        embed.add_field(name="Name", value=name, inline=False)
+        embed.add_field(name="Servers", value=len(guilds), inline=False)
+        embed.add_field(name="Total Users", value=total_members, inline=False)
+        embed.add_field(name="Average Users Per Server", value=average_members_per_guild, inline=False)
         embed.set_thumbnail(url=bot.user.avatar_url)
         await ctx.send(embed=embed)
 
