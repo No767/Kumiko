@@ -37,22 +37,24 @@ class check_pronouns(commands.Cog):
             await msg.add_reaction(":yellow_heart:")
             await msg.add_reaction(":purple_heart:")
 
-            def check2(r, u): return u == ctx.author and str(
-                r.emoji) in ":heart:"
+            def check2(r, u):
+                return u == ctx.author and str(r.emoji) in ":heart:"
 
-            def check3(r, u): return u == ctx.author and str(
-                r.emoji) in ":white_heart:"
+            def check3(r, u):
+                return u == ctx.author and str(r.emoji) in ":white_heart:"
 
-            def check4(r, u): return u == ctx.author and str(
-                r.emoji) in ":green_heart:"
+            def check4(r, u):
+                return u == ctx.author and str(r.emoji) in ":green_heart:"
 
-            def check5(r, u): return u == ctx.author and str(
-                r.emoji) in ":blue_heart:"
+            def check5(r, u):
+                return u == ctx.author and str(r.emoji) in ":blue_heart:"
 
-            def check6(r, u): return u == ctx.author and str(
-                r.emoji) in ":yellow_heart:"
-            def check7(r, u): return u == ctx.author and str(
-                r.emoji) in ":purple_heart:"
+            def check6(r, u):
+                return u == ctx.author and str(r.emoji) in ":yellow_heart:"
+
+            def check7(r, u):
+                return u == ctx.author and str(r.emoji) in ":purple_heart:"
+
             reaction, user = await self.bot.wait_for_reaction("reaction_add")
             if str(reaction.emoji) == "🧡":
                 guild = ctx.guild
