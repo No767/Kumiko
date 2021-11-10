@@ -91,7 +91,8 @@ class reddit(commands.Cog):
             # finding a suitable post
             submission = post
             # discord embed setup
-            reddit_embed = discord.Embed(color=discord.Color.from_rgb(255, 69, 0))
+            reddit_embed = discord.Embed(
+                color=discord.Color.from_rgb(255, 69, 0))
             reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
             reddit_embed.set_image(url=submission.url)
             await ctx.send(embed=reddit_embed)
@@ -100,8 +101,7 @@ class reddit(commands.Cog):
             await ctx.send(
                 f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.\nReason: {e}"
             )
-        
-        
+
     @reddit.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError

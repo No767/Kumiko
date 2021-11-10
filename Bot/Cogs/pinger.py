@@ -1,5 +1,5 @@
-from discord.ext import commands
 import discord
+from discord.ext import commands
 
 
 class rinpinger(commands.Cog):
@@ -23,6 +23,7 @@ class rinpinger(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
 
 def setup(bot):
     bot.add_cog(rinpinger(bot))
