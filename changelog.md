@@ -3,6 +3,7 @@
 - Global Error Handling for Unknown Commands
 - More Error Handling for commands (regarding missing parameters)
 - Fix jisho empty fields issue (use kanji/hiragana instead)
+- Update Botinfo and Serverinfo to use fields instead
 
 # Additions
 - Top.gg API Support
