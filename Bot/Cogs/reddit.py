@@ -91,18 +91,26 @@ class reddit(commands.Cog):
             # finding a suitable post
             submission = post
             # discord embed setup
-            reddit_embed = discord.Embed()
+            reddit_embed = discord.Embed(
+                color=discord.Color.from_rgb(255, 69, 0))
             reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
             reddit_embed.set_image(url=submission.url)
             await ctx.send(embed=reddit_embed)
             return
         except Exception as e:
             await ctx.send(
-                f"""
-                There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.
-                Reason: {e}
-                """
+                f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.\nReason: {e}"
             )
+
+    @reddit.error
+    async def on_message_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+            embedVar.description = f"Missing a required argument: {error.param}"
+            msg = await ctx.send(embed=embedVar, delete_after=10)
+            await msg.delete(delay=10)
 
 
 def setup(bot):

@@ -42,6 +42,8 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Anime", value="`.rinhelp anime`", inline=True)
+                embedVar.add_field(
+                    name="Top.gg", value="`.rinhelp topgg`", inline=True)
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -307,6 +309,7 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
+
             if str(search) == "anime":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -347,6 +350,24 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.set_author(
                     name="Rin Help - Anime", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+
+            if str(search) == "topgg":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`topgg-search`",
+                    value="Returns details about 1 bot searched on Top.gg",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`topgg-search-user`",
+                    value="Returns info about user on Top.gg",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - Admin", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
         except Exception as e:

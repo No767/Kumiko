@@ -12,6 +12,8 @@ class Utility(commands.Cog):
         guild = ctx.guild
         name = guild.name
         channels = guild.channels
+        text_channels = guild.text_channels
+        voice_channels = guild.voice_channels
         members = guild.member_count
         premium_members = guild.premium_subscription_count
         max_members = guild.max_members
@@ -22,17 +24,26 @@ class Utility(commands.Cog):
         emojis = guild.emojis
         embed = discord.Embed(color=plugin_tools.discord_colors())
         embed.title = "Server Info"
-        embed.description = f"""
-        Name: {name}\n
-        # of channels: {len(channels)}\n
-        # of nitro boosted members: {premium_members}\n
-        # of members: {members}/{max_members}\n
-        Located in {location}\n
-        Created on {epox}\n
-        Owned by UID: {owner}\n
-        Explicit content filter enabled for {explicit}\n
-        List of all emojis: {emojis}\n
-        """
+        embed.add_field(name="Name", value=name, inline=True)
+        embed.add_field(name="# of channels", value=len(channels), inline=True)
+        embed.add_field(
+            name="# of text channels", value=len(text_channels), inline=True
+        )
+        embed.add_field(
+            name="# of voice channels", value=len(voice_channels), inline=True
+        )
+        embed.add_field(
+            name="# of nitro boosted members", value=premium_members, inline=True
+        )
+        embed.add_field(
+            name="# of members", value=f"{members}/{max_members}", inline=True
+        )
+        embed.add_field(name="Located in", value=location, inline=True)
+        embed.add_field(name="Created on", value=epox, inline=True)
+        embed.add_field(
+            name="Explicit content filter enabled for", value=explicit, inline=True
+        )
+        embed.add_field(name="List of all emojis", value=emojis, inline=True)
         embed.set_thumbnail(url=guild.icon_url)
         await ctx.send(embed=embed)
 

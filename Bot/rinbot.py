@@ -40,7 +40,8 @@ initial_extensions = [
     "Cogs.jikan",
     "Cogs.disquest",
     "Cogs.nb-pride",
-    "Cogs.instagram",
+    "Cogs.top-gg",
+    "Cogs.global-error-handling",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
