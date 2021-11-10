@@ -32,7 +32,11 @@ class Utility(commands.Cog):
         embed.add_field(name="Name", value=name, inline=False)
         embed.add_field(name="Servers", value=len(guilds), inline=False)
         embed.add_field(name="Total Users", value=total_members, inline=False)
-        embed.add_field(name="Average Users Per Server", value=average_members_per_guild, inline=False)
+        embed.add_field(
+            name="Average Users Per Server",
+            value=average_members_per_guild,
+            inline=False,
+        )
         embed.set_thumbnail(url=bot.user.avatar_url)
         await ctx.send(embed=embed)
 
