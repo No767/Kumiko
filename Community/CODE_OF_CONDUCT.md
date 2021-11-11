@@ -24,6 +24,7 @@ community include:
   and learning from the experience
 * Focusing on what is best not just for us as individuals, but for the
   overall community
+* Using the correct pronouns that someone may identify with
 
 Examples of unacceptable behavior include:
 
@@ -35,6 +36,7 @@ Examples of unacceptable behavior include:
   address, without their explicit permission
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting
+* Being Transphobic, Homophobic, or Misgendering anyone within the community
 
 ## Enforcement Responsibilities
 
