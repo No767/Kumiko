@@ -47,6 +47,8 @@ cffi = "*"
 pykakasi = "==2.2.1"
 ujson = "*"
 jikanpy = "*"
+spotipy = "*"
+pynacl = "*"
 
 [dev-packages]
 

@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("Hanako_Token")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".")
 
@@ -42,6 +42,7 @@ initial_extensions = [
     "Cogs.nb-pride",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
+    "Cogs.spotify",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
