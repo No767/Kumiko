@@ -40,3 +40,6 @@ instagram-tester.py
 modrinth-tester.py
 top-gg-tester.py
 pinterest-tester.py
+spotify-tester.py
+Cog-Testers/
+.cache
