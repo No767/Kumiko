@@ -134,20 +134,48 @@ class mcsrvstats(commands.Cog):
                 Cache Time >> {mcsrv['debug']['cachetime']}
                 HTTP Status (MCSrvStat) >> {mcsrv_status_code}
                 """
-                embedVar.add_field(name="Online Status", value=mcsrv['online'])
-                embedVar.add_field(name="Hostname/Domain", value=mcsrv['hostname'], inline=True)
-                embedVar.add_field(name="IP Address", value=mcsrv['ip'], inline=True)
-                embedVar.add_field(name="Port", value=mcsrv['port'], inline=True)
-                embedVar.add_field(name="Ping", value=mcsrv['debug']['ping'], inline=True)
-                embedVar.add_field(name="Query", value=mcsrv['debug']['query'], inline=True)
-                embedVar.add_field(name="SRV Record", value=mcsrv['debug']['srv'], inline=True)
-                embedVar.add_field(name="Query Mismatch", value=mcsrv['debug']['querymismatch'], inline=True)
-                embedVar.add_field(name="IP in SRV", value=mcsrv['debug']['ipinsrv'], inline=True)
-                embedVar.add_field(name="CNAME in SRV", value=mcsrv['debug']['cnameinsrv'], inline=True)
-                embedVar.add_field(name="Animated MOTD", value=mcsrv['debug']['animatedmotd'], inline=True)
-                embedVar.add_field(name="Cache Time", value=mcsrv['debug']['cachetime'], inline=True)
-                embedVar.add_field(name="API Version", value=mcsrv['debug']['apiversion'], inline=True)
-                embedVar.add_field(name="HTTP Status (MCSrvStat)", value=mcsrv_status_code, inline=True)
+                embedVar.add_field(name="Online Status", value=mcsrv["online"])
+                embedVar.add_field(
+                    name="Hostname/Domain", value=mcsrv["hostname"], inline=True
+                )
+                embedVar.add_field(name="IP Address",
+                                   value=mcsrv["ip"], inline=True)
+                embedVar.add_field(
+                    name="Port", value=mcsrv["port"], inline=True)
+                embedVar.add_field(
+                    name="Ping", value=mcsrv["debug"]["ping"], inline=True
+                )
+                embedVar.add_field(
+                    name="Query", value=mcsrv["debug"]["query"], inline=True
+                )
+                embedVar.add_field(
+                    name="SRV Record", value=mcsrv["debug"]["srv"], inline=True
+                )
+                embedVar.add_field(
+                    name="Query Mismatch",
+                    value=mcsrv["debug"]["querymismatch"],
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="IP in SRV", value=mcsrv["debug"]["ipinsrv"], inline=True
+                )
+                embedVar.add_field(
+                    name="CNAME in SRV", value=mcsrv["debug"]["cnameinsrv"], inline=True
+                )
+                embedVar.add_field(
+                    name="Animated MOTD",
+                    value=mcsrv["debug"]["animatedmotd"],
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="Cache Time", value=mcsrv["debug"]["cachetime"], inline=True
+                )
+                embedVar.add_field(
+                    name="API Version", value=mcsrv["debug"]["apiversion"], inline=True
+                )
+                embedVar.add_field(
+                    name="HTTP Status (MCSrvStat)", value=mcsrv_status_code, inline=True
+                )
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
                 embedVar.set_thumbnail(url=image_link)
