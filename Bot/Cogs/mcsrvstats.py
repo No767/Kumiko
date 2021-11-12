@@ -18,7 +18,7 @@ class mcsrvstats(commands.Cog):
         mcsrv_status_code = r.status_code
         try:
             if "True" in str(mcsrv["online"]):
-                embedVar = discord.Embed(color=0xC27C0E)
+                embedVar = discord.Embed(title="Infomation (Java Edition)",color=0xC27C0E)
                 embedVar.description = f"""
                 **Infomation (Java Edition)**
 
@@ -48,6 +48,23 @@ class mcsrvstats(commands.Cog):
                 API Version >> {mcsrv['debug']['apiversion']}
                 HTTP Status (MCSrvStat) >> {mcsrv_status_code}
                 """
+                embedVar.add_field(name="Online Status", value=mcsrv['online'], inline=True)
+                embedVar.add_field(name="Hostname/Domain", value=mcsrv['hostname'], inline=True)
+                embedVar.add_field(name="IP Address", value=mcsrv['ip'], inline=True)
+                embedVar.add_field(name="Port", value=mcsrv['port'], inline=True)
+                embedVar.add_field(name="Players Online", value=mcsrv['players']['online'], inline=True)
+                embedVar.add_field(name="Max Online Player Slots", value=mcsrv['players']['max'], inline=True)
+                embedVar.add_field(name="MOTD", value=str(mcsrv['motd']['clean']).replace("[", "").replace("]", "").replace("'", ""), inline=True)
+                embedVar.add_field(name="Ping", value=mcsrv['debug']['ping'], inline=True)
+                embedVar.add_field(name="Query", value=mcsrv['debug']['query'], inline=True)
+                embedVar.add_field(name="SRV Record", value=mcsrv['debug']['srv'], inline=True)
+                embedVar.add_field(name="Query Mismatch", value=mcsrv['debug']['querymismatch'], inline=True)
+                embedVar.add_field(name="IP in SRV", value=mcsrv['debug']['ipinsrv'], inline=True)
+                embedVar.add_field(name="CNAME in SRV", value=mcsrv['debug']['cnameinsrv'], inline=True)
+                embedVar.add_field(name="Animated MOTD", value=mcsrv['debug']['animatedmotd'], inline=True)
+                embedVar.add_field(name="Cache Time", value=mcsrv['debug']['cachetime'], inline=True)
+                embedVar.add_field(name="API Version", value=mcsrv['debug']['apiversion'], inline=True)
+                embedVar.add_field(name="HTTP Status (MCSrvStat)", value=mcsrv_status_code, inline=True)
                 embedVar.set_thumbnail(url=image_link)
                 await ctx.send(embed=embedVar)
             else:
