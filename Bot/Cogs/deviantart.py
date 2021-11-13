@@ -40,10 +40,12 @@ def get_tags(search):
     r = requests.get(link)
     return ujson.loads(r.text)
 
+
 def get_users(search):
     link = f"https://www.deviantart.com/api/v1/oauth2/user/profile/{search}?ext_collections=false&ext_galleries=false&with_session=false&mature_content=false&access_token={DeviantArt_API_Access_Token}"
     r = requests.get(link)
     return ujson.loads(r.text)
+
 
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
@@ -771,32 +773,73 @@ class DeviantArtV4(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
+
 class DeviantArtV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command(name="deviantart-user", aliases=["da-user"])
-    async def user(self, ctx, *, search:str):
+    async def user(self, ctx, *, search: str):
         users = get_users(search)
         try:
-            embedVar = discord.Embed(title=users['user']['username'], color=discord.Color.from_rgb(255, 156, 192))
-            embedVar.add_field(name="Real Name", value=f"[{users['real_name']}]", inline=True)
-            embedVar.add_field(name="Tagline", value=f"[{users['tagline']}]", inline=True)
-            embedVar.add_field(name="Bio", value=f"[{users['bio']}]", inline=True)
-            embedVar.add_field(name="Type", value=users['user']['type'], inline=True)
-            embedVar.add_field(name="User ID", value=users['user']['userid'], inline=True)
-            embedVar.add_field(name="Profile URL", value=users['profile_url'], inline=True)
-            embedVar.add_field(name="Is Artist", value=users['user_is_artist'], inline=True)
-            embedVar.add_field(name="Artist Level", value=users['artist_level'], inline=True)
-            embedVar.add_field(name="Artist Specialty", value=users['artist_specialty'], inline=True)
-            embedVar.add_field(name="Country", value=users['country'], inline=True)
-            embedVar.add_field(name="Last Status", value=users['last_status'], inline=True)
-            embedVar.add_field(name="User Deviations", value=users['stats']['user_deviations'], inline=True)
-            embedVar.add_field(name="User Favorites", value=users['stats']['user_favourites'], inline=True)
-            embedVar.add_field(name="User Comments", value=users['stats']['user_comments'], inline=True)    
-            embedVar.add_field(name="Profile Views", value=users['stats']['profile_pageviews'], inline=True)
-            embedVar.add_field(name="Profile Comments", value=users['stats']['profile_comments'], inline=True)
-            embedVar.set_thumbnail(url=users['user']['usericon'])
+            embedVar = discord.Embed(
+                title=users["user"]["username"],
+                color=discord.Color.from_rgb(255, 156, 192),
+            )
+            embedVar.add_field(
+                name="Real Name", value=f"[{users['real_name']}]", inline=True
+            )
+            embedVar.add_field(
+                name="Tagline", value=f"[{users['tagline']}]", inline=True
+            )
+            embedVar.add_field(
+                name="Bio", value=f"[{users['bio']}]", inline=True)
+            embedVar.add_field(
+                name="Type", value=users["user"]["type"], inline=True)
+            embedVar.add_field(
+                name="User ID", value=users["user"]["userid"], inline=True
+            )
+            embedVar.add_field(
+                name="Profile URL", value=users["profile_url"], inline=True
+            )
+            embedVar.add_field(
+                name="Is Artist", value=users["user_is_artist"], inline=True
+            )
+            embedVar.add_field(
+                name="Artist Level", value=users["artist_level"], inline=True
+            )
+            embedVar.add_field(
+                name="Artist Specialty", value=users["artist_specialty"], inline=True
+            )
+            embedVar.add_field(
+                name="Country", value=users["country"], inline=True)
+            embedVar.add_field(
+                name="Last Status", value=users["last_status"], inline=True
+            )
+            embedVar.add_field(
+                name="User Deviations",
+                value=users["stats"]["user_deviations"],
+                inline=True,
+            )
+            embedVar.add_field(
+                name="User Favorites",
+                value=users["stats"]["user_favourites"],
+                inline=True,
+            )
+            embedVar.add_field(
+                name="User Comments", value=users["stats"]["user_comments"], inline=True
+            )
+            embedVar.add_field(
+                name="Profile Views",
+                value=users["stats"]["profile_pageviews"],
+                inline=True,
+            )
+            embedVar.add_field(
+                name="Profile Comments",
+                value=users["stats"]["profile_comments"],
+                inline=True,
+            )
+            embedVar.set_thumbnail(url=users["user"]["usericon"])
             await ctx.send(embed=embedVar)
         except Exception as e:
             embedVar = discord.Embed(
@@ -804,6 +847,7 @@ class DeviantArtV5(commands.Cog):
             embedVar.description = "The query failed. Please try again"
             embedVar.add_field(name="Reason", value=e, inline=False)
             await ctx.send(embed=embedVar)
+
     @user.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -813,6 +857,7 @@ class DeviantArtV5(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
 
 def setup(bot):
     bot.add_cog(DeviantArtV1(bot))

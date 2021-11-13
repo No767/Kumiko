@@ -1,7 +1,7 @@
 import os
-import ujson
+
 import requests
-import discord
+import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 
@@ -11,6 +11,7 @@ Refresh_Token = os.getenv("DeviantArt_Refresh_Token")
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
 Auth_Code = os.getenv("DeviantArt_Auth_Code")
+
 
 class tokenRefresher(commands.Cog):
     def __init__(self, bot):
