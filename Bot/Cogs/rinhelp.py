@@ -293,17 +293,25 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
-                    name="`deviantart-item`", value="Returns image and some info about that item", inline=True
+                    name="`deviantart-item`",
+                    value="Returns image and some info about that item",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`deviantart-newest`", value="Returns 5 newest art based on selected category", inline=True
+                    name="`deviantart-newest`",
+                    value="Returns 5 newest art based on selected category",
+                    inline=True,
                 )
                 embedVar.add_field(
                     name="`deviantart-popular`",
                     value="Returns 5 popular works of art based on selected category",
                     inline=True,
                 )
-                embedVar.add_field(name="`deviantart-tag-search`", value="Returns 5 works of art based on selected tags", inline=True)
+                embedVar.add_field(
+                    name="`deviantart-tag-search`",
+                    value="Returns 5 works of art based on selected tags",
+                    inline=True,
+                )
                 embedVar.set_footer(
                     text="Note: currently this feature is broken")
                 embedVar.set_author(
