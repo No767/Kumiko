@@ -1,12 +1,9 @@
 # Changes
-- Optimize how kanji is looked up
-- Global Error Handling for Unknown Commands
-- More Error Handling for commands (regarding missing parameters)
-- Fix jisho empty fields issue (use kanji/hiragana instead)
-- Update Botinfo and Serverinfo to use fields instead
+- Removed unused dependencies
+- Use AutoFlake within Lint + Format Workflow
 
 # Additions
-- Top.gg API Support
 - DeviantArt API Support (This time it's actually properly working)
-
+- DeviantArt API Token Refresher
+- Spotify API Suppport
 # Removals
