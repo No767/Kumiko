@@ -7,5 +7,6 @@
 
 # Additions
 - Top.gg API Support
+- DeviantArt API Support (This time it's actually properly working)
 
 # Removals
