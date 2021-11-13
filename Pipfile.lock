@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7d97272fb7b6768ac83d0e006385e1313395b75fe96ce414d8b1e3eb2fb9f571"
+            "sha256": "2424108aa50bec7dd8101a15015f774b1d5fd4a3f1cbbb9578140a07d9ffa345"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -69,11 +69,11 @@
         },
         "astroid": {
             "hashes": [
-                "sha256:0755c998e7117078dcb7d0bda621391dd2a85da48052d948c7411ab187325346",
-                "sha256:1e83a69fd51b013ebf5912d26b9338d6643a55fec2f20c787792680610eed4a2"
+                "sha256:11f7356737b624c42e21e71fe85eea6875cb94c03c82ac76bd535a0ff10b0f25",
+                "sha256:abc423a1e85bc1553954a14f2053473d2b7f8baf32eae62a328be24f436b5107"
             ],
             "markers": "python_version ~= '3.6'",
-            "version": "==2.8.4"
+            "version": "==2.8.5"
         },
         "async-generator": {
             "hashes": [
@@ -303,13 +303,6 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.2.13"
-        },
-        "deviantart": {
-            "hashes": [
-                "sha256:6100cc73f162e8c945f8304109d72a8eb94c6df8348d7319b3c86ea1bcc511b6"
-            ],
-            "index": "pypi",
-            "version": "==0.1.5"
         },
         "discord.py": {
             "extras": [
@@ -1111,12 +1104,6 @@
             ],
             "version": "==1.3.0"
         },
-        "sanction": {
-            "hashes": [
-                "sha256:3e41b24e28590a0dfed68eddd10e44fa01feb81812ffb49085ca764e51aea9fe"
-            ],
-            "version": "==0.4.1"
-        },
         "scrapy": {
             "hashes": [
                 "sha256:13af6032476ab4256158220e530411290b3b934dd602bb6dacacbf6d16141f49",
@@ -1369,7 +1356,7 @@
                 "sha256:4987c65554f7a2dbf30c18fd48778ef124af6fab771a377103da0585e2336ece",
                 "sha256:c4fdf4019605b6e5423637e01bc9fe4daef873709a7973e195ceba0a62bbc844"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
             "version": "==1.26.7"
         },
         "virtualenv": {
