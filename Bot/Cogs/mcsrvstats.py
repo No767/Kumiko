@@ -209,7 +209,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Query Mismatch",
-                    value=bedmcsrv["debug"]["query_mismatch"],
+                    value=bedmcsrv["debug"]["querymismatch"],
                     inline=True,
                 )
                 embedVar.add_field(
@@ -262,7 +262,7 @@ class bedrock_mcsrvstats(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Query Mismatch",
-                    value=bedmcsrv["debug"]["query_mismatch"],
+                    value=bedmcsrv["debug"]["querymismatch"],
                     inline=True,
                 )
                 embedVar.add_field(
