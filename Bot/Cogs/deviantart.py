@@ -18,34 +18,38 @@ def get_deviation(deviation_id):
 
 
 def status_code_get_deviations(deviation_id):
-    link = f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}?with_session=false&limit=5&access_token={DeviantArt_API_Access_Token}"
+    link = f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}?with_session=false&limit=10&access_token={DeviantArt_API_Access_Token}"
     r = requests.get(link)
     return r.status_code
 
 
 def get_newest(search):
-    link = f"https://www.deviantart.com/api/v1/oauth2/browse/newest?q={search}&with_session=false&limit=5&mature_content=false&access_token={DeviantArt_API_Access_Token}"
+    link = f"https://www.deviantart.com/api/v1/oauth2/browse/newest?q={search}&with_session=false&limit=10&mature_content=false&access_token={DeviantArt_API_Access_Token}"
     r = requests.get(link)
     return ujson.loads(r.text)
 
 
 def get_popular(search):
-    link = f"https://www.deviantart.com/api/v1/oauth2/browse/popular?q={search}&with_session=false&limit=5&mature_content=false&access_token={DeviantArt_API_Access_Token}"
+    link = f"https://www.deviantart.com/api/v1/oauth2/browse/popular?q={search}&with_session=false&limit=10&mature_content=false&access_token={DeviantArt_API_Access_Token}"
     r = requests.get(link)
     return ujson.loads(r.text)
 
 
 def get_tags(search):
-    link = f"https://www.deviantart.com/api/v1/oauth2/browse/tags?q={search}&with_session=false&limit=5&mature_content=false&access_token={DeviantArt_API_Access_Token}"
+    link = f"https://www.deviantart.com/api/v1/oauth2/browse/tags?tag={search}&with_session=false&limit=10&mature_content=false&access_token={DeviantArt_API_Access_Token}"
     r = requests.get(link)
     return ujson.loads(r.text)
 
+def get_users(search):
+    link = f"https://www.deviantart.com/api/v1/oauth2/user/profile/{search}?ext_collections=false&ext_galleries=false&with_session=false&mature_content=false&access_token={DeviantArt_API_Access_Token}"
+    r = requests.get(link)
+    return ujson.loads(r.text)
 
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="deviantart-item")
+    @commands.command(name="deviantart-item", aliases=["da-item"])
     async def da(self, ctx, *, deviation_id: str):
         deviation = get_deviation(deviation_id)
         try:
@@ -94,7 +98,7 @@ class DeviantArtV1(commands.Cog):
         except Exception as e:
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(255, 214, 214))
-            embedVar.description = f"The query failed. Please try again"
+            embedVar.description = "The query failed. Please try again"
             embedVar.add_field(name="Reason", value=e, inline=False)
             embedVar.add_field(
                 name="Error", value=deviation["error"], inline=True)
@@ -122,7 +126,7 @@ class DeviantArtV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="deviantart-newest")
+    @commands.command(name="deviantart-newest", aliases=["da-newest"])
     async def da_query(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
         art = get_newest(search)
@@ -315,7 +319,7 @@ class DeviantArtV2(commands.Cog):
         except Exception as e:
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(255, 214, 214))
-            embedVar.description = f"The query failed. Please try again"
+            embedVar.description = "The query failed. Please try again"
             embedVar.add_field(name="Reason", value=e, inline=False)
             embedVar.add_field(name="Error", value=art["error"], inline=True)
             embedVar.add_field(
@@ -339,7 +343,7 @@ class DeviantArtV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="deviantart-popular")
+    @commands.command(name="deviantart-popular", aliases=["da-popular"])
     async def deviantart_popular(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
         pop = get_popular(search)
@@ -532,7 +536,7 @@ class DeviantArtV3(commands.Cog):
         except Exception as e:
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(255, 214, 214))
-            embedVar.description = f"The query failed. Please try again"
+            embedVar.description = "The query failed. Please try again"
             embedVar.add_field(name="Reason", value=e, inline=False)
             embedVar.add_field(name="Error", value=pop["error"], inline=True)
             embedVar.add_field(
@@ -556,12 +560,12 @@ class DeviantArtV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="deviantart-tag-search")
+    @commands.command(name="deviantart-tag-search", aliases=["da-tag-search"])
     async def tags(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
         tags = get_tags(search)
         try:
-            if len(tags["results"]) > 5:
+            if int(len(tags["results"])) > 5:
                 embedVar1 = discord.Embed(
                     title=tags["results"][0]["title"],
                     color=discord.Color.from_rgb(255, 99, 99),
@@ -747,7 +751,7 @@ class DeviantArtV4(commands.Cog):
         except Exception as e:
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(255, 214, 214))
-            embedVar.description = f"The query failed. Please try again"
+            embedVar.description = "The query failed. Please try again"
             embedVar.add_field(name="Reason", value=e, inline=False)
             embedVar.add_field(name="Error", value=tags["error"], inline=True)
             embedVar.add_field(
@@ -767,8 +771,52 @@ class DeviantArtV4(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
+class DeviantArtV5(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        
+    @commands.command(name="deviantart-user", aliases=["da-user"])
+    async def user(self, ctx, *, search:str):
+        users = get_users(search)
+        try:
+            embedVar = discord.Embed(title=users['user']['username'], color=discord.Color.from_rgb(255, 156, 192))
+            embedVar.add_field(name="Real Name", value=f"[{users['real_name']}]", inline=True)
+            embedVar.add_field(name="Tagline", value=f"[{users['tagline']}]", inline=True)
+            embedVar.add_field(name="Bio", value=f"[{users['bio']}]", inline=True)
+            embedVar.add_field(name="Type", value=users['user']['type'], inline=True)
+            embedVar.add_field(name="User ID", value=users['user']['userid'], inline=True)
+            embedVar.add_field(name="Profile URL", value=users['profile_url'], inline=True)
+            embedVar.add_field(name="Is Artist", value=users['user_is_artist'], inline=True)
+            embedVar.add_field(name="Artist Level", value=users['artist_level'], inline=True)
+            embedVar.add_field(name="Artist Specialty", value=users['artist_specialty'], inline=True)
+            embedVar.add_field(name="Country", value=users['country'], inline=True)
+            embedVar.add_field(name="Last Status", value=users['last_status'], inline=True)
+            embedVar.add_field(name="User Deviations", value=users['stats']['user_deviations'], inline=True)
+            embedVar.add_field(name="User Favorites", value=users['stats']['user_favourites'], inline=True)
+            embedVar.add_field(name="User Comments", value=users['stats']['user_comments'], inline=True)    
+            embedVar.add_field(name="Profile Views", value=users['stats']['profile_pageviews'], inline=True)
+            embedVar.add_field(name="Profile Comments", value=users['stats']['profile_comments'], inline=True)
+            embedVar.set_thumbnail(url=users['user']['usericon'])
+            await ctx.send(embed=embedVar)
+        except Exception as e:
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(255, 214, 214))
+            embedVar.description = "The query failed. Please try again"
+            embedVar.add_field(name="Reason", value=e, inline=False)
+            await ctx.send(embed=embedVar)
+    @user.error
+    async def on_message_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+            embedVar.description = f"Missing a required argument: {error.param}"
+            msg = await ctx.send(embed=embedVar, delete_after=10)
+            await msg.delete(delay=10)
 
 def setup(bot):
     bot.add_cog(DeviantArtV1(bot))
     bot.add_cog(DeviantArtV2(bot))
     bot.add_cog(DeviantArtV3(bot))
+    bot.add_cog(DeviantArtV4(bot))
+    bot.add_cog(DeviantArtV5(bot))
