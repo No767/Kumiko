@@ -34,5 +34,6 @@ class qrcode_maker(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
+
 def setup(bot):
     bot.add_cog(qrcode_maker(bot))

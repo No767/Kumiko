@@ -313,7 +313,8 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"')
+                    text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
+                )
                 embedVar.set_author(
                     name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
                 )
