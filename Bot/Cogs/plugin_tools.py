@@ -1,12 +1,11 @@
 import discord
 from discord.ext import commands
-
+import random
 
 def discord_colors():
     colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
-    from random import choice
 
-    return choice(colors)
+    return random.choice(colors)
 
 
 def fast_embed(content):
@@ -94,7 +93,7 @@ class Bot_Admin(commands.Cog):
         This is done to ensure the bot can reach as many people as possible as discord limits the amount of servers one bot can be in to 100.
         This limit is out of our control and the best solution is to trim down the number of smaller servers such that more people can enjoy this bot
         It's been a joy working with you and your patrons!
-        If you wish to invite me again, use https://discord.com/oauth2/authorize?client_id={self.bot.user.id}&scope=bot&permissions=8\n\n\n
+        If you wish to invite me again, use https://top.gg/bot/865883525932253184/invite\n\n\n
         \tMay we meet again soon,
         {self.bot.user.name}"""
         embed.set_thumbnail(url=self.bot.user.avatar_url)

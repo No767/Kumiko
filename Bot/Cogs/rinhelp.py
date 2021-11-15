@@ -17,7 +17,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
@@ -313,7 +313,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text="Note: currently this feature is broken")
+                    text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"')
                 embedVar.set_author(
                     name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
                 )
@@ -376,7 +376,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Admin", icon_url=bot.user.avatar_url
+                    name="Rin Help - Topgg", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
         except Exception as e:
