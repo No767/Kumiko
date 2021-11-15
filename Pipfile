@@ -8,7 +8,7 @@ name = "pypi"
 python-dotenv = "==0.19.2"
 qrcode = {extras = ["pil"], version = "*"}
 image = "==1.5.33"
-praw = "==7.4.0"
+praw = "==7.5.0"
 tweepy = "==4.3.0"
 deep-translator = "==1.5.4"
 black = "==21.9b0"
