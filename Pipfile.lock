@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ff2289930eb2ecb8cb86aed85d7b9a3acbdd69ccb664e356063ab9f393a10fcd"
+            "sha256": "b6ece956c19871705fe0e3195f011d0070d51f7696c735f331da74f5715336a9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -1224,11 +1224,11 @@
         },
         "tweepy": {
             "hashes": [
-                "sha256:6c604ff31b18a93ffc9a23f0f017a292f6339eb0727169e093f98cd23fe85980",
-                "sha256:b0ac20cf6c864929f7ee4726099a445ff16c6161ff8fa72075b104b9dbfff3ff"
+                "sha256:8d4b4520271b796fa7efc4c5d5ef3228af4d79f6a4d3ace3900b2778ed8f6f1c",
+                "sha256:cf02c4fbbd027fbc7172c24d03f53f061329ac040b22d201e59592a1cff86364"
             ],
             "index": "pypi",
-            "version": "==4.3.0"
+            "version": "==4.4.0"
         },
         "tweet-parser": {
             "hashes": [
@@ -1253,7 +1253,7 @@
                 "sha256:2cdf80e4e04866a9b3689a51869016d36db0814d84b8d8a568d22781d45d27ed",
                 "sha256:829704698b22e13ec9eaf959122315eabb370b0884400e9818334d8b677023d9"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_version >= '3.10'",
             "version": "==4.0.0"
         },
         "ujson": {
