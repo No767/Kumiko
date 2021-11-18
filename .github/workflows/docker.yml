@@ -16,7 +16,7 @@ env:
 
 
 jobs:
-  build:
+  Build:
 
     runs-on: ubuntu-latest
     permissions:
