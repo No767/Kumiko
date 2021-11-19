@@ -3,6 +3,7 @@ import requests
 import ujson
 from discord.ext import commands
 
+
 def get_anime_info(search):
     search = search.replace(" ", "%20")
     link = f"https://api.jikan.moe/v3/search/anime?q={search}"
@@ -52,6 +53,7 @@ def get_later_season():
     r = requests.get(link)
     return ujson.loads(r.text)
 
+
 class JikanV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -63,7 +65,9 @@ class JikanV1(commands.Cog):
         anime_info_v2 = get_anime_infov2(id)
         try:
             embedVar = discord.Embed(title=anime_info_v2["title"])
-            embedVar2 = discord.Embed(title=f"Synopsis - {anime_info_v2['title_english']}")
+            embedVar2 = discord.Embed(
+                title=f"Synopsis - {anime_info_v2['title_english']}"
+            )
             embedVar.add_field(
                 name="English Title", value=anime_info_v2["title_english"], inline=True
             )
@@ -114,7 +118,9 @@ class JikanV1(commands.Cog):
                 name="Favorites", value=anime_info_v2["favorites"], inline=True
             )
             embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"
-            embedVar2.add_field(name="Background", value=anime_info_v2["background"], inline=True)
+            embedVar2.add_field(
+                name="Background", value=anime_info_v2["background"], inline=True
+            )
             embedVar.set_thumbnail(url=anime_info_v2["image_url"])
             await ctx.send(embed=embedVar)
             await ctx.send(embed=embedVar2)
@@ -150,7 +156,10 @@ class JikanV2(commands.Cog):
                 title=manga_info_v1["title"],
                 color=discord.Color.from_rgb(145, 197, 255),
             )
-            embedVar2 = discord.Embed(title=f"Synopsis - {manga_info_v1['title']}", color=discord.Color.from_rgb(145, 197, 255))
+            embedVar2 = discord.Embed(
+                title=f"Synopsis - {manga_info_v1['title']}",
+                color=discord.Color.from_rgb(145, 197, 255),
+            )
             embedVar.add_field(
                 name="English Title", value=manga_info_v1["title_english"], inline=True
             )
@@ -236,7 +245,9 @@ class JikanV2(commands.Cog):
                 name="Favorites", value=manga_info_v1["favorites"], inline=True
             )
             embedVar2.description = f"{manga_info_v1['synopsis']}"
-            embedVar2.add_field(name="Background", value=manga_info_v1["background"], inline=True)
+            embedVar2.add_field(
+                name="Background", value=manga_info_v1["background"], inline=True
+            )
             embedVar.set_thumbnail(url=manga_info_v1["image_url"])
             await ctx.send(embed=embedVar)
             await ctx.send(embed=embedVar2)
