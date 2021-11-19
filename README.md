@@ -20,17 +20,9 @@ Via Top.gg. You can invite Rin by clicking [here](https://top.gg/bot/86588352593
 
 # Building
 
-*Option 1: Via [Pip](https://pypi.org/)
-
-`python -m pip install --upgrade pip setuptools wheel`
-
-`pip install -r requirements.txt`
-
-Option 2 (Preferred): Via [Pipenv](https://pipenv.pypa.io/en/latest/)
+Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
-
-*Note that Option 1 (Via Pip) is no longer tracked by dependabot, which means the dependencies can be outdated. It is recommended to use Option 2 instead.
 
 # Licensing
 
