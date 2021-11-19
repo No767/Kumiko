@@ -12,17 +12,9 @@ To get started, you'll need these things installed:
 
 ## Installing Dependencies
 
-All of the dependencies that is needed for this project can be found within the `requirements.txt` within the root directory of this project. Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)).
+All of the dependencies can be found within `Pipfile` and `Pipfile.lock`, and requires Pipenv in order to be installed.  Git can be found [here](https://git-scm.com/). Python can be also found at its website ([Python's Official Website](https://www.python.org/)). Pipenv can be found [here](https://pipenv.pypa.io/en/latest).
 
-You have 2 options on how you want to install the dependencies: via [Pip](https://pypi.org) or via [Pipenv](https://pipenv.pypa.io/en/latest/). Pipenv is recommended over pip for this repo.
-
-**Option 1**: Via [Pip](https://pypi.org)
-
-`pip install --upgrade pip setuptools wheel` 
-
-`pip install -r requirements.txt`
-
-**Option 2**: Via [Pipenv](https://pipenv.pypa.io/en/latest/)
+Your only option is via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
 
