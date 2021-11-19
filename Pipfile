@@ -33,12 +33,12 @@ ujson = "*"
 spotipy = "*"
 pynacl = "*"
 pyflakes = "*"
-aiohttp = "*"
 cchardet = "*"
 aiodns = "*"
 google-api-python-client = "*"
 google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
+aiohttp = "<=3.7.4.post0"
 
 [dev-packages]
 
