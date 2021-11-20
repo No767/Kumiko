@@ -133,16 +133,41 @@ class jisho_dict(commands.Cog):
     @commands.command(name="jisho")
     async def jisho(self, ctx, search: str):
         try:
+            result = jam.lookup(search)
             link = f"https://jisho.org/api/v1/search/words?keyword={search}"
             r = requests.get(link)
-            jisho_data = r.text
-            jisho = ujson.loads(jisho_data)
+            jisho = ujson.loads(r.text)
             res = jam.lookup(search.replace("\n", " "))
             embedVar = discord.Embed()
             embedVar.add_field(
-                name="Info",
-                value=f"**Kanji** >> {[str(c) for c in res.chars]}\n**Hiragana** >> {hiragana(search)}\n**Katakana** >> {katakana(search)}\n**Position of Speech (POS)** >> {pos(search)}",
+                name="Kanji",
+                value=[str(c).replace("'", "") for c in res.chars],
                 inline=False,
+            )
+            embedVar.add_field(
+                name="Hiragana",
+                value=[
+                    str(re.findall("[ぁ-ん]", str(word)))
+                    .replace('"', "")
+                    .replace(", ", "")
+                    .replace("'", "")
+                    for word in result.entries
+                ],
+                inline=False,
+            )
+            embedVar.add_field(
+                name="Katanana",
+                value=[
+                    str(re.findall("[ァ-ン]", str(entry)))
+                    .replace('"', "")
+                    .replace(", ", "")
+                    .replace("'", "")
+                    for entry in result.entries
+                ],
+                inline=False,
+            )
+            embedVar.add_field(
+                name="Position of Speech (POS)", value=pos(search), inline=False
             )
             embedVar.add_field(
                 name="English Defintion(s)",

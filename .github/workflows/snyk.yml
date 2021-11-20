@@ -11,7 +11,7 @@ on:
   schedule:
     - cron: '36 7 * * 0'
 jobs:
-  analysis:
+  Analyze:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

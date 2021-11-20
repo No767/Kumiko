@@ -3,7 +3,6 @@ import os
 import random
 import sqlite3
 
-import discord
 from Cogs import plugin_tools
 from discord.ext import commands
 

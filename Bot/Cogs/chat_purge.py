@@ -19,7 +19,6 @@ class Utility(commands.Cog):
         max_members = guild.max_members
         location = guild.region
         epox = guild.created_at
-        owner = guild.owner_id
         explicit = guild.explicit_content_filter
         emojis = guild.emojis
         embed = discord.Embed(color=plugin_tools.discord_colors())

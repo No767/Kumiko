@@ -17,7 +17,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
@@ -44,6 +44,9 @@ class rinhelp(commands.Cog):
                     name="Anime", value="`.rinhelp anime`", inline=True)
                 embedVar.add_field(
                     name="Top.gg", value="`.rinhelp topgg`", inline=True)
+                embedVar.add_field(
+                    name="Pinterest", value="`.rinhelp pinterest`", inline=True
+                )
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -293,18 +296,28 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
-                    name="`devartfind`", value="Finds art on DeviantArt", inline=True
+                    name="`deviantart-item`",
+                    value="Returns image and some info about that item",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`devartsearch`", value="Search for art", inline=True
+                    name="`deviantart-newest`",
+                    value="Returns 5 newest art based on selected category",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`devartuserget`",
-                    value="Obtains info on a user on DeviantArt",
+                    name="`deviantart-popular`",
+                    value="Returns 5 popular works of art based on selected category",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`deviantart-tag-search`",
+                    value="Returns 5 works of art based on selected tags",
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text="Note: currently this feature is broken")
+                    text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
+                )
                 embedVar.set_author(
                     name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
                 )
@@ -367,7 +380,31 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Admin", icon_url=bot.user.avatar_url
+                    name="Rin Help - Topgg", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+
+            if str(search) == "pinterest":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`pinterest-user`",
+                    value="Grabs info about the user that is logged in",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`pinterest-pins`",
+                    value="Grabs Pins from the user that is logged in",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`pinterest-board`", value="Info about the board", inline=True
+                )
+                embedVar.set_footer(
+                    text='The Pinterest cmds also have aliases just like Jikan and DeviantArt. The alias prefix is "pt". Note that the Pinterest API only supports getting info about the user that it is logged into, which means it is grabbing info from my own account. It is not recommended to use this service.'
+                )
+                embedVar.set_author(
+                    name="Rin Help - Pinterest", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
         except Exception as e:

@@ -58,20 +58,23 @@ class JikanV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jikan-anime")
+    @commands.command(name="jikan-anime", aliases=["jk-anime"])
     async def anime(self, ctx, *, search: str):
         anime_info = get_anime_info(search)
         id = anime_info["results"][0]["mal_id"]
         anime_info_v2 = get_anime_infov2(id)
         try:
             embedVar = discord.Embed(title=anime_info_v2["title"])
+            embedVar2 = discord.Embed(
+                title=f"Synopsis - {anime_info_v2['title_english']}"
+            )
             embedVar.add_field(
-                name="English Title", value=anime_info_v2["title_english"], inline=False
+                name="English Title", value=anime_info_v2["title_english"], inline=True
             )
             embedVar.add_field(
                 name="Japanese Title",
                 value=anime_info_v2["title_japanese"],
-                inline=False,
+                inline=True,
             )
             embedVar.add_field(
                 name="Title Synonyms",
@@ -79,17 +82,7 @@ class JikanV1(commands.Cog):
                 .replace("[", "")
                 .replace("]", "")
                 .replace("'", ""),
-                inline=False,
-            )
-            embedVar.add_field(
-                name="Synopsis",
-                value=str(anime_info_v2["synopsis"]).replace(
-                    "[Written by MAL Rewrite]", ""
-                ),
-                inline=False,
-            )
-            embedVar.add_field(
-                name="Background", value=anime_info_v2["background"], inline=True
+                inline=True,
             )
             embedVar.add_field(
                 name="Type", value=anime_info_v2["type"], inline=True)
@@ -124,8 +117,13 @@ class JikanV1(commands.Cog):
             embedVar.add_field(
                 name="Favorites", value=anime_info_v2["favorites"], inline=True
             )
+            embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"
+            embedVar2.add_field(
+                name="Background", value=anime_info_v2["background"], inline=True
+            )
             embedVar.set_thumbnail(url=anime_info_v2["image_url"])
             await ctx.send(embed=embedVar)
+            await ctx.send(embed=embedVar2)
         except Exception as e:
             embedVar = discord.Embed()
             embedVar.description = (
@@ -148,7 +146,7 @@ class JikanV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jikan-manga")
+    @commands.command(name="jikan-manga", aliases=["jk-manga"])
     async def manga(self, ctx, *, search: str):
         more_manga_info = search_manga_info(search)
         id = more_manga_info["results"][0]["mal_id"]
@@ -156,6 +154,10 @@ class JikanV2(commands.Cog):
         try:
             embedVar = discord.Embed(
                 title=manga_info_v1["title"],
+                color=discord.Color.from_rgb(145, 197, 255),
+            )
+            embedVar2 = discord.Embed(
+                title=f"Synopsis - {manga_info_v1['title']}",
                 color=discord.Color.from_rgb(145, 197, 255),
             )
             embedVar.add_field(
@@ -173,12 +175,6 @@ class JikanV2(commands.Cog):
                 .replace("]", "")
                 .replace("'", ""),
                 inline=True,
-            )
-            embedVar.add_field(
-                name="Synopsis", value=manga_info_v1["synopsis"], inline=True
-            )
-            embedVar.add_field(
-                name="Background", value=manga_info_v1["background"], inline=True
             )
             embedVar.add_field(
                 name="Status", value=manga_info_v1["status"], inline=True
@@ -248,8 +244,13 @@ class JikanV2(commands.Cog):
             embedVar.add_field(
                 name="Favorites", value=manga_info_v1["favorites"], inline=True
             )
+            embedVar2.description = f"{manga_info_v1['synopsis']}"
+            embedVar2.add_field(
+                name="Background", value=manga_info_v1["background"], inline=True
+            )
             embedVar.set_thumbnail(url=manga_info_v1["image_url"])
             await ctx.send(embed=embedVar)
+            await ctx.send(embed=embedVar2)
         except Exception as e:
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(235, 201, 255))
@@ -271,7 +272,7 @@ class JikanV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jikan-top")
+    @commands.command(name="jikan-top", aliases=["jk-top"])
     async def top(self, ctx, *, type: str):
         try:
             if str(type) in "anime":
@@ -481,7 +482,7 @@ class JikanV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jikan-season")
+    @commands.command(name="jikan-season", aliases=["jk-season"])
     async def season(self, ctx, year: int, *, season: str):
         try:
             if str(season) in ["winter", "spring", "summer", "fall"]:
@@ -697,7 +698,7 @@ class JikanV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jikan-season-later")
+    @commands.command(name="jikan-season-later", aliases=["jk-season-later"])
     async def on_message(self, ctx):
         try:
             season_later = get_later_season()

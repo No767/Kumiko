@@ -8,8 +8,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  Format:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -22,7 +21,7 @@ jobs:
         pip install --upgrade pip setuptools wheel
     - name: Install Pipenv
       run: |
-        pip install pipenv
+        pip install --upgrade pipenv
     - name: Install Pipenv Dependencies
       run: |
         pipenv install
@@ -36,6 +35,9 @@ jobs:
     - name: Format with Isort
       run: |
         pipenv run isort Bot/Cogs
+    - name: Format with AutoFlake
+      run: |
+        pipenv run autoflake --in-place --remove-unused-variables --remove-all-unused-imports --recursive Bot/Cogs
     - name: Format with AutoPEP8
       run: |
         pipenv run autopep8 -r --in-place Bot/Cogs
