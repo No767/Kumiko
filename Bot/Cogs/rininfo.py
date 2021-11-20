@@ -15,11 +15,6 @@ class info(commands.Cog):
         """
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
         embedVar.add_field(
-            name="Welcome!",
-            value="Thanks for using this bot. Rin is officially ready for production use.",
-            inline=False,
-        )
-        embedVar.add_field(
             name="About",
             value="Rin is a discord bot which supports obtaining data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList, and many others. And you can request such data just from Discord. More services are planned to be supported, such as Mangadex, YT, Twitch, and many others. (The mangadex service is planned for you to be able to read manga from Discord)",
             inline=False,
