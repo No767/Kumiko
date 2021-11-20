@@ -15,6 +15,7 @@ Client_Secret = os.getenv("DeviantArt_Client_Secret")
 class tokenRefresher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.refresher.start()
 
     @tasks.loop(minutes=55.0)
     async def refresher(self):
@@ -29,6 +30,8 @@ class tokenRefresher(commands.Cog):
         file2 = open("../.env", "w+")
         file2.writelines(line)
         file2.close()
+
+    refresher.start()
 
 
 def setup(bot):
