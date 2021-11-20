@@ -32,6 +32,5 @@ class tokenRefresher(commands.Cog):
         file2.close()
 
 
-
 def setup(bot):
     bot.add_cog(tokenRefresher(bot))
