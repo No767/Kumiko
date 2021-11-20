@@ -1,3 +1,2 @@
 # Changes
-- Fixed Deviantart Token Refresher not starting loop
-- Updated Rininfo Cog
+- Attempt to finally fix the DeviantArt Token Refresher

@@ -17,7 +17,7 @@ class tokenRefresher(commands.Cog):
         self.bot = bot
         self.refresher.start()
 
-    @tasks.loop(minutes=55.0)
+    @tasks.loop(minutes=30)
     async def refresher(self):
         link = f"https://www.deviantart.com/oauth2/token?client_id={Client_ID}&client_secret={Client_Secret}&grant_type=refresh_token&refresh_token={Refresh_Token}"
         r = requests.get(link)
@@ -31,7 +31,6 @@ class tokenRefresher(commands.Cog):
         file2.writelines(line)
         file2.close()
 
-    refresher.start()
 
 
 def setup(bot):
