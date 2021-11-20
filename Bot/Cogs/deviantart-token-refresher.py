@@ -21,8 +21,8 @@ class tokenRefresher(commands.Cog):
         link = f"https://www.deviantart.com/oauth2/token?client_id={Client_ID}&client_secret={Client_Secret}&grant_type=refresh_token&refresh_token={Refresh_Token}"
         r = requests.get(link)
         data = ujson.loads(r.text)
-        access_token = data['access_token']
-        refresh_token = data['refresh_token']
+        access_token = data["access_token"]
+        refresh_token = data["refresh_token"]
         line = open("../.env", "r").readlines()
         line[34] = f'DeviantArt_Access_Token = "{access_token}"\n'
         line[35] = f'DeviantArt_Refresh_Token = "{refresh_token}"'
