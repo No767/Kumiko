@@ -1,9 +1,6 @@
 import discord
 from discord import Intents
 from discord.ext import commands
-from discord import Client
-from discord import Game
-from discord import Embed, Activity, ActivityType
 import os
 from dotenv import load_dotenv
 
@@ -43,6 +40,7 @@ initial_extensions = [
     "Cogs.top-gg",
     "Cogs.global-error-handling",
     "Cogs.spotify",
+    "Cogs.deviantart-token-refresher",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
