@@ -44,6 +44,7 @@ class rinhelp(commands.Cog):
                     name="Anime", value="`.rinhelp anime`", inline=True)
                 embedVar.add_field(
                     name="Top.gg", value="`.rinhelp topgg`", inline=True)
+                embedVar.add_field(name="Pinterest", value="`.rinhelp pinterest`", inline=True)
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -378,6 +379,28 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.set_author(
                     name="Rin Help - Topgg", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+                
+            if str(search) == "pinterest":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`pinterest-user`",
+                    value="Grabs info about the user that is logged in",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`pinterest-pins`",
+                    value="Grabs Pins from the user that is logged in",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`pinterest-board`", value="Info about the board", inline=True
+                )
+                embedVar.set_footer(text='The Pinterest cmds also have aliases just like Jikan and DeviantArt. The alias prefix is "pt". Note that the Pinterest API only supports getting info about the user that it is logged into, which means it is grabbing info from my own account. It is not recommended to use this service.')
+                embedVar.set_author(
+                    name="Rin Help - Pinterest", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
         except Exception as e:

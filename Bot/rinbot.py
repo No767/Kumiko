@@ -41,6 +41,7 @@ initial_extensions = [
     "Cogs.global-error-handling",
     "Cogs.spotify",
     "Cogs.deviantart-token-refresher",
+    "Cogs.pinterest",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

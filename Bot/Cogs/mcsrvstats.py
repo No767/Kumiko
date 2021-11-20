@@ -8,7 +8,7 @@ class mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="javamcsrv")
+    @commands.command(name="javamcsrv", aliases=["java"])
     async def java(self, ctx, search: str):
         search = search.replace(" ", "%20")
         link = f"https://api.mcsrvstat.us/2/{search}"
@@ -150,7 +150,7 @@ class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="bedrockmcsrv")
+    @commands.command(name="bedrockmcsrv", aliases=["bedrock"])
     async def bedrock(self, ctx, search: str):
         search = search.replace(" ", "%20")
         link = f"https://api.mcsrvstat.us/bedrock/2/{search}"

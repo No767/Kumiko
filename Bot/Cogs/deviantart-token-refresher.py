@@ -25,7 +25,7 @@ class tokenRefresher(commands.Cog):
         refresh_token = data["refresh_token"]
         line = open("../.env", "r").readlines()
         line[34] = f'DeviantArt_Access_Token = "{access_token}"\n'
-        line[35] = f'DeviantArt_Refresh_Token = "{refresh_token}"'
+        line[35] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
         file2 = open("../.env", "w+")
         file2.writelines(line)
         file2.close()

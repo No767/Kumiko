@@ -11,7 +11,7 @@
 - DeviantArt API Support (Actually working for once)
 - DeviantArt API Token Refresher
 - Spotify API Suppport (WIP)
-- Pinterest API Support 
+- Pinterest API Support (Not recommended to use)
 # Removals
 - Removed unused dependencies
 - Officially drop support for requirements.txt
