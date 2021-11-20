@@ -85,7 +85,7 @@ class DeviantArtV1(commands.Cog):
             else:
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 214, 214))
-                embedVar.description = f"The query failed. Please try again"
+                embedVar.description = "The query failed. Please try again"
                 embedVar.add_field(
                     name="Error", value=deviation["error"], inline=True)
                 embedVar.add_field(
