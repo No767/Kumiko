@@ -42,7 +42,7 @@ body:
         - Python Version:
         - pip version:
         - pipenv version:
-        - **Found on Discord?**: 
+        - Found on Discord?:
   validations:
     required: false
 - type: textarea
