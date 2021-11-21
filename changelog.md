@@ -1,2 +1,2 @@
 # Changes
-- Attempt to finally fix the DeviantArt Token Refresher
+- Actually have a working token refresher for the deviantart cog. 
