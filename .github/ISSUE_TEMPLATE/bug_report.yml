@@ -31,17 +31,18 @@ body:
   attributes:
     label: Environment
     description: |
-      Please List out the environment where the issue has been tested or seen:
+      Please list out the environment where the issue has been tested or seen (Note that if you found this issue on Discord, you don't have to fill this out):
         - **OS**: Ubuntu 20.04
-        - **Python Version**: 3.9.6
-        - **pip version**: 21.2.2
-        - **pipenv version**: 2021.5.29
+        - **Python Version**: 3.10.0
+        - **pip version**: 21.3.1
+        - **pipenv version**: v2021.11.5
+        - **Found on Discord?**: Yes
     value: |
         - OS:
         - Python Version:
         - pip version:
         - pipenv version:
-    render: markdown
+        - Found on Discord?:
   validations:
     required: false
 - type: textarea

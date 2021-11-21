@@ -17,21 +17,21 @@ class tokenRefresher(commands.Cog):
         self.bot = bot
         self.refresher.start()
 
-    @tasks.loop(minutes=55.0)
+    @tasks.loop(minutes=55)
     async def refresher(self):
         link = f"https://www.deviantart.com/oauth2/token?client_id={Client_ID}&client_secret={Client_Secret}&grant_type=refresh_token&refresh_token={Refresh_Token}"
         r = requests.get(link)
         data = ujson.loads(r.text)
         access_token = data["access_token"]
         refresh_token = data["refresh_token"]
-        line = open("../.env", "r").readlines()
-        line[34] = f'DeviantArt_Access_Token = "{access_token}"\n'
-        line[35] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
-        file2 = open("../.env", "w+")
-        file2.writelines(line)
-        file2.close()
-
-    refresher.start()
+        file = open("../.env", "r")
+        file_data = file.readlines()
+        file_data[37] = f'DeviantArt_Access_Token = "{access_token}"\n'
+        file_data[38] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
+        file.close()
+        file = open("../.env", "w")
+        file.writelines(file_data)
+        file.close()
 
 
 def setup(bot):
