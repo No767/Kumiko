@@ -24,12 +24,12 @@ class tokenRefresher(commands.Cog):
         data = ujson.loads(r.text)
         access_token = data["access_token"]
         refresh_token = data["refresh_token"]
-        file = open('../.env', 'r')
+        file = open("../.env", "r")
         file_data = file.readlines()
         file_data[37] = f'DeviantArt_Access_Token = "{access_token}"\n'
         file_data[38] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
         file.close()
-        file = open('../.env', 'w')
+        file = open("../.env", "w")
         file.writelines(file_data)
         file.close()
 
