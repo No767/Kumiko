@@ -1,6 +1,7 @@
+import datetime
 import os
 import time
-import datetime
+
 import requests
 import ujson
 from discord.ext import commands, tasks
@@ -23,7 +24,7 @@ class tokenRefresher(commands.Cog):
     async def refresher(self):
         self.index = self.index + 1
         ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        st = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
         link = f"https://www.deviantart.com/oauth2/token?client_id={Client_ID}&client_secret={Client_Secret}&grant_type=refresh_token&refresh_token={Refresh_Token}"
         r = requests.get(link)
         data = ujson.loads(r.text)

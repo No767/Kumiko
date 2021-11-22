@@ -290,8 +290,16 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`rinhelp`", value="Rin's Help command", inline=True
                 )
-                embedVar.add_field(name="`help`", value="Alias for `rinhelp`. Replaces the default help command", inline=True)
-                embedVar.add_field(name="`rininvite`", value="Rin's invite links. Also can be reached with `invite`.", inline=True)
+                embedVar.add_field(
+                    name="`help`",
+                    value="Alias for `rinhelp`. Replaces the default help command",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`rininvite`",
+                    value="Rin's invite links. Also can be reached with `invite`.",
+                    inline=True,
+                )
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
                 )
@@ -345,7 +353,7 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Anime", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
-            
+
             if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -369,12 +377,14 @@ class rinhelp(commands.Cog):
                     value="Returns 5 animes that are already planned for viewing in the future",
                     inline=True,
                 )
-                embedVar.set_footer(text='Also note that the prefix can be shorten down to "jk"')
+                embedVar.set_footer(
+                    text='Also note that the prefix can be shorten down to "jk"'
+                )
                 embedVar.set_author(
                     name="Rin Help - MyAnimeList/Jikan", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
-                
+
             if str(search) == "topgg":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
