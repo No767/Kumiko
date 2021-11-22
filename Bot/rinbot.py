@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv("Hanako_Token")
 intents = Intents.all()
-bot = commands.Bot(command_prefix=".")
+bot = commands.Bot(command_prefix=".", help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
@@ -35,12 +35,12 @@ initial_extensions = [
     "Cogs.pronouns",
     "Cogs.spiget",
     "Cogs.jikan",
-    "Cogs.disquest",
     "Cogs.nb-pride",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
     "Cogs.spotify",
     "Cogs.pinterest",
+    "Cogs.rininvite",
     "Cogs.deviantart-token-refresher",
 ]
 for extension in initial_extensions:

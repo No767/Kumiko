@@ -10,7 +10,7 @@ class rinhelp(commands.Cog):
         self.bot = bot
         self.last_member = None
 
-    @commands.command(name="rinhelp", help="Rin's Help/Info Page")
+    @commands.command(name="rinhelp", aliases=["help"])
     async def on_message(self, ctx, *, search: typing.Optional[str] = None):
         try:
             if search is None:
@@ -46,6 +46,9 @@ class rinhelp(commands.Cog):
                     name="Top.gg", value="`.rinhelp topgg`", inline=True)
                 embedVar.add_field(
                     name="Pinterest", value="`.rinhelp pinterest`", inline=True
+                )
+                embedVar.add_field(
+                    name="MyAnimeList/Jikan", value="`.rinhelp jikan`", inline=True
                 )
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
@@ -281,12 +284,14 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`translate`",
-                    value="Translates the given message. Note that as of now, it's only set to english",
+                    value="Translates the given message to any language supported by Google Translate",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`rinhelp`", value="Rin's Help command", inline=True
                 )
+                embedVar.add_field(name="`help`", value="Alias for `rinhelp`. Replaces the default help command", inline=True)
+                embedVar.add_field(name="`rininvite`", value="Rin's invite links. Also can be reached with `invite`.", inline=True)
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
                 )
@@ -336,11 +341,14 @@ class rinhelp(commands.Cog):
                     value="Search for art from Waifu.pics",
                     inline=True,
                 )
-                embedVar.add_field(
-                    name="`jikan-anime`",
-                    value="Searches on Jikan/MyAnimeList and provides info about the given anime",
-                    inline=True,
+                embedVar.set_author(
+                    name="Rin Help - Anime", icon_url=bot.user.avatar_url
                 )
+                await ctx.send(embed=embedVar)
+            
+            if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
                     name="`jikan-manga`",
                     value="Seaches on Jikan/MyAnimeList and provides info about the given manga",
@@ -361,11 +369,12 @@ class rinhelp(commands.Cog):
                     value="Returns 5 animes that are already planned for viewing in the future",
                     inline=True,
                 )
+                embedVar.set_footer(text='Also note that the prefix can be shorten down to "jk"')
                 embedVar.set_author(
-                    name="Rin Help - Anime", icon_url=bot.user.avatar_url
+                    name="Rin Help - MyAnimeList/Jikan", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
-
+                
             if str(search) == "topgg":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
