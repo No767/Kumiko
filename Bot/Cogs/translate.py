@@ -2,6 +2,7 @@ import discord
 from deep_translator import GoogleTranslator
 from discord.ext import commands
 
+
 class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -22,11 +23,14 @@ class Utility(commands.Cog):
             msg = await self.bot.wait_for("message", check=check)
             await ctx.send("Enter which language you wish to have this translated in:")
             lang = await self.bot.wait_for("message", check=check)
-            translatev2 = GoogleTranslator(source="auto", target=lang.content).translate(
-                text=str(msg.content).lower()
-            )
+            translatev2 = GoogleTranslator(
+                source="auto", target=lang.content
+            ).translate(text=str(msg.content).lower())
             translate_embed = discord.Embed(description=translatev2)
-            translate_embed.set_footer(text=f"Requested by {ctx.message.author.name}", icon_url=ctx.message.author.avatar_url,)
+            translate_embed.set_footer(
+                text=f"Requested by {ctx.message.author.name}",
+                icon_url=ctx.message.author.avatar_url,
+            )
             await ctx.send(embed=translate_embed)
         except Exception as e:
             await ctx.send(f"The query failed.\nReason: {e}")

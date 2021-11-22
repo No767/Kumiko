@@ -1,8 +1,8 @@
 import os
 
+import aiohttp
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import aiohttp
 
 load_dotenv()
 
@@ -20,18 +20,28 @@ class tokenRefresher(commands.Cog):
     @tasks.loop(minutes=45.0)
     async def refresher(self):
         async with aiohttp.ClientSession() as session:
-            params = {"client_id": f"{Client_ID}", "client_secret": f"{Client_Secret}", "grant_type": "refresh_token",
-                      "refresh_token": f"{Refresh_Token}"}
-            async with session.get("https://www.deviantart.com/oauth2/token", params=params) as r:
+            params = {
+                "client_id": f"{Client_ID}",
+                "client_secret": f"{Client_Secret}",
+                "grant_type": "refresh_token",
+                "refresh_token": f"{Refresh_Token}",
+            }
+            async with session.get(
+                "https://www.deviantart.com/oauth2/token", params=params
+            ) as r:
                 self.index = self.index + 1
                 data = await r.json()
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
-                print(f"----------DeviantArt Token Refresher - Request #{self.index} ---------------------\n")
+                print(
+                    f"----------DeviantArt Token Refresher - Request #{self.index} ---------------------\n"
+                )
                 print(f"{data}\n")
                 print(f"New DeviantArt Access Token: {access_token}\n")
                 print(f"New DeviantArt Refresh Token: {refresh_token}\n")
-                print("------------------------------------------------------------------------\n")
+                print(
+                    "------------------------------------------------------------------------\n"
+                )
                 file = open("../.env", "r")
                 file_data = file.readlines()
                 file_data[37] = f'DeviantArt_Access_Token = "{access_token}"\n'
