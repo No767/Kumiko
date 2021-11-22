@@ -98,9 +98,10 @@ class reddit(commands.Cog):
             await ctx.send(embed=reddit_embed)
             return
         except Exception as e:
-            await ctx.send(
-                f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again.\nReason: {e}"
-            )
+            embed = discord.Embed()
+            embed.description = f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again."
+            embed.add_field(name="Reason", value=e, inline=True)
+            await ctx.send(embed=embed)
 
     @reddit.error
     async def on_message_error(
