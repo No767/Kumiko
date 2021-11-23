@@ -44,8 +44,3 @@ class MangadexV1(commands.Cog):
                     md_data["data"]["attributes"]["tags"] in md_data["data"]["attributes"]["tags"]], inline=True)
                 embedVar.set_thumbnail(url=f"https://uploads.mangadex.org/covers/{id}/{cover_art_id}.jpg") # this part is currently not working
                 await ctx.send(embed=embedVar)
-                    
-                
-        
-        else:
-            await ctx.send('No manga found.')
