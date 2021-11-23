@@ -1,7 +1,7 @@
+import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-import aiohttp
 
 
 class mcsrvstats(commands.Cog):
@@ -26,12 +26,16 @@ class mcsrvstats(commands.Cog):
                         embedVar.add_field(
                             name="Hostname/Domain", value=mcsrv["hostname"], inline=True
                         )
-                        embedVar.add_field(name="IP Address",
-                                           value=mcsrv["ip"], inline=True)
                         embedVar.add_field(
-                            name="Port", value=mcsrv["port"], inline=True)
+                            name="IP Address", value=mcsrv["ip"], inline=True
+                        )
                         embedVar.add_field(
-                            name="Players Online", value=mcsrv["players"]["online"], inline=True
+                            name="Port", value=mcsrv["port"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Players Online",
+                            value=mcsrv["players"]["online"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Max Online Player Slots",
@@ -61,10 +65,14 @@ class mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="IP in SRV", value=mcsrv["debug"]["ipinsrv"], inline=True
+                            name="IP in SRV",
+                            value=mcsrv["debug"]["ipinsrv"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="CNAME in SRV", value=mcsrv["debug"]["cnameinsrv"], inline=True
+                            name="CNAME in SRV",
+                            value=mcsrv["debug"]["cnameinsrv"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Animated MOTD",
@@ -72,13 +80,19 @@ class mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Cache Time", value=mcsrv["debug"]["cachetime"], inline=True
+                            name="Cache Time",
+                            value=mcsrv["debug"]["cachetime"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="API Version", value=mcsrv["debug"]["apiversion"], inline=True
+                            name="API Version",
+                            value=mcsrv["debug"]["apiversion"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="HTTP Status (MCSrvStat)", value=mcsrv_status_code, inline=True
+                            name="HTTP Status (MCSrvStat)",
+                            value=mcsrv_status_code,
+                            inline=True,
                         )
                         embedVar.set_thumbnail(url=image_link)
                         await ctx.send(embed=embedVar)
@@ -86,14 +100,17 @@ class mcsrvstats(commands.Cog):
                         embedVar = discord.Embed(
                             title="Infomation (Java Edition)", color=0xC27C0E
                         )
-                        embedVar.add_field(name="Online Status", value=mcsrv["online"])
+                        embedVar.add_field(
+                            name="Online Status", value=mcsrv["online"])
                         embedVar.add_field(
                             name="Hostname/Domain", value=mcsrv["hostname"], inline=True
                         )
-                        embedVar.add_field(name="IP Address",
-                                           value=mcsrv["ip"], inline=True)
                         embedVar.add_field(
-                            name="Port", value=mcsrv["port"], inline=True)
+                            name="IP Address", value=mcsrv["ip"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Port", value=mcsrv["port"], inline=True
+                        )
                         embedVar.add_field(
                             name="Ping", value=mcsrv["debug"]["ping"], inline=True
                         )
@@ -109,10 +126,14 @@ class mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="IP in SRV", value=mcsrv["debug"]["ipinsrv"], inline=True
+                            name="IP in SRV",
+                            value=mcsrv["debug"]["ipinsrv"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="CNAME in SRV", value=mcsrv["debug"]["cnameinsrv"], inline=True
+                            name="CNAME in SRV",
+                            value=mcsrv["debug"]["cnameinsrv"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Animated MOTD",
@@ -120,10 +141,14 @@ class mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Cache Time", value=mcsrv["debug"]["cachetime"], inline=True
+                            name="Cache Time",
+                            value=mcsrv["debug"]["cachetime"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="HTTP Status (MCSrvStat)", value=mcsrv_status_code, inline=True
+                            name="HTTP Status (MCSrvStat)",
+                            value=mcsrv_status_code,
+                            inline=True,
                         )
                         embedVar.set_thumbnail(url=image_link)
                         await ctx.send(embed=embedVar)
@@ -133,7 +158,7 @@ class mcsrvstats(commands.Cog):
                         f"Your search for has failed. Please try again.\nReason: {e}"
                     )
                     await ctx.send(embed=embedVar)
-        
+
     @java.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -165,19 +190,24 @@ class bedrock_mcsrvstats(commands.Cog):
                             name="Online Status", value=bedmcsrv["online"], inline=True
                         )
                         embedVar.add_field(
-                            name="Hostname/Domain", value=bedmcsrv["hostname"], inline=True
+                            name="Hostname/Domain",
+                            value=bedmcsrv["hostname"],
+                            inline=True,
                         )
-                        embedVar.add_field(name="IP Address",
-                                           value=bedmcsrv["ip"], inline=True)
                         embedVar.add_field(
-                            name="Port", value=bedmcsrv["port"], inline=True)
+                            name="IP Address", value=bedmcsrv["ip"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Port", value=bedmcsrv["port"], inline=True
+                        )
                         embedVar.add_field(
                             name="Supported/Server Version",
                             value=bedmcsrv["version"],
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Map", value=bedmcsrv["map"], inline=True)
+                            name="Map", value=bedmcsrv["map"], inline=True
+                        )
                         embedVar.add_field(
                             name="Players Online",
                             value=bedmcsrv["players"]["online"],
@@ -211,7 +241,9 @@ class bedrock_mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="IP in SRV", value=bedmcsrv["debug"]["ipinsrv"], inline=True
+                            name="IP in SRV",
+                            value=bedmcsrv["debug"]["ipinsrv"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="CNAME in SRV",
@@ -224,7 +256,9 @@ class bedrock_mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Cache Time", value=bedmcsrv["debug"]["cachetime"], inline=True
+                            name="Cache Time",
+                            value=bedmcsrv["debug"]["cachetime"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="API Version",
@@ -246,12 +280,16 @@ class bedrock_mcsrvstats(commands.Cog):
                             name="Online Status", value=bedmcsrv["online"], inline=True
                         )
                         embedVar.add_field(
-                            name="Hostname/Domain", value=bedmcsrv["hostname"], inline=True
+                            name="Hostname/Domain",
+                            value=bedmcsrv["hostname"],
+                            inline=True,
                         )
-                        embedVar.add_field(name="IP Address",
-                                           value=bedmcsrv["ip"], inline=True)
                         embedVar.add_field(
-                            name="Port", value=bedmcsrv["port"], inline=True)
+                            name="IP Address", value=bedmcsrv["ip"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Port", value=bedmcsrv["port"], inline=True
+                        )
                         embedVar.add_field(
                             name="Ping", value=bedmcsrv["debug"]["ping"], inline=True
                         )
@@ -264,7 +302,9 @@ class bedrock_mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="IP in SRV", value=bedmcsrv["debug"]["ipinsrv"], inline=True
+                            name="IP in SRV",
+                            value=bedmcsrv["debug"]["ipinsrv"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="CNAME in SRV",
@@ -277,7 +317,9 @@ class bedrock_mcsrvstats(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Cache Time", value=bedmcsrv["debug"]["cachetime"], inline=True
+                            name="Cache Time",
+                            value=bedmcsrv["debug"]["cachetime"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="HTTP Status (MCSrvStat)",
