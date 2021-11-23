@@ -37,3 +37,13 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 - [Documentation](https://rin-docs.readthedocs.io/en/latest/)
 - [Top.gg](https://top.gg/bot/865883525932253184)
 - [Website](https://rinbot.live)
+
+
+<div align=center>
+    
+ [![Discord Bots](https://top.gg/api/widget/865883525932253184.svg)](https://top.gg/bot/865883525932253184)
+ [![Discord.boats Widget](https://discord.boats/api/widget/865883525932253184?type=svg)](https://discord.boats/bot/865883525932253184)
+ <a href="https://discordbotlist.com/bots/865883525932253184"><img src="https://discordbotlist.com/api/v1/bots/865883525932253184/widget"></a>
+  
+    
+</div>
