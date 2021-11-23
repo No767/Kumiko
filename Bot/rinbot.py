@@ -41,7 +41,6 @@ initial_extensions = [
     "Cogs.spotify",
     "Cogs.pinterest",
     "Cogs.rininvite",
-    "Cogs.deviantart-token-refresher",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
