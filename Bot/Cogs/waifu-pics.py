@@ -1,9 +1,10 @@
 import random
 
+import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-import aiohttp
+
 
 class waifu(commands.Cog):
     def __init__(self, bot):
