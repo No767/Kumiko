@@ -39,6 +39,7 @@ class ErrorHandler(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
+
 # Disabled due to discord.bots.gg complaining that it responses to these commands.... (facepalm)
 #         if isinstance(error, commands.CommandNotFound):
 #             embedVar = discord.Embed(
