@@ -1,8 +1,0 @@
-
-[submodule "EasyBot.py"]
-	path = EasyBot.py
-	url = https://github.com/chisaku-dev/EasyBot.py.git
-[submodule "EasyBot-Plugins"]
-	path = EasyBot-Plugins
-	url = https://github.com/chisaku-dev/EasyBot-Plugins.git
-
