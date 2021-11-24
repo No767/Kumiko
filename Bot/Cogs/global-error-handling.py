@@ -10,13 +10,7 @@ class ErrorHandler(commands.Cog):
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
     ):
-        if isinstance(error, commands.CommandNotFound):
-            embedVar = discord.Embed(
-                color=discord.Color.from_rgb(226, 199, 255))
-            embedVar.description = f"{error}. Please try again, or refer to either `rinhelp` or the [docs](https://rin-docs.readthedocs.io/en/latest)"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-        elif isinstance(error, commands.MissingPermissions):
+        if isinstance(error, commands.MissingPermissions):
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(226, 199, 255))
             embedVar.description = (
@@ -45,6 +39,12 @@ class ErrorHandler(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-
+# Disabled due to discord.bots.gg complaining that it responses to these commands.... (facepalm)
+#         if isinstance(error, commands.CommandNotFound):
+#             embedVar = discord.Embed(
+#                 color=discord.Color.from_rgb(226, 199, 255))
+#             embedVar.description = f"{error}. Please try again, or refer to either `rinhelp` or the [docs](https://rin-docs.readthedocs.io/en/latest)"
+#             msg = await ctx.send(embed=embedVar, delete_after=10)
+#             await msg.delete(delay=10)
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
