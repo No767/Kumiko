@@ -6,6 +6,7 @@ import requests
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+import asyncio
 
 load_dotenv()
 
@@ -26,6 +27,7 @@ class tokenRefresher(commands.Cog):
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
         link = f"https://www.deviantart.com/oauth2/token?client_id={Client_ID}&client_secret={Client_Secret}&grant_type=refresh_token&refresh_token={Refresh_Token}"
+        await asyncio.sleep(10)
         r = requests.get(link)
         data = ujson.loads(r.text)
         access_token = data["access_token"]
