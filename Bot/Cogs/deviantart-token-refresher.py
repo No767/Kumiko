@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import os
 import time
@@ -6,7 +7,6 @@ import requests
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import asyncio
 
 load_dotenv()
 
