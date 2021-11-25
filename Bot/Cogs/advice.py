@@ -7,8 +7,7 @@ from discord.ext import commands
 def advice():
     link = "https://api.adviceslip.com/advice"
     r = requests.get(link)
-    advice_data = r.text
-    return ujson.loads(advice_data)
+    return ujson.loads(r.text)
 
 
 class advice_slip(commands.Cog):

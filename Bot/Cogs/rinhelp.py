@@ -79,9 +79,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`ping`", value="Checks the ping for the bot", inline=True
                 )
-                embedVar.add_field(
-                    name="`ban`", value="Bans the specified user", inline=True
-                )
                 embedVar.set_author(
                     name="Rin Help - Admin", icon_url=bot.user.avatar_url
                 )
@@ -141,6 +138,8 @@ class rinhelp(commands.Cog):
                     value="Obtains bedrock server status",
                     inline=True,
                 )
+                embedVar.add_field(name="`java`", value="Alias for `javamcsrv`", inline=True)
+                embedVar.add_field(name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True)
                 embedVar.add_field(
                     name="`hypixel`",
                     value="Gain Insight in Hypixel's player data",
@@ -266,9 +265,6 @@ class rinhelp(commands.Cog):
                     name="`clear`",
                     value="Clears number of messages specified from the channel in which int he command was called",
                 )
-                embedVar.add_field(
-                    name="`mute`", value="Mutes that specified user", inline=True
-                )
                 embedVar.set_author(
                     name="Rin Help - Chat", icon_url=bot.user.avatar_url
                 )
@@ -297,7 +293,7 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`rininvite`",
-                    value="Rin's invite links. Also can be reached with `invite`.",
+                    value="Rin's invite links. Also can be reached with `.invite`.",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -403,7 +399,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "pinterest":
+            if str(search) in ("pinterest", "pt"):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(

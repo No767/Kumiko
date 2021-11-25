@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.utils import get
 
-
+# Disabled for now. needs more testing
 class check_pronouns(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
