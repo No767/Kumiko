@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("Hanako_Token")
+TOKEN = os.getenv("TOKEN")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".", help_command=None)
 
@@ -32,7 +32,6 @@ initial_extensions = [
     "Cogs.waifu-pics",
     "Cogs.advice",
     "Cogs.qrcode",
-    "Cogs.pronouns",
     "Cogs.spiget",
     "Cogs.jikan",
     "Cogs.nb-pride",
@@ -41,7 +40,6 @@ initial_extensions = [
     "Cogs.spotify",
     "Cogs.pinterest",
     "Cogs.rininvite",
-    "Cogs.mangadex",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

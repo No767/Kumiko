@@ -25,7 +25,7 @@ class Utility(commands.Cog):
             lang = await self.bot.wait_for("message", check=check)
             translatev2 = GoogleTranslator(
                 source="auto", target=lang.content
-            ).translate(text=str(msg.content).lower())
+            ).translate(text=str(msg.content))
             translate_embed = discord.Embed(description=translatev2)
             translate_embed.set_footer(
                 text=f"Requested by {ctx.message.author.name}",
