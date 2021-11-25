@@ -7,7 +7,6 @@ import requests
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import urllib
 
 load_dotenv()
 
@@ -48,7 +47,7 @@ class tokenRefresher(commands.Cog):
             file_data[38] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
         with open("../.env", "w") as file:
             file.writelines(file_data)
-    
+
     @refresher.error
     async def refresher_error(self):
         start_link = f"https://www.deviantart.com/oauth2/authorize?response_type=code&client_id={Client_ID}&redirect_uri=https://github.com/No767/Rin&scope=user browse collection gallery"

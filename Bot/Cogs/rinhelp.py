@@ -138,8 +138,12 @@ class rinhelp(commands.Cog):
                     value="Obtains bedrock server status",
                     inline=True,
                 )
-                embedVar.add_field(name="`java`", value="Alias for `javamcsrv`", inline=True)
-                embedVar.add_field(name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True)
+                embedVar.add_field(
+                    name="`java`", value="Alias for `javamcsrv`", inline=True
+                )
+                embedVar.add_field(
+                    name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True
+                )
                 embedVar.add_field(
                     name="`hypixel`",
                     value="Gain Insight in Hypixel's player data",
