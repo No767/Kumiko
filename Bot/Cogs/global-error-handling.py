@@ -40,7 +40,7 @@ class ErrorHandler(commands.Cog):
             await msg.delete(delay=10)
 
 
-# Disabled due to discord.bots.gg complaining that it responses to these commands.... (facepalm)
+# Disabled due to discords.com complaining that it responses to these commands.... (facepalm)
 #         if isinstance(error, commands.CommandNotFound):
 #             embedVar = discord.Embed(
 #                 color=discord.Color.from_rgb(226, 199, 255))

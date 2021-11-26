@@ -102,7 +102,7 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Twitter", icon_url=bot.user.avatar_url
                 )
                 embedVar.set_footer(
-                    text="Note: Currently the Twitter Cog is broken. Reworking it soon"
+                    text="The Twitter Service has been completely disabled due to a complete rewrite"
                 )
                 await ctx.send(embed=embedVar)
 
@@ -250,7 +250,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text="Note: There is a 20 sec cooldowm for each command. This is to prevent rate limiting."
+                    text="Note: There is a 20 sec cooldown for each command. This is to prevent rate limiting."
                 )
                 embedVar.set_author(
                     name="Rin Help - Instagram", icon_url=bot.user.avatar_url
@@ -267,8 +267,9 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`clear`",
-                    value="Clears number of messages specified from the channel in which int he command was called",
+                    value="Clears number of messages specified from the channel in which in the command was called",
                 )
+                embedVar.set_footer(text="The clear command has been disabled for the time being in order to allow for testing")
                 embedVar.set_author(
                     name="Rin Help - Chat", icon_url=bot.user.avatar_url
                 )
