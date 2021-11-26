@@ -269,7 +269,9 @@ class rinhelp(commands.Cog):
                     name="`clear`",
                     value="Clears number of messages specified from the channel in which in the command was called",
                 )
-                embedVar.set_footer(text="The clear command has been disabled for the time being in order to allow for testing")
+                embedVar.set_footer(
+                    text="The clear command has been disabled for the time being in order to allow for testing"
+                )
                 embedVar.set_author(
                     name="Rin Help - Chat", icon_url=bot.user.avatar_url
                 )
