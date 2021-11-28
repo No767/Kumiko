@@ -165,7 +165,23 @@ class MangaDexV2(commands.Cog):
             embedVar.add_field(name="Reason", value=e, inline=True)
             await ctx.send(embed=embedVar)
 
+class MangaDexReaderV1(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    
+    # Later this should allow for the name to be inputted, but for now it purely relies on the chapter id
+    @commands.command(name="mangadex-read", aliases=["md-read"])
+    async def manga_read(self, ctx, *, id:str):
+        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+            async with session.get(f"https://api.mangadex.org/chapter/{id}") as r:
+                data = await r.json()
+                chapter_hash = data["data"]["attributes"]["hash"]
+                list_of_images = data["data"]["attributes"]["data"][0]
+                embedVar = discord.Embed()
+                embedVar.set_image(url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}")
+                await ctx.send(embed=embedVar)
 
 def setup(bot):
     bot.add_cog(MangaDexV1(bot))
     bot.add_cog(MangaDexV2(bot))
+    bot.add_cog(MangaDexReaderV1(bot))
