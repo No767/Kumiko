@@ -7,6 +7,7 @@ class clearMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.is_owner()
     @commands.command(
         name="clear",
         help="Clears number of messages specified from the channel in which the command was called",

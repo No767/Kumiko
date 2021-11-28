@@ -10,7 +10,7 @@ class waifu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="waifupics")
+    @commands.command(name="waifupics", aliases=["wp"])
     async def on_messsage(self, ctx):
         waifu_list = [
             "waifu",
@@ -53,9 +53,8 @@ class waifu(commands.Cog):
                     await ctx.send(waifu_pics["url"])
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = f"""
-                    The query was not successful.\nReason: {e}
-                    """
+                    embedVar.description = "The query was not successful"
+                    embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
 
