@@ -300,7 +300,11 @@ class rinhelp(commands.Cog):
                     value="Rin's invite links. Also can be reached with `.invite`.",
                     inline=True,
                 )
-                embedVar.add_field(name="`version`", value="Checks for current version of Rin", inline=True)
+                embedVar.add_field(
+                    name="`version`",
+                    value="Checks for current version of Rin",
+                    inline=True,
+                )
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
                 )

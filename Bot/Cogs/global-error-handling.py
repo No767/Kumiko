@@ -12,7 +12,7 @@ class ErrorHandler(commands.Cog):
     ):
         if isinstance(error, commands.CommandNotFound):
             embedVar = discord.Embed(
-            color=discord.Color.from_rgb(226, 199, 255))
+                color=discord.Color.from_rgb(226, 199, 255))
             embedVar.description = f"{error}. Please try again, or refer to either `rinhelp` or the [docs](https://rin-docs.readthedocs.io/en/latest)"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
@@ -44,6 +44,7 @@ class ErrorHandler(commands.Cog):
             embedVar.description = f"{self.bot.user.name} is currently missing the following roles: {error.missing_roles}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
 
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
