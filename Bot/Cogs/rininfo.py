@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from discord_components import DiscordComponents, ComponentsBot, Button
+from discord_components import Button
+
 
 class info(commands.Cog):
     def __init__(self, bot):
@@ -28,14 +29,31 @@ class info(commands.Cog):
         embedVar.set_footer(
             text="Project Lead Maintainer and Original Creator of Rin: No767\nOriginal Creator of EasyBot.py and EasyBot Plugins: Chisaku-dev"
         )
-        await message.channel.send(embed=embedVar, components=[[
-            Button(label="GitHub", url="https://github.com/No767/Rin", style=5),
-            Button(label="Issue Tracker", url="https://github.com/No767/Rin/issues", style=5),
-            Button(label="Docs", url="https://rin-docs.readthedocs.io/en/latest", style=5),
-            Button(label="Invite", url="https://top.gg/bot/865883525932253184/invite", style=5),
-            Button(label="Website", url="https://rinbot.live", style=5)
-            ]
-        ])
+        await message.channel.send(
+            embed=embedVar,
+            components=[
+                [
+                    Button(label="GitHub",
+                           url="https://github.com/No767/Rin", style=5),
+                    Button(
+                        label="Issue Tracker",
+                        url="https://github.com/No767/Rin/issues",
+                        style=5,
+                    ),
+                    Button(
+                        label="Docs",
+                        url="https://rin-docs.readthedocs.io/en/latest",
+                        style=5,
+                    ),
+                    Button(
+                        label="Invite",
+                        url="https://top.gg/bot/865883525932253184/invite",
+                        style=5,
+                    ),
+                    Button(label="Website", url="https://rinbot.live", style=5),
+                ]
+            ],
+        )
 
 
 def setup(bot):
