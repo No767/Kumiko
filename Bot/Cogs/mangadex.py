@@ -3,6 +3,7 @@ import discord
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
+from discord_components import Button
 
 load_dotenv()
 
@@ -173,16 +174,25 @@ class MangaDexReaderV1(commands.Cog):
     # Later this should allow for the name to be inputted, but for now it purely relies on the chapter id
     @commands.command(name="mangadex-read", aliases=["md-read"])
     async def manga_read(self, ctx, *, id: str):
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-            async with session.get(f"https://api.mangadex.org/chapter/{id}") as r:
-                data = await r.json()
-                chapter_hash = data["data"]["attributes"]["hash"]
-                list_of_images = data["data"]["attributes"]["data"][0]
-                embedVar = discord.Embed()
-                embedVar.set_image(
-                    url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
-                )
-                await ctx.send(embed=embedVar)
+        try:
+            async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+                async with session.get(f"https://api.mangadex.org/chapter/{id}") as r:
+                    data = await r.json()
+                    chapter_hash = data["data"]["attributes"]["hash"]
+                    var = 0
+                    var += 1
+                    list_of_images = data["data"]["attributes"]["data"][var]
+                    length_of_chapter = len(data["data"]["attributes"]["data"])
+                    chapter_name = data["data"]["attributes"]["title"]
+                    chapter_num = data["data"]["attributes"]["chapter"]
+                    embedVar = discord.Embed(color=discord.Color.from_rgb(231, 173, 255))
+                    embedVar.description = f"{chapter_name} - Chapter {chapter_num}"
+                    embedVar.set_image(
+                        url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
+                    )
+                    await ctx.send(embed=embedVar, components=[[Button(label="Go Back", style=1, custom_id="back"), Button(label=f"Page /{length_of_chapter}", style=2, custom_id="current_page", disabled="true"), Button(label="Go Forwards", style=1, custom_id="forward")]])
+        except Exception as e:
+            await ctx.send(e)
 
 
 def setup(bot):
