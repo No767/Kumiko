@@ -28,10 +28,8 @@ class advice_slip(commands.Cog):
             await ctx.send(embed=embedVar)
         except Exception as e:
             embedVar = discord.Embed()
-            embedVar.description = f"""
-            The query was unsuccessful
-            Reason: {e}
-            """
+            embedVar.description = "The query failed. Please try again."
+            embedVar.add_field(name="Reason", value=e, inline=True)
             await ctx.send(embed=embedVar)
 
 

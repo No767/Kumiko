@@ -2,6 +2,7 @@ import os
 
 import ujson
 from discord.ext import commands
+import discord
 
 
 class Chat(commands.Cog):
@@ -56,7 +57,10 @@ class Chat(commands.Cog):
                                 await message.channel.send(i["pong"])
                                 return
         except Exception as e:
-            await message.channel.send(e)
+            embedVar = discord.Embed()
+            embedVar.description = "Oops! Something went wrong! Please try again"
+            embedVar.add_field(name="Reason", value=e, inline=True)
+            await message.channel.send(embed=embedVar)
 
 
 def setup(bot):

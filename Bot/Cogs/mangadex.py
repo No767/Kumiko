@@ -2,8 +2,12 @@ import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-from discord_components import Button
 from dotenv import load_dotenv
+from discord_components import (
+    Button,
+    Select, 
+    SelectOption
+)
 
 load_dotenv()
 
@@ -185,36 +189,71 @@ class MangaDexReaderV1(commands.Cog):
                     length_of_chapter = len(data["data"]["attributes"]["data"])
                     chapter_name = data["data"]["attributes"]["title"]
                     chapter_num = data["data"]["attributes"]["chapter"]
-                    embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(231, 173, 255)
-                    )
-                    embedVar.description = f"{chapter_name} - Chapter {chapter_num}"
-                    embedVar.set_image(
-                        url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
-                    )
-                    await ctx.send(
-                        embed=embedVar,
-                        components=[
-                            [
-                                Button(label="Go Back", style=1,
-                                       custom_id="back"),
-                                Button(
-                                    label=f"Page /{length_of_chapter}",
-                                    style=2,
-                                    custom_id="current_page",
-                                    disabled="true",
-                                ),
-                                Button(
-                                    label="Go Forwards", style=1, custom_id="forward"
-                                ),
-                            ]
-                        ],
-                    )
+                    manga_id = data["data"]["relationships"][1]["id"]
+                    async with session.get(f"https://api.mangadex.org/manga/{manga_id}") as resp:
+                        data1 = await resp.json()
+                        title = data1["data"]["attributes"]["title"]["en"]
+                        embedVar = discord.Embed(
+                            title=f"{title}",
+                            color=discord.Color.from_rgb(231, 173, 255)
+                        )
+                        embedVar.description = f"{chapter_name} - Chapter {chapter_num}"
+                        embedVar.set_image(
+                            url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
+                        )
+                        await ctx.send(
+                            embed=embedVar,
+                            components=[
+                                [
+                                    Button(label="Go Back", style=1,
+                                           custom_id="back"),
+                                    Button(
+                                        label=f"Page /{length_of_chapter}",
+                                        style=2,
+                                        custom_id="current_page",
+                                        disabled="true",
+                                    ),
+                                    Button(
+                                        label="Go Forwards", style=1, custom_id="forward"
+                                    ),
+                                ]
+                            ],
+                        )
+                        interaction = await self.bot.wait_for("button_click", check=lambda i: i.custom_id == "back")
+                        await interaction.ctx.send("Button is clicked", ephemeral="False")
+                        
+                        
         except Exception as e:
             await ctx.send(e)
+
+class discordButtonTest(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="button-test")
+    async def button(self, ctx):
+        await ctx.send(
+            "Selects!",
+            components=[
+                Select(
+                    placeholder="Select something!",
+                    options=[
+                        SelectOption(label="a", value="a"),
+                        SelectOption(label="b", value="b"),
+                    ],
+                    custom_id="select1",
+                )
+            ],
+        )
+        while True:
+            interaction = await self.bot.wait_for(
+                "select_option", check=lambda inter: inter.custom_id == "select1"
+            )
+            await interaction.send(content=f"{interaction.values[0]} selected!")
 
 
 def setup(bot):
     bot.add_cog(MangaDexV1(bot))
     bot.add_cog(MangaDexV2(bot))
     bot.add_cog(MangaDexReaderV1(bot))
+    bot.add_cog(discordButtonTest(bot)) # MAKE SURE TO REMOVE THIS! THIS IS ONLY MEANT TO TEST OUT THE BUTTONS

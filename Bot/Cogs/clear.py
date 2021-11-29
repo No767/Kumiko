@@ -1,8 +1,11 @@
 import discord
-from Cogs import plugin_tools
 from discord.ext import commands
+import random
 
+def discord_colors():
+    colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
 
+    return random.choice(colors)
 class clearMessages(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -14,10 +17,10 @@ class clearMessages(commands.Cog):
     )
     async def clear(self, ctx, number_of_messages: int):
         await ctx.channel.purge(limit=number_of_messages + 1)
+        embedVar = discord.Embed(color=discord_colors())
+        embedVar.description = f"{number_of_messages} messages were deleted"
         await ctx.send(
-            embed=plugin_tools.fast_embed(
-                f"{number_of_messages} messages were deleted"
-            ),
+            embed=embedVar,
             delete_after=3,
         )
 
