@@ -1,0 +1,61 @@
+name: Issue Report
+description: File a issue report
+title: "[ISSUE] "
+labels: [Issue]
+body:
+
+- type: textarea
+  attributes:
+    label: Current Behavior
+    description: A concise description of what you're experiencing.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Expected Behavior
+    description: A concise description of what you expected to happen.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Steps To Reproduce
+    description: Steps to reproduce the behavior.
+    placeholder: |
+      1. In this environment...
+      2. With this config...
+      3. Run '...'
+      4. See error...
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Environment
+    description: |
+      Please list out the environment where the issue has been tested or seen (Note that if you found this issue on Discord, you don't have to fill this out):
+        - **OS**: Ubuntu 20.04
+        - **Python Version**: 3.10.0
+        - **pip version**: 21.3.1
+        - **pipenv version**: v2021.11.5
+        - **Found on Discord?**: Yes
+    value: |
+        - OS:
+        - Python Version:
+        - pip version:
+        - pipenv version:
+        - Found on Discord?:
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      Links, References, Examples can all work here. Anything that will give us more context about the issue you are encountering will help here.
+  validations:
+    required: false
+- type: checkboxes
+  attributes:
+    label: Is there an existing issue for this?
+    description: Please search to see if an issue already exists for the bug you encountered. Support will not be given for duplicate issues/bugs.
+    options:
+    - label: I have searched the existing issues
+      required: true

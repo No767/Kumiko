@@ -1,0 +1,48 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+    
+  pull_request:
+    branches:
+      - dev
+  schedule:
+    - cron: '36 7 * * 0'
+
+jobs:
+  Analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'python' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set up Python 3.10.0
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.10.0
+    - name: Upgrade Pip and Install Pipenv
+      run: |
+        pip install --upgrade pip pipenv
+    - name: Install Pipenv Dependencies
+      run: |
+        pipenv install
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

@@ -1,0 +1,38 @@
+name: Snyk
+on:
+  push:
+    branches:
+      - master
+      - dev
+    
+  pull_request:
+    branches:
+      - dev
+  schedule:
+    - cron: '36 7 * * 0'
+jobs:
+  Analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.10.0
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.0
+      - name: Upgrade Pip and Install Pipenv
+        run: |
+          pip install --upgrade pip pipenv
+      - name: Install Pipenv Dependencies 
+        run: |
+          pipenv install
+      - name: Run Snyk
+        uses: snyk/actions/python@master
+        continue-on-error: true # To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --sarif-file-output=snyk.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
