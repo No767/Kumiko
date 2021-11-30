@@ -2,7 +2,7 @@
 
 # Kumiko
 
-<img src="./assets/kumiko.jpg">
+<img src="./assets/kumiko.jpg" width=256 height=256>
 
 <br/>
 
