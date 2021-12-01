@@ -6,7 +6,7 @@
 
 <br>
 
-![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white) [![Top.gg Status](https://top.gg/api/widget/status/865883525932253184.png)](https://top.gg/bot/865883525932253184) 
+![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white)
 [![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Rin/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/snyk.yml) [![Lint + Format](https://github.com/No767/Rin/actions/workflows/lint+format.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/lint+format.yml) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
 
 A general purpose version of [Rin](https://github.com/No767/Rin)
