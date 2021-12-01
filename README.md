@@ -16,7 +16,7 @@ A general purpose version of [Rin](https://github.com/No767/Rin)
 
 # Inviting the Bot
 
-Via Top.gg. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite)
+Still in early production. Not ready for release yet
 
 # Building
 
@@ -26,22 +26,10 @@ Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 # Licensing
 
-Rin is licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 
+Kumiko and Rin are both licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 
 
 # Contributing
 
-See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
+See [Contributing](https://github.com/No767/Kumiko/blob/master/Community/contributing.md)
 
 # Links 
-
-- [Documentation](https://rin-docs.readthedocs.io/en/latest/)
-- [Top.gg](https://top.gg/bot/865883525932253184)
-- [Website](https://rinbot.live)
-
-
-<div align=center>
-    
- [![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
-  
-    
-</div>
