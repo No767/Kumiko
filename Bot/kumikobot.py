@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("Hanako_Token")
+TOKEN = os.getenv("Kumiko")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".", help_command=None)
 
@@ -50,7 +50,7 @@ for extension in initial_extensions:
 # Adds in the bot presence
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Game(name=".rinhelp"))
+    await bot.change_presence(activity=discord.Game(name=".help"))
 
 
 # Run the bot

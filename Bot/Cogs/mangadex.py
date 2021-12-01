@@ -2,12 +2,8 @@ import aiohttp
 import discord
 import ujson
 from discord.ext import commands
+from discord_components import Button, Select, SelectOption
 from dotenv import load_dotenv
-from discord_components import (
-    Button,
-    Select, 
-    SelectOption
-)
 
 load_dotenv()
 
@@ -190,12 +186,14 @@ class MangaDexReaderV1(commands.Cog):
                     chapter_name = data["data"]["attributes"]["title"]
                     chapter_num = data["data"]["attributes"]["chapter"]
                     manga_id = data["data"]["relationships"][1]["id"]
-                    async with session.get(f"https://api.mangadex.org/manga/{manga_id}") as resp:
+                    async with session.get(
+                        f"https://api.mangadex.org/manga/{manga_id}"
+                    ) as resp:
                         data1 = await resp.json()
                         title = data1["data"]["attributes"]["title"]["en"]
                         embedVar = discord.Embed(
                             title=f"{title}",
-                            color=discord.Color.from_rgb(231, 173, 255)
+                            color=discord.Color.from_rgb(231, 173, 255),
                         )
                         embedVar.description = f"{chapter_name} - Chapter {chapter_num}"
                         embedVar.set_image(
@@ -214,17 +212,23 @@ class MangaDexReaderV1(commands.Cog):
                                         disabled="true",
                                     ),
                                     Button(
-                                        label="Go Forwards", style=1, custom_id="forward"
+                                        label="Go Forwards",
+                                        style=1,
+                                        custom_id="forward",
                                     ),
                                 ]
                             ],
                         )
-                        interaction = await self.bot.wait_for("button_click", check=lambda i: i.custom_id == "back")
-                        await interaction.ctx.send("Button is clicked", ephemeral="False")
-                        
-                        
+                        interaction = await self.bot.wait_for(
+                            "button_click", check=lambda i: i.custom_id == "back"
+                        )
+                        await interaction.ctx.send(
+                            "Button is clicked", ephemeral="False"
+                        )
+
         except Exception as e:
             await ctx.send(e)
+
 
 class discordButtonTest(commands.Cog):
     def __init__(self, bot):
@@ -256,4 +260,6 @@ def setup(bot):
     bot.add_cog(MangaDexV1(bot))
     bot.add_cog(MangaDexV2(bot))
     bot.add_cog(MangaDexReaderV1(bot))
-    bot.add_cog(discordButtonTest(bot)) # MAKE SURE TO REMOVE THIS! THIS IS ONLY MEANT TO TEST OUT THE BUTTONS
+    bot.add_cog(
+        discordButtonTest(bot)
+    )  # MAKE SURE TO REMOVE THIS! THIS IS ONLY MEANT TO TEST OUT THE BUTTONS
