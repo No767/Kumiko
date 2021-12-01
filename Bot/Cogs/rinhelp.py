@@ -10,7 +10,7 @@ class rinhelp(commands.Cog):
         self.bot = bot
         self.last_member = None
 
-    @commands.command(name="rinhelp", aliases=["help"])
+    @commands.command(name="kumikohelp", aliases=["help"])
     async def on_message(self, ctx, *, search: typing.Optional[str] = None):
         try:
             if search is None:
