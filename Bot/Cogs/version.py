@@ -9,7 +9,7 @@ class VersionV1(commands.Cog):
     @commands.command(name="version")
     async def version(self, ctx):
         embedVar = discord.Embed()
-        embedVar.description = "Build Version: v1.3.0-dev-b8"
+        embedVar.description = "Build Version: v0.0.1-dev-b1"
         await ctx.send(embed=embedVar)
 
 
