@@ -14,7 +14,8 @@ jobs:
   Analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
       - name: Set up Python 3.10.0
         uses: actions/setup-python@v2
         with:
@@ -27,7 +28,7 @@ jobs:
           pipenv install
       - name: Run Snyk
         uses: snyk/actions/python@master
-        continue-on-error: true # To make sure that SARIF upload gets called
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:

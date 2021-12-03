@@ -4,4 +4,4 @@ COPY Pipfile ./ /Bot/
 COPY Pipfile.lock ./ /Bot/
 RUN pip install --upgrade pip pipenv
 RUN pipenv install
-CMD ["pipenv", "run", "python", "./Bot/rinbot.py"]
+CMD ["pipenv", "run", "python", "./Bot/kumikobot.py"]

@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"discord.py" = {version = "==1.7.3", extras = ["voice"]}
 python-dotenv = "==0.19.2"
 qrcode = {extras = ["pil"], version = "*"}
 praw = "==7.5.0"
@@ -21,7 +20,6 @@ lxml = "==4.6.4"
 fake-useragent = "==0.1.11"
 searchtweets = "==1.7.6"
 colorama = ">=0.4.4"
-pipenv = "==2021.11.23"
 Pillow = ">=8.1.0"
 requests = "*"
 searchtweets-v2 = "*"
@@ -32,13 +30,15 @@ ujson = "*"
 spotipy = "*"
 pynacl = "*"
 pyflakes = "*"
-cchardet = "*"
-aiodns = "*"
 google-api-python-client = "*"
 google-auth-oauthlib = "*"
 google-auth-httplib2 = "*"
 discord-components = "*"
 requests-oauthlib = "*"
+cchardet = "*"
+aiodns = "*"
+brotli = "*"
+py-cord = {extras = ["voice"], version = "*"}
 aiohttp = "<=3.7.4.post0"
 
 [dev-packages]
