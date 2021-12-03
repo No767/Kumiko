@@ -20,7 +20,7 @@ Your only option is via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 ## Pull Requests and Commits
 
-You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred. **If it's not for any fixes including any hotfixes, please submitting it to the dev branch, not the master branch**
+You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred. **If it's not for any fixes including any hotfixes, please submit it to the dev branch, not the master branch**
 
 ## Formatting
 
