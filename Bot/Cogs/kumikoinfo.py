@@ -33,8 +33,9 @@ class info(commands.Cog):
             embed=embedVar,
             components=[
                 [
-                    Button(label="GitHub",
-                           url="https://github.com/No767/Kumiko", style=5),
+                    Button(
+                        label="GitHub", url="https://github.com/No767/Kumiko", style=5
+                    ),
                     Button(
                         label="Issue Tracker",
                         url="https://github.com/No767/Kumiko/issues",

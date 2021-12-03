@@ -20,7 +20,8 @@ class rinhelp(commands.Cog):
                         **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
-                    name="Admin", value="`.kumikohelp admin`", inline=True)
+                    name="Admin", value="`.kumikohelp admin`", inline=True
+                )
                 embedVar.add_field(
                     name="Twitter", value="`.kumikohelp twitter`", inline=True
                 )
@@ -28,11 +29,13 @@ class rinhelp(commands.Cog):
                     name="Reddit", value="`.kumikohelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.kumikohelp mc`", inline=True)
+                    name="Minecraft", value="`.kumikohelp mc`", inline=True
+                )
                 embedVar.add_field(
                     name="Fun", value="`.kumikohelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Instagram", value="`.kumikohelp ig`", inline=True)
+                    name="Instagram", value="`.kumikohelp ig`", inline=True
+                )
                 embedVar.add_field(
                     name="Chat", value="`.kumikohelp chat`", inline=True)
                 embedVar.add_field(
@@ -41,17 +44,19 @@ class rinhelp(commands.Cog):
                     name="Deviantart", value="`.kumikohelp da`", inline=True
                 )
                 embedVar.add_field(
-                    name="Anime", value="`.kumikohelp anime`", inline=True)
+                    name="Anime", value="`.kumikohelp anime`", inline=True
+                )
                 embedVar.add_field(
-                    name="Top.gg", value="`.kumikohelp topgg`", inline=True)
+                    name="Top.gg", value="`.kumikohelp topgg`", inline=True
+                )
                 embedVar.add_field(
                     name="Pinterest", value="`.kumikohelp pinterest`", inline=True
                 )
                 embedVar.add_field(
                     name="MyAnimeList/Jikan", value="`.kumikohelp jikan`", inline=True
                 )
-                embedVar.set_author(
-                    name="Kumiko Help", icon_url=bot.user.avatar_url)
+                embedVar.set_author(name="Kumiko Help",
+                                    icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -224,8 +229,9 @@ class rinhelp(commands.Cog):
                     value="Sends a non-binary flag and a trans flag into the channel",
                     inline=True,
                 )
-                embedVar.set_author(name="Kumiko Help - Fun",
-                                    icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Kumiko Help - Fun", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) in ("instagram", "ig"):
