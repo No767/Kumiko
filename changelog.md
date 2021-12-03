@@ -8,3 +8,4 @@
 - Disabled missing commands handler (for discords.com verfication)
 - EasyBot.py and EasyBot-Plugins submodule 
 - Discord.py
+- Docker Workflow
