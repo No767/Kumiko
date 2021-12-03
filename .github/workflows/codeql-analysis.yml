@@ -21,13 +21,8 @@ jobs:
       contents: read
       security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'python' ]
-
     steps:
-    - name: Checkout repository
+    - name: Checkout Repository
       uses: actions/checkout@v2
     - name: Set up Python 3.10.0
       uses: actions/setup-python@v2
@@ -42,7 +37,6 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
-
+        languages: python
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
