@@ -31,7 +31,10 @@ class MangaDexV1(commands.Cog):
                         ) as rp:
                             cover_art_data = await rp.json()
                             cover_art = cover_art_data["data"]["attributes"]["fileName"]
-                            if "en" in md_data["data"]["attributes"]["description"] and md_data["data"]["attributes"]["title"]:
+                            if (
+                                "en" in md_data["data"]["attributes"]["description"]
+                                and md_data["data"]["attributes"]["title"]
+                            ):
                                 embedVar = discord.Embed()
                                 embedVar.add_field(
                                     name="Title",
@@ -41,8 +44,9 @@ class MangaDexV1(commands.Cog):
                                 embedVar.add_field(
                                     name="Description (English)",
                                     value=str(
-                                        md_data["data"]["attributes"]
-                                            ["description"]["en"]
+                                        md_data["data"]["attributes"]["description"][
+                                            "en"
+                                        ]
                                     )
                                     .replace("\n", "")
                                     .replace("\r", "")
@@ -81,13 +85,21 @@ class MangaDexV1(commands.Cog):
                                     url=f"https://uploads.mangadex.org/covers/{id}/{cover_art}"
                                 )
                                 await ctx.send(embed=embedVar)
-                            elif "ja" in md_data["data"]["attributes"]["description"] and md_data["data"]["attributes"]["title"]:
+                            elif (
+                                "ja" in md_data["data"]["attributes"]["description"]
+                                and md_data["data"]["attributes"]["title"]
+                            ):
                                 await ctx.send("prob using jpn desc")
-                            elif None in md_data["data"]["attributes"]["description"] and md_data["data"]["attributes"]["title"]:
+                            elif (
+                                None in md_data["data"]["attributes"]["description"]
+                                and md_data["data"]["attributes"]["title"]
+                            ):
                                 await ctx.send("nope")
             except Exception as e:
                 embedVar = discord.Embed()
-                embedVar.description = "Sadly this command didn't work. Please try again"
+                embedVar.description = (
+                    "Sadly this command didn't work. Please try again"
+                )
                 embedVar.add_field(name="Reason", value=e, inline=True)
                 await ctx.send(embed=embedVar)
 
