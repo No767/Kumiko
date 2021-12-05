@@ -1,7 +1,8 @@
+import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-import aiohttp
+
 
 class advice_slip(commands.Cog):
     def __init__(self, bot):
@@ -13,7 +14,9 @@ class advice_slip(commands.Cog):
             async with session.get(f"https://api.adviceslip.com/advice") as r:
                 advice_slip = await r.json()
                 try:
-                    embedVar = discord.Embed(color=discord.Color.from_rgb(251, 204, 255))
+                    embedVar = discord.Embed(
+                        color=discord.Color.from_rgb(251, 204, 255)
+                    )
                     embedVar.description = f"{advice_slip['slip']['advice']}"
                     embedVar.set_footer(
                         text=f"Requested by {ctx.message.author.name}",

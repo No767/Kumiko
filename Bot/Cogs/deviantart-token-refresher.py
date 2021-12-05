@@ -3,10 +3,10 @@ import datetime
 import os
 import time
 
+import aiohttp
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-import aiohttp
 
 load_dotenv()
 
@@ -15,6 +15,7 @@ Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
 Access_Token = os.getenv("DeviantArt_Access_Token")
 os.chmod("../.env", 777)
+
 
 class tokenRefresher(commands.Cog):
     def __init__(self, bot):
@@ -29,12 +30,21 @@ class tokenRefresher(commands.Cog):
         st = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
         await asyncio.sleep(5)
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-            params = {"client_id": f"{Client_ID}", "client_secret": f"{Client_Secret}", "grant_type": "refresh_token", "refresh_token": f"{Refresh_Token}"}
-            async with session.get("https://www.deviantart.com/oauth2/token", params=params) as r:
+            params = {
+                "client_id": f"{Client_ID}",
+                "client_secret": f"{Client_Secret}",
+                "grant_type": "refresh_token",
+                "refresh_token": f"{Refresh_Token}",
+            }
+            async with session.get(
+                "https://www.deviantart.com/oauth2/token", params=params
+            ) as r:
                 data = await r.json()
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
-                print(f"Current DA Access Token: {Access_Token}\nCurrent DA Refresh Token: {Refresh_Token}")   
+                print(
+                    f"Current DA Access Token: {Access_Token}\nCurrent DA Refresh Token: {Refresh_Token}"
+                )
                 print(
                     f"----------DeviantArt Token Refresher - Request #{self.index} - {st}-----------------\n"
                 )
@@ -51,7 +61,10 @@ class tokenRefresher(commands.Cog):
                     file_data[38] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
                     await file.write(file_data[37])
                     await file.write(file_data[38])
-                print(f"Newly Added Access Token: {file_data[37]}\nNewly Added Refresh Token: {file_data[38]}")
+                print(
+                    f"Newly Added Access Token: {file_data[37]}\nNewly Added Refresh Token: {file_data[38]}"
+                )
+
 
 #    @refresher.error
 #    async def refresher_error(self):
