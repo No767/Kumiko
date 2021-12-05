@@ -28,7 +28,7 @@ class tokenRefresher(commands.Cog):
         self.index = self.index + 1
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
-        await asyncio.sleep(5)
+        await asyncio.sleep(3300)
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
