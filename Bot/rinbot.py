@@ -39,7 +39,6 @@ initial_extensions = [
     "Cogs.spotify",
     "Cogs.pinterest",
     "Cogs.rininvite",
-    "Cogs.mangadex",
     "Cogs.version",
     "Cogs.clear",
 ]
@@ -51,7 +50,6 @@ for extension in initial_extensions:
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=".rinhelp"))
-
 
 # Run the bot
 bot.run(TOKEN)

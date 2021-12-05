@@ -10,7 +10,7 @@ class InviteV1(commands.Cog):
     async def invite(self, ctx):
         bot = self.bot
         embedVar = discord.Embed()
-        embedVar.description = "[Top.gg](https://top.gg/bot/865883525932253184/invite)\n[Discord.boats](https://discord.boats/bot/865883525932253184/invite)\n[Fallback URL](https://discord.com/api/oauth2/authorize?client_id=865883525932253184&permissions=8&scope=bot)"
+        embedVar.description = "[Top.gg](https://top.gg/bot/865883525932253184/invite)\n[Fallback URL](https://discord.com/api/oauth2/authorize?client_id=865883525932253184&permissions=150055930992&scope=bot)"
         embedVar.set_author(name="Invite", icon_url=bot.user.avatar_url)
         await ctx.send(embed=embedVar)
 
