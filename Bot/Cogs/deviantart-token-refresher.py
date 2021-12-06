@@ -57,10 +57,7 @@ class tokenRefresher(commands.Cog):
     async def refresher(self):
         values = await select()
         Refresh_Token = values[1]
-        print(
-            f"Current Access Token: {values[0]}\nCurrent Refresh Token: {Refresh_Token}"
-        )
-        await asyncio.sleep(10)
+        await asyncio.sleep(3300)
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
@@ -74,9 +71,6 @@ class tokenRefresher(commands.Cog):
                 data = await r.json()
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
-                print(
-                    f"New Access Token: {access_token}\nNew Refresh Token: {refresh_token}"
-                )
                 await asyncio.sleep(3)
                 await update(access_token, refresh_token)
 
