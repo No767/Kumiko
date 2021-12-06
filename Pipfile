@@ -41,6 +41,7 @@ brotli = "*"
 py-cord = {extras = ["voice"], version = "*"}
 aiohttp = "<=3.7.4.post0"
 discord-py-interactions = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 

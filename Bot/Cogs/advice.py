@@ -12,7 +12,7 @@ class advice_slip(commands.Cog):
     async def on_message(self, ctx):
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             async with session.get(f"https://api.adviceslip.com/advice") as r:
-                advice_slip = await r.json()
+                advice_slip = await r.text()
                 try:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(251, 204, 255)
