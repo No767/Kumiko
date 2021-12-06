@@ -10,7 +10,7 @@ load_dotenv()
 
 def getTokens():
     meta = MetaData()
-    engine = create_engine("sqlite:///./Cogs/deviantart-tokens/tokens.db")
+    engine = create_engine("sqlite:///./deviantart-tokens/tokens.db")
     tokens = Table(
         "DA_Tokens",
         meta,

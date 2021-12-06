@@ -15,15 +15,15 @@ Client_Secret = os.getenv("DeviantArt_Client_Secret")
 
 async def select():
     meta = MetaData()
-    engine = create_engine("sqlite:///./Cogs/deviantart-tokens/tokens.db")
+    engine = create_engine("sqlite:///./deviantart-tokens/tokens.db")
     tokens = Table(
         "DA_Tokens",
         meta,
         Column("DA_Access_Tokens", String),
         Column("DA_Refresh_Tokens", String),
     )
-    s = tokens.select()
     conn = engine.connect()
+    s = tokens.select()
     result_select = conn.execute(s)
     for row in result_select:
         return row
@@ -32,17 +32,17 @@ async def select():
 
 async def update(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine("sqlite:///./Cogs/deviantart-tokens/tokens.db")
+    engine = create_engine("sqlite:///./deviantart-tokens/tokens.db")
     tokens = Table(
         "DA_Tokens",
         meta,
         Column("DA_Access_Tokens", String),
         Column("DA_Refresh_Tokens", String),
     )
+    conn = engine.connect()
     up = tokens.update().values(
         DA_Access_Tokens=f"{Access_Token}", DA_Refresh_Tokens=f"{Refresh_Token}"
     )
-    conn = engine.connect()
     conn.execute(up)
     conn.close()
 
@@ -57,7 +57,8 @@ class tokenRefresher(commands.Cog):
     async def refresher(self):
         values = await select()
         Refresh_Token = values[1]
-        await asyncio.sleep(3300)
+        print(f"Current Access Token: {values[0]}\nCurrent Refresh Token: {Refresh_Token}")
+        await asyncio.sleep(10)
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
@@ -71,6 +72,7 @@ class tokenRefresher(commands.Cog):
                 data = await r.json()
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
+                print(f"New Access Token: {access_token}\nNew Refresh Token: {refresh_token}")
                 await asyncio.sleep(3)
                 await update(access_token, refresh_token)
 
