@@ -1,27 +1,28 @@
-import os
 
 import discord
 import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, String, MetaData
+from sqlalchemy import Column, MetaData, String, Table, create_engine
 
 load_dotenv()
 
+
 def getTokens():
     meta = MetaData()
-    engine = create_engine('sqlite:///./Cogs/deviantart-tokens/tokens.db')
-    tokens = Table('DA_Tokens', meta, 
-        Column('DA_Access_Tokens', String), 
-        Column('DA_Refresh_Tokens', String), 
+    engine = create_engine("sqlite:///./Cogs/deviantart-tokens/tokens.db")
+    tokens = Table(
+        "DA_Tokens",
+        meta,
+        Column("DA_Access_Tokens", String),
+        Column("DA_Refresh_Tokens", String),
     )
     s = tokens.select()
     conn = engine.connect()
     result_select = conn.execute(s)
     for row in result_select:
-        return(row)
+        return row
     conn.close()
 
 
