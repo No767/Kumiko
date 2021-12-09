@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "63d260bee40b9492693268192799231130e16008f854936b26748ddee27657a5"
+            "sha256": "9286537d14313d89d22ff9d6fd4cfb36a8dad76be4fd1603c90c1c1854a1be4d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -406,6 +406,7 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==1.54.0"
+<<<<<<< HEAD
         },
         "greenlet": {
             "hashes": [
@@ -462,6 +463,8 @@
             ],
             "markers": "python_version >= '3' and platform_machine == 'aarch64' or (platform_machine == 'ppc64le' or (platform_machine == 'x86_64' or (platform_machine == 'amd64' or (platform_machine == 'AMD64' or (platform_machine == 'win32' or platform_machine == 'WIN32')))))",
             "version": "==1.1.2"
+=======
+>>>>>>> 01f9f3a9bad100767f1aeaa28a28bf06f86001aa
         },
         "httplib2": {
             "hashes": [
