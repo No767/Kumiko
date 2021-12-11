@@ -16,12 +16,8 @@ Client_Secret = os.getenv("DeviantArt_Client_Secret")
 def select():
     meta = MetaData()
     engine = create_engine("sqlite:///tokens.db", echo=True)
-    tokens = Table(
-        "DeviantArt_Tokens",
-        meta,
-        autoload_with=engine,
-        autoload=True
-    )
+    tokens = Table("DeviantArt_Tokens", meta,
+                   autoload_with=engine, autoload=True)
     meta.create_all(engine, bind=engine)
     with engine.connect() as conn:
         s = tokens.select()
@@ -33,12 +29,8 @@ def select():
 def update(Access_Token, Refresh_Token):
     meta = MetaData()
     engine = create_engine("sqlite:///tokens.db", echo=True)
-    tokens = Table(
-        "DeviantArt_Tokens",
-        meta,
-        autoload_with=engine,
-        autoload=True
-    )
+    tokens = Table("DeviantArt_Tokens", meta,
+                   autoload_with=engine, autoload=True)
     meta.create_all(engine, bind=engine, tables=tokens)
     meta.reflect(bind=engine)
     with engine.connect() as conn:
@@ -53,13 +45,15 @@ class tokenRefresher(commands.Cog):
         self.bot = bot
         self.index = 0
         self.refresher.start()
-        
+
     @tasks.loop()
     async def refresher(self):
         print("yes")
         values = select()
         Refresh_Token = values[1]
-        print(f"Current Access Token: {values[0]}\nCurrent Refresh Token: {values[1]}\n")
+        print(
+            f"Current Access Token: {values[0]}\nCurrent Refresh Token: {values[1]}\n"
+        )
         await asyncio.sleep(10)
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             params = {
@@ -74,10 +68,11 @@ class tokenRefresher(commands.Cog):
                 data = await r.json()
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
-                print(f"New Access Token: {access_token}\nNew Refresh Token: {refresh_token}\n")
+                print(
+                    f"New Access Token: {access_token}\nNew Refresh Token: {refresh_token}\n"
+                )
                 await asyncio.sleep(3)
                 update(access_token, refresh_token)
-    
 
 
 def setup(bot):

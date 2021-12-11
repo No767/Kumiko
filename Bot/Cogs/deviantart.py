@@ -3,7 +3,7 @@ import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import MetaData, Table, create_engine, Column, String
+from sqlalchemy import Column, MetaData, String, Table, create_engine
 
 load_dotenv()
 
@@ -12,18 +12,15 @@ class getTokens:
     def obtain():
         meta = MetaData()
         engine = create_engine("sqlite:///tokens.db", echo=True)
-        tokens = Table(
-            "DeviantArt_Tokens",
-            meta,
-            autoload_with=engine,
-            autoload=True
-        )
+        tokens = Table("DeviantArt_Tokens", meta,
+                       autoload_with=engine, autoload=True)
         meta.create_all(engine, bind=engine)
         with engine.connect() as conn:
             s = tokens.select()
             result_select = conn.execute(s)
             for row in result_select:
                 return row
+
     def init():
         meta = MetaData()
         engine = create_engine("sqlite:///tokens.db", echo=True)
@@ -31,11 +28,9 @@ class getTokens:
             "DeviantArt_Tokens",
             meta,
             Column("Access_Token", String),
-            Column("Refresh_Token", String)
-            
+            Column("Refresh_Token", String),
         )
         meta.create_all(engine, bind=engine, tables=tokens)
-        
 
 
 DeviantArt_API_Access_Token = getTokens.obtain()
