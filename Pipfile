@@ -42,6 +42,7 @@ py-cord = {extras = ["voice"], version = "*"}
 aiohttp = "<=3.7.4.post0"
 discord-py-interactions = "*"
 sqlalchemy = "*"
+aiosqlite = "*"
 
 [dev-packages]
 
