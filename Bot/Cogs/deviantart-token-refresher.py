@@ -5,7 +5,7 @@ import aiohttp
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from sqlalchemy import MetaData, Table, create_engine, Column, String, text
+from sqlalchemy import Column, MetaData, String, Table, create_engine, text
 
 load_dotenv()
 
@@ -16,7 +16,9 @@ Client_Secret = os.getenv("DeviantArt_Client_Secret")
 def select():
     MetaData()
     engine = create_engine("sqlite:///daTokens/tokens.db")
-    s = select(Column('Access_Tokens', String), Column('Refresh_Tokens', String)).select_from(text("DA_Tokens"))
+    s = select(
+        Column("Access_Tokens", String), Column("Refresh_Tokens", String)
+    ).select_from(text("DA_Tokens"))
     with engine.connect as conn:
         result_select = conn.execute(s)
         for row in result_select:
