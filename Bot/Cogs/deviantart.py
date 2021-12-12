@@ -3,37 +3,24 @@ import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import Column, MetaData, String, Table, create_engine
+from sqlalchemy import Column, MetaData, String, Table, create_engine, select, text
+from sqlalchemy.ext.asyncio import create_async_engine
+import os
 
 load_dotenv()
 
-
-class getTokens:
-    def obtain():
-        meta = MetaData()
-        engine = create_engine("sqlite:///tokens.db", echo=True)
-        tokens = Table("DeviantArt_Tokens", meta,
-                       autoload_with=engine, autoload=True)
-        meta.create_all(engine, bind=engine)
-        with engine.connect() as conn:
-            s = tokens.select()
-            result_select = conn.execute(s)
-            for row in result_select:
-                return row
-
-    def init():
-        meta = MetaData()
-        engine = create_engine("sqlite:///tokens.db", echo=True)
-        tokens = Table(
-            "DeviantArt_Tokens",
-            meta,
-            Column("Access_Token", String),
-            Column("Refresh_Token", String),
-        )
-        meta.create_all(engine, bind=engine, tables=tokens)
+def getTokens():
+    MetaData()
+    engine = create_engine("sqlite:///daTokens/tokens.db")
+    s = select(Column('Access_Tokens', String), Column('Refresh_Tokens', String)).select_from(text("DA_Tokens"))
+    conn = engine.connect()
+    result_select = conn.execute(s)
+    for row in result_select:
+        return row
 
 
-DeviantArt_API_Access_Token = getTokens.obtain()
+DeviantArt_API_Access_Token = getTokens()[0]
+print(f"DeviantArt Access Token: {DeviantArt_API_Access_Token}")
 
 
 def get_deviation(deviation_id):
