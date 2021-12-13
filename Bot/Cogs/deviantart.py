@@ -1,10 +1,9 @@
-
 import discord
 import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import (Column, MetaData, String, create_engine, select, text)
+from sqlalchemy import Column, MetaData, String, create_engine, select, text
 
 load_dotenv()
 
