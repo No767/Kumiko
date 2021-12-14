@@ -21,12 +21,7 @@ def getTokens():
 
 
 DeviantArt_API_Access_Token = getTokens()[0]
-=======
-
-
-DeviantArt_API_Access_Token = getTokens()[0]
 print(f"DeviantArt Access Token: {DeviantArt_API_Access_Token}")
->>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
 
 def get_deviation(deviation_id):
