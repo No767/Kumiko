@@ -3,7 +3,7 @@ import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import (Column, MetaData, String, Table, create_engine, select)
+from sqlalchemy import Column, MetaData, String, Table, create_engine, select
 
 load_dotenv()
 
