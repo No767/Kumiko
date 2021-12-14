@@ -7,7 +7,7 @@ We are glad that you're willing to contribute to this project. We are usually ve
 To get started, you'll need these things installed: 
 
 - Git
-- Python 3.10
+- Python 3.10.x
 - Pipenv
 
 ## Installing Dependencies

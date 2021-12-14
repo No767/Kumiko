@@ -17,41 +17,46 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
+                        **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
-                    name="Admin", value="`.rinhelp admin`", inline=True)
-                embedVar.add_field(
-                    name="Twitter", value="`.rinhelp twitter`", inline=True
+                    name="Admin", value="`.kumikohelp admin`", inline=True
                 )
                 embedVar.add_field(
-                    name="Reddit", value="`.rinhelp reddit`", inline=True
+                    name="Twitter", value="`.kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.rinhelp mc`", inline=True)
-                embedVar.add_field(
-                    name="Fun", value="`.rinhelp fun`", inline=True)
-                embedVar.add_field(
-                    name="Instagram", value="`.rinhelp ig`", inline=True)
-                embedVar.add_field(
-                    name="Chat", value="`.rinhelp chat`", inline=True)
-                embedVar.add_field(
-                    name="Misc", value="`.rinhelp misc`", inline=True)
-                embedVar.add_field(
-                    name="Deviantart", value="`.rinhelp da`", inline=True
+                    name="Reddit", value="`.kumikohelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Anime", value="`.rinhelp anime`", inline=True)
-                embedVar.add_field(
-                    name="Top.gg", value="`.rinhelp topgg`", inline=True)
-                embedVar.add_field(
-                    name="Pinterest", value="`.rinhelp pinterest`", inline=True
+                    name="Minecraft", value="`.kumikohelp mc`", inline=True
                 )
                 embedVar.add_field(
-                    name="MyAnimeList/Jikan", value="`.rinhelp jikan`", inline=True
+                    name="Fun", value="`.kumikohelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Instagram", value="`.kumikohelp ig`", inline=True
                 )
-                embedVar.set_author(
-                    name="Rin Help", icon_url=bot.user.avatar_url)
+                embedVar.add_field(
+                    name="Chat", value="`.kumikohelp chat`", inline=True)
+                embedVar.add_field(
+                    name="Misc", value="`.kumikohelp misc`", inline=True)
+                embedVar.add_field(
+                    name="Deviantart", value="`.kumikohelp da`", inline=True
+                )
+                embedVar.add_field(
+                    name="Anime", value="`.kumikohelp anime`", inline=True
+                )
+                embedVar.add_field(
+                    name="Top.gg", value="`.kumikohelp topgg`", inline=True
+                )
+                embedVar.add_field(
+                    name="Pinterest", value="`.kumikohelp pinterest`", inline=True
+                )
+                embedVar.add_field(
+                    name="MyAnimeList/Jikan", value="`.kumikohelp jikan`", inline=True
+                )
+                embedVar.set_author(name="Kumiko Help",
+                                    icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -80,7 +85,7 @@ class rinhelp(commands.Cog):
                     name="`ping`", value="Checks the ping for the bot", inline=True
                 )
                 embedVar.set_author(
-                    name="Rin Help - Admin", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Admin", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -99,7 +104,7 @@ class rinhelp(commands.Cog):
                     name="`rtsearch`", value="Searches for twitter users", inline=True
                 )
                 embedVar.set_author(
-                    name="Rin Help - Twitter", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Twitter", icon_url=bot.user.avatar_url
                 )
                 embedVar.set_footer(
                     text="The Twitter Service has been completely disabled due to a complete rewrite"
@@ -123,7 +128,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Reddit", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Reddit", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -186,7 +191,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Minecraft", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Minecraft", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -224,8 +229,9 @@ class rinhelp(commands.Cog):
                     value="Sends a non-binary flag and a trans flag into the channel",
                     inline=True,
                 )
-                embedVar.set_author(name="Rin Help - Fun",
-                                    icon_url=bot.user.avatar_url)
+                embedVar.set_author(
+                    name="Kumiko Help - Fun", icon_url=bot.user.avatar_url
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) in ("instagram", "ig"):
@@ -253,7 +259,7 @@ class rinhelp(commands.Cog):
                     text="Note: There is a 20 sec cooldown for each command. This is to prevent rate limiting."
                 )
                 embedVar.set_author(
-                    name="Rin Help - Instagram", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Instagram", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -288,7 +294,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`rinhelp`", value="Rin's Help command", inline=True
+                    name="`kumikohelp`", value="Kumiko's Help command", inline=True
                 )
                 embedVar.add_field(
                     name="`help`",
@@ -296,8 +302,8 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`rininvite`",
-                    value="Rin's invite links. Also can be reached with `.invite`.",
+                    name="`kumikoinvite`",
+                    value="Kumiko's invite links. Also can be reached with `.invite`.",
                     inline=True,
                 )
                 embedVar.add_field(
@@ -337,7 +343,7 @@ class rinhelp(commands.Cog):
                     text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - Deviantart", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Deviantart", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -355,7 +361,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Anime", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Anime", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -386,7 +392,7 @@ class rinhelp(commands.Cog):
                     text='Also note that the prefix can be shorten down to "jk"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - MyAnimeList/Jikan", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - MyAnimeList/Jikan", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -404,7 +410,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Topgg", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Topgg", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -428,7 +434,7 @@ class rinhelp(commands.Cog):
                     text='The Pinterest cmds also have aliases just like Jikan and DeviantArt. The alias prefix is "pt". Note that the Pinterest API only supports getting info about the user that it is logged into, which means it is grabbing info from my own account. It is not recommended to use this service.'
                 )
                 embedVar.set_author(
-                    name="Rin Help - Pinterest", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Pinterest", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
         except Exception as e:

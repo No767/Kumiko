@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class rinping(commands.Cog):
+class ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -22,4 +22,4 @@ class rinping(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(rinping(bot))
+    bot.add_cog(ping(bot))

@@ -6,7 +6,7 @@ class InviteV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="rininvite", aliases=["invite"])
+    @commands.command(name="kumikoinvite", aliases=["invite"])
     async def invite(self, ctx):
         bot = self.bot
         embedVar = discord.Embed()
