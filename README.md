@@ -29,4 +29,4 @@ Kumiko and Rin are both licensed under Apache-2.0. This project uses some of the
 
 # Contributing
 
-See [Contributing](https://github.com/No767/Kumiko/blob/master/Community/contributing.md)
+See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
