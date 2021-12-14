@@ -16,11 +16,7 @@ jamdict-data = "==1.5"
 autopep8 = "==1.6.0"
 isort = "==5.10.1"
 autoflake = "==1.4"
-<<<<<<< HEAD
-lxml = "==4.6.4"
-=======
 lxml = "==4.6.5"
->>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 fake-useragent = "==0.1.11"
 searchtweets = "==1.7.6"
 colorama = ">=0.4.4"
@@ -46,10 +42,7 @@ py-cord = {extras = ["voice"], version = "*"}
 aiohttp = "<=3.7.4.post0"
 discord-py-interactions = "*"
 sqlalchemy = "*"
-<<<<<<< HEAD
-=======
 aiosqlite = "*"
->>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
 [dev-packages]
 
