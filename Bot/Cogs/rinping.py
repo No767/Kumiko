@@ -16,7 +16,8 @@ class rinping(commands.Cog):
             await ctx.send(embed=ping_embed)
         except Exception as e:
             ping_embed = discord.Embed()
-            ping_embed.description = f"The command was not successful\n Reason: {e}"
+            ping_embed.description = "The command was not successful"
+            ping_embed.add_field(name="Reason", value=e, inline=True)
             await ctx.send(embed=ping_embed)
 
 

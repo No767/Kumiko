@@ -14,23 +14,31 @@ jobs:
   Analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Repository  
+        uses: actions/checkout@v2
       - name: Set up Python 3.10.0
         uses: actions/setup-python@v2
         with:
           python-version: 3.10.0
-      - name: Upgrade Pip, Setuptools, and Wheel
+      - name: Set up Node.js 17
+        uses: actions/setup-node@v2
+        with:
+          node-version: '17'
+      - name: Install Snyk CLI
         run: |
-          pip install --upgrade pip setuptools wheel
-      - name: Install Pipenv
+          npm install snyk@latest -g
+      - name: Upgrade Pip and Install Pipenv
         run: |
-          pip install pipenv
+          pip install --upgrade pip pipenv
       - name: Install Pipenv Dependencies 
         run: |
           pipenv install
+      - name: Auth with Snyk
+        run: |
+          snyk auth ${{ secrets.SNYK_TOKEN }}
       - name: Run Snyk
         uses: snyk/actions/python@master
-        continue-on-error: true # To make sure that SARIF upload gets called
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:

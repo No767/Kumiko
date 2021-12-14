@@ -1,14 +1,28 @@
-import os
-
 import discord
 import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
+from sqlalchemy import (Column, MetaData, String, Table, create_engine, select)
 
 load_dotenv()
 
-DeviantArt_API_Access_Token = os.getenv("DeviantArt_Access_Token")
+
+def getTokens():
+    meta = MetaData()
+    engine = create_engine("sqlite:///daTokens/tokens.db")
+    Table("DA_Tokens", meta)
+    s = select(
+        Column("Access_Tokens", String), Column("Refresh_Tokens", String)
+    ).select_from(Table("DA_Tokens", meta))
+    conn = engine.connect()
+    result_select = conn.execute(s)
+    for row in result_select:
+        return row
+
+
+DeviantArt_API_Access_Token = getTokens()[0]
+print(f"DeviantArt Access Token: {DeviantArt_API_Access_Token}")
 
 
 def get_deviation(deviation_id):

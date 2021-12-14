@@ -1,37 +1,67 @@
+import asyncio
 import os
 
-import requests
+import aiohttp
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+from sqlalchemy import Column, MetaData, String, Table, create_engine, text
 
 load_dotenv()
 
-Refresh_Token = os.getenv("DeviantArt_Refresh_Token")
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
+
+
+def select():
+    MetaData()
+    engine = create_engine("sqlite:///daTokens/tokens.db")
+    s = select(
+        Column("Access_Tokens", String), Column("Refresh_Tokens", String)
+    ).select_from(text("DA_Tokens"))
+    with engine.connect as conn:
+        result_select = conn.execute(s)
+        for row in result_select:
+            return row
+
+
+def update(Access_Token, Refresh_Token):
+    meta = MetaData()
+    engine = create_engine("sqlite:///daTokens/tokens.db")
+    tokens = Table("DA_Tokens", meta)
+    with engine.connect() as conn:
+        update = tokens.update().values(
+            Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
+        )
+        conn.execute(update)
 
 
 class tokenRefresher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.index = 0
         self.refresher.start()
 
-    @tasks.loop(minutes=55)
+    @tasks.loop()
     async def refresher(self):
-        link = f"https://www.deviantart.com/oauth2/token?client_id={Client_ID}&client_secret={Client_Secret}&grant_type=refresh_token&refresh_token={Refresh_Token}"
-        r = requests.get(link)
-        data = ujson.loads(r.text)
-        access_token = data["access_token"]
-        refresh_token = data["refresh_token"]
-        file = open("../.env", "r")
-        file_data = file.readlines()
-        file_data[37] = f'DeviantArt_Access_Token = "{access_token}"\n'
-        file_data[38] = f'DeviantArt_Refresh_Token = "{refresh_token}"\n'
-        file.close()
-        file = open("../.env", "w")
-        file.writelines(file_data)
-        file.close()
+        values = select()
+        Refresh_Token = values[1]
+        await asyncio.sleep(10)
+        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+            params = {
+                "client_id": f"{Client_ID}",
+                "client_secret": f"{Client_Secret}",
+                "grant_type": "refresh_token",
+                "refresh_token": f"{Refresh_Token}",
+            }
+            async with session.get(
+                "https://www.deviantart.com/oauth2/token", params=params
+            ) as r:
+                data = await r.json()
+                access_token = data["access_token"]
+                refresh_token = data["refresh_token"]
+                await asyncio.sleep(3)
+                update(access_token, refresh_token)
 
 
 def setup(bot):
