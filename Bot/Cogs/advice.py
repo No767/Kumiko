@@ -11,7 +11,7 @@ class advice_slip(commands.Cog):
     @commands.command(name="advice")
     async def on_message(self, ctx):
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-            async with session.get(f"https://api.adviceslip.com/advice") as r:
+            async with session.get("https://api.adviceslip.com/advice") as r:
                 advice_slip = await r.text()
                 try:
                     embedVar = discord.Embed(
