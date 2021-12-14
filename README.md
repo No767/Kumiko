@@ -37,6 +37,7 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 - [Documentation](https://rin-docs.readthedocs.io/en/latest/)
 - [Top.gg](https://top.gg/bot/865883525932253184)
 - [Website](https://rinbot.live)
+- [Status Tracker](https://status.rinbot.live)
 
 
 <div align=center>
