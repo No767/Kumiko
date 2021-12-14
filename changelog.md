@@ -12,6 +12,7 @@
 - Fix Snyk workflow secrets issue
 - Make McSrvStat and MangaDex async to improve performance
 - Updated Upstream (Rin)
+- Bump lxml from 4.6.4 to 4.6.5 to fix a massive security vulnerability
 
 # Additions
 - MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
