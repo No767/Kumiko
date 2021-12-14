@@ -3,6 +3,7 @@ import discord
 import ujson
 from discord.ext import commands
 
+
 class advice_slip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
