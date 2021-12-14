@@ -12,12 +12,9 @@ bot = commands.Bot(command_prefix=".", help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
-    "Cogs.deviantart-token-refresher",
     "Cogs.rininfo",
     "Cogs.plugin_tools",
-    "Cogs.global",
     "Cogs.rinping",
-    "Cogs.deviantart",
     "Cogs.valid",
     "Cogs.rinhelp",
     "Cogs.reddit",

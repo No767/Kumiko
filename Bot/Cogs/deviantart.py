@@ -4,17 +4,18 @@ import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import (Column, MetaData, String, create_engine, select, text)
+from sqlalchemy import (Column, MetaData, String, create_engine, select, text, Table)
 
 load_dotenv()
 
 
 def getTokens():
-    MetaData()
+    meta = MetaData()
     engine = create_engine("sqlite:///daTokens/tokens.db")
+    tokens = Table("DA_Tokens", meta)
     s = select(
         Column("Access_Tokens", String), Column("Refresh_Tokens", String)
-    ).select_from(text("DA_Tokens"))
+    ).select_from(Table("DA_Tokens", meta))
     conn = engine.connect()
     result_select = conn.execute(s)
     for row in result_select:
