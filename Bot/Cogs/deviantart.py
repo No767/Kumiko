@@ -3,40 +3,21 @@ import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-<<<<<<< HEAD
-from sqlalchemy import Column, MetaData, String, Table, create_engine
-=======
 from sqlalchemy import Column, MetaData, String, create_engine, select, text
->>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
 load_dotenv()
 
 
 def getTokens():
-<<<<<<< HEAD
-    meta = MetaData()
-    engine = create_engine("sqlite://deviantart-tokens/tokens.db")
-    tokens = Table(
-        "DA_Tokens",
-        meta,
-        Column("DA_Access_Tokens", String),
-        Column("DA_Refresh_Tokens", String),
-    )
-    meta.create_all(engine)
-    s = tokens.select()
-=======
     MetaData()
     engine = create_engine("sqlite:///daTokens/tokens.db")
     s = select(
         Column("Access_Tokens", String), Column("Refresh_Tokens", String)
     ).select_from(text("DA_Tokens"))
->>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
     conn = engine.connect()
     result_select = conn.execute(s)
     for row in result_select:
         return row
-<<<<<<< HEAD
-    conn.close()
 
 
 DeviantArt_API_Access_Token = getTokens()[0]
