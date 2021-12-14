@@ -16,14 +16,23 @@ class MangaDexV1(commands.Cog):
     async def manga(self, ctx, *, manga: str):
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             try:
+<<<<<<< HEAD
 
                 async with session.get(
                     f"https://api.mangadex.org/manga/?title={manga}&publicationDemographic[]=none&contentRating[]=safe&order[relevance]=desc"
+=======
+                async with session.get(
+                    f"https://api.mangadex.org/manga/?title={manga}&publicationDemographic[]=none&contentRating[]=safe&order[title]=asc"
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
                 ) as r:
                     data = await r.json()
                     id = data["data"][0]["id"]
                     async with session.get(
+<<<<<<< HEAD
                         f'https://api.mangadex.org/manga/{id}?includes["cover_art"]&contentRating["safe"]&order[relevance]=asc'
+=======
+                        f'https://api.mangadex.org/manga/{id}?includes["cover_art"]&contentRating["safe"]&order[title]=asc'
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
                     ) as resp:
                         md_data = await resp.json()
                         cover_art_id = md_data["data"]["relationships"][2]["id"]
@@ -32,6 +41,7 @@ class MangaDexV1(commands.Cog):
                         ) as rp:
                             cover_art_data = await rp.json()
                             cover_art = cover_art_data["data"]["attributes"]["fileName"]
+<<<<<<< HEAD
                             embedVar = discord.Embed()
                             embedVar.add_field(
                                 name="Title",
@@ -82,6 +92,79 @@ class MangaDexV1(commands.Cog):
                             await ctx.send(embed=embedVar)
             except Exception as e:
                 await ctx.send(e)
+=======
+                            if (
+                                "en" in md_data["data"]["attributes"]["description"]
+                                and md_data["data"]["attributes"]["title"]
+                            ):
+                                embedVar = discord.Embed()
+                                embedVar.add_field(
+                                    name="Title",
+                                    value=md_data["data"]["attributes"]["title"]["en"],
+                                    inline=True,
+                                )
+                                embedVar.add_field(
+                                    name="Description (English)",
+                                    value=str(
+                                        md_data["data"]["attributes"]["description"][
+                                            "en"
+                                        ]
+                                    )
+                                    .replace("\n", "")
+                                    .replace("\r", "")
+                                    .replace("'", ""),
+                                    inline=False,
+                                )
+                                embedVar.add_field(
+                                    name="Publication Demographics",
+                                    value=md_data["data"]["attributes"][
+                                        "publicationDemographic"
+                                    ],
+                                    inline=True,
+                                )
+                                embedVar.add_field(
+                                    name="Status",
+                                    value=md_data["data"]["attributes"]["status"],
+                                    inline=True,
+                                )
+                                embedVar.add_field(
+                                    name="Tags",
+                                    value=[
+                                        str(
+                                            md_data["data"]["attributes"]["tags"][
+                                                "attributes"
+                                            ]["name"]["en"]
+                                        )
+                                        .replace("\n", "")
+                                        .replace("'", "")
+                                        for md_data["data"]["attributes"][
+                                            "tags"
+                                        ] in md_data["data"]["attributes"]["tags"]
+                                    ],
+                                    inline=True,
+                                )
+                                embedVar.set_image(
+                                    url=f"https://uploads.mangadex.org/covers/{id}/{cover_art}"
+                                )
+                                await ctx.send(embed=embedVar)
+                            elif (
+                                "ja" in md_data["data"]["attributes"]["description"]
+                                and md_data["data"]["attributes"]["title"]
+                            ):
+                                await ctx.send("prob using jpn desc")
+                            elif (
+                                None in md_data["data"]["attributes"]["description"]
+                                and md_data["data"]["attributes"]["title"]
+                            ):
+                                await ctx.send("nope")
+            except Exception as e:
+                embedVar = discord.Embed()
+                embedVar.description = (
+                    "Sadly this command didn't work. Please try again"
+                )
+                embedVar.add_field(name="Reason", value=e, inline=True)
+                await ctx.send(embed=embedVar)
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
     @manga.error
     async def on_message_error(
@@ -209,7 +292,11 @@ class MangaDexReaderV1(commands.Cog):
                                         label=f"Page /{length_of_chapter}",
                                         style=2,
                                         custom_id="current_page",
+<<<<<<< HEAD
                                         disabled="true",
+=======
+                                        disabled=True,
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
                                     ),
                                     Button(
                                         label="Go Forwards",
@@ -260,6 +347,9 @@ def setup(bot):
     bot.add_cog(MangaDexV1(bot))
     bot.add_cog(MangaDexV2(bot))
     bot.add_cog(MangaDexReaderV1(bot))
+<<<<<<< HEAD
     bot.add_cog(
         discordButtonTest(bot)
     )  # MAKE SURE TO REMOVE THIS! THIS IS ONLY MEANT TO TEST OUT THE BUTTONS
+=======
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d

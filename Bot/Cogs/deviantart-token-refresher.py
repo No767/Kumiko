@@ -5,7 +5,11 @@ import aiohttp
 import ujson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
+<<<<<<< HEAD
 from sqlalchemy import Column, MetaData, String, Table, create_engine
+=======
+from sqlalchemy import Column, MetaData, String, Table, create_engine, text
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
 load_dotenv()
 
@@ -13,6 +17,7 @@ Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
 
 
+<<<<<<< HEAD
 async def select():
     meta = MetaData()
     engine = create_engine("sqlite://deviantart-tokens/tokens.db")
@@ -45,6 +50,29 @@ async def update(Access_Token, Refresh_Token):
     )
     conn.execute(up)
     conn.close()
+=======
+def select():
+    MetaData()
+    engine = create_engine("sqlite:///daTokens/tokens.db")
+    s = select(
+        Column("Access_Tokens", String), Column("Refresh_Tokens", String)
+    ).select_from(text("DA_Tokens"))
+    with engine.connect as conn:
+        result_select = conn.execute(s)
+        for row in result_select:
+            return row
+
+
+def update(Access_Token, Refresh_Token):
+    meta = MetaData()
+    engine = create_engine("sqlite:///daTokens/tokens.db")
+    tokens = Table("DA_Tokens", meta)
+    with engine.connect() as conn:
+        update = tokens.update().values(
+            Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
+        )
+        conn.execute(update)
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
 
 class tokenRefresher(commands.Cog):
@@ -55,9 +83,15 @@ class tokenRefresher(commands.Cog):
 
     @tasks.loop()
     async def refresher(self):
+<<<<<<< HEAD
         values = await select()
         Refresh_Token = values[1]
         await asyncio.sleep(3300)
+=======
+        values = select()
+        Refresh_Token = values[1]
+        await asyncio.sleep(10)
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
@@ -72,7 +106,11 @@ class tokenRefresher(commands.Cog):
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
                 await asyncio.sleep(3)
+<<<<<<< HEAD
                 await update(access_token, refresh_token)
+=======
+                update(access_token, refresh_token)
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 
 
 def setup(bot):

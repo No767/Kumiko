@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Changes
 - Updated Translate Cog to work now
 - Use PyCord instead of Discord.py
@@ -8,4 +9,27 @@
 - Disabled missing commands handler (for discords.com verfication)
 - EasyBot.py and EasyBot-Plugins submodule 
 - Discord.py
+=======
+# TD;LR
+- MangaDex API Support (Experimental)
+- Fix DeviantArt Token Refresher Cog
+
+# Changes
+- Updated Translate Cog to work now
+- Use PyCord instead of Discord.py
+- Officially once and for all, the DeviantArt Token Refresher Cog is working. (Done through SQLAlchemy instead)
+- Bump to Python 3.10.1
+- Fix Snyk workflow secrets issue
+- Make McSrvStat and MangaDex async to improve performance
+
+# Additions
+- MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
+- Use PyCord instead
+- Codeowners (For faster code review if needed)
+
+# Removals
+- Disabled missing commands handler (for discords.com verfication)
+- EasyBot.py and EasyBot-Plugins submodule 
+- Discord.py (Discord.py is not maintained anymore)
+>>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
 - Docker Workflow
