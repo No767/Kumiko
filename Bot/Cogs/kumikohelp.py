@@ -5,7 +5,7 @@ import discord.ext
 from discord.ext import commands
 
 
-class rinhelp(commands.Cog):
+class help(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.last_member = None
@@ -446,4 +446,4 @@ class rinhelp(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(rinhelp(bot))
+    bot.add_cog(help(bot))
