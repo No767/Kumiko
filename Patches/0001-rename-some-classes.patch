@@ -1,0 +1,32 @@
+From dd3c81897a91017d41275e7ad6f8eee474c90dc6 Mon Sep 17 00:00:00 2001
+From: No767 <winterpiece104@gmail.com>
+Date: Tue, 14 Dec 2021 17:19:20 -0800
+Subject: [PATCH] rename some classes
+
+mainly to test out git's patching system
+---
+ Bot/Cogs/kumikohelp.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Bot/Cogs/kumikohelp.py b/Bot/Cogs/kumikohelp.py
+index ae8a99d..fe333a6 100644
+--- a/Bot/Cogs/kumikohelp.py
++++ b/Bot/Cogs/kumikohelp.py
+@@ -5,7 +5,7 @@ import discord.ext
+ from discord.ext import commands
+ 
+ 
+-class rinhelp(commands.Cog):
++class help(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+         self.last_member = None
+@@ -446,4 +446,4 @@ class rinhelp(commands.Cog):
+ 
+ 
+ def setup(bot):
+-    bot.add_cog(rinhelp(bot))
++    bot.add_cog(help(bot))
+-- 
+2.33.1.windows.1
+
