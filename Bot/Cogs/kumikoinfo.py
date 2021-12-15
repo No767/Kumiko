@@ -14,8 +14,7 @@ class info(commands.Cog):
         embedVar.set_author(name="Kumiko Info", icon_url=bot.user.avatar_url)
         embedVar.add_field(
             name="About",
-            value="Kumiko is a multipurpose bot based off of [Rin](https://github.com/No767/Rin). It has all of the features of Rin, but with more features that are not third-party service related. Planned features includes moderation, and much much more.",
-            inline=False,
+            value="Kumiko is a multipurpose bot based off of [Rin](https://github.com/No767/Rin). It has all of the features of Rin, but with more features that are not third-party service related. Planned features includes moderation, and much much more.",            inline=False,
         )
         embedVar.add_field(
             name="Getting Started",
