@@ -14,7 +14,7 @@ class info(commands.Cog):
         embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
         embedVar.add_field(
             name="About",
-            value="Rin is a discord bot which supports obtaining data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others. And you can request such data just from Discord. More services are planned to be supported, such as MangaDex, YT, Twitch, and many others. (The MangaDex service is planned for you to be able to read manga from Discord)",
+            value="Rin is a discord bot which supports obtaining data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others. And you can request such data just from Discord. More services are planned to be supported, such as MangaDex, YT, Twitch, and many others. (The MangaDex service is planned for you to be able to read manga from Discord). If you are interested in a general-purpose version of Rin, check out Kumiko",
             inline=False,
         )
         embedVar.add_field(

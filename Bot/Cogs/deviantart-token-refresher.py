@@ -14,39 +14,37 @@ Client_Secret = os.getenv("DeviantArt_Client_Secret")
 
 
 def select():
-    MetaData()
-    engine = create_engine("sqlite:///daTokens/tokens.db")
-    s = select(
-        Column("Access_Tokens", String), Column("Refresh_Tokens", String)
-    ).select_from(text("DA_Tokens"))
-    with engine.connect as conn:
-        result_select = conn.execute(s)
-        for row in result_select:
-            return row
+    meta = MetaData()
+    engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
+    tokens = Table("DA_Tokens", meta, Column("Access_Tokens", String), Column("Refresh_Tokens", String))
+    s = tokens.select()
+    conn = engine.connect()
+    result_select = conn.execute(s)
+    for row in result_select:
+        return row
 
 
 def update(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine("sqlite:///daTokens/tokens.db")
-    tokens = Table("DA_Tokens", meta)
-    with engine.connect() as conn:
-        update = tokens.update().values(
-            Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
-        )
-        conn.execute(update)
+    engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
+    tokens = Table("DA_Tokens", meta, Column("Access_Tokens", String), Column("Refresh_Tokens", String))
+    conn = engine.connect()
+    update = tokens.update().values(
+        Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
+    )
+    conn.execute(update)
 
 
 class tokenRefresher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.index = 0
         self.refresher.start()
 
     @tasks.loop()
     async def refresher(self):
         values = select()
         Refresh_Token = values[1]
-        await asyncio.sleep(10)
+        await asyncio.sleep(3300)
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
@@ -60,7 +58,6 @@ class tokenRefresher(commands.Cog):
                 data = await r.json()
                 access_token = data["access_token"]
                 refresh_token = data["refresh_token"]
-                await asyncio.sleep(3)
                 update(access_token, refresh_token)
 
 
