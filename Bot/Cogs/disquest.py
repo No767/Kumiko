@@ -1,10 +1,18 @@
 import math
 import os
 import random
-import sqlite3
 
-from Cogs import plugin_tools
+import discord
 from discord.ext import commands
+from sqlalchemy import (Column, Integer, MetaData, Table, create_engine, func,
+                        select)
+
+
+class helper:
+    def fast_embed(content):
+        colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
+        selector = random.choice(colors)
+        return discord.Embed(description=content, color=selector)
 
 
 class disaccount:
@@ -13,35 +21,46 @@ class disaccount:
         self.gid = ctx.guild.id
 
     def getxp(self):
-        con = sqlite3.connect("./disquest/user.db")
-        cur = con.cursor()
+        meta = MetaData()
+        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
+        )
+        conn = engine.connect()
         while True:
-            cur.execute(
-                f"SELECT xp FROM user WHERE id = ? AND gid = ?", (
-                    self.id, self.gid)
+            s = select(Column("xp", Integer)).where(
+                users.c.id == self.id, users.c.gid == self.gid
             )
-            xp = cur.fetchone()
+            results = conn.execute(s)
+            xp = results.fetchone()
+
             if xp == None:
-                cur.execute(
-                    f"INSERT INTO user (id, gid, xp) VALUES (?, ?, 0)",
-                    (self.id, self.gid),
-                )
-                con.commit()
+                ins = users.insert().values(id=self.id, gid=self.gid, xp=0)
+                conn.execute(ins)
             else:
                 xp = xp[0]
                 break
-        con.close()
+        conn.close()
         return xp
 
     def setxp(self, xp):
-        con = sqlite3.connect("./disquest/user.db")
-        cur = con.cursor()
-        cur.execute(
-            f"UPDATE user SET xp = ? WHERE id = ? AND gid = ?", (
-                xp, self.id, self.gid)
+        meta = MetaData()
+        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
         )
-        con.commit()
-        cur.close()
+        conn = engine.connect()
+        update_values = users.update().values(xp=xp, id=self.id, gid=self.gid)
+        conn.execute(update_values)
+        conn.close()
 
     def addxp(self, offset):
         pxp = self.getxp()
@@ -64,11 +83,16 @@ class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         os.chdir(os.path.dirname(__file__))
-        con = sqlite3.connect("./disquest/user.db")
-        con.execute(
-            f"CREATE TABLE IF NOT EXISTS user (id INTEGER, gid INTEGER, xp INTEGER);"
+        meta = MetaData()
+        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        Table(
+            "user.db",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
         )
-        con.commit()
+        meta.create_all(engine)
 
     @commands.command(
         name="mylvl",
@@ -78,7 +102,7 @@ class DisQuest(commands.Cog):
         user = disaccount(ctx)
         xp = user.getxp()
         await ctx.channel.send(
-            embed=plugin_tools.fast_embed(
+            embed=helper.fast_embed(
                 f"""User: {ctx.author.mention}
         LVL. {lvl.cur(xp)}
         XP {xp}/{lvl.next(xp)*100}"""
@@ -89,20 +113,29 @@ class DisQuest(commands.Cog):
         name="rank", help="Displays the most active members of your server!"
     )
     async def rank(self, ctx):
-        con = sqlite3.connect("./disquest/user.db")
-        cur = con.cursor()
-        cur.execute(
-            f"SELECT id, xp FROM user WHERE gid = ? ORDER BY xp DESC LIMIT 5",
-            (ctx.guild.id,),
+        meta = MetaData()
+        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
         )
-        members = list(cur.fetchall())
+        conn = engine.connect()
+        s = (
+            select(Column("id", Integer), Column("xp", Integer))
+            .filter((users.c.gid.is_(myvar)))
+            .order_by(users.c.xp.desc())
+        )
+        results = conn.execute(s).fetchall()
+        members = list(results.fetchall())
         for i, mem in enumerate(members):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         await ctx.send(
-            embed=plugin_tools.fast_embed(
-                f"**Server Rankings**\n{''.join(members)}")
+            embed=helper.fast_embed(f"**Server Rankings**\n{''.join(members)}")
         )
 
     @commands.command(
@@ -110,21 +143,29 @@ class DisQuest(commands.Cog):
         help="Displays the most active members of all servers that this bot is connected to!",
     )
     async def grank(self, ctx):
-        con = sqlite3.connect("./disquest/user.db")
-        cur = con.cursor()
-        cur.execute(
-            f"""SELECT id, txp FROM (
-            SELECT id, SUM(xp) AS txp FROM user GROUP BY id
-        ) ORDER BY txp DESC LIMIT 5"""
+        meta = MetaData()
+        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
         )
-        members = list(cur.fetchall())
+        conn = engine.connect()
+        s = (
+            select(Column("id", Integer), func.sum(users.c.xp).label("txp"))
+            .group_by(users.c.id)
+            .order_by(users.c.xp.desc())
+        )
+        results = conn.execute(s).fetchall()
+        members = list(results)
         for i, mem in enumerate(members):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         await ctx.send(
-            embed=plugin_tools.fast_embed(
-                f"**Global Rankings**\n{''.join(members)}")
+            embed=helper.fast_embed(f"**Global Rankings**\n{''.join(members)}")
         )
 
     @commands.Cog.listener()
@@ -137,10 +178,10 @@ class DisQuest(commands.Cog):
         xp = user.getxp()
         if lvl.near(xp) * 100 in range(xp - reward, xp):
             await ctx.channel.send(
-                embed=plugin_tools.fast_embed(
+                embed=helper.fast_embed(
                     f"{ctx.author.mention} has reached LVL. {lvl.cur(xp)}"
                 ),
-                delete_after=20,
+                delete_after=10,
             )
 
 
