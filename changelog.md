@@ -9,6 +9,7 @@
 - Bump to Python 3.10.1
 - Fix Snyk workflow secrets issue
 - Make McSrvStat and MangaDex async to improve performance
+- Rewrite DisQuest to use SQLAlchemy instead of SQLite to prevent SQL Injection attacks
 
 # Additions
 - MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
