@@ -22,6 +22,7 @@ def getTokens():
     result_select = conn.execute(s)
     for row in result_select:
         return row
+    conn.close()
 
 
 DeviantArt_API_Access_Token = getTokens()[0]
@@ -66,6 +67,7 @@ def get_users(search):
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        getTokens()
 
     @commands.command(name="deviantart-item", aliases=["da-item"])
     async def da(self, ctx, *, deviation_id: str):
@@ -143,6 +145,7 @@ class DeviantArtV1(commands.Cog):
 class DeviantArtV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        getTokens()
 
     @commands.command(name="deviantart-newest", aliases=["da-newest"])
     async def da_query(self, ctx, *, search: str):
@@ -360,6 +363,7 @@ class DeviantArtV2(commands.Cog):
 class DeviantArtV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        getTokens()
 
     @commands.command(name="deviantart-popular", aliases=["da-popular"])
     async def deviantart_popular(self, ctx, *, search: str):
@@ -577,6 +581,7 @@ class DeviantArtV3(commands.Cog):
 class DeviantArtV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        getTokens()
 
     @commands.command(name="deviantart-tag-search", aliases=["da-tag-search"])
     async def tags(self, ctx, *, search: str):
@@ -793,6 +798,7 @@ class DeviantArtV4(commands.Cog):
 class DeviantArtV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        getTokens()
 
     @commands.command(name="deviantart-user", aliases=["da-user"])
     async def user(self, ctx, *, search: str):
