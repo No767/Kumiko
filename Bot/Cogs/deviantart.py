@@ -10,7 +10,7 @@ load_dotenv()
 
 def getTokens():
     meta = MetaData()
-    engine = create_engine("sqlite:///./daTokens/tokens.db")
+    engine = create_engine("sqlite:////Bot/Cogs/daTokens/tokens.db")
     tokens = Table(
         "DA_Tokens",
         meta,
