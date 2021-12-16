@@ -113,6 +113,7 @@ class DisQuest(commands.Cog):
         name="rank", help="Displays the most active members of your server!"
     )
     async def rank(self, ctx):
+        gid = discord.Guild.id
         meta = MetaData()
         engine = create_engine("sqlite:///disquest/user.db")
         users = Table(
@@ -125,7 +126,7 @@ class DisQuest(commands.Cog):
         conn = engine.connect()
         s = (
             select(Column("id", Integer), Column("xp", Integer))
-            .filter((users.c.gid.is_(myvar)))
+            .filter((users.c.gid.is_(gid)))
             .order_by(users.c.xp.desc())
         )
         results = conn.execute(s).fetchall()
