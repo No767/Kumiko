@@ -2,16 +2,19 @@ import math
 import os
 import random
 
-
-from discord.ext import commands
 import discord
-from sqlalchemy import Column, MetaData, Table, create_engine, Integer, select, func
+from discord.ext import commands
+from sqlalchemy import (Column, Integer, MetaData, Table, create_engine, func,
+                        select)
+
 
 class helper:
     def fast_embed(content):
         colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
         selector = random.choice(colors)
         return discord.Embed(description=content, color=selector)
+
+
 class disaccount:
     def __init__(self, ctx):
         self.id = ctx.author.id
@@ -20,13 +23,21 @@ class disaccount:
     def getxp(self):
         meta = MetaData()
         engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
-        users = Table("user", meta, Column("id", Integer), Column("gid", Integer), Column("xp", Integer))
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
+        )
         conn = engine.connect()
         while True:
-            s = select(Column("xp", Integer)).where(users.c.id == self.id, users.c.gid == self.gid)
+            s = select(Column("xp", Integer)).where(
+                users.c.id == self.id, users.c.gid == self.gid
+            )
             results = conn.execute(s)
             xp = results.fetchone()
-            
+
             if xp == None:
                 ins = users.insert().values(id=self.id, gid=self.gid, xp=0)
                 conn.execute(ins)
@@ -39,7 +50,13 @@ class disaccount:
     def setxp(self, xp):
         meta = MetaData()
         engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
-        users = Table("user", meta, Column("id", Integer), Column("gid", Integer), Column("xp", Integer))
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
+        )
         conn = engine.connect()
         update_values = users.update().values(xp=xp, id=self.id, gid=self.gid)
         conn.execute(update_values)
@@ -68,9 +85,14 @@ class DisQuest(commands.Cog):
         os.chdir(os.path.dirname(__file__))
         meta = MetaData()
         engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
-        Table("user.db", meta, Column("id", Integer), Column("gid", Integer), Column("xp", Integer))
+        Table(
+            "user.db",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
+        )
         meta.create_all(engine)
-        
 
     @commands.command(
         name="mylvl",
@@ -93,10 +115,19 @@ class DisQuest(commands.Cog):
     async def rank(self, ctx):
         meta = MetaData()
         engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
-        users = Table("user", meta, Column("id", Integer), Column("gid", Integer), Column("xp", Integer))
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
+        )
         conn = engine.connect()
-        s = select(Column("id", Integer), Column("xp", Integer)).filter((users.c.gid.is_(myvar))).order_by(
-            users.c.xp.desc())
+        s = (
+            select(Column("id", Integer), Column("xp", Integer))
+            .filter((users.c.gid.is_(myvar)))
+            .order_by(users.c.xp.desc())
+        )
         results = conn.execute(s).fetchall()
         members = list(results.fetchall())
         for i, mem in enumerate(members):
@@ -104,8 +135,7 @@ class DisQuest(commands.Cog):
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         await ctx.send(
-            embed=helper.fast_embed(
-                f"**Server Rankings**\n{''.join(members)}")
+            embed=helper.fast_embed(f"**Server Rankings**\n{''.join(members)}")
         )
 
     @commands.command(
@@ -115,10 +145,19 @@ class DisQuest(commands.Cog):
     async def grank(self, ctx):
         meta = MetaData()
         engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
-        users = Table("user", meta, Column("id", Integer), Column("gid", Integer), Column("xp", Integer))
+        users = Table(
+            "user",
+            meta,
+            Column("id", Integer),
+            Column("gid", Integer),
+            Column("xp", Integer),
+        )
         conn = engine.connect()
-        s = select(Column("id", Integer), func.sum(users.c.xp).label("txp")).group_by(users.c.id).order_by(
-            users.c.xp.desc())
+        s = (
+            select(Column("id", Integer), func.sum(users.c.xp).label("txp"))
+            .group_by(users.c.id)
+            .order_by(users.c.xp.desc())
+        )
         results = conn.execute(s).fetchall()
         members = list(results)
         for i, mem in enumerate(members):
@@ -126,8 +165,7 @@ class DisQuest(commands.Cog):
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         await ctx.send(
-            embed=helper.fast_embed(
-                f"**Global Rankings**\n{''.join(members)}")
+            embed=helper.fast_embed(f"**Global Rankings**\n{''.join(members)}")
         )
 
     @commands.Cog.listener()

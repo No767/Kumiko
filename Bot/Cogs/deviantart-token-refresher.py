@@ -28,7 +28,8 @@ def select_values():
     for row in result_select:
         return row
     conn.close()
-    
+
+
 def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
     engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
@@ -45,11 +46,12 @@ def update_values(Access_Token, Refresh_Token):
     conn.execute(update)
     conn.close()
 
+
 class tokenRefresher(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.refresher.start()
-        
+
     @tasks.loop()
     async def refresher(self):
         values = select_values()
