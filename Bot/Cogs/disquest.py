@@ -22,7 +22,7 @@ class disaccount:
 
     def getxp(self):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine("sqlite:///disquest/user.db")
         users = Table(
             "user",
             meta,
@@ -49,7 +49,7 @@ class disaccount:
 
     def setxp(self, xp):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine("sqlite:///disquest/user.db")
         users = Table(
             "user",
             meta,
@@ -84,7 +84,7 @@ class DisQuest(commands.Cog):
         self.bot = bot
         os.chdir(os.path.dirname(__file__))
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine("sqlite:///disquest/user.db")
         Table(
             "user.db",
             meta,
@@ -114,7 +114,7 @@ class DisQuest(commands.Cog):
     )
     async def rank(self, ctx):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine("sqlite:///disquest/user.db")
         users = Table(
             "user",
             meta,
@@ -144,7 +144,7 @@ class DisQuest(commands.Cog):
     )
     async def grank(self, ctx):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine("sqlite:///disquest/user.db")
         users = Table(
             "user",
             meta,

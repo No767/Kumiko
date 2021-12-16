@@ -15,7 +15,7 @@ Client_Secret = os.getenv("DeviantArt_Client_Secret")
 
 def select_values():
     meta = MetaData()
-    engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
+    engine = create_engine("sqlite:///daTokens/tokens.db")
     tokens = Table(
         "DA_Tokens",
         meta,
@@ -32,7 +32,7 @@ def select_values():
 
 def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
+    engine = create_engine("sqlite:///daTokens/tokens.db")
     tokens = Table(
         "DA_Tokens",
         meta,
