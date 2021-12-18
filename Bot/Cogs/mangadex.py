@@ -2,10 +2,8 @@ import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-from discord_components import Button
 from dotenv import load_dotenv
 from pygicord import Paginator, control
-from reactionmenu import Button
 
 load_dotenv()
 
@@ -213,7 +211,7 @@ class MangaDexReaderV1(commands.Cog):
                     var = 0
                     var += 1
                     list_of_images = data["data"]["attributes"]["data"][var]
-                    length_of_chapter = len(data["data"]["attributes"]["data"])
+                    len(data["data"]["attributes"]["data"])
                     chapter_name = data["data"]["attributes"]["title"]
                     chapter_num = data["data"]["attributes"]["chapter"]
                     manga_id = data["data"]["relationships"][1]["id"]
