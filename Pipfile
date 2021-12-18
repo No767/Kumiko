@@ -44,6 +44,8 @@ sqlalchemy = "*"
 aiosqlite = "*"
 orjson = "*"
 reactionmenu = "*"
+pygicord = "*"
+psycopg2 = "*"
 
 [dev-packages]
 

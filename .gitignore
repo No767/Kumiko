@@ -50,3 +50,5 @@ deviantart-tokens/
 test.db
 text.txt
 tokens.db
+daTokens/
+button-test.py

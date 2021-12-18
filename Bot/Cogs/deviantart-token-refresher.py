@@ -11,19 +11,17 @@ load_dotenv()
 
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
+Password = os.getenv("Postgres_Password")
+IP = os.getenv("Postgres_Server_IP")
+Username = os.getenv("Postgres_Username")
 
 
 def select_values():
     meta = MetaData()
-    engine = create_engine("sqlite:////Bot/Cogs/daTokens/tokens.db")
-    tokens = Table(
-        "DA_Tokens",
-        meta,
-        Column("Access_Tokens", String),
-        Column("Refresh_Tokens", String),
-    )
-    s = tokens.select()
+    engine = create_engine(f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens")
+    tokens = Table("DA_Tokens", meta, Column("Access_Tokens", String), Column("Refresh_Tokens", String))
     conn = engine.connect()
+    s = tokens.select()
     result_select = conn.execute(s)
     for row in result_select:
         return row
@@ -32,7 +30,7 @@ def select_values():
 
 def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine("sqlite:////Bot/Cogs/daTokens/tokens.db")
+    engine = create_engine(f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens")
     tokens = Table(
         "DA_Tokens",
         meta,
