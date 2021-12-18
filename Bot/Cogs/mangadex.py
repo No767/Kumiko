@@ -230,32 +230,6 @@ class MangaDexReaderV1(commands.Cog):
                         embedVar.set_image(
                             url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
                         )
-                        await ctx.send(
-                            embed=embedVar,
-                            components=[
-                                [
-                                    Button(label="Go Back", style=1,
-                                           custom_id="back"),
-                                    Button(
-                                        label=f"Page /{length_of_chapter}",
-                                        style=2,
-                                        custom_id="current_page",
-                                        disabled=True,
-                                    ),
-                                    Button(
-                                        label="Go Forwards",
-                                        style=1,
-                                        custom_id="forward",
-                                    ),
-                                ]
-                            ],
-                        )
-                        interaction = await self.bot.wait_for(
-                            "button_click", check=lambda i: i.custom_id == "back"
-                        )
-                        await interaction.ctx.send(
-                            "Button is clicked", ephemeral="False"
-                        )
 
         except Exception as e:
             await ctx.send(e)
