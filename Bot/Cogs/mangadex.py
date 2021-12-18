@@ -2,12 +2,13 @@ import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-from discord_components import Button, Select, SelectOption
+from discord_components import Button
 from dotenv import load_dotenv
-from reactionmenu import ReactionMenu, Button, ButtonType
 from pygicord import Paginator, control
+from reactionmenu import Button
 
 load_dotenv()
+
 
 def get_pages():
     pages = []
@@ -16,7 +17,6 @@ def get_pages():
         embed.title = f"Embed no. {i}"
         pages.append(embed)
     return pages
-
 
 
 class MangaDexV1(commands.Cog):
@@ -276,16 +276,15 @@ class CustomPaginator(Paginator):
 
 pages = [f"Page no. {i}" for i in range(1, 6)]
 
+
 class discordButtonTest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command(name="button-test")
     async def user(self, ctx):
         paginator = CustomPaginator(pages=pages)
         await paginator.start(ctx)
-        
-
 
 
 def setup(bot):

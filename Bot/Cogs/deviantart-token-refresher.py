@@ -18,8 +18,15 @@ Username = os.getenv("Postgres_Username")
 
 def select_values():
     meta = MetaData()
-    engine = create_engine(f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens")
-    tokens = Table("DA_Tokens", meta, Column("Access_Tokens", String), Column("Refresh_Tokens", String))
+    engine = create_engine(
+        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+    )
+    tokens = Table(
+        "DA_Tokens",
+        meta,
+        Column("Access_Tokens", String),
+        Column("Refresh_Tokens", String),
+    )
     conn = engine.connect()
     s = tokens.select()
     result_select = conn.execute(s)
@@ -30,7 +37,9 @@ def select_values():
 
 def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine(f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens")
+    engine = create_engine(
+        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+    )
     tokens = Table(
         "DA_Tokens",
         meta,
