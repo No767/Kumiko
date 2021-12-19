@@ -1,8 +1,7 @@
 import aiohttp
 import discord
-from discord.ext import commands
-import ujson
 import orjson
+from discord.ext import commands
 
 
 class advice_slip(commands.Cog):
