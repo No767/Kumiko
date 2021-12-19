@@ -2,10 +2,19 @@ import aiohttp
 import discord
 import ujson
 from discord.ext import commands
-from discord_components import Button, Select, SelectOption
 from dotenv import load_dotenv
+from pygicord import Paginator, control
 
 load_dotenv()
+
+
+def get_pages():
+    pages = []
+    for i in range(1, 6):
+        embed = discord.Embed()
+        embed.title = f"Embed no. {i}"
+        pages.append(embed)
+    return pages
 
 
 class MangaDexV1(commands.Cog):
@@ -202,7 +211,7 @@ class MangaDexReaderV1(commands.Cog):
                     var = 0
                     var += 1
                     list_of_images = data["data"]["attributes"]["data"][var]
-                    length_of_chapter = len(data["data"]["attributes"]["data"])
+                    len(data["data"]["attributes"]["data"])
                     chapter_name = data["data"]["attributes"]["title"]
                     chapter_num = data["data"]["attributes"]["chapter"]
                     manga_id = data["data"]["relationships"][1]["id"]
@@ -219,35 +228,25 @@ class MangaDexReaderV1(commands.Cog):
                         embedVar.set_image(
                             url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
                         )
-                        await ctx.send(
-                            embed=embedVar,
-                            components=[
-                                [
-                                    Button(label="Go Back", style=1,
-                                           custom_id="back"),
-                                    Button(
-                                        label=f"Page /{length_of_chapter}",
-                                        style=2,
-                                        custom_id="current_page",
-                                        disabled=True,
-                                    ),
-                                    Button(
-                                        label="Go Forwards",
-                                        style=1,
-                                        custom_id="forward",
-                                    ),
-                                ]
-                            ],
-                        )
-                        interaction = await self.bot.wait_for(
-                            "button_click", check=lambda i: i.custom_id == "back"
-                        )
-                        await interaction.ctx.send(
-                            "Button is clicked", ephemeral="False"
-                        )
 
         except Exception as e:
             await ctx.send(e)
+
+
+class CustomPaginator(Paginator):
+    @control(emoji="\N{INFORMATION SOURCE}", position=4.5)
+    async def show_info(self, payload):
+        """Shows this message."""
+        desc = []
+        for emoji, control_ in self.controller.items():
+            desc.append(f"{emoji}: {control_.callback.__doc__}")
+        embed = discord.Embed()
+        embed.description = "\n".join(desc)
+        embed.set_footer(text="Press any reaction to go back.")
+        await self.message.edit(content=None, embed=embed)
+
+
+pages = [f"Page no. {i}" for i in range(1, 6)]
 
 
 class discordButtonTest(commands.Cog):
@@ -255,28 +254,13 @@ class discordButtonTest(commands.Cog):
         self.bot = bot
 
     @commands.command(name="button-test")
-    async def button(self, ctx):
-        await ctx.send(
-            "Selects!",
-            components=[
-                Select(
-                    placeholder="Select something!",
-                    options=[
-                        SelectOption(label="a", value="a"),
-                        SelectOption(label="b", value="b"),
-                    ],
-                    custom_id="select1",
-                )
-            ],
-        )
-        while True:
-            interaction = await self.bot.wait_for(
-                "select_option", check=lambda inter: inter.custom_id == "select1"
-            )
-            await interaction.send(content=f"{interaction.values[0]} selected!")
+    async def user(self, ctx):
+        paginator = CustomPaginator(pages=pages)
+        await paginator.start(ctx)
 
 
 def setup(bot):
     bot.add_cog(MangaDexV1(bot))
     bot.add_cog(MangaDexV2(bot))
     bot.add_cog(MangaDexReaderV1(bot))
+    bot.add_cog(discordButtonTest(bot))

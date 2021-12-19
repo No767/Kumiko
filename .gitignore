@@ -46,12 +46,9 @@ Cog-Testers/
 DeviantArt_API_Keys.txt
 deviantart_links
 Cogs-Misc/
-<<<<<<< HEAD
-.README.md.un~
-README.md~
-=======
 deviantart-tokens/
 test.db
 text.txt
 tokens.db
->>>>>>> a5659c14a6103770ed114e62aee8a13b58a89b5d
+daTokens/
+button-test.py

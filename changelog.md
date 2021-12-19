@@ -3,6 +3,7 @@
 # TD;LR
 - MangaDex API Support (Experimental)
 - Fix DeviantArt Token Refresher Cog
+- Major Performance Improvements (via asynchronous code + faster json lib)
 
 # Changes
 - Updated Translate Cog to work now
@@ -11,16 +12,20 @@
 - Bump to Python 3.10.1
 - Fix Snyk workflow secrets issue
 - Make McSrvStat and MangaDex async to improve performance
-- Updated Upstream (Rin)
-- Bump lxml from 4.6.4 to 4.6.5 to fix a massive security vulnerability
+- Rewrite DisQuest to use SQLAlchemy instead of SQLite to prevent SQL Injection attacks
+- Move from ujson to orjson for even faster json decoding performance
+- Remove Unused Libs
+- Changed DeviantArt and DeviantArt Token Refresher Cogs to use PostgreSQL instead of SQLite
 
 # Additions
 - MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
 - Use PyCord instead
 - Codeowners (For faster code review if needed)
+- orjson (for faster json performance)
 
 # Removals
 - Disabled missing commands handler (for discords.com verfication)
 - EasyBot.py and EasyBot-Plugins submodule 
 - Discord.py (Discord.py is not maintained anymore)
 - Docker Workflow
+- Unused Libs

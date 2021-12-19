@@ -4,8 +4,15 @@ import random
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 from sqlalchemy import (Column, Integer, MetaData, Table, create_engine, func,
                         select)
+
+load_dotenv()
+
+Password = os.getenv("Postgres_Password")
+IP = os.getenv("Postgres_Server_IP")
+Username = os.getenv("Postgres_Username")
 
 
 class helper:
@@ -22,7 +29,9 @@ class disaccount:
 
     def getxp(self):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
@@ -49,7 +58,9 @@ class disaccount:
 
     def setxp(self, xp):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
@@ -84,7 +95,9 @@ class DisQuest(commands.Cog):
         self.bot = bot
         os.chdir(os.path.dirname(__file__))
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         Table(
             "user.db",
             meta,
@@ -113,8 +126,11 @@ class DisQuest(commands.Cog):
         name="rank", help="Displays the most active members of your server!"
     )
     async def rank(self, ctx):
+        gid = discord.Guild.id
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
@@ -125,7 +141,7 @@ class DisQuest(commands.Cog):
         conn = engine.connect()
         s = (
             select(Column("id", Integer), Column("xp", Integer))
-            .filter((users.c.gid.is_(myvar)))
+            .filter((users.c.gid.is_(gid)))
             .order_by(users.c.xp.desc())
         )
         results = conn.execute(s).fetchall()
@@ -144,7 +160,9 @@ class DisQuest(commands.Cog):
     )
     async def grank(self, ctx):
         meta = MetaData()
-        engine = create_engine("sqlite:///Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,

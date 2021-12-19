@@ -2,7 +2,7 @@ import asyncio
 import os
 
 import aiohttp
-import ujson
+import orjson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table, create_engine
@@ -11,19 +11,24 @@ load_dotenv()
 
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
+Password = os.getenv("Postgres_Password")
+IP = os.getenv("Postgres_Server_IP")
+Username = os.getenv("Postgres_Username")
 
 
 def select_values():
     meta = MetaData()
-    engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
+    engine = create_engine(
+        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+    )
     tokens = Table(
         "DA_Tokens",
         meta,
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    s = tokens.select()
     conn = engine.connect()
+    s = tokens.select()
     result_select = conn.execute(s)
     for row in result_select:
         return row
@@ -32,7 +37,9 @@ def select_values():
 
 def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine("sqlite:///Bot/Cogs/daTokens/tokens.db")
+    engine = create_engine(
+        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+    )
     tokens = Table(
         "DA_Tokens",
         meta,
@@ -57,7 +64,7 @@ class tokenRefresher(commands.Cog):
         values = select_values()
         Refresh_Token_Select = values[1]
         await asyncio.sleep(3300)
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
                 "client_secret": f"{Client_Secret}",

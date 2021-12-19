@@ -16,10 +16,10 @@ jobs:
     steps:
       - name: Checkout Repository  
         uses: actions/checkout@v2
-      - name: Set up Python 3.10.0
+      - name: Set up Python 3.10.1
         uses: actions/setup-python@v2
         with:
-          python-version: 3.10.0
+          python-version: 3.10.1
       - name: Set up Node.js 17
         uses: actions/setup-node@v2
         with:
@@ -27,9 +27,9 @@ jobs:
       - name: Install Snyk CLI
         run: |
           npm install snyk@latest -g
-      - name: Upgrade Pip and Install Pipenv
+      - name: Upgrade Pip + Install Pipenv + Instal Colorama
         run: |
-          pip install --upgrade pip pipenv
+          pip install --upgrade pip pipenv colorama
       - name: Install Pipenv Dependencies 
         run: |
           pipenv install

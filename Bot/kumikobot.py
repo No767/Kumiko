@@ -20,7 +20,6 @@ initial_extensions = [
     "Cogs.valid",
     "Cogs.kumikohelp",
     "Cogs.reddit",
-    "Cogs.pinger",
     "Cogs.chat",
     "Cogs.jisho",
     "Cogs.translate",
