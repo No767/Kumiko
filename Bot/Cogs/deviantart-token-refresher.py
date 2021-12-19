@@ -63,7 +63,7 @@ class tokenRefresher(commands.Cog):
     async def refresher(self):
         values = select_values()
         Refresh_Token_Select = values[1]
-        await asyncio.sleep(10)
+        await asyncio.sleep(3300)
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
