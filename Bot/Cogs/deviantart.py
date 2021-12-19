@@ -3,7 +3,7 @@ import os
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands, tasks
+from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table, create_engine
 
@@ -37,7 +37,7 @@ class tokenFetcher:
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command(name="deviantart-item", aliases=["da-item"])
     async def da(self, ctx, *, deviation_id: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
