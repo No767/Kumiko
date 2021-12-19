@@ -12,6 +12,8 @@
 - Make McSrvStat and MangaDex async to improve performance
 - Rewrite DisQuest to use SQLAlchemy instead of SQLite to prevent SQL Injection attacks
 - Move from ujson to orjson for even faster json decoding performance
+- Remove Unused Libs
+- Changed DeviantArt and DeviantArt Token Refresher Cogs to use PostgreSQL instead of SQLite
 
 # Additions
 - MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
@@ -24,3 +26,4 @@
 - EasyBot.py and EasyBot-Plugins submodule 
 - Discord.py (Discord.py is not maintained anymore)
 - Docker Workflow
+- Unused Libs
