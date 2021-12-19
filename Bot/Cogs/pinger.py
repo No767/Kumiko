@@ -9,8 +9,13 @@ class rinpinger(commands.Cog):
     @commands.command(name="pinger")
     async def pinger(self, ctx):
         try:
+
             def check(ms):
-                return ms.user == ctx.user.name and ctx.message.content != ["@everyone", "@here"]
+                return ms.user == ctx.user.name and ctx.message.content != [
+                    "@everyone",
+                    "@here",
+                ]
+
             await ctx.send("Enter the number of times you want to ping someone: ")
             ping = await self.bot.wait_for("message", check=check)
             await ctx.send("Enter the user you want to ping: ")

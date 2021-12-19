@@ -1,7 +1,7 @@
 import os
 
-import discord
 import aiohttp
+import discord
 import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -12,7 +12,8 @@ load_dotenv()
 Password = os.getenv("Postgres_Password")
 IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
-    
+
+
 class tokenFetcher:
     def get():
         meta = MetaData()
@@ -32,7 +33,9 @@ class tokenFetcher:
             return row
         conn.close()
 
+
 DeviantArt_API_Access_Token = tokenFetcher.get()[0]
+
 
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
@@ -134,7 +137,6 @@ class DeviantArtV1(commands.Cog):
     @da.before_invoke
     async def before_command(self, ctx=None):
         tokenFetcher.get()
-        
 
 
 class DeviantArtV2(commands.Cog):

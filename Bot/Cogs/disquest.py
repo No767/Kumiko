@@ -4,16 +4,16 @@ import random
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 from sqlalchemy import (Column, Integer, MetaData, Table, create_engine, func,
                         select)
-from dotenv import load_dotenv
-
 
 load_dotenv()
 
 Password = os.getenv("Postgres_Password")
 IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
+
 
 class helper:
     def fast_embed(content):
