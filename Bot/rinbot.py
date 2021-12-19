@@ -3,14 +3,12 @@ from discord import Intents
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-from reactionmenu import ButtonsMenu
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("Hanako_Token")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".", help_command=None)
-ButtonsMenu.initialize(bot) # Required for reactionmenu
 
 # Loads in all extensions
 initial_extensions = [
@@ -20,7 +18,6 @@ initial_extensions = [
     "Cogs.valid",
     "Cogs.rinhelp",
     "Cogs.reddit",
-    "Cogs.pinger",
     "Cogs.chat",
     "Cogs.jisho",
     "Cogs.translate",
@@ -41,8 +38,8 @@ initial_extensions = [
     "Cogs.rininvite",
     "Cogs.version",
     "Cogs.clear",
-    "Cogs.deviantart",
     "Cogs.deviantart-token-refresher",
+    "Cogs.deviantart",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

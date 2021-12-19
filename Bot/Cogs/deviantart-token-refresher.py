@@ -3,6 +3,7 @@ import os
 
 import aiohttp
 import ujson
+import orjson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table, create_engine
@@ -63,8 +64,8 @@ class tokenRefresher(commands.Cog):
     async def refresher(self):
         values = select_values()
         Refresh_Token_Select = values[1]
-        await asyncio.sleep(3300)
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+        await asyncio.sleep(10)
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "client_id": f"{Client_ID}",
                 "client_secret": f"{Client_Secret}",

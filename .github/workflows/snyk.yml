@@ -27,9 +27,9 @@ jobs:
       - name: Install Snyk CLI
         run: |
           npm install snyk@latest -g
-      - name: Upgrade Pip and Install Pipenv
+      - name: Upgrade Pip + Install Pipenv + Instal Colorama
         run: |
-          pip install --upgrade pip pipenv
+          pip install --upgrade pip pipenv colorama
       - name: Install Pipenv Dependencies 
         run: |
           pipenv install

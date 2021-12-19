@@ -7,10 +7,18 @@ class rinpinger(commands.Cog):
         self.bot = bot
 
     @commands.command(name="pinger")
-    async def pinger(self, ctx, replace: int, *, reason: str):
+    async def pinger(self, ctx):
         try:
-            for _ in range(replace):
-                await ctx.send(f"@everyone {reason}")
+            def check(ms):
+                return ms.user == ctx.user.name and ctx.message.content != ["@everyone", "@here"]
+            await ctx.send("Enter the number of times you want to ping someone: ")
+            ping = await self.bot.wait_for("message", check=check)
+            await ctx.send("Enter the user you want to ping: ")
+            user = await self.bot.wait_for("message", check=check)
+            await ctx.send("Enter the reason for the ping: ")
+            reason = await self.bot.wait_for("message", check=check)
+            for _ in range(int(ping.content)):
+                await ctx.send(f"{user} {reason}")
         except Exception as e:
             await ctx.send(f"The pinger cog didnt work. Please try again.\nReason: {e}")
 

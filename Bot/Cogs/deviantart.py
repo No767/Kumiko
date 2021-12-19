@@ -1,7 +1,7 @@
 import os
 
-import aiohttp
 import discord
+import aiohttp
 import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -12,29 +12,27 @@ load_dotenv()
 Password = os.getenv("Postgres_Password")
 IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
+    
+class tokenFetcher:
+    def get():
+        meta = MetaData()
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+        )
+        tokens = Table(
+            "DA_Tokens",
+            meta,
+            Column("Access_Tokens", String),
+            Column("Refresh_Tokens", String),
+        )
+        conn = engine.connect()
+        s = tokens.select()
+        result_select = conn.execute(s)
+        for row in result_select:
+            return row
+        conn.close()
 
-
-def getTokens():
-    meta = MetaData()
-    engine = create_engine(
-        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
-    )
-    tokens = Table(
-        "DA_Tokens",
-        meta,
-        Column("Access_Tokens", String),
-        Column("Refresh_Tokens", String),
-    )
-    conn = engine.connect()
-    s = tokens.select()
-    result_select = conn.execute(s)
-    for row in result_select:
-        return row
-    conn.close()
-
-
-DeviantArt_API_Access_Token = getTokens()[0]
-
+DeviantArt_API_Access_Token = tokenFetcher.get()[0]
 
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
@@ -135,7 +133,8 @@ class DeviantArtV1(commands.Cog):
 
     @da.before_invoke
     async def before_command(self, ctx=None):
-        getTokens()
+        tokenFetcher.get()
+        
 
 
 class DeviantArtV2(commands.Cog):
@@ -397,7 +396,7 @@ class DeviantArtV2(commands.Cog):
 
     @da_query.before_invoke
     async def on_command(self, ctx=None):
-        getTokens()
+        tokenFetcher.get()
 
 
 class DeviantArtV3(commands.Cog):
@@ -658,8 +657,8 @@ class DeviantArtV3(commands.Cog):
             await msg.delete(delay=10)
 
     @deviantart_popular.before_invoke
-    async def on_command(self):
-        getTokens()
+    async def on_command(self, ctx=None):
+        tokenFetcher.get()
 
 
 class DeviantArtV4(commands.Cog):
@@ -669,7 +668,6 @@ class DeviantArtV4(commands.Cog):
     @commands.command(name="deviantart-tag-search", aliases=["da-tag-search"])
     async def tags(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
-        tags = get_tags(search)
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "tag": f"{search}",
@@ -917,10 +915,7 @@ class DeviantArtV4(commands.Cog):
 
     @tags.before_invoke
     async def on_command(self, ctx=None):
-        getTokens()
-        print(
-            f"Access Token (right before the command was invoked): {getTokens[0]}\nRefresh Token (right before the command was invoked): {getTokens[1]}"
-        )
+        tokenFetcher.get()
 
 
 class DeviantArtV5(commands.Cog):
@@ -1029,7 +1024,7 @@ class DeviantArtV5(commands.Cog):
 
     @user.before_invoke
     async def on_command(self, ctx=None):
-        getTokens()
+        tokenFetcher.get()
 
 
 def setup(bot):

@@ -6,7 +6,14 @@ import discord
 from discord.ext import commands
 from sqlalchemy import (Column, Integer, MetaData, Table, create_engine, func,
                         select)
+from dotenv import load_dotenv
 
+
+load_dotenv()
+
+Password = os.getenv("Postgres_Password")
+IP = os.getenv("Postgres_Server_IP")
+Username = os.getenv("Postgres_Username")
 
 class helper:
     def fast_embed(content):
@@ -22,7 +29,9 @@ class disaccount:
 
     def getxp(self):
         meta = MetaData()
-        engine = create_engine("sqlite:////Bot/Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
@@ -49,7 +58,9 @@ class disaccount:
 
     def setxp(self, xp):
         meta = MetaData()
-        engine = create_engine("sqlite:////Bot/Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
@@ -84,7 +95,9 @@ class DisQuest(commands.Cog):
         self.bot = bot
         os.chdir(os.path.dirname(__file__))
         meta = MetaData()
-        engine = create_engine("sqlite:////Bot/Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         Table(
             "user.db",
             meta,
@@ -115,7 +128,9 @@ class DisQuest(commands.Cog):
     async def rank(self, ctx):
         gid = discord.Guild.id
         meta = MetaData()
-        engine = create_engine("sqlite:////Bot/Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
@@ -145,7 +160,9 @@ class DisQuest(commands.Cog):
     )
     async def grank(self, ctx):
         meta = MetaData()
-        engine = create_engine("sqlite:////Bot/Bot/Cogs/disquest/user.db")
+        engine = create_engine(
+            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "user",
             meta,
