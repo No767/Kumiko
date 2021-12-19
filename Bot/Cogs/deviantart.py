@@ -3,7 +3,7 @@ import os
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands
+from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table, create_engine
 
@@ -34,20 +34,17 @@ class tokenFetcher:
         conn.close()
 
 
-DeviantArt_API_Access_Token = tokenFetcher.get()[0]
-
-
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+        
     @commands.command(name="deviantart-item", aliases=["da-item"])
     async def da(self, ctx, *, deviation_id: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "with_session": "false",
                 "limit": "5",
-                "access_token": f"{DeviantArt_API_Access_Token}",
+                "access_token": f"{tokenFetcher.get()[0]}",
             }
             async with session.get(
                 f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}",
@@ -152,7 +149,7 @@ class DeviantArtV2(commands.Cog):
                 "with_session": "false",
                 "limit": 10,
                 "mature_content": "False",
-                "access_token": f"{DeviantArt_API_Access_Token}",
+                "access_token": f"{tokenFetcher.get()[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/newest", params=params
@@ -414,7 +411,7 @@ class DeviantArtV3(commands.Cog):
                 "with_session": "false",
                 "limit": "10",
                 "mature_content": "false",
-                "access_token": f"{DeviantArt_API_Access_Token}",
+                "access_token": f"{tokenFetcher.get()[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/popular", params=params
@@ -676,7 +673,7 @@ class DeviantArtV4(commands.Cog):
                 "with_session": "false",
                 "limit": "10",
                 "mature_content": "false",
-                "access_token": f"{DeviantArt_API_Access_Token}",
+                "access_token": f"{tokenFetcher.get()[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/tags", params=params
@@ -932,7 +929,7 @@ class DeviantArtV5(commands.Cog):
                 "ext_galleries": "false",
                 "with_session": "false",
                 "mature_content": "false",
-                "access_token": f"{DeviantArt_API_Access_Token}",
+                "access_token": f"{tokenFetcher.get()[0]}",
             }
             async with session.get(
                 f"https://www.deviantart.com/api/v1/oauth2/user/profile/{search}",
