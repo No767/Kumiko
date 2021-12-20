@@ -14,6 +14,7 @@
 - Move from ujson to orjson for even faster json decoding performance
 - Remove Unused Libs
 - Changed DeviantArt and DeviantArt Token Refresher Cogs to use PostgreSQL instead of SQLite
+- Make Jikan/MAL Cog async to improve performance + use orjson for json serialization
 
 # Additions
 - MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
