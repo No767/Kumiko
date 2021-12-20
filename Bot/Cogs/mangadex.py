@@ -3,9 +3,10 @@ import discord
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from reactionmenu import ButtonsMenu, ComponentsButton, Button, ButtonType, ReactionMenu
+from reactionmenu import ReactionMenu
 
 load_dotenv()
+
 
 class MangaDexV1(commands.Cog):
     def __init__(self, bot):
@@ -219,9 +220,13 @@ class MangaDexReaderV1(commands.Cog):
                             url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
                         )
                         embedVar2 = discord.Embed(title="test")
-                        menu = ReactionMenu(ctx, back_button=ReactionMenu.EMOJI_BACK_BUTTON,
-                                            next_button=ReactionMenu.EMOJI_NEXT_BUTTON, config=ReactionMenu.STATIC,
-                                            clear_reactions_after=False)
+                        menu = ReactionMenu(
+                            ctx,
+                            back_button=ReactionMenu.EMOJI_BACK_BUTTON,
+                            next_button=ReactionMenu.EMOJI_NEXT_BUTTON,
+                            config=ReactionMenu.STATIC,
+                            clear_reactions_after=False,
+                        )
                         menu.add_page(embedVar)
                         for _ in list_of_images:
                             menu.add_page(embedVar)
@@ -230,8 +235,6 @@ class MangaDexReaderV1(commands.Cog):
 
         except Exception as e:
             await ctx.send(e)
-
-
 
 
 class discordButtonTest(commands.Cog):
