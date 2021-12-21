@@ -3,18 +3,9 @@ import discord
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-from pygicord import Paginator, control
+from reactionmenu import ReactionMenu
 
 load_dotenv()
-
-
-def get_pages():
-    pages = []
-    for i in range(1, 6):
-        embed = discord.Embed()
-        embed.title = f"Embed no. {i}"
-        pages.append(embed)
-    return pages
 
 
 class MangaDexV1(commands.Cog):
@@ -228,25 +219,22 @@ class MangaDexReaderV1(commands.Cog):
                         embedVar.set_image(
                             url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
                         )
+                        embedVar2 = discord.Embed(title="test")
+                        menu = ReactionMenu(
+                            ctx,
+                            back_button=ReactionMenu.EMOJI_BACK_BUTTON,
+                            next_button=ReactionMenu.EMOJI_NEXT_BUTTON,
+                            config=ReactionMenu.STATIC,
+                            clear_reactions_after=False,
+                        )
+                        menu.add_page(embedVar)
+                        for _ in list_of_images:
+                            menu.add_page(embedVar)
+                            menu.add_page(embedVar2)
+                        await menu.start()
 
         except Exception as e:
             await ctx.send(e)
-
-
-class CustomPaginator(Paginator):
-    @control(emoji="\N{INFORMATION SOURCE}", position=4.5)
-    async def show_info(self, payload):
-        """Shows this message."""
-        desc = []
-        for emoji, control_ in self.controller.items():
-            desc.append(f"{emoji}: {control_.callback.__doc__}")
-        embed = discord.Embed()
-        embed.description = "\n".join(desc)
-        embed.set_footer(text="Press any reaction to go back.")
-        await self.message.edit(content=None, embed=embed)
-
-
-pages = [f"Page no. {i}" for i in range(1, 6)]
 
 
 class discordButtonTest(commands.Cog):
@@ -255,8 +243,7 @@ class discordButtonTest(commands.Cog):
 
     @commands.command(name="button-test")
     async def user(self, ctx):
-        paginator = CustomPaginator(pages=pages)
-        await paginator.start(ctx)
+        await ctx.send("help me")
 
 
 def setup(bot):
