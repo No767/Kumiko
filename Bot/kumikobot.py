@@ -41,8 +41,8 @@ initial_extensions = [
     "Cogs.mangadex",
     "Cogs.version",
     "Cogs.clear",
-    "Cogs.deviantart-token-refresher",
-    "Cogs.deviantart",
+    'Cogs.mangadex',
+    "Cogs.button-test",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
