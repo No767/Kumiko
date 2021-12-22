@@ -130,7 +130,9 @@ class JikanV2(commands.Cog):
             ) as response:
                 data = await response.json()
                 manga_id = data["results"][0]["mal_id"]
-                async with session.get(f"https://api.jikan.moe/v3/manga/{manga_id}") as re:
+                async with session.get(
+                    f"https://api.jikan.moe/v3/manga/{manga_id}"
+                ) as re:
                     manga_info_v1 = await re.json()
                     try:
                         embedVar = discord.Embed(
