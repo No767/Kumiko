@@ -18,6 +18,10 @@ Your only option is via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
 
+If you haven't set up the environment yet, run this in the root directory of the git repo:
+
+`pipenv --python 3.10`
+
 ## Pull Requests and Commits
 
 You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred. **If it's not for any fixes including any hotfixes, please submit it to the dev branch, not the master branch**
