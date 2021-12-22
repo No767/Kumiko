@@ -1,7 +1,8 @@
-import discord
-from discord.ext import commands
 import aiohttp
+import discord
 import orjson
+from discord.ext import commands
+
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
@@ -11,17 +12,30 @@ class SpigetV2(commands.Cog):
     async def spigetSearch(self, ctx, *, search: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
-            async with session.get(f"https://api.spiget.org/v2/search/resources/{search}", headers=headers) as r:
+            async with session.get(
+                f"https://api.spiget.org/v2/search/resources/{search}", headers=headers
+            ) as r:
                 resource = await r.json()
                 author_id = resource[0]["author"]["id"]
                 resource_id = resource[0]["id"]
-                async with session.get(f"https://api.spiget.org/v2/authors/{author_id}", headers=headers) as resp:
+                async with session.get(
+                    f"https://api.spiget.org/v2/authors/{author_id}", headers=headers
+                ) as resp:
                     author_details_v1 = await resp.json()
-                    async with session.get(f"https://api.spiget.org/v2/resources/{resource_id}/versions", headers=headers) as response:
+                    async with session.get(
+                        f"https://api.spiget.org/v2/resources/{resource_id}/versions",
+                        headers=headers,
+                    ) as response:
                         spigetv3 = await response.json()
-                        async with session.get(f"https://api.spiget.org/v2/resources/{resource_id}/versions/latest", headers=headers) as another_response:
+                        async with session.get(
+                            f"https://api.spiget.org/v2/resources/{resource_id}/versions/latest",
+                            headers=headers,
+                        ) as another_response:
                             plugin_version = await another_response.json()
-                            thumbnail = "https://www.spigotmc.org/" + resource[0]["icon"]["url"]
+                            thumbnail = (
+                                "https://www.spigotmc.org/" +
+                                resource[0]["icon"]["url"]
+                            )
                             file_size = str(resource[0]["file"]["size"]) + str(
                                 resource[0]["file"]["sizeUnit"]
                             )
@@ -31,7 +45,10 @@ class SpigetV2(commands.Cog):
                             try:
                                 if resource[0]["file"]["type"] in "external":
                                     embedVar = discord.Embed(
-                                        title=resource[0]['name'], color=discord.Color.from_rgb(173, 156, 255))
+                                        title=resource[0]["name"],
+                                        color=discord.Color.from_rgb(
+                                            173, 156, 255),
+                                    )
                                     embedVar.add_field(
                                         name="Plugin Info",
                                         value=f"Tag >> {resource[0]['tag']}\nAuthor >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
@@ -39,7 +56,8 @@ class SpigetV2(commands.Cog):
                                     )
                                     embedVar.add_field(
                                         name="Tested Versions",
-                                        value=str(resource[0]["testedVersions"])
+                                        value=str(
+                                            resource[0]["testedVersions"])
                                         .replace("[", "")
                                         .replace("]", "")
                                         .replace("'", ""),
@@ -52,7 +70,8 @@ class SpigetV2(commands.Cog):
                                     )
                                     embedVar.add_field(
                                         name="Plugin Versions",
-                                        value=str([name["name"] for name in spigetv3])
+                                        value=str([name["name"]
+                                                  for name in spigetv3])
                                         .replace("[", "")
                                         .replace("]", "")
                                         .replace("'", ""),
@@ -72,7 +91,10 @@ class SpigetV2(commands.Cog):
                                     await ctx.send(embed=embedVar)
                                 else:
                                     embedVar = discord.Embed(
-                                        title=resource[0]['name'], color=discord.Color.from_rgb(173, 156, 255))
+                                        title=resource[0]["name"],
+                                        color=discord.Color.from_rgb(
+                                            173, 156, 255),
+                                    )
                                     embedVar.add_field(
                                         name="Plugin Info",
                                         value=f"Tag >> {resource[0]['tag']}\nAuthor >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
@@ -80,7 +102,8 @@ class SpigetV2(commands.Cog):
                                     )
                                     embedVar.add_field(
                                         name="Tested Versions",
-                                        value=str(resource[0]["testedVersions"])
+                                        value=str(
+                                            resource[0]["testedVersions"])
                                         .replace("[", "")
                                         .replace("]", "")
                                         .replace("'", ""),
@@ -93,7 +116,8 @@ class SpigetV2(commands.Cog):
                                     )
                                     embedVar.add_field(
                                         name="Plugin Versions",
-                                        value=str([name["name"] for name in spigetv3])
+                                        value=str([name["name"]
+                                                  for name in spigetv3])
                                         .replace("[", "")
                                         .replace("]", "")
                                         .replace("'", ""),
@@ -113,10 +137,13 @@ class SpigetV2(commands.Cog):
                                     await ctx.send(embed=embedVar)
                             except Exception as e:
                                 embedVar = discord.Embed(
-                                    color=discord.Color.from_rgb(173, 156, 255))
-                                embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
+                                    color=discord.Color.from_rgb(173, 156, 255)
+                                )
+                                embedVar.description = (
+                                    f"The query failed. Please Try Again.\nReason: {e}"
+                                )
                                 await ctx.send(embed=embedVar)
-    
+
     @spigetSearch.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -127,6 +154,7 @@ class SpigetV2(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
+
 class SpigetV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -135,19 +163,28 @@ class SpigetV4(commands.Cog):
     async def on_message(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
-            async with session.get("https://api.spiget.org/v2/status", headers=headers) as res:
+            async with session.get(
+                "https://api.spiget.org/v2/status", headers=headers
+            ) as res:
                 total_stats = await res.json()
                 try:
                     embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(173, 156, 255))
-                    embedVar.add_field(
-                        name="Resources", value=total_stats["stats"]["resources"], inline=True
+                        color=discord.Color.from_rgb(173, 156, 255)
                     )
                     embedVar.add_field(
-                        name="Authors", value=total_stats["stats"]["authors"], inline=True
+                        name="Resources",
+                        value=total_stats["stats"]["resources"],
+                        inline=True,
                     )
                     embedVar.add_field(
-                        name="Categories", value=total_stats["stats"]["categories"], inline=True
+                        name="Authors",
+                        value=total_stats["stats"]["authors"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Categories",
+                        value=total_stats["stats"]["categories"],
+                        inline=True,
                     )
                     embedVar.add_field(
                         name="Resource Updates",
@@ -160,13 +197,18 @@ class SpigetV4(commands.Cog):
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Reviews", value=total_stats["stats"]["reviews"], inline=True
+                        name="Reviews",
+                        value=total_stats["stats"]["reviews"],
+                        inline=True,
                     )
                     await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(173, 156, 255))
-                    embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
+                        color=discord.Color.from_rgb(173, 156, 255)
+                    )
+                    embedVar.description = (
+                        f"The query failed. Please Try Again.\nReason: {e}"
+                    )
                     await ctx.send(embed=embedVar)
 
 
@@ -178,16 +220,23 @@ class SpigetV5(commands.Cog):
     async def on_message(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
-            async with session.get("https://api.spiget.org/v2/status", headers=headers) as r:
+            async with session.get(
+                "https://api.spiget.org/v2/status", headers=headers
+            ) as r:
                 try:
                     embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(173, 156, 255))
-                    embedVar.add_field(name="Status", value=r.status, inline=True)
+                        color=discord.Color.from_rgb(173, 156, 255)
+                    )
+                    embedVar.add_field(
+                        name="Status", value=r.status, inline=True)
                     await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(173, 156, 255))
-                    embedVar.description = f"The query failed. Please Try Again.\nReason: {e}"
+                        color=discord.Color.from_rgb(173, 156, 255)
+                    )
+                    embedVar.description = (
+                        f"The query failed. Please Try Again.\nReason: {e}"
+                    )
                     await ctx.send(embed=embedVar)
 
 
