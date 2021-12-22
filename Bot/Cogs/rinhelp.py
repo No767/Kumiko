@@ -17,7 +17,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
@@ -171,11 +171,6 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`spiget-author`",
-                    value="Searches for given author and returns name and resources from the author",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`spiget-stats`",
                     value="Returns stats for Spiget (total resources created, etc)",
                     inline=True,
@@ -193,11 +188,6 @@ class rinhelp(commands.Cog):
             if str(search) == "fun":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`pinger`",
-                    value="Annoys everyone with a message and allows for how much that message is sent for",
-                    inline=True,
-                )
                 embedVar.add_field(
                     name="`valid`", value="Provides some valid feedback", inline=True
                 )
