@@ -46,3 +46,9 @@ Cog-Testers/
 DeviantArt_API_Keys.txt
 deviantart_links
 Cogs-Misc/
+deviantart-tokens/
+test.db
+text.txt
+tokens.db
+daTokens/
+button-test.py

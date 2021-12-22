@@ -26,7 +26,7 @@ class SpotifyV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="spotify-search-album")
+    @commands.command(name="spotify-search-album", aliases=["sp-search-album"])
     async def search(self, ctx, *, search: str):
         try:
             res = get_album_of_track(search)

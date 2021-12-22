@@ -10,14 +10,14 @@ class rinhelp(commands.Cog):
         self.bot = bot
         self.last_member = None
 
-    @commands.command(name="rinhelp", help="Rin's Help/Info Page")
+    @commands.command(name="rinhelp", aliases=["help"])
     async def on_message(self, ctx, *, search: typing.Optional[str] = None):
         try:
             if search is None:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
@@ -46,6 +46,9 @@ class rinhelp(commands.Cog):
                     name="Top.gg", value="`.rinhelp topgg`", inline=True)
                 embedVar.add_field(
                     name="Pinterest", value="`.rinhelp pinterest`", inline=True
+                )
+                embedVar.add_field(
+                    name="MyAnimeList/Jikan", value="`.rinhelp jikan`", inline=True
                 )
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
@@ -76,9 +79,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`ping`", value="Checks the ping for the bot", inline=True
                 )
-                embedVar.add_field(
-                    name="`ban`", value="Bans the specified user", inline=True
-                )
                 embedVar.set_author(
                     name="Rin Help - Admin", icon_url=bot.user.avatar_url
                 )
@@ -102,7 +102,7 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Twitter", icon_url=bot.user.avatar_url
                 )
                 embedVar.set_footer(
-                    text="Note: Currently the Twitter Cog is broken. Reworking it soon"
+                    text="The Twitter Service has been completely disabled due to a complete rewrite"
                 )
                 await ctx.send(embed=embedVar)
 
@@ -139,6 +139,12 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
+                    name="`java`", value="Alias for `javamcsrv`", inline=True
+                )
+                embedVar.add_field(
+                    name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True
+                )
+                embedVar.add_field(
                     name="`hypixel`",
                     value="Gain Insight in Hypixel's player data",
                     inline=True,
@@ -165,11 +171,6 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`spiget-author`",
-                    value="Searches for given author and returns name and resources from the author",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`spiget-stats`",
                     value="Returns stats for Spiget (total resources created, etc)",
                     inline=True,
@@ -187,11 +188,6 @@ class rinhelp(commands.Cog):
             if str(search) == "fun":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`pinger`",
-                    value="Annoys everyone with a message and allows for how much that message is sent for",
-                    inline=True,
-                )
                 embedVar.add_field(
                     name="`valid`", value="Provides some valid feedback", inline=True
                 )
@@ -244,7 +240,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_footer(
-                    text="Note: There is a 20 sec cooldowm for each command. This is to prevent rate limiting."
+                    text="Note: There is a 20 sec cooldown for each command. This is to prevent rate limiting."
                 )
                 embedVar.set_author(
                     name="Rin Help - Instagram", icon_url=bot.user.avatar_url
@@ -261,10 +257,7 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`clear`",
-                    value="Clears number of messages specified from the channel in which int he command was called",
-                )
-                embedVar.add_field(
-                    name="`mute`", value="Mutes that specified user", inline=True
+                    value="Clears number of messages specified from the channel in which in the command was called",
                 )
                 embedVar.set_author(
                     name="Rin Help - Chat", icon_url=bot.user.avatar_url
@@ -281,11 +274,26 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`translate`",
-                    value="Translates the given message. Note that as of now, it's only set to english",
+                    value="Translates the given message to any language supported by Google Translate",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`rinhelp`", value="Rin's Help command", inline=True
+                )
+                embedVar.add_field(
+                    name="`help`",
+                    value="Alias for `rinhelp`. Replaces the default help command",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`rininvite`",
+                    value="Rin's invite links. Also can be reached with `.invite`.",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`version`",
+                    value="Checks for current version of Rin",
+                    inline=True,
                 )
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
@@ -336,11 +344,14 @@ class rinhelp(commands.Cog):
                     value="Search for art from Waifu.pics",
                     inline=True,
                 )
-                embedVar.add_field(
-                    name="`jikan-anime`",
-                    value="Searches on Jikan/MyAnimeList and provides info about the given anime",
-                    inline=True,
+                embedVar.set_author(
+                    name="Rin Help - Anime", icon_url=bot.user.avatar_url
                 )
+                await ctx.send(embed=embedVar)
+
+            if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
                     name="`jikan-manga`",
                     value="Seaches on Jikan/MyAnimeList and provides info about the given manga",
@@ -361,8 +372,11 @@ class rinhelp(commands.Cog):
                     value="Returns 5 animes that are already planned for viewing in the future",
                     inline=True,
                 )
+                embedVar.set_footer(
+                    text='Also note that the prefix can be shorten down to "jk"'
+                )
                 embedVar.set_author(
-                    name="Rin Help - Anime", icon_url=bot.user.avatar_url
+                    name="Rin Help - MyAnimeList/Jikan", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
 
@@ -384,7 +398,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "pinterest":
+            if str(search) in ("pinterest", "pt"):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
