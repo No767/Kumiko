@@ -15,6 +15,7 @@
 - Remove Unused Libs
 - Changed DeviantArt and DeviantArt Token Refresher Cogs to use PostgreSQL instead of SQLite
 - Make Jikan/MAL Cog async to improve performance + use orjson for json serialization
+- Rewrite Hypixel and Topgg Cogs to be async for better performance
 
 # Additions
 - MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
