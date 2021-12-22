@@ -1,16 +1,17 @@
 import os
 
+import aiohttp
 import discord
+import orjson
 import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-import aiohttp
-import orjson
 
 load_dotenv()
 
 key = os.getenv("Top_GG_API_Key")
+
 
 def getUser(search):
     link = f"https://top.gg/api/users/{search}"
@@ -27,7 +28,9 @@ class TopGGV1(commands.Cog):
     async def topgg_search_one(self, ctx, *, search: int):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": key}
-            async with session.get(f"https://top.gg/api/bots/{search}", headers=headers) as r:
+            async with session.get(
+                f"https://top.gg/api/bots/{search}", headers=headers
+            ) as r:
                 getOneBotInfo = await r.json()
                 try:
                     embedVar = discord.Embed(
@@ -51,14 +54,16 @@ class TopGGV1(commands.Cog):
                     )
                     embedVar.add_field(
                         name="GitHub",
-                        value=str(getOneBotInfo["github"]).replace(
-                            '"', "").replace("'", ""),
+                        value=str(getOneBotInfo["github"])
+                        .replace('"', "")
+                        .replace("'", ""),
                         inline=True,
                     )
                     embedVar.add_field(
                         name="Website",
-                        value=str(getOneBotInfo["website"]).replace(
-                            '"', "").replace("'", ""),
+                        value=str(getOneBotInfo["website"])
+                        .replace('"', "")
+                        .replace("'", ""),
                         inline=True,
                     )
                     embedVar.add_field(
@@ -90,7 +95,9 @@ class TopGGV1(commands.Cog):
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(231, 74, 255))
-                    embedVar.description = f"The query failed. Please try again.\nReason: {e}"
+                    embedVar.description = (
+                        f"The query failed. Please try again.\nReason: {e}"
+                    )
                     await ctx.send(embed=embedVar)
 
     @topgg_search_one.error
@@ -110,30 +117,41 @@ class TopGGV2(commands.Cog):
     async def topgg_search_users(self, ctx, *, search: int):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": key}
-            async with session.get(f"https://top.gg/api/users/{search}", headers=headers) as response:
+            async with session.get(
+                f"https://top.gg/api/users/{search}", headers=headers
+            ) as response:
                 user = await response.json()
                 try:
                     if str(user["error"]) in "Not found":
                         embedVar = discord.Embed(
-                            color=discord.Color.from_rgb(255, 51, 51))
+                            color=discord.Color.from_rgb(255, 51, 51)
+                        )
                         embedVar.description = (
                             "The user was not found. Please try again."
                         )
-                        embedVar.add_field(name="Reason", value=user["error"], inline=True)
+                        embedVar.add_field(
+                            name="Reason", value=user["error"], inline=True
+                        )
                         await ctx.send(embed=embedVar)
                     else:
                         embedVar = discord.Embed(
-                            title=user["username"], color=discord.Color.from_rgb(
-                                191, 242, 255)
+                            title=user["username"],
+                            color=discord.Color.from_rgb(191, 242, 255),
                         )
-                        embedVar.add_field(name="Bio", value=user["bio"], inline=True)
                         embedVar.add_field(
-                            name="Admin", value=user["admin"], inline=True)
+                            name="Bio", value=user["bio"], inline=True)
                         embedVar.add_field(
-                            name="Web Mod", value=user["webMod"], inline=True)
-                        embedVar.add_field(name="Mod", value=user["mod"], inline=True)
+                            name="Admin", value=user["admin"], inline=True
+                        )
                         embedVar.add_field(
-                            name="Certified Dev", value=user["certifiedDev"], inline=True
+                            name="Web Mod", value=user["webMod"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Mod", value=user["mod"], inline=True)
+                        embedVar.add_field(
+                            name="Certified Dev",
+                            value=user["certifiedDev"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Supporter", value=user["supporter"], inline=True
@@ -142,7 +160,9 @@ class TopGGV2(commands.Cog):
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(231, 74, 255))
-                    embedVar.description = f"The query failed. Please try again.\nReason: {e}"
+                    embedVar.description = (
+                        f"The query failed. Please try again.\nReason: {e}"
+                    )
                     await ctx.send(embed=embedVar)
 
     @topgg_search_users.error

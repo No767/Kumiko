@@ -1,14 +1,15 @@
 import os
 
+import aiohttp
 import discord
+import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
-import aiohttp
-import orjson
 
 load_dotenv()
 
 hypixel_api_key = os.getenv("Hypixel_API_Key")
+
 
 class hypixel_api(commands.Cog):
     def __init__(self, bot):
@@ -18,26 +19,40 @@ class hypixel_api(commands.Cog):
     async def hypixel(self, ctx, *, uuid: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"uuid": uuid, "key": hypixel_api_key}
-            async with session.get("https://api.hypixel.net/player", params=params) as r:
+            async with session.get(
+                "https://api.hypixel.net/player", params=params
+            ) as r:
                 player = await r.json()
-                async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session1:
+                async with aiohttp.ClientSession(
+                    json_serialize=orjson.dumps
+                ) as session1:
                     params = {"uuid": uuid, "key": hypixel_api_key}
-                    async with session1.get("https://api.hypixel.net/status", params=params) as r1:
+                    async with session1.get(
+                        "https://api.hypixel.net/status", params=params
+                    ) as r1:
                         online = await r1.json()
                         http_statusv1 = r.status
                         try:
                             if str(player["success"]) == "True":
                                 discord_embed = discord.Embed(
-                                    title="Player Info", color=discord.Color.from_rgb(186, 244, 255)
+                                    title="Player Info",
+                                    color=discord.Color.from_rgb(
+                                        186, 244, 255),
                                 )
                                 discord_embed.add_field(
-                                    name="Username", value=player["player"]["displayname"], inline=True
+                                    name="Username",
+                                    value=player["player"]["displayname"],
+                                    inline=True,
                                 )
                                 discord_embed.add_field(
-                                    name="ID", value=player["player"]["_id"], inline=True
+                                    name="ID",
+                                    value=player["player"]["_id"],
+                                    inline=True,
                                 )
                                 discord_embed.add_field(
-                                    name="UUID", value=player["player"]["uuid"], inline=True
+                                    name="UUID",
+                                    value=player["player"]["uuid"],
+                                    inline=True,
                                 )
                                 discord_embed.add_field(
                                     name="Known Aliases",
@@ -48,13 +63,19 @@ class hypixel_api(commands.Cog):
                                     inline=True,
                                 )
                                 discord_embed.add_field(
-                                    name="Online Status", value=online["session"]["online"], inline=True
+                                    name="Online Status",
+                                    value=online["session"]["online"],
+                                    inline=True,
                                 )
                                 discord_embed.add_field(
-                                    name="Success or Not?", value=player["success"], inline=True
+                                    name="Success or Not?",
+                                    value=player["success"],
+                                    inline=True,
                                 )
                                 discord_embed.add_field(
-                                    name="HTTP Status (Hypixel API)", value=str(http_statusv1), inline=True
+                                    name="HTTP Status (Hypixel API)",
+                                    value=str(http_statusv1),
+                                    inline=True,
                                 )
                                 await ctx.send(embed=discord_embed)
                             else:
@@ -64,7 +85,8 @@ class hypixel_api(commands.Cog):
                         except Exception as e:
                             embedVar = discord.Embed()
                             embedVar.description = f"The query was not successful."
-                            embedVar.add_field(name="Reason", value=e, inline=True)
+                            embedVar.add_field(
+                                name="Reason", value=e, inline=True)
                             await ctx.send(embed=embedVar)
 
     @hypixel.error
@@ -86,13 +108,16 @@ class hypixel_player_count(commands.Cog):
     async def player_count(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": hypixel_api_key}
-            async with session.get("https://api.hypixel.net/counts", params=params) as response:
+            async with session.get(
+                "https://api.hypixel.net/counts", params=params
+            ) as response:
                 status = await response.json()
                 http_status = response.status
                 try:
                     if str(status["success"]) == "True":
                         embedVar = discord.Embed(
-                            title="Games Player Count", color=discord.Color.from_rgb(186, 193, 255)
+                            title="Games Player Count",
+                            color=discord.Color.from_rgb(186, 193, 255),
                         )
                         embedVar.add_field(
                             name="Main Lobby",
@@ -105,13 +130,19 @@ class hypixel_player_count(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="SMP", value=status["games"]["SMP"]["players"], inline=True
+                            name="SMP",
+                            value=status["games"]["SMP"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="Housing", value=status["games"]["HOUSING"]["players"], inline=True
+                            name="Housing",
+                            value=status["games"]["HOUSING"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="Pit", value=status["games"]["PIT"]["players"], inline=True
+                            name="Pit",
+                            value=status["games"]["PIT"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="TNTGames",
@@ -119,10 +150,14 @@ class hypixel_player_count(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Replay", value=status["games"]["REPLAY"]["players"], inline=True
+                            name="Replay",
+                            value=status["games"]["REPLAY"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="Bedwars", value=status["games"]["BEDWARS"]["players"], inline=True
+                            name="Bedwars",
+                            value=status["games"]["BEDWARS"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Survival Games",
@@ -135,10 +170,14 @@ class hypixel_player_count(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="UHC", value=status["games"]["UHC"]["players"], inline=True
+                            name="UHC",
+                            value=status["games"]["UHC"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="Arcade", value=status["games"]["ARCADE"]["players"], inline=True
+                            name="Arcade",
+                            value=status["games"]["ARCADE"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Build Battle",
@@ -146,16 +185,21 @@ class hypixel_player_count(commands.Cog):
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Duels", value=status["games"]["DUELS"]["players"], inline=True
+                            name="Duels",
+                            value=status["games"]["DUELS"]["players"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="HTTP Status (Hypixel API)", value=str(http_status), inline=False
+                            name="HTTP Status (Hypixel API)",
+                            value=str(http_status),
+                            inline=False,
                         )
                         await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The command broke. Please try again."
-                    embedVar.add_field(name="Reason", value=str(e), inline=False)
+                    embedVar.add_field(
+                        name="Reason", value=str(e), inline=False)
                     await ctx.send(embed=embedVar)
 
 
@@ -167,24 +211,33 @@ class hypixel_status(commands.Cog):
     async def player_status(self, ctx, *, uuid: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"uuid": uuid, "key": hypixel_api_key}
-            async with session.get("https://api.hypixel.net/status", params=params) as rep:
+            async with session.get(
+                "https://api.hypixel.net/status", params=params
+            ) as rep:
                 player_statusv3 = await rep.json()
                 http_statusv1 = rep.status
                 try:
                     if str(player_statusv3["success"]) == "True":
                         embedVar = discord.Embed(
-                            title="Player Status", color=discord.Color.from_rgb(222, 222, 222)
+                            title="Player Status",
+                            color=discord.Color.from_rgb(222, 222, 222),
                         )
                         embedVar.add_field(
-                            name="UUID", value=player_statusv3["uuid"], inline=True)
-                        embedVar.add_field(
-                            name="Online", value=player_statusv3["session"]["online"], inline=True
+                            name="UUID", value=player_statusv3["uuid"], inline=True
                         )
                         embedVar.add_field(
-                            name="Success", value=player_statusv3["success"], inline=True
+                            name="Online",
+                            value=player_statusv3["session"]["online"],
+                            inline=True,
                         )
-                        embedVar.add_field(name="HTTP Status",
-                                           value=http_statusv1, inline=True)
+                        embedVar.add_field(
+                            name="Success",
+                            value=player_statusv3["success"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="HTTP Status", value=http_statusv1, inline=True
+                        )
                         await ctx.send(embed=embedVar)
                     else:
                         embedVar = discord.Embed()
@@ -215,33 +268,48 @@ class skywars(commands.Cog):
     async def skywars_info(self, ctx, *, uuid: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"uuid": uuid, "key": hypixel_api_key}
-            async with session.get("https://api.hypixel.net/player/ranked/skywars", params=params) as re:
+            async with session.get(
+                "https://api.hypixel.net/player/ranked/skywars", params=params
+            ) as re:
                 skywars = await re.json()
                 http_statusv1 = re.status
                 try:
                     if str(skywars["success"]) == "True":
                         embedVar = discord.Embed(
-                            title="Skywars Position", color=discord.Color.from_rgb(255, 143, 143)
+                            title="Skywars Position",
+                            color=discord.Color.from_rgb(255, 143, 143),
                         )
                         embedVar.add_field(
-                            name="Position", value=skywars["results"]["position"], inline=True
+                            name="Position",
+                            value=skywars["results"]["position"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Score", value=skywars["results"]["score"], inline=True
                         )
                         embedVar.add_field(
-                            name="Success or Not?", value=skywars["success"], inline=True
+                            name="Success or Not?",
+                            value=skywars["success"],
+                            inline=True,
                         )
                         embedVar.add_field(
-                            name="HTTP Status (Hypixel API)", value=http_statusv1, inline=True
+                            name="HTTP Status (Hypixel API)",
+                            value=http_statusv1,
+                            inline=True,
                         )
                         await ctx.send(embed=embedVar)
                     else:
                         embedVar = discord.Embed()
                         embedVar.description = "The given player either does not exist or has not played Ranked Skywars yet."
-                        embedVar.add_field(name="Success", value=skywars["success"], inline=True)
-                        embedVar.add_field(name="Cause", value=skywars["cause"], inline=True)
-                        embedVar.add_field(name="HTTP Status", value=http_statusv1, inline=True)
+                        embedVar.add_field(
+                            name="Success", value=skywars["success"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Cause", value=skywars["cause"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="HTTP Status", value=http_statusv1, inline=True
+                        )
                         await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
