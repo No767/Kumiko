@@ -84,7 +84,7 @@ class hypixel_api(commands.Cog):
                                 await ctx.send(embed=embedVar)
                         except Exception as e:
                             embedVar = discord.Embed()
-                            embedVar.description = f"The query was not successful."
+                            embedVar.description = "The query was not successful."
                             embedVar.add_field(
                                 name="Reason", value=e, inline=True)
                             await ctx.send(embed=embedVar)
@@ -241,7 +241,7 @@ class hypixel_status(commands.Cog):
                         await ctx.send(embed=embedVar)
                     else:
                         embedVar = discord.Embed()
-                        embedVar.description = f"The query was not successful.\nDebug:\nSuccess >> {player_statusv3['success']}\nCause >> {player_statusv3['cause']}\nHTTP Status (Hypixel API)>> {http_status()}"
+                        embedVar.description = f"The query was not successful.\nDebug:\nSuccess >> {player_statusv3['success']}\nCause >> {player_statusv3['cause']}\nHTTP Status (Hypixel API)>> {http_statusv1}"
                         await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
