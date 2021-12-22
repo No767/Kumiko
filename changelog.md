@@ -32,3 +32,4 @@
 - Unused Libs
 - Pinger Cog
 - Spiget-Author cmd (causing way too much issues)
+- Global Cog (Disabled as of now, will be added to Kumiko later)
