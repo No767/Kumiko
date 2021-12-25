@@ -1,70 +1,84 @@
 import os
 
+import aiohttp
 import discord
-import tweepy
+import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Access the Twitter API via Tweepy
-Twitter_API_Key = os.getenv("Twitter_API_Key")
-API_Secret_Key = os.getenv("API_Secret_Key")
-Access_Token = os.getenv("Access_Token")
-Access_Token_Secret = os.getenv("Access_Token_Secret")
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
 
-auth = tweepy.Client(
-    bearer_token=Bearer_Token,
-    consumer_key=Twitter_API_Key,
-    consumer_secret=API_Secret_Key,
-    access_token=Access_Token,
-    access_token_secret=Access_Token_Secret,
-)
-
-api = tweepy.API(auth)
+# Note that currently the Twitter service is using v1.1, which is going to get replaced by the v2 later. Once v2 introduces the data for videos and links to the media, im gonna rewrite it to use the v2 version instead
 
 
-class rintwitter(commands.Cog):
+class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="rt")
-    async def rintwitter(self, ctx):
-        home_timeline = api.mentions_timeline()
-        embedVar = discord.Embed()
-        embedVar.description = f"Current Timeline: {home_timeline}"
-        await ctx.send(embed=embedVar)
-
-
-class rtupdatestatus(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # The OAuth can only handle Read requests, not post requests. adding support in the future
-    @commands.command(name="rtupdatestatus")
-    async def on_message(self, ctx, search: str):
-        twitter_query = api.update_status(status=search)
-        twitter_embed = discord.Embed()
-        twitter_embed.description = (
-            f"Your Twitter Status has been updated to {twitter_query}"
-        )
-        await ctx.send(embed=twitter_embed)
-
-
-class rtgetsaved(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # Make sure that the search input is a string, by wrapping it in '' or ""
-    @commands.command(name="rtsearch")
-    async def rtgetsaved(self, ctx, *, search: str):
-        search_embed = discord.Embed()
-        search_embed.description = f"{api.get_user(search)}"
-        await ctx.send(embed=search_embed)
+    @commands.command(name="twitter-search", aliases=["ts"])
+    async def twitter_search(self, ctx, *, user: str):
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {"Authorization": f"Bearer {Bearer_Token}"}
+            params = {"q": f"from:{user}", "count": 1}
+            async with session.get(
+                "https://api.twitter.com/1.1/search/tweets.json",
+                headers=headers,
+                params=params,
+            ) as r:
+                data = await r.json()
+                if data["statuses"] is None:
+                    embedVar = discord.Embed()
+                    embedVar.description = "Sadly there are no tweets from this user."
+                    embedVar.add_field(
+                        name="Result Count",
+                        value=data["meta"]["result_count"],
+                        inline=True,
+                    )
+                    await ctx.send(embed=embedVar)
+                else:
+                    embedVar = discord.Embed()
+                    embedVar.add_field(
+                        name="Tweet Created At",
+                        value=data["statuses"]["created_at"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Name",
+                        value=data["statuses"][0]["user"]["name"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Username",
+                        value=data["statuses"][0]["user"]["screen_name"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Text", value=data["statuses"]["text"], inline=False
+                    )
+                    embedVar.add_field(
+                        name="URLs",
+                        value=data["statuses"]["urls"][1]["expanded_url"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Original Tweet URL",
+                        value=data["statuses"][0]["extended_entities"]["media"][0][
+                            "url"
+                        ],
+                        inline=True,
+                    )
+                    embedVar.set_thumbnail(
+                        url=data["statuses"][0]["user"]["profile_image_url"]
+                    )
+                    embedVar.set_image(
+                        url=data["statuses"][0]["extended_entities"]["media"][0][
+                            "media_url_https"
+                        ]
+                    )
+                    await ctx.send(embed=embedVar)
 
 
 def setup(bot):
-    bot.add_cog(rintwitter(bot))
-    bot.add_cog(rtgetsaved(bot))
-    bot.add_cog(rtupdatestatus(bot))
+    bot.add_cog(TwitterV1(bot))

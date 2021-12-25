@@ -198,7 +198,21 @@ class DisQuestV3(commands.Cog):
         await ctx.send(embed=embedVar)
 
 
+class DisQuestV4(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        if ctx.author.bot:
+            return
+        user = disaccount(ctx)
+        reward = random.randint(0, 20)
+        user.addxp(reward)
+
+
 def setup(bot):
     bot.add_cog(DisQuest(bot))
     bot.add_cog(DisQuestV2(bot))
     bot.add_cog(DisQuestV3(bot))
+    bot.add_cog(DisQuestV4(bot))
