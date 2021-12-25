@@ -176,11 +176,6 @@ class help(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`spiget-author`",
-                    value="Searches for given author and returns name and resources from the author",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`spiget-stats`",
                     value="Returns stats for Spiget (total resources created, etc)",
                     inline=True,
@@ -198,11 +193,6 @@ class help(commands.Cog):
             if str(search) == "fun":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`pinger`",
-                    value="Annoys everyone with a message and allows for how much that message is sent for",
-                    inline=True,
-                )
                 embedVar.add_field(
                     name="`valid`", value="Provides some valid feedback", inline=True
                 )

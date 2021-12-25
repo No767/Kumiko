@@ -23,6 +23,10 @@ Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
 
+If you haven't set up the environment yet, run this in the root directory of the git repo:
+
+`pipenv --python 3.10`
+
 # Licensing
 
 Kumiko and Rin are both licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 
