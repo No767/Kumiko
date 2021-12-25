@@ -21,7 +21,7 @@ class TwitterV1(commands.Cog):
     async def twitter_search(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
-            params = {"q": "from:{user}", "count": 1}
+            params = {"q": f"from:{user}", "count": 1}
             async with session.get(
                 "https://api.twitter.com/1.1/search/tweets.json",
                 headers=headers,
