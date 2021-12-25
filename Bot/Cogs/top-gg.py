@@ -10,6 +10,7 @@ load_dotenv()
 
 key = os.getenv("Top_GG_API_Key")
 
+
 class TopGGV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

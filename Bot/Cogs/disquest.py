@@ -5,8 +5,8 @@ import random
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import (Column, BigInteger, MetaData, Table, create_engine, func,
-                        select, Integer)
+from sqlalchemy import (BigInteger, Column, Integer, MetaData, Table,
+                        create_engine, func, select)
 
 load_dotenv()
 
@@ -121,7 +121,6 @@ class DisQuest(commands.Cog):
             )
         )
 
-   
 
 class DisQuestV2(commands.Cog):
     def __init__(self, bot):
@@ -144,14 +143,21 @@ class DisQuestV2(commands.Cog):
             Column("xp", Integer),
         )
         conn = engine.connect()
-        s = select(Column("id", BigInteger), Column("xp", Integer)).where(users.c.gid == gid).order_by(users.c.xp.desc())
+        s = (
+            select(Column("id", BigInteger), Column("xp", Integer))
+            .where(users.c.gid == gid)
+            .order_by(users.c.xp.desc())
+        )
         results = conn.execute(s)
         members = list(results.fetchall())
         for i, mem in enumerate(members):
-            members[i] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
+            members[
+                i
+            ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
         embedVar = discord.Embed()
         embedVar.description = f"**Server Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
+
 
 class DisQuestV3(commands.Cog):
     def __init__(self, bot):
@@ -160,7 +166,7 @@ class DisQuestV3(commands.Cog):
     @commands.command(
         name="globalrank",
         help="Displays the most active members of all servers that this bot is connected to!",
-        aliases=["grank"]
+        aliases=["grank"],
     )
     async def grank(self, ctx):
         meta = MetaData()
@@ -175,7 +181,12 @@ class DisQuestV3(commands.Cog):
             Column("xp", Integer),
         )
         conn = engine.connect()
-        s = select(Column("id", Integer), func.sum(users.c.xp).label("txp")).group_by(users.c.id).group_by(users.c.xp).order_by(users.c.xp.desc())
+        s = (
+            select(Column("id", Integer), func.sum(users.c.xp).label("txp"))
+            .group_by(users.c.id)
+            .group_by(users.c.xp)
+            .order_by(users.c.xp.desc())
+        )
         results = conn.execute(s).fetchall()
         members = list(results)
         for i, mem in enumerate(members):
@@ -185,7 +196,8 @@ class DisQuestV3(commands.Cog):
         embedVar = discord.Embed()
         embedVar.description = f"**Global Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
-        
+
+
 def setup(bot):
     bot.add_cog(DisQuest(bot))
     bot.add_cog(DisQuestV2(bot))
