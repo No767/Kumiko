@@ -197,16 +197,19 @@ class DisQuestV3(commands.Cog):
         embedVar.description = f"**Global Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
 
+
 class DisQuestV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.Cog.listener()
     async def on_message(self, ctx):
-        if ctx.author.bot: return
+        if ctx.author.bot:
+            return
         user = disaccount(ctx)
         reward = random.randint(0, 20)
         user.addxp(reward)
+
 
 def setup(bot):
     bot.add_cog(DisQuest(bot))
