@@ -23,6 +23,10 @@ Via [Pipenv](https://pipenv.pypa.io/en/latest/)
 
 `pipenv install`
 
+If you haven't set up the environment yet, run this in the root directory of the git repo:
+
+`pipenv --python 3.10`
+
 # Licensing
 
 Rin is licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 
@@ -33,7 +37,7 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 
 # Links 
 
-- [Documentation](https://rin-docs.readthedocs.io/en/latest/)
+- [Documentation](https://docs.rinbot.live)
 - [Top.gg](https://top.gg/bot/865883525932253184)
 - [Website](https://rinbot.live)
 - [Status Tracker](https://status.rinbot.live)
