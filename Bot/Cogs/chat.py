@@ -2,6 +2,7 @@ import os
 
 import discord
 import ujson
+import orjson
 from discord.ext import commands
 
 
@@ -37,7 +38,7 @@ class Chat(commands.Cog):
                                 ping=inputs[0], pong=inputs[1])
                             response_file = open("./chat/responses.json", "a")
                             response_file.write(
-                                f"{ujson.dumps(msg_responses)}\n")
+                                f"{orjson.dumps(msg_responses)}\n")
                     except Exception as e:
                         await message.channel.send(
                             f'The syntax is incorrect. Please type in the format "update [input word], [response]". \nThis will make it so that when a user types [input word], the bot will say [response]. \nReason: {e}'
@@ -49,7 +50,7 @@ class Chat(commands.Cog):
                         msg_save = open("./chat/responses.json", "r")
                         msg_responses = msg_save.readlines()
                         msg_responses = [
-                            ujson.loads(s.replace("\n", "")) for s in msg_responses
+                            orjson.loads(s.replace("\n", "")) for s in msg_responses
                         ]
                         msg_save.close()
                         for i in msg_responses:

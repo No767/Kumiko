@@ -1,7 +1,11 @@
 import discord
-from Cogs import plugin_tools
 from discord.ext import commands
+import random
 
+
+def pickColor():
+    colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
+    return random.choice(colors)
 
 class Utility(commands.Cog):
     def __init__(self, bot):
@@ -21,7 +25,7 @@ class Utility(commands.Cog):
         epox = guild.created_at
         explicit = guild.explicit_content_filter
         emojis = guild.emojis
-        embed = discord.Embed(color=plugin_tools.discord_colors())
+        embed = discord.Embed(color=pickColor())
         embed.title = "Server Info"
         embed.add_field(name="Name", value=name, inline=True)
         embed.add_field(name="# of channels", value=len(channels), inline=True)
