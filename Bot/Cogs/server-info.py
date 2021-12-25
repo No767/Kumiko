@@ -1,11 +1,13 @@
+import random
+
 import discord
 from discord.ext import commands
-import random
 
 
 def pickColor():
     colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
     return random.choice(colors)
+
 
 class Utility(commands.Cog):
     def __init__(self, bot):

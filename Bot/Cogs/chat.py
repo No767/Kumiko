@@ -1,7 +1,6 @@
 import os
 
 import discord
-import ujson
 import orjson
 from discord.ext import commands
 
