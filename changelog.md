@@ -47,8 +47,5 @@
 # Additions
 - Alias for `.globalrank` (it's `.grank`)
 # Removals
-- Disabled missing commands handler (for discords.com verfication)
-- EasyBot.py and EasyBot-Plugins submodule 
-- Discord.py (Discord.py is not maintained anymore)
-- Docker Workflow
-- Unused Libs
+- Remove DisQuest's level up messages (Verifiers for sites like top.gg and others hate annoying pop-up messages, so this has been taken away to prevent that)
+- Unused Files
