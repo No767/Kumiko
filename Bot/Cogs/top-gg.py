@@ -3,21 +3,12 @@ import os
 import aiohttp
 import discord
 import orjson
-import requests
-import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 
 key = os.getenv("Top_GG_API_Key")
-
-
-def getUser(search):
-    link = f"https://top.gg/api/users/{search}"
-    headers = {"Authorization": key}
-    r = requests.get(link, headers=headers)
-    return ujson.loads(r.text)
 
 
 class TopGGV1(commands.Cog):

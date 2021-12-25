@@ -23,7 +23,7 @@ initial_extensions = [
     "Cogs.translate",
     "Cogs.server-info",
     "Cogs.mcsrvstats",
-    "Cogs.waifu_generator",
+    "Cogs.waifu-generator",
     "Cogs.hypixel",
     "Cogs.waifu-pics",
     "Cogs.advice",
@@ -38,8 +38,9 @@ initial_extensions = [
     "Cogs.rininvite",
     "Cogs.version",
     "Cogs.clear",
+    "Cogs.disquest",
     "Cogs.deviantart-token-refresher",
-    "Cogs.deviantart"
+    "Cogs.deviantart",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

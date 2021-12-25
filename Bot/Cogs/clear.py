@@ -6,7 +6,6 @@ from discord.ext import commands
 
 def discord_colors():
     colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
-
     return random.choice(colors)
 
 

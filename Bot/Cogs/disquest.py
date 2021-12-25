@@ -5,8 +5,8 @@ import random
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import (Column, Integer, MetaData, Table, create_engine, func,
-                        select)
+from sqlalchemy import (BigInteger, Column, Integer, MetaData, Table,
+                        create_engine, func, select)
 
 load_dotenv()
 
@@ -35,8 +35,8 @@ class disaccount:
         users = Table(
             "user",
             meta,
-            Column("id", Integer),
-            Column("gid", Integer),
+            Column("id", BigInteger),
+            Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
@@ -64,8 +64,8 @@ class disaccount:
         users = Table(
             "user",
             meta,
-            Column("id", Integer),
-            Column("gid", Integer),
+            Column("id", BigInteger),
+            Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
@@ -93,19 +93,18 @@ class lvl:
 class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        os.chdir(os.path.dirname(__file__))
-        meta = MetaData()
-        engine = create_engine(
-            f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
-        )
-        Table(
-            "user.db",
-            meta,
-            Column("id", Integer),
-            Column("gid", Integer),
-            Column("xp", Integer),
-        )
-        meta.create_all(engine)
+        # meta = MetaData()
+        # engine = create_engine(
+        #     f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
+        # )
+        # Table(
+        #     "user.db",
+        #     meta,
+        #     Column("id", BigInteger),
+        #     Column("gid", BigInteger),
+        #     Column("xp", Integer),
+        # )
+        # meta.create_all(engine)
 
     @commands.command(
         name="mylvl",
@@ -122,11 +121,16 @@ class DisQuest(commands.Cog):
             )
         )
 
+
+class DisQuestV2(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(
         name="rank", help="Displays the most active members of your server!"
     )
     async def rank(self, ctx):
-        gid = discord.Guild.id
+        gid = ctx.guild.id
         meta = MetaData()
         engine = create_engine(
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
@@ -134,29 +138,35 @@ class DisQuest(commands.Cog):
         users = Table(
             "user",
             meta,
-            Column("id", Integer),
-            Column("gid", Integer),
+            Column("id", BigInteger),
+            Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
         s = (
-            select(Column("id", Integer), Column("xp", Integer))
-            .filter((users.c.gid.is_(gid)))
+            select(Column("id", BigInteger), Column("xp", Integer))
+            .where(users.c.gid == gid)
             .order_by(users.c.xp.desc())
         )
-        results = conn.execute(s).fetchall()
+        results = conn.execute(s)
         members = list(results.fetchall())
         for i, mem in enumerate(members):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-        await ctx.send(
-            embed=helper.fast_embed(f"**Server Rankings**\n{''.join(members)}")
-        )
+        embedVar = discord.Embed()
+        embedVar.description = f"**Server Rankings**\n{''.join(members)}"
+        await ctx.send(embed=embedVar)
+
+
+class DisQuestV3(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.command(
         name="globalrank",
         help="Displays the most active members of all servers that this bot is connected to!",
+        aliases=["grank"],
     )
     async def grank(self, ctx):
         meta = MetaData()
@@ -166,14 +176,15 @@ class DisQuest(commands.Cog):
         users = Table(
             "user",
             meta,
-            Column("id", Integer),
-            Column("gid", Integer),
+            Column("id", BigInteger),
+            Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
         s = (
             select(Column("id", Integer), func.sum(users.c.xp).label("txp"))
             .group_by(users.c.id)
+            .group_by(users.c.xp)
             .order_by(users.c.xp.desc())
         )
         results = conn.execute(s).fetchall()
@@ -182,26 +193,12 @@ class DisQuest(commands.Cog):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-        await ctx.send(
-            embed=helper.fast_embed(f"**Global Rankings**\n{''.join(members)}")
-        )
-
-    @commands.Cog.listener()
-    async def on_message(self, ctx):
-        if ctx.author.bot:
-            return
-        user = disaccount(ctx)
-        reward = random.randint(0, 20)
-        user.addxp(reward)
-        xp = user.getxp()
-        if lvl.near(xp) * 100 in range(xp - reward, xp):
-            await ctx.channel.send(
-                embed=helper.fast_embed(
-                    f"{ctx.author.mention} has reached LVL. {lvl.cur(xp)}"
-                ),
-                delete_after=10,
-            )
+        embedVar = discord.Embed()
+        embedVar.description = f"**Global Rankings**\n{''.join(members)}"
+        await ctx.send(embed=embedVar)
 
 
 def setup(bot):
     bot.add_cog(DisQuest(bot))
+    bot.add_cog(DisQuestV2(bot))
+    bot.add_cog(DisQuestV3(bot))
