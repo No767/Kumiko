@@ -1,2 +1,2 @@
 # Changes
-- Re-enabled the cog listener for adding xp (originally deleted that for some reason)
+- Fix major bug with where users would get replaced and the table would get clogged with the same xp and info

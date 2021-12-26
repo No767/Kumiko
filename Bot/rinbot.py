@@ -39,8 +39,6 @@ initial_extensions = [
     "Cogs.version",
     "Cogs.clear",
     "Cogs.disquest",
-    "Cogs.deviantart-token-refresher",
-    "Cogs.deviantart",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

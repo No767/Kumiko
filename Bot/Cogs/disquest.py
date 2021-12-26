@@ -33,28 +33,23 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
-        while True:
-            s = select(Column("xp", Integer)).where(
-                users.c.id == self.id, users.c.gid == self.gid
-            )
-            results = conn.execute(s)
-            xp = results.fetchone()
-
-            if xp == None:
-                ins = users.insert().values(id=self.id, gid=self.gid, xp=0)
-                conn.execute(ins)
-            else:
-                xp = xp[0]
-                break
+        s = select(users.c.xp).where(
+            users.c.id == self.id, users.c.gid == self.gid
+        )
+        results = conn.execute(s)
+        xp = results.fetchone()
+        if xp is None:
+            ins = users.insert().values(id=self.id, gid=self.gid, xp=0)
+            conn.execute(ins)
         conn.close()
-        return xp
+        return xp[0]
 
     def setxp(self, xp):
         meta = MetaData()
@@ -62,7 +57,7 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
@@ -93,19 +88,7 @@ class lvl:
 class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        # meta = MetaData()
-        # engine = create_engine(
-        #     f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
-        # )
-        # Table(
-        #     "user.db",
-        #     meta,
-        #     Column("id", BigInteger),
-        #     Column("gid", BigInteger),
-        #     Column("xp", Integer),
-        # )
-        # meta.create_all(engine)
-
+        
     @commands.command(
         name="mylvl",
         help="Displays your activity level!",
@@ -113,13 +96,11 @@ class DisQuest(commands.Cog):
     async def mylvl(self, ctx):
         user = disaccount(ctx)
         xp = user.getxp()
-        await ctx.channel.send(
-            embed=helper.fast_embed(
-                f"""User: {ctx.author.mention}
-        LVL. {lvl.cur(xp)}
-        XP {xp}/{lvl.next(xp)*100}"""
-            )
-        )
+        embedVar = discord.Embed()
+        embedVar.add_field(name="User", value=f"{ctx.author.mention}", inline=True)
+        embedVar.add_field(name="LVL", value=f"{lvl.cur(xp)}", inline=True)
+        embedVar.add_field(name="XP", value=f"{xp}/{lvl.next(xp)*100}", inline=True)
+        await ctx.send(embed=embedVar)
 
 
 class DisQuestV2(commands.Cog):
@@ -136,7 +117,7 @@ class DisQuestV2(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
@@ -174,7 +155,7 @@ class DisQuestV3(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
