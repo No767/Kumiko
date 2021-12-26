@@ -41,8 +41,7 @@ class disaccount:
         )
         conn = engine.connect()
         s = select(users.c.xp).where(
-            users.c.id == self.id, users.c.gid == self.gid
-        )
+            users.c.id == self.id, users.c.gid == self.gid)
         results = conn.execute(s)
         xp = results.fetchone()
         if xp is None:
@@ -88,7 +87,7 @@ class lvl:
 class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
+
     @commands.command(
         name="mylvl",
         help="Displays your activity level!",
@@ -97,9 +96,11 @@ class DisQuest(commands.Cog):
         user = disaccount(ctx)
         xp = user.getxp()
         embedVar = discord.Embed()
-        embedVar.add_field(name="User", value=f"{ctx.author.mention}", inline=True)
+        embedVar.add_field(
+            name="User", value=f"{ctx.author.mention}", inline=True)
         embedVar.add_field(name="LVL", value=f"{lvl.cur(xp)}", inline=True)
-        embedVar.add_field(name="XP", value=f"{xp}/{lvl.next(xp)*100}", inline=True)
+        embedVar.add_field(
+            name="XP", value=f"{xp}/{lvl.next(xp)*100}", inline=True)
         await ctx.send(embed=embedVar)
 
 
