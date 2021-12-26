@@ -15,13 +15,6 @@ IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 
-class helper:
-    def fast_embed(content):
-        colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
-        selector = random.choice(colors)
-        return discord.Embed(description=content, color=selector)
-
-
 class disaccount:
     def __init__(self, ctx):
         self.id = ctx.author.id
@@ -95,7 +88,7 @@ class DisQuest(commands.Cog):
     async def mylvl(self, ctx):
         user = disaccount(ctx)
         xp = user.getxp()
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(color=discord.Color.from_rgb(255, 217, 254))
         embedVar.add_field(
             name="User", value=f"{ctx.author.mention}", inline=True)
         embedVar.add_field(name="LVL", value=f"{lvl.cur(xp)}", inline=True)
@@ -136,7 +129,7 @@ class DisQuestV2(commands.Cog):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(color=discord.Color.from_rgb(254, 255, 217))
         embedVar.description = f"**Server Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
 
@@ -175,7 +168,7 @@ class DisQuestV3(commands.Cog):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(color=discord.Color.from_rgb(217, 255, 251))
         embedVar.description = f"**Global Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
 

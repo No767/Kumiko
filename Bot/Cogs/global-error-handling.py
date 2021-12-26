@@ -39,7 +39,18 @@ class ErrorHandler(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-
+class everyonePingChecker(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.mention_everyone:
+            embedVar = discord.Embed()
+            embedVar.description = f"{message.author.mention}, you can't mention everyone..."
+            await message.channel.send(embed=embedVar)
+            await message.channel.purge(limit=2)
+    
 # Remove this again due to discord.bots.gg testing
 # if isinstance(error, commands.CommandNotFound):
 #     embedVar = discord.Embed(
@@ -49,3 +60,4 @@ class ErrorHandler(commands.Cog):
 #     await msg.delete(delay=10)
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
+    bot.add_cog(everyonePingChecker(bot))
