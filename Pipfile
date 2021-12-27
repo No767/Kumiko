@@ -8,7 +8,7 @@ python-dotenv = "==0.19.2"
 qrcode = {extras = ["pil"], version = "*"}
 praw = "==7.5.0"
 tweepy = "==4.4.0"
-deep-translator = "==1.5.5"
+deep-translator = "==1.6.0"
 black = "==21.12b0"
 instagram-private-api = "==1.6.0"
 jamdict = "==0.1a11.post2"
