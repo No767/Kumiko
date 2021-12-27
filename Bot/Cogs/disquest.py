@@ -26,7 +26,7 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users",
+            "rin-users-v2",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
@@ -34,14 +34,18 @@ class disaccount:
         )
         conn = engine.connect()
         s = select(users.c.xp).where(
-            users.c.id == self.id, users.c.gid == self.gid)
-        results = conn.execute(s)
-        xp = results.fetchone()
-        if xp is None:
-            ins = users.insert().values(id=self.id, gid=self.gid, xp=0)
-            conn.execute(ins)
+            users.c.id == self.id, users.c.gid == self.gid).limit(1)
+        results = conn.execute(s).fetchone()
+        user_checker = select(users.c.id, users.c.gid).where(users.c.id == self.id, users.c.gid == self.gid).limit(1)
+        id_checker = select(users.c.id).where(users.c.id == self.id).limit(1)
+        results_checker = conn.execute(user_checker).fetchone()
+        if results is None and results_checker is None:
+            insert_new = users.insert().values(xp=0, id=self.id, gid=self.gid)
+            conn.execute(insert_new)
+        else:
+            for row in results:
+                return row
         conn.close()
-        return xp[0]
 
     def setxp(self, xp):
         meta = MetaData()
@@ -49,7 +53,7 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users",
+            "rin-users-v2",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
@@ -111,7 +115,7 @@ class DisQuestV2(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users",
+            "rin-users-v2",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
@@ -149,7 +153,7 @@ class DisQuestV3(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users",
+            "rin-users-v2",
             meta,
             Column("id", BigInteger),
             Column("gid", BigInteger),
@@ -184,6 +188,7 @@ class DisQuestV4(commands.Cog):
         user = disaccount(ctx)
         reward = random.randint(0, 20)
         user.addxp(reward)
+        
 
 
 def setup(bot):
