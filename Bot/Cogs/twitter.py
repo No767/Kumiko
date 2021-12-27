@@ -31,7 +31,9 @@ class TwitterV1(commands.Cog):
                 try:
                     if data["statuses"] is None:
                         embedVar = discord.Embed()
-                        embedVar.description = "Sadly there are no tweets from this user."
+                        embedVar.description = (
+                            "Sadly there are no tweets from this user."
+                        )
                         embedVar.add_field(
                             name="Result Count",
                             value=data["meta"]["result_count"],
@@ -46,7 +48,7 @@ class TwitterV1(commands.Cog):
                                 value=data["statuses"][0]["created_at"],
                                 inline=True,
                             )
-                            embedVar.add_field( 
+                            embedVar.add_field(
                                 name="Name",
                                 value=data["statuses"][0]["user"]["name"],
                                 inline=True,
@@ -57,12 +59,18 @@ class TwitterV1(commands.Cog):
                                 inline=True,
                             )
                             embedVar.add_field(
-                                name="Text", value=data["statuses"][0]["text"], inline=True
+                                name="Text",
+                                value=data["statuses"][0]["text"],
+                                inline=True,
                             )
                             embedVar.set_thumbnail(
                                 url=data["statuses"][0]["user"]["profile_image_url"]
                             )
-                            embedVar.set_image(data["statuses"][0]["extended_entities"]["media"][0]["media_url_https"])
+                            embedVar.set_image(
+                                data["statuses"][0]["extended_entities"]["media"][0][
+                                    "media_url_https"
+                                ]
+                            )
                             await ctx.send(embed=embedVar)
                         else:
                             embedVar = discord.Embed()
@@ -82,13 +90,15 @@ class TwitterV1(commands.Cog):
                                 inline=True,
                             )
                             embedVar.add_field(
-                                name="Text", value=data["statuses"][0]["text"], inline=True
+                                name="Text",
+                                value=data["statuses"][0]["text"],
+                                inline=True,
                             )
                             embedVar.set_thumbnail(
                                 url=data["statuses"][0]["user"]["profile_image_url"]
                             )
                             await ctx.send(embed=embedVar)
-                            
+
                             if "extended_entities" in data["statuses"][1]:
                                 embedVar2 = discord.Embed()
                                 embedVar2.add_field(
@@ -107,13 +117,18 @@ class TwitterV1(commands.Cog):
                                     inline=True,
                                 )
                                 embedVar2.add_field(
-                                    name="Text", value=data["statuses"][1]["text"], inline=True
+                                    name="Text",
+                                    value=data["statuses"][1]["text"],
+                                    inline=True,
                                 )
                                 embedVar2.set_thumbnail(
                                     url=data["statuses"][1]["user"]["profile_image_url"]
                                 )
                                 embedVar2.set_image(
-                                    url=data["statuses"][1]["extended_entities"]["media"][0]["media_url_https"])
+                                    url=data["statuses"][1]["extended_entities"][
+                                        "media"
+                                    ][0]["media_url_https"]
+                                )
                                 await ctx.send(embed=embedVar2)
                             else:
                                 embedVar2 = discord.Embed()
@@ -133,13 +148,15 @@ class TwitterV1(commands.Cog):
                                     inline=True,
                                 )
                                 embedVar2.add_field(
-                                    name="Text", value=data["statuses"][1]["text"], inline=True
+                                    name="Text",
+                                    value=data["statuses"][1]["text"],
+                                    inline=True,
                                 )
                                 embedVar2.set_thumbnail(
                                     url=data["statuses"][1]["user"]["profile_image_url"]
                                 )
                                 await ctx.send(embed=embedVar2)
-                                
+
                             if "extended_entities" in data["statuses"][2]:
                                 embedVar3 = discord.Embed()
                                 embedVar3.add_field(
@@ -158,13 +175,18 @@ class TwitterV1(commands.Cog):
                                     inline=True,
                                 )
                                 embedVar3.add_field(
-                                    name="Text", value=data["statuses"][2]["text"], inline=True
+                                    name="Text",
+                                    value=data["statuses"][2]["text"],
+                                    inline=True,
                                 )
                                 embedVar3.set_thumbnail(
                                     url=data["statuses"][2]["user"]["profile_image_url"]
                                 )
                                 embedVar3.set_image(
-                                    url=data["statuses"][2]["extended_entities"]["media"][0]["media_url_https"])
+                                    url=data["statuses"][2]["extended_entities"][
+                                        "media"
+                                    ][0]["media_url_https"]
+                                )
                                 await ctx.send(embed=embedVar3)
                             else:
                                 embedVar3 = discord.Embed()
@@ -184,7 +206,9 @@ class TwitterV1(commands.Cog):
                                     inline=True,
                                 )
                                 embedVar3.add_field(
-                                    name="Text", value=data["statuses"][2]["text"], inline=True
+                                    name="Text",
+                                    value=data["statuses"][2]["text"],
+                                    inline=True,
                                 )
                                 embedVar3.set_thumbnail(
                                     url=data["statuses"][2]["user"]["profile_image_url"]
@@ -195,7 +219,7 @@ class TwitterV1(commands.Cog):
                     embedError.description = "Something went wrong. Please try again."
                     embedError.add_field(name="Error", value=e, inline=True)
                     await ctx.send(embed=embedError)
-                    
+
     @twitter_search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -205,6 +229,7 @@ class TwitterV1(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
 
 def setup(bot):
     bot.add_cog(TwitterV1(bot))

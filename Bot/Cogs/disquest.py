@@ -33,10 +33,17 @@ class disaccount:
             Column("xp", Integer),
         )
         conn = engine.connect()
-        s = select(users.c.xp).where(
-            users.c.id == self.id, users.c.gid == self.gid).limit(1)
+        s = (
+            select(users.c.xp)
+            .where(users.c.id == self.id, users.c.gid == self.gid)
+            .limit(1)
+        )
         results = conn.execute(s).fetchone()
-        user_checker = select(users.c.id, users.c.gid).where(users.c.id == self.id, users.c.gid == self.gid).limit(1)
+        user_checker = (
+            select(users.c.id, users.c.gid)
+            .where(users.c.id == self.id, users.c.gid == self.gid)
+            .limit(1)
+        )
         id_checker = select(users.c.id).where(users.c.id == self.id).limit(1)
         results_checker = conn.execute(user_checker).fetchone()
         if results is None and results_checker is None:
@@ -188,7 +195,6 @@ class DisQuestV4(commands.Cog):
         user = disaccount(ctx)
         reward = random.randint(0, 20)
         user.addxp(reward)
-        
 
 
 def setup(bot):
