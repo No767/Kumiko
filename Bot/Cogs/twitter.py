@@ -11,7 +11,6 @@ load_dotenv()
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
 
 
-
 class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
