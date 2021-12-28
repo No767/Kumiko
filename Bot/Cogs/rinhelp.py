@@ -87,9 +87,15 @@ class rinhelp(commands.Cog):
             if str(search) == "twitter":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(name="`twitter-search`", value="Grabs 5 most recent tweets from the specified user", inline=True)
                 embedVar.add_field(
-                    name="`twitter-user`", value="Grabs info about the specified user", inline=True
+                    name="`twitter-search`",
+                    value="Grabs 5 most recent tweets from the specified user",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`twitter-user`",
+                    value="Grabs info about the specified user",
+                    inline=True,
                 )
                 embedVar.set_author(
                     name="Rin Help - Twitter", icon_url=bot.user.avatar_url
