@@ -87,22 +87,12 @@ class rinhelp(commands.Cog):
             if str(search) == "twitter":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(name="`twitter-search`", value="Grabs 5 most recent tweets from the specified user", inline=True)
                 embedVar.add_field(
-                    name="`rt`", value="Grabs Twitter user's timeline", inline=True
-                )
-                embedVar.add_field(
-                    name="`rtupdatestatus`",
-                    value="Updates Twitter user's status",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`rtsearch`", value="Searches for twitter users", inline=True
+                    name="`twitter-user`", value="Grabs info about the specified user", inline=True
                 )
                 embedVar.set_author(
                     name="Rin Help - Twitter", icon_url=bot.user.avatar_url
-                )
-                embedVar.set_footer(
-                    text="The Twitter Service has been completely disabled due to a complete rewrite"
                 )
                 await ctx.send(embed=embedVar)
 
@@ -424,7 +414,8 @@ class rinhelp(commands.Cog):
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
-            embedVar.description = f"The query failed.\nReason: {e}"
+            embedVar.description = f"The query failed."
+            embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
 
