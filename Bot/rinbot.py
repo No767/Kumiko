@@ -39,6 +39,7 @@ initial_extensions = [
     "Cogs.version",
     "Cogs.clear",
     "Cogs.twitter",
+    "Cogs.youtube",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

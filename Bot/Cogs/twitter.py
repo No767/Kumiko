@@ -10,7 +10,6 @@ load_dotenv()
 
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
 
-# Note that currently the Twitter service is using v1.1, which is going to get replaced by the v2 later. Once v2 introduces the data for videos and links to the media, im gonna rewrite it to use the v2 version instead
 
 
 class TwitterV1(commands.Cog):
