@@ -50,6 +50,9 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="MyAnimeList/Jikan", value="`.rinhelp jikan`", inline=True
                 )
+                embedVar.add_field(
+                    name="YouTube", value="`.rinhelp youtube`", inline=True
+                )
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -417,10 +420,43 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Pinterest", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
+
+                if str(search) == "youtube":
+                    bot = self.bot
+                    embedVar = discord.Embed(color=14414079)
+                    embedVar.add_field(
+                        name="`youtube-search`",
+                        value="Returns 5 videos given the search query",
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="`youtube-channel`",
+                        value="Returns info about the given channel",
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="`youtube-playlists`",
+                        value="Finds and returns 5 playlists from the given channel",
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="`youtube-comments`",
+                        value="Returns 5 comments (sorted by time) from the given video",
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="`youtube-video`",
+                        value="Return info about the given video",
+                        inline=True,
+                    )
+                    embedVar.set_author(
+                        name="Rin Help - YouTube", icon_url=bot.user.avatar_url
+                    )
+                    await ctx.send(embed=embedVar)
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
-            embedVar.description = f"The query failed."
+            embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
