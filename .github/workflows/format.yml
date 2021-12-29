@@ -25,7 +25,7 @@ jobs:
     - name: Cache/Uncache Pipenv 
       uses: actions/cache@v2
       with:
-        path: ~/.local/share/virtualenvs
+        path: ~/.local/share/virtualenvs/Rin-J2Z8ADME
         key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
     - name: Format with Black
       run: |
