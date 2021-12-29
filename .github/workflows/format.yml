@@ -19,17 +19,17 @@ jobs:
     - name: Upgrade Pip and Install Pipenv
       run: |
         pip install --upgrade pip pipenv
-    - name: Set up Pipenv
+    - name: Install Pipenv Dependencies
       run: |
-        pipenv --python 3.10
+        pipenv install
     - name: Cache/Uncache Pipenv 
       uses: actions/cache@v2
       with:
-        path: ~/.local/share/virtualenvs/Rin-J2Z8ADME
+        path: ~/.local/share/virtualenvs
         key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
     - name: Format with Black
       run: |
-        black Bot/Cogs
+        pipenv run black Bot/Cogs
     - name: Format with Isort
       run: |
         pipenv run isort Bot/Cogs
