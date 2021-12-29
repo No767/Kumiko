@@ -449,6 +449,7 @@ class rinhelp(commands.Cog):
                         value="Return info about the given video",
                         inline=True,
                     )
+                    embedVar.set_footer(text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"')
                     embedVar.set_author(
                         name="Rin Help - YouTube", icon_url=bot.user.avatar_url
                     )
