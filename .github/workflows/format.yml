@@ -29,7 +29,7 @@ jobs:
         key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
     - name: Format with Black
       run: |
-        pipenv run black Bot/Cogs
+        black Bot/Cogs
     - name: Format with Isort
       run: |
         pipenv run isort Bot/Cogs
