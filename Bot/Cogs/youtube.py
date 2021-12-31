@@ -495,12 +495,12 @@ class YoutubeV4(commands.Cog):
         self.bot = bot
 
     @commands.command(name="youtube-comments", aliases=["yt-comments"])
-    async def youtube_comments(self, ctx, *, id: str):
+    async def youtube_comments(self, ctx, *, vid_id: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": YouTube_API_Key,
                 "part": "snippet",
-                "videoId": id,
+                "videoId": vid_id,
                 "textFormat": "plainText",
                 "maxResults": 5,
             }
@@ -726,12 +726,12 @@ class YoutubeV5(commands.Cog):
         self.bot = bot
 
     @commands.command(name="youtube-video", aliases=["yt-video"])
-    async def youtube_video(self, ctx, *, id: str):
+    async def youtube_video(self, ctx, *, video_id: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": YouTube_API_Key,
                 "part": "snippet,status,statistics",
-                "id": id,
+                "id": video_id,
                 "maxResults": 1,
             }
             async with session.get(
