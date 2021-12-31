@@ -32,11 +32,16 @@ jobs:
     - name: Upgrade Pip + Install Pipenv
       run: |
         python3 -m pip install --upgrade pip setuptools pipenv
-    - name: Cache/Uncache Pipenv
-      uses: actions/cache@v2
+    - name: Cache Pipenv
+      id: cache-pipenv
+      uses: actions/cache@v1
       with:
-        path: ~/.local/share/virtualenvs
-        key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+    - name: Install Pipenv Dependencies
+      if: steps.cache-pipenv.outputs.cache-hit != 'true'
+      run: |
+          pipenv install
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:

@@ -1,6 +1,8 @@
 # Changes
 - Increase purge limit to 3 for global checks on `@everyone` and `@here` pings
 - Add Caching for Snyk, CodeQL, and Format Workflows
+- Add `.replit` for Replit support
+- Adjusted Jisho Cog to give the full definition of the word
 
 # Additions 
 - Added Twitter API Support (Done properly this time)

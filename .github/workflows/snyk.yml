@@ -24,25 +24,30 @@ jobs:
       - name: Install Snyk CLI
         run: |
           npm install snyk@latest -g
-      - name: Upgrade Pip + Install Pipenv + Instal Colorama
+      - name: Upgrade Pip + Install Pipenv + Install Colorama
         run: |
           pip install --upgrade pip pipenv colorama
-      - name: Cache/Uncache Pipenv
-        uses: actions/cache@v2
+      - name: Cache Pipenv
+        id: cache-pipenv
+        uses: actions/cache@v1
         with:
             path: ~/.local/share/virtualenvs
-            key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
-      - name: Auth with Snyk
-        run: |
-          snyk auth ${{ secrets.SNYK_TOKEN }}
-      - name: Run Snyk
-        uses: snyk/actions/python@master
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --sarif-file-output=snyk.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: snyk.sarif
+            key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+    - name: Install Pipenv Dependencies
+      if: steps.cache-pipenv.outputs.cache-hit != 'true'
+      run: |
+        pipenv install
+    - name: Auth with Snyk
+      run: |
+        snyk auth ${{ secrets.SNYK_TOKEN }}
+    - name: Run Snyk
+      uses: snyk/actions/python@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --sarif-file-output=snyk.sarif
+    - name: Upload result to GitHub Code Scanning
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
