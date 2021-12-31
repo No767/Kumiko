@@ -34,7 +34,7 @@ jobs:
         python3 -m pip install --upgrade pip setuptools pipenv
     - name: Cache Pipenv
       id: cache-pipenv
-      uses: actions/cache@v1
+      uses: actions/cache@v2.1.7
       with:
           path: ~/.local/share/virtualenvs
           key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
