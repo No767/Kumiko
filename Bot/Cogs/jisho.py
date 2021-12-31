@@ -51,14 +51,17 @@ def kanji(search):
     all_kanjiv2 = all_kanji.replace("'", "").replace(" ", "").replace("", ", ")
     return all_kanjiv2
 
+
 def searcher(search):
     result = jam.lookup(search)
     for word in result.entries:
         return str(word[4:10])
 
+
 def better_hiragana(search):
-    id = searcher(search)
-    
+    searcher(search)
+
+
 def tag(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
@@ -160,7 +163,8 @@ class jisho_dict(commands.Cog):
                 value=f"{jisho['meta']['status']}",
                 inline=False,
             )
-            embedVar.description = str([str(word[0]) for word in result.entries])
+            embedVar.description = str([str(word[0])
+                                       for word in result.entries])
             await ctx.send(embed=embedVar)
         except Exception as e:
             embed_discord = discord.Embed()
