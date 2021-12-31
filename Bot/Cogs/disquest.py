@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import (BigInteger, Column, Integer, MetaData, Table,
-                        create_engine, func, select)
+                        create_engine, func, select, Sequence, update)
 
 load_dotenv()
 
@@ -26,8 +26,9 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v2",
+            "rin-users-v3",
             meta,
+            Column("tracking_id", Integer, Sequence("tracking_id"), primary_key=True, autoincrement=True),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
@@ -35,18 +36,10 @@ class disaccount:
         conn = engine.connect()
         s = (
             select(users.c.xp)
-            .where(users.c.id == self.id, users.c.gid == self.gid)
-            .limit(1)
+                .where(users.c.id == self.id, users.c.gid == self.gid)
         )
         results = conn.execute(s).fetchone()
-        user_checker = (
-            select(users.c.id, users.c.gid)
-            .where(users.c.id == self.id, users.c.gid == self.gid)
-            .limit(1)
-        )
-        id_checker = select(users.c.id).where(users.c.id == self.id).limit(1)
-        results_checker = conn.execute(user_checker).fetchone()
-        if results is None and results_checker is None:
+        if results is None:
             insert_new = users.insert().values(xp=0, id=self.id, gid=self.gid)
             conn.execute(insert_new)
         else:
@@ -60,14 +53,15 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v2",
+            "rin-users-v3",
             meta,
+            Column("tracking_id", Integer, Sequence("tracking_id"), primary_key=True, autoincrement=True),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
-        update_values = users.update().values(xp=xp, id=self.id, gid=self.gid)
+        update_values = users.update().values(xp=xp)
         conn.execute(update_values)
         conn.close()
 
@@ -122,8 +116,9 @@ class DisQuestV2(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v2",
+            "rin-users-v3",
             meta,
+            Column("tracking_id", Integer, Sequence("tracking_id"), primary_key=True, autoincrement=True),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
@@ -160,8 +155,9 @@ class DisQuestV3(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v2",
+            "rin-users-v3",
             meta,
+            Column("tracking_id", Integer, Sequence("tracking_id"), primary_key=True, autoincrement=True),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
