@@ -71,7 +71,12 @@ class disaccount:
             Column("xp", Integer),
         )
         conn = engine.connect()
-        update_values = users.update().values(xp=xp).filter(users.c.id == self.id).filter(users.c.gid == self.gid)
+        update_values = (
+            users.update()
+            .values(xp=xp)
+            .filter(users.c.id == self.id)
+            .filter(users.c.gid == self.gid)
+        )
         conn.execute(update_values)
         conn.close()
 
