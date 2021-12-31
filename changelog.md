@@ -1,5 +1,13 @@
 # Changes
-- Fix major bug with where users would get replaced and the table would get clogged with the same xp and info
+- Increase purge limit to 3 for global checks on `@everyone` and `@here` pings
+- Add Caching for Snyk, CodeQL, and Format Workflows
+- Add `.replit` for Replit support
+- Adjusted Jisho Cog to give the full definition of the word
+- Fix DisQuest Cog to not overwrite data 
 
 # Additions 
-- Added global check for `@everyone` and `@here` pings
+- Added Twitter API Support (Done properly this time)
+- Added Youtube API Support
+
+# Removals
+- More Unused Libs

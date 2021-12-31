@@ -52,15 +52,14 @@ def kanji(search):
     return all_kanjiv2
 
 
-def english_def_part2(search):
-    result = jam.lookup(search.replace(" ", "\n"))
-    return (
-        str(result.chars)
-        .replace("[", " ")
-        .replace("]", " ")
-        .replace(",", ", ")
-        .replace(":", " ")
-    )
+def searcher(search):
+    result = jam.lookup(search)
+    for word in result.entries:
+        return str(word[4:10])
+
+
+def better_hiragana(search):
+    searcher(search)
 
 
 def tag(search):
@@ -145,34 +144,7 @@ class jisho_dict(commands.Cog):
                 inline=False,
             )
             embedVar.add_field(
-                name="Hiragana",
-                value=[
-                    str(re.findall("[ぁ-ん]", str(word)))
-                    .replace('"', "")
-                    .replace(", ", "")
-                    .replace("'", "")
-                    for word in result.entries
-                ],
-                inline=False,
-            )
-            embedVar.add_field(
-                name="Katanana",
-                value=[
-                    str(re.findall("[ァ-ン]", str(entry)))
-                    .replace('"', "")
-                    .replace(", ", "")
-                    .replace("'", "")
-                    for entry in result.entries
-                ],
-                inline=False,
-            )
-            embedVar.add_field(
                 name="Position of Speech (POS)", value=pos(search), inline=False
-            )
-            embedVar.add_field(
-                name="English Defintion(s)",
-                value=english_def_part2(search),
-                inline=False,
             )
             embedVar.add_field(name="Is Common?",
                                value=is_common(search), inline=False)
@@ -191,6 +163,8 @@ class jisho_dict(commands.Cog):
                 value=f"{jisho['meta']['status']}",
                 inline=False,
             )
+            embedVar.description = str([str(word[0])
+                                       for word in result.entries])
             await ctx.send(embed=embedVar)
         except Exception as e:
             embed_discord = discord.Embed()

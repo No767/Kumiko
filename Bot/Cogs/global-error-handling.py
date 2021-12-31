@@ -52,7 +52,7 @@ class everyonePingChecker(commands.Cog):
                 f"{message.author.mention}, you can't mention everyone..."
             )
             await message.channel.send(embed=embedVar)
-            await message.channel.purge(limit=2)
+            await message.channel.purge(limit=3)
 
 
 # Remove this again due to discord.bots.gg testing

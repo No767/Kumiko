@@ -19,7 +19,6 @@ initial_extensions = [
     "Cogs.rinhelp",
     "Cogs.reddit",
     "Cogs.chat",
-    "Cogs.jisho",
     "Cogs.translate",
     "Cogs.server-info",
     "Cogs.mcsrvstats",
@@ -38,9 +37,12 @@ initial_extensions = [
     "Cogs.rininvite",
     "Cogs.version",
     "Cogs.clear",
+    "Cogs.twitter",
+    "Cogs.youtube",
+    "Cogs.jisho",
     "Cogs.disquest",
     "Cogs.deviantart-token-refresher",
-    "Cogs.deviantart",
+    "Cogs.deviantart"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
