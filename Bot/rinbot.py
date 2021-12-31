@@ -41,8 +41,8 @@ initial_extensions = [
     "Cogs.youtube",
     "Cogs.jisho",
     "Cogs.disquest",
-    "Cogs.deviantart-token-refresher",
-    "Cogs.deviantart"
+    "Cogs.deviantart",
+    "Cogs.deviantart-token-refresher"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

@@ -26,7 +26,7 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v3",
+            "rin-users-v4",
             meta,
             Column(
                 "tracking_id",
@@ -57,7 +57,7 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v3",
+            "rin-users-v4",
             meta,
             Column(
                 "tracking_id",
@@ -71,7 +71,7 @@ class disaccount:
             Column("xp", Integer),
         )
         conn = engine.connect()
-        update_values = users.update().values(xp=xp)
+        update_values = users.update().values(xp=xp).filter(users.c.id == self.id).filter(users.c.gid == self.gid)
         conn.execute(update_values)
         conn.close()
 
@@ -126,7 +126,7 @@ class DisQuestV2(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v3",
+            "rin-users-v4",
             meta,
             Column(
                 "tracking_id",
@@ -171,7 +171,7 @@ class DisQuestV3(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "rin-users-v3",
+            "rin-users-v4",
             meta,
             Column(
                 "tracking_id",
