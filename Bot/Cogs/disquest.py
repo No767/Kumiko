@@ -5,7 +5,7 @@ import random
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import (BigInteger, Column, Integer, MetaData, Table,
+from sqlalchemy import (BigInteger, Column, Integer, MetaData, Sequence, Table,
                         create_engine, func, select)
 
 load_dotenv()
@@ -13,13 +13,6 @@ load_dotenv()
 Password = os.getenv("Postgres_Password")
 IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
-
-
-class helper:
-    def fast_embed(content):
-        colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
-        selector = random.choice(colors)
-        return discord.Embed(description=content, color=selector)
 
 
 class disaccount:
@@ -33,28 +26,30 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users-v4",
             meta,
+            Column(
+                "tracking_id",
+                Integer,
+                Sequence("tracking_id"),
+                primary_key=True,
+                autoincrement=True,
+            ),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
-        while True:
-            s = select(Column("xp", Integer)).where(
-                users.c.id == self.id, users.c.gid == self.gid
-            )
-            results = conn.execute(s)
-            xp = results.fetchone()
-
-            if xp == None:
-                ins = users.insert().values(id=self.id, gid=self.gid, xp=0)
-                conn.execute(ins)
-            else:
-                xp = xp[0]
-                break
+        s = select(users.c.xp).where(
+            users.c.id == self.id, users.c.gid == self.gid)
+        results = conn.execute(s).fetchone()
+        if results is None:
+            insert_new = users.insert().values(xp=0, id=self.id, gid=self.gid)
+            conn.execute(insert_new)
+        else:
+            for row in results:
+                return row
         conn.close()
-        return xp
 
     def setxp(self, xp):
         meta = MetaData()
@@ -62,14 +57,26 @@ class disaccount:
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users-v4",
             meta,
+            Column(
+                "tracking_id",
+                Integer,
+                Sequence("tracking_id"),
+                primary_key=True,
+                autoincrement=True,
+            ),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
         )
         conn = engine.connect()
-        update_values = users.update().values(xp=xp, id=self.id, gid=self.gid)
+        update_values = (
+            users.update()
+            .values(xp=xp)
+            .filter(users.c.id == self.id)
+            .filter(users.c.gid == self.gid)
+        )
         conn.execute(update_values)
         conn.close()
 
@@ -93,18 +100,6 @@ class lvl:
 class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        # meta = MetaData()
-        # engine = create_engine(
-        #     f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
-        # )
-        # Table(
-        #     "user.db",
-        #     meta,
-        #     Column("id", BigInteger),
-        #     Column("gid", BigInteger),
-        #     Column("xp", Integer),
-        # )
-        # meta.create_all(engine)
 
     @commands.command(
         name="mylvl",
@@ -113,13 +108,13 @@ class DisQuest(commands.Cog):
     async def mylvl(self, ctx):
         user = disaccount(ctx)
         xp = user.getxp()
-        await ctx.channel.send(
-            embed=helper.fast_embed(
-                f"""User: {ctx.author.mention}
-        LVL. {lvl.cur(xp)}
-        XP {xp}/{lvl.next(xp)*100}"""
-            )
-        )
+        embedVar = discord.Embed(color=discord.Color.from_rgb(255, 217, 254))
+        embedVar.add_field(
+            name="User", value=f"{ctx.author.mention}", inline=True)
+        embedVar.add_field(name="LVL", value=f"{lvl.cur(xp)}", inline=True)
+        embedVar.add_field(
+            name="XP", value=f"{xp}/{lvl.next(xp)*100}", inline=True)
+        await ctx.send(embed=embedVar)
 
 
 class DisQuestV2(commands.Cog):
@@ -136,8 +131,15 @@ class DisQuestV2(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users-v4",
             meta,
+            Column(
+                "tracking_id",
+                Integer,
+                Sequence("tracking_id"),
+                primary_key=True,
+                autoincrement=True,
+            ),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
@@ -154,7 +156,7 @@ class DisQuestV2(commands.Cog):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(color=discord.Color.from_rgb(254, 255, 217))
         embedVar.description = f"**Server Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
 
@@ -174,8 +176,15 @@ class DisQuestV3(commands.Cog):
             f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-disquest"
         )
         users = Table(
-            "user",
+            "rin-users-v4",
             meta,
+            Column(
+                "tracking_id",
+                Integer,
+                Sequence("tracking_id"),
+                primary_key=True,
+                autoincrement=True,
+            ),
             Column("id", BigInteger),
             Column("gid", BigInteger),
             Column("xp", Integer),
@@ -193,12 +202,26 @@ class DisQuestV3(commands.Cog):
             members[
                 i
             ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-        embedVar = discord.Embed()
+        embedVar = discord.Embed(color=discord.Color.from_rgb(217, 255, 251))
         embedVar.description = f"**Global Rankings**\n{''.join(members)}"
         await ctx.send(embed=embedVar)
+
+
+class DisQuestV4(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_message(self, ctx):
+        if ctx.author.bot:
+            return
+        user = disaccount(ctx)
+        reward = random.randint(0, 20)
+        user.addxp(reward)
 
 
 def setup(bot):
     bot.add_cog(DisQuest(bot))
     bot.add_cog(DisQuestV2(bot))
     bot.add_cog(DisQuestV3(bot))
+    bot.add_cog(DisQuestV4(bot))
