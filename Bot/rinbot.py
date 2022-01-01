@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("Hanako_Token")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".", help_command=None)
 
@@ -40,9 +40,7 @@ initial_extensions = [
     "Cogs.twitter",
     "Cogs.youtube",
     "Cogs.jisho",
-    "Cogs.disquest",
-    "Cogs.deviantart",
-    "Cogs.deviantart-token-refresher"
+    "Cogs.tenor",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
