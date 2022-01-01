@@ -16,7 +16,6 @@ initial_extensions = [
     "Cogs.plugin_tools",
     "Cogs.global",
     "Cogs.kumikoping",
-    "Cogs.deviantart",
     "Cogs.valid",
     "Cogs.kumikohelp",
     "Cogs.reddit",
@@ -42,10 +41,8 @@ initial_extensions = [
     "Cogs.clear",
     "Cogs.twitter",
     "Cogs.youtube",
-    "Cogs.jisho",
-    "Cogs.disquest",
-    "Cogs.deviantart",
-    "Cogs.deviantart-token-refresher"
+    "Cogs.bonk",
+    "Cogs.tenor",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
