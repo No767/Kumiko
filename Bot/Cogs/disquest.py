@@ -195,6 +195,7 @@ class DisQuestV3(commands.Cog):
             .group_by(users.c.id)
             .group_by(users.c.xp)
             .order_by(users.c.xp.desc())
+            .limit(10)
         )
         results = conn.execute(s).fetchall()
         members = list(results)
