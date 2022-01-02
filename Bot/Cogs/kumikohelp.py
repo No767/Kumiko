@@ -427,41 +427,41 @@ class help(commands.Cog):
                 )
                 await ctx.send(embed=embedVar)
 
-                if str(search) == "youtube":
-                    bot = self.bot
-                    embedVar = discord.Embed(color=14414079)
-                    embedVar.add_field(
-                        name="`youtube-search`",
-                        value="Returns 5 videos given the search query",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-channel`",
-                        value="Returns info about the given channel",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-playlists`",
-                        value="Finds and returns 5 playlists from the given channel",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-comments`",
-                        value="Returns 5 comments (sorted by time) from the given video",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-video`",
-                        value="Return info about the given video",
-                        inline=True,
-                    )
-                    embedVar.set_footer(
-                        text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
-                    )
-                    embedVar.set_author(
-                        name="Rin Help - YouTube", icon_url=bot.user.avatar_url
-                    )
-                    await ctx.send(embed=embedVar)
+            if str(search) == "youtube":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`youtube-search`",
+                    value="Returns 5 videos given the search query",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-channel`",
+                    value="Returns info about the given channel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-playlists`",
+                    value="Finds and returns 5 playlists from the given channel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-comments`",
+                    value="Returns 5 comments (sorted by time) from the given video",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-video`",
+                    value="Return info about the given video",
+                    inline=True,
+                )
+                embedVar.set_footer(
+                    text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
+                )
+                embedVar.set_author(
+                    name="Rin Help - YouTube", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
