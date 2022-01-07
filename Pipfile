@@ -32,6 +32,8 @@ orjson = "*"
 reactionmenu = "*"
 psycopg2 = "*"
 pillow = "*"
+asyncpg = "*"
+motor = "*"
 
 [dev-packages]
 
