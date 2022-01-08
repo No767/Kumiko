@@ -19,7 +19,7 @@ class waifu(commands.Cog):
                 "https://www.mywaifulist.moe/random", headers=headers
             ) as r:
                 data = await r.text()
-                soup = bs4.BeautifulSoup(data, "html.parser")
+                soup = bs4.BeautifulSoup(data, "lxml")
                 waifu_title = soup.find("meta", attrs={"property": "og:title"}).attrs[
                     "content"
                 ]
