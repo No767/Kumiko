@@ -1,6 +1,8 @@
 import os
 
 import motor.motor_asyncio
+from discord.ext import commands
+import discord
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -45,3 +47,41 @@ class ecoBase:
             {"user.discord_id": {"$eq": self.id}, "user.gid": {"$eq": self.gid}},
             {"$set": {"user.coins": coins}},
         )
+
+class ecoFunc:
+    def __init__(self, ctx):
+        self.id = ctx.author.id
+        self.gid = ctx.guild.id
+        
+    async def balance(self):
+        bal_client = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{Password}@{Server_IP}:27017"
+        )
+        bal_db = bal_client.kumiko_economy
+        bal_eco = bal_db["kumiko_eco"]
+        data = {"user.discord_id": {"$eq": self.id}}
+        return await bal_eco.find_one(data)
+    
+    async def grank(self):
+        grank_client = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{Password}@{Server_IP}:27017"
+        )
+        grank_db = grank_client.kumiko_economy
+        grank_eco = grank_db["kumiko_eco"]
+        data1 = {"user.coins": {"$add": ""}}
+
+class Kumiko_EcoV1(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        
+    @commands.command(name="eco-balance", aliases=["bal"])
+    async def user_balance(self, ctx):
+        eco = ecoFunc(ctx)
+        res = await eco.balance()
+        embedVar = discord.Embed()
+        embedVar.add_field(name="User", value=f"{(await self.bot.fetch_user(res['user']['discord_id'])).name}", inline=True)
+        embedVar.add_field(name="Balance", value=f"{res['user']['coins']} coin(s)", inline=True)
+        await ctx.send(embed=embedVar)
+        
+def setup(bot):
+    bot.add_cog(Kumiko_EcoV1(bot))
