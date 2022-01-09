@@ -33,7 +33,6 @@ psycopg2 = "*"
 pillow = "*"
 asyncpg = "*"
 motor = "*"
-beanie = "*"
 lxml = "*"
 
 [dev-packages]
