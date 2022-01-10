@@ -1,8 +1,8 @@
 import os
 import random
 
-import discord
 import asyncpraw
+import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -56,10 +56,14 @@ class reddit(commands.Cog):
 
     @commands.command(name="reddit", help="browses on reddit")
     async def reddit(self, ctx, *, search: str):
-        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:kumiko:v0.1.0 (by /u/No767)") as api:
+        async with asyncpraw.Reddit(
+            client_id=Reddit_ID,
+            client_secret=Reddit_Secret,
+            user_agent="ubuntu:kumiko:v0.1.0 (by /u/No767)",
+        ) as api:
             original_search = search
             try:
-                if "r/" in search: 
+                if "r/" in search:
                     search = search.split("/")
                     sub = search[1]
                     search = "all"
@@ -71,9 +75,9 @@ class reddit(commands.Cog):
                     post
                     async for post in searcher
                     if ".jpg" in post.url
-                       or ".png" in post.url
-                       or ".gif" in post.url
-                       and not post.over_18
+                    or ".png" in post.url
+                    or ".gif" in post.url
+                    and not post.over_18
                 ]
                 post = random.choice(posts)
                 submission = post

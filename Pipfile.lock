@@ -403,7 +403,7 @@
                 "sha256:7940bcf167b1b213b8e2cf0dbf54c3e1a7a5c95121bf698dbb72bb82f7a48feb",
                 "sha256:effb7093ab66c621970439600c50ef87117e34f5fef5260b0eea76b62b0f96ad"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==1.4.9"
         },
         "greenlet": {
@@ -746,22 +746,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==2.4.1"
-        },
-        "praw": {
-            "hashes": [
-                "sha256:28f66a750ffb2aa5c46378942037dfbf9640bc02cd132d4da8a0e9b836581a8e",
-                "sha256:f91bfc827ddd0718a6ec24f16f5cad0ea9279de82144e1afcbe47694d1e70cdb"
-            ],
-            "index": "pypi",
-            "version": "==7.5.0"
-        },
-        "prawcore": {
-            "hashes": [
-                "sha256:48c17db447fa06a13ca3e722201f443031437708daa736c05a1df895fbcceff5",
-                "sha256:daf1ccd4b7a80dc4e6567d48336d782e94a9a6dad83770fc2edf76dc9a84f56d"
-            ],
-            "markers": "python_version ~= '3.6'",
-            "version": "==2.3.0"
         },
         "psycopg2": {
             "hashes": [
@@ -1184,16 +1168,8 @@
                 "sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed",
                 "sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
             "version": "==1.26.8"
-        },
-        "websocket-client": {
-            "hashes": [
-                "sha256:1315816c0acc508997eb3ae03b9d3ff619c9d12d544c9a9b553704b1cc4f6af5",
-                "sha256:2eed4cc58e4d65613ed6114af2f380f7910ff416fc8c46947f6e76b6815f56c0"
-            ],
-            "markers": "python_version >= '3.6'",
-            "version": "==1.2.3"
         },
         "yarl": {
             "hashes": [
