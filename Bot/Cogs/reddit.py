@@ -2,7 +2,7 @@ import os
 import random
 
 import discord
-import praw
+import asyncpraw
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -10,17 +10,8 @@ load_dotenv()
 
 # Replaced the old user input based auth with a more secure env var based auth
 # Make sure you have this stored at the same directory as the rinbot file within a .env file
-reddit_id = os.getenv("Reddit_ID")
-reddit_secret = os.getenv("Reddit_Secret")
-
-redditapi = praw.Reddit(
-    client_id=reddit_id,
-    client_secret=reddit_secret,
-    # the user_agent just identifies to reddit what browser it's connecting from.
-    user_agent="Discord",
-    # Disables Async PRAW
-    check_for_async=False,
-)
+Reddit_ID = os.getenv("Reddit_ID")
+Reddit_Secret = os.getenv("Reddit_Secret")
 
 
 class reddit(commands.Cog):
@@ -65,43 +56,37 @@ class reddit(commands.Cog):
 
     @commands.command(name="reddit", help="browses on reddit")
     async def reddit(self, ctx, *, search: str):
-        original_search = search
-        try:
-            if "r/" in search:
-                # treat as subreddit
-                search = search.split("/")
-                sub = search[1]
-                search = "all"
-            else:
-                # treat as general search
-                sub = "all"
-            # query reddit for posts
-            redditquery = redditapi.subreddit(sub).search(search)
-            # looks for a suitable posts
-            posts = [
-                post
-                for post in redditquery
-                if ".jpg" in post.url
-                or ".png" in post.url
-                or ".gif" in post.url
-                and not post.over_18
-            ]
-            # ensuring random post
-            post = random.choice(posts)
-            # finding a suitable post
-            submission = post
-            # discord embed setup
-            reddit_embed = discord.Embed(
-                color=discord.Color.from_rgb(255, 69, 0))
-            reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
-            reddit_embed.set_image(url=submission.url)
-            await ctx.send(embed=reddit_embed)
-            return
-        except Exception as e:
-            embed = discord.Embed()
-            embed.description = f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again."
-            embed.add_field(name="Reason", value=e, inline=True)
-            await ctx.send(embed=embed)
+        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:kumiko:v0.1.0 (by /u/No767)") as api:
+            original_search = search
+            try:
+                if "r/" in search: 
+                    search = search.split("/")
+                    sub = search[1]
+                    search = "all"
+                else:
+                    sub = "all"
+                sub = await api.subreddit(sub)
+                searcher = sub.search(query=search)
+                posts = [
+                    post
+                    async for post in searcher
+                    if ".jpg" in post.url
+                       or ".png" in post.url
+                       or ".gif" in post.url
+                       and not post.over_18
+                ]
+                post = random.choice(posts)
+                submission = post
+                reddit_embed = discord.Embed(
+                    color=discord.Color.from_rgb(255, 69, 0))
+                reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
+                reddit_embed.set_image(url=submission.url)
+                await ctx.send(embed=reddit_embed)
+            except Exception as e:
+                embed = discord.Embed()
+                embed.description = f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again."
+                embed.add_field(name="Reason", value=e, inline=True)
+                await ctx.send(embed=embed)
 
     @reddit.error
     async def on_message_error(
