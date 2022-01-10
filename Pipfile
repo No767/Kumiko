@@ -34,6 +34,7 @@ pillow = "*"
 asyncpg = "*"
 motor = "*"
 lxml = "*"
+asyncpraw = "*"
 
 [dev-packages]
 
