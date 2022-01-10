@@ -63,13 +63,15 @@ class ecoFunc:
         data = {"user.discord_id": {"$eq": self.id}}
         return await bal_eco.find_one(data)
 
-    async def grank(self):
+    async def top(self):
         grank_client = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{Password}@{Server_IP}:27017"
         )
         grank_db = grank_client.kumiko_economy
-        grank_db["kumiko_eco"]
-        data1 = {"user.coins": {"$add": ""}}
+        grank_eco = grank_db["kumiko_eco"]
+        data1 = [{"$match": {"user.discord_id": self.id}}, {"$group": {"_id": "null", "total": {"$sum": "$user.coins"}}}, {"$sort": {"coins": -1}}, {"$limit": 10}]
+        async for item in grank_eco.aggregate(data1):
+            return item
 
 
 class Kumiko_EcoV1(commands.Cog):
@@ -90,6 +92,17 @@ class Kumiko_EcoV1(commands.Cog):
             name="Balance", value=f"{res['user']['coins']} coin(s)", inline=True
         )
         await ctx.send(embed=embedVar)
+        
+class Kumiko_EcoV2(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+    
+    @commands.command(name="eco-top", aliases=["top"])
+    async def top(self, ctx):
+        eco = ecoFunc(ctx)
+        res = await eco.top()
+        
+        
 
 
 def setup(bot):
