@@ -5,6 +5,8 @@ import requests
 import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
+import aiohttp
+import orjson
 
 load_dotenv()
 
@@ -15,28 +17,28 @@ def get_self_user():
     link = "https://api.pinterest.com/v5/user_account"
     headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
     r = requests.get(link, headers=headers)
-    return ujson.loads(r.text)
+    return orjson.loads(r.text)
 
 
 def get_pin(id):
     link = f"https://api.pinterest.com/v5/pins/{id}"
     headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
     r = requests.get(link, headers=headers)
-    return ujson.loads(r.text)
+    return orjson.loads(r.text)
 
 
 def get_board(board_id):
     link = f"https://api.pinterest.com/v5/boards/{board_id}"
     headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
     r = requests.get(link, headers=headers)
-    return ujson.loads(r.text)
+    return orjson.loads(r.text)
 
 
 def get_list_board(board_id):
     link = f"https://api.pinterest.com/v5/boards/{board_id}/pins"
     headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
     r = requests.get(link, headers=headers)
-    return ujson.loads(r.text)
+    return orjson.loads(r.text)
 
 
 class PinterestV1(commands.Cog):
@@ -45,28 +47,31 @@ class PinterestV1(commands.Cog):
 
     @commands.command(name="pinterest-user", aliases=["pt-user"])
     async def user(self, ctx):
-        user = get_self_user()
-        try:
-            embedVar = discord.Embed(
-                title=user["username"], color=discord.Color.from_rgb(
-                    255, 222, 179)
-            )
-            embedVar.add_field(
-                name="Account Type", value=user["account_type"], inline=True
-            )
-            embedVar.add_field(
-                name="Website URL", value=f"[{user['website_url']}]", inline=True
-            )
-            embedVar.set_thumbnail(url=user["profile_image"])
-            await ctx.send(embed=embedVar)
-        except Exception as e:
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = "It seems like this query failed."
-            embedVar.add_field(name="Reason", value=e, inline=True)
-            embedVar.add_field(name="Code", value=user["code"], inline=True)
-            embedVar.add_field(
-                name="Message", value=user["message"], inline=True)
-            await ctx.send(embed=embedVar)
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
+            async with session.get("https://api.pinterest.com/v5/user_account", headers=headers) as r:
+                user = await r.text()
+                try:
+                    embedVar = discord.Embed(
+                        title=user["username"], color=discord.Color.from_rgb(
+                            255, 222, 179)
+                    )
+                    embedVar.add_field(
+                        name="Account Type", value=user["account_type"], inline=True
+                    )
+                    embedVar.add_field(
+                        name="Website URL", value=f"[{user['website_url']}]", inline=True
+                    )
+                    embedVar.set_thumbnail(url=user["profile_image"])
+                    await ctx.send(embed=embedVar)
+                except Exception as e:
+                    embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+                    embedVar.description = "It seems like this query failed."
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    embedVar.add_field(name="Code", value=user["code"], inline=True)
+                    embedVar.add_field(
+                        name="Message", value=user["message"], inline=True)
+                    await ctx.send(embed=embedVar)
 
 
 class PinterestV2(commands.Cog):

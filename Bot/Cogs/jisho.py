@@ -2,7 +2,7 @@ import re
 
 import discord
 import requests
-import ujson
+import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
 from jamdict import Jamdict
@@ -66,7 +66,7 @@ def tag(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jisho_tag = str(jisho["data"][0]["tags"])
     return jisho_tag.replace("[", " ").replace("]", " ").replace("'", " ")
 
@@ -75,7 +75,7 @@ def jlpt(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jisho_jlpt = str(jisho["data"][0]["tags"])
     return jisho_jlpt.replace("[", " ").replace("]", " ").replace("'", " ")
 
@@ -84,7 +84,7 @@ def is_common(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jishov1 = str(jisho["data"][0]["is_common"])
     return jishov1.replace("[", " ").replace("]", " ")
 
@@ -93,7 +93,7 @@ def pos(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jisho_sorted = jisho["data"][0]["senses"][0]["parts_of_speech"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
 
@@ -102,7 +102,7 @@ def see_also(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jisho_sorted = jisho["data"][0]["senses"][0]["see_also"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
 
@@ -111,7 +111,7 @@ def antonyms(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jisho_sorted = jisho["data"][0]["senses"][0]["antonyms"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
 
@@ -120,7 +120,7 @@ def links(search):
     search = search.replace(" ", "%20")
     link = f"https://jisho.org/api/v1/search/words?keyword={search}"
     r = requests.get(link)
-    jisho = ujson.loads(r.text)
+    jisho = orjson.loads(r.text)
     jisho_sorted = jisho["data"][0]["senses"][0]["links"]
     return str(jisho_sorted).replace("[", "").replace("]", "").replace("'", "")
 
@@ -135,7 +135,7 @@ class jisho_dict(commands.Cog):
             result = jam.lookup(search)
             link = f"https://jisho.org/api/v1/search/words?keyword={search}"
             r = requests.get(link)
-            jisho = ujson.loads(r.text)
+            jisho = orjson.loads(r.text)
             res = jam.lookup(search.replace("\n", " "))
             embedVar = discord.Embed()
             embedVar.add_field(
