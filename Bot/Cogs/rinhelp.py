@@ -456,17 +456,43 @@ class rinhelp(commands.Cog):
                     name="Rin Help - YouTube", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
-                
+
             if str(search) == "tenor":
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(name="`tenor-search-multiple`", value="Searches 5 gifs from Tenor", inline=True)
-                embedVar.add_field(name="tenor-search-one", value="Searches for 1 gif on Tenor", inline=True)
-                embedVar.add_field(name="tenor-trending", value="Gets 5 trending gifs from Tenor", inline=True)
-                embedVar.add_field(name="tenor-search-suggestions", value="Provies some search suggetsions from Tenor", inline=True)
-                embedVar.add_field(name="tenor-trending-terms", value="Returns some trending terms", inline=True)
-                embedVar.add_field(name="tenor-gif", value="SEarches for 1 gif on Tenor", inline=True)
-                embedVar.add_field(name="tenor-random", value="Returns a random gif based on the search term", inline=True)
+                embedVar.add_field(
+                    name="`tenor-search-multiple`",
+                    value="Searches 5 gifs from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-search-one",
+                    value="Searches for 1 gif on Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-trending",
+                    value="Gets 5 trending gifs from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-search-suggestions",
+                    value="Provies some search suggetsions from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-trending-terms",
+                    value="Returns some trending terms",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-gif", value="SEarches for 1 gif on Tenor", inline=True
+                )
+                embedVar.add_field(
+                    name="tenor-random",
+                    value="Returns a random gif based on the search term",
+                    inline=True,
+                )
                 embedVar.set_author(
                     name="Rin Help - Tenor", icon_url=bot.user.avatar_url
                 )
