@@ -33,7 +33,6 @@ initial_extensions = [
     "Cogs.top-gg",
     "Cogs.global-error-handling",
     "Cogs.spotify",
-    "Cogs.pinterest",
     "Cogs.rininvite",
     "Cogs.version",
     "Cogs.clear",

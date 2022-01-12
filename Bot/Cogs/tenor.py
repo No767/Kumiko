@@ -240,7 +240,7 @@ class TenorV6(commands.Cog):
         self.bot = bot
 
     @commands.command(name="tenor-gif", aliases=["tg"])
-    async def tenor_gif(self, ctx, *, search_gif: int):
+    async def tenor_gif(self, ctx, *, search_gif: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,

@@ -59,7 +59,7 @@ class reddit(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:kumiko:v0.1.0 (by /u/No767)",
+            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
         ) as api:
             original_search = search
             try:
