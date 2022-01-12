@@ -1,8 +1,8 @@
 import re
 
 import discord
-import requests
 import orjson
+import requests
 from discord.ext import commands
 from dotenv import load_dotenv
 from jamdict import Jamdict

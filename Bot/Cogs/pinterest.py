@@ -1,12 +1,11 @@
 import os
 
+import aiohttp
 import discord
+import orjson
 import requests
-import ujson
 from discord.ext import commands
 from dotenv import load_dotenv
-import aiohttp
-import orjson
 
 load_dotenv()
 
@@ -49,28 +48,35 @@ class PinterestV1(commands.Cog):
     async def user(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
-            async with session.get("https://api.pinterest.com/v5/user_account", headers=headers) as r:
+            async with session.get(
+                "https://api.pinterest.com/v5/user_account", headers=headers
+            ) as r:
                 user = await r.text()
                 try:
                     embedVar = discord.Embed(
-                        title=user["username"], color=discord.Color.from_rgb(
-                            255, 222, 179)
+                        title=user["username"],
+                        color=discord.Color.from_rgb(255, 222, 179),
                     )
                     embedVar.add_field(
                         name="Account Type", value=user["account_type"], inline=True
                     )
                     embedVar.add_field(
-                        name="Website URL", value=f"[{user['website_url']}]", inline=True
+                        name="Website URL",
+                        value=f"[{user['website_url']}]",
+                        inline=True,
                     )
                     embedVar.set_thumbnail(url=user["profile_image"])
                     await ctx.send(embed=embedVar)
                 except Exception as e:
-                    embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+                    embedVar = discord.Embed(
+                        color=discord.Color.from_rgb(255, 51, 51))
                     embedVar.description = "It seems like this query failed."
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    embedVar.add_field(name="Code", value=user["code"], inline=True)
                     embedVar.add_field(
-                        name="Message", value=user["message"], inline=True)
+                        name="Code", value=user["code"], inline=True)
+                    embedVar.add_field(
+                        name="Message", value=user["message"], inline=True
+                    )
                     await ctx.send(embed=embedVar)
 
 
