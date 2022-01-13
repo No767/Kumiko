@@ -28,9 +28,9 @@ sqlalchemy = "*"
 orjson = "*"
 reactionmenu = "*"
 psycopg2 = "*"
-pillow = "*"
 lxml = "*"
 asyncpraw = "*"
+pillow = "==9.0.0"
 
 [dev-packages]
 
