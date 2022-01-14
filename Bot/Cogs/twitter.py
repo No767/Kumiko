@@ -5,6 +5,8 @@ import discord
 import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
+import asyncio
+import uvloop
 
 load_dotenv()
 
@@ -351,6 +353,8 @@ class TwitterV1(commands.Cog):
                     embedError.add_field(name="Error", value=e, inline=True)
                     await ctx.send(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @twitter_search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -360,6 +364,8 @@ class TwitterV1(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TwitterV2(commands.Cog):
@@ -488,6 +494,8 @@ class TwitterV2(commands.Cog):
                     embedError2.add_field(name="Error", value=e, inline=True)
                     await ctx.send(embed=embedError2)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @twitter_user.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -497,6 +505,8 @@ class TwitterV2(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

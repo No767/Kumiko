@@ -2,6 +2,8 @@ import aiohttp
 import discord
 import orjson
 from discord.ext import commands
+import uvloop
+import asyncio
 
 
 class advice_slip(commands.Cog):
@@ -29,7 +31,7 @@ class advice_slip(commands.Cog):
                     embedVar.description = "The query failed. Please try again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
-
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 def setup(bot):
     bot.add_cog(advice_slip(bot))

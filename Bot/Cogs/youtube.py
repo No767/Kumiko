@@ -5,6 +5,8 @@ import discord
 import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
+import asyncio
+import uvloop
 
 load_dotenv()
 
@@ -235,6 +237,8 @@ class YoutubeV1(commands.Cog):
                     embedError.add_field(name="Error", value=e, inline=True)
                     await ctx.send(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @youtube_search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -244,6 +248,8 @@ class YoutubeV1(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class YoutubeV2(commands.Cog):
@@ -313,6 +319,8 @@ class YoutubeV2(commands.Cog):
                             name="Error", value=e, inline=True)
                         await ctx.send(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @youtube_channel.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -322,6 +330,8 @@ class YoutubeV2(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class YoutubeV3(commands.Cog):
@@ -479,6 +489,8 @@ class YoutubeV3(commands.Cog):
                             name="Error", value=e, inline=True)
                         await ctx.send(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @youtube_playlists.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -488,6 +500,8 @@ class YoutubeV3(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class YoutubeV4(commands.Cog):
@@ -710,6 +724,8 @@ class YoutubeV4(commands.Cog):
                     embedError.add_field(name="Error", value=e, inline=True)
                     await ctx.send(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @youtube_comments.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -719,6 +735,8 @@ class YoutubeV4(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class YoutubeV5(commands.Cog):
@@ -779,6 +797,20 @@ class YoutubeV5(commands.Cog):
                     )
                     embedError.add_field(name="Error", value=e, inline=True)
                     await ctx.send(embed=embedError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @youtube_video.error
+    async def on_message_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+            embedVar.description = f"Missing a requireed argument: {error.param}"
+            msg = await ctx.send(embed=embedVar, delete_after=10)
+            await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

@@ -2,6 +2,8 @@ import aiohttp
 import discord
 import orjson
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class JikanV1(commands.Cog):
@@ -104,6 +106,7 @@ class JikanV1(commands.Cog):
                         embedVar = discord.Embed()
                         embedVar.description = f"The query could not be performed. Please try again.\nReason: {e}"
                         await ctx.send(embed=embedVar)
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @anime.error
     async def on_message_error(
@@ -114,6 +117,8 @@ class JikanV1(commands.Cog):
             embedVar.description = "Missing a required argument: Anime name"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class JikanV2(commands.Cog):
@@ -268,6 +273,7 @@ class JikanV2(commands.Cog):
                         )
                         embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
                         await ctx.send(emvbed=embedVar)
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @manga.error
     async def on_message_error(
@@ -278,6 +284,8 @@ class JikanV2(commands.Cog):
             embedVar.description = "Missing a required argument: Manga name"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class JikanV3(commands.Cog):

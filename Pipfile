@@ -27,10 +27,11 @@ aiohttp = "<=3.7.4.post0"
 sqlalchemy = "*"
 orjson = "*"
 reactionmenu = "*"
-psycopg2 = "*"
 lxml = "*"
 asyncpraw = "*"
 pillow = "==9.0.0"
+asyncpg = "*"
+uvloop = "*"
 
 [dev-packages]
 

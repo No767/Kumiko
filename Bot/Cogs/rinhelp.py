@@ -3,6 +3,8 @@ import typing
 import discord
 import discord.ext
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class rinhelp(commands.Cog):
@@ -53,6 +55,7 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="YouTube", value="`.rinhelp youtube`", inline=True
                 )
+                embedVar.add_field(name="Tenor", value="`.rinhelp tenor`", inline=True)
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -504,6 +507,8 @@ class rinhelp(commands.Cog):
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

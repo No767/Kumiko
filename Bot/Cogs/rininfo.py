@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class info(commands.Cog):
@@ -30,6 +32,7 @@ class info(commands.Cog):
         )
         await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 def setup(bot):
     bot.add_cog(info(bot))
