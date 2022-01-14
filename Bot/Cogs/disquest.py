@@ -1,15 +1,15 @@
+import asyncio
 import math
 import os
 import random
 
 import discord
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import (BigInteger, Column, Integer, MetaData, Sequence, Table,
-                        create_engine, func, select)
+                        func, select)
 from sqlalchemy.ext.asyncio import create_async_engine
-import asyncio
-import uvloop
 
 load_dotenv()
 
@@ -25,7 +25,9 @@ class disaccount:
 
     async def getxp(self):
         meta = MetaData()
-        engine = create_async_engine(f'postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest')
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "rin-users-v4",
             meta,
@@ -55,7 +57,9 @@ class disaccount:
 
     async def setxp(self, xp):
         meta = MetaData()
-        engine = create_async_engine(f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest")
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "rin-users-v4",
             meta,
@@ -129,7 +133,9 @@ class DisQuestV2(commands.Cog):
     async def rank(self, ctx):
         gid = ctx.guild.id
         meta = MetaData()
-        engine = create_async_engine(f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest")
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "rin-users-v4",
             meta,
@@ -156,7 +162,8 @@ class DisQuestV2(commands.Cog):
                 members[
                     i
                 ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-            embedVar = discord.Embed(color=discord.Color.from_rgb(254, 255, 217))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(254, 255, 217))
             embedVar.description = f"**Server Rankings**\n{''.join(members)}"
             await ctx.send(embed=embedVar)
 
@@ -174,7 +181,9 @@ class DisQuestV3(commands.Cog):
     )
     async def grank(self, ctx):
         meta = MetaData()
-        engine = create_async_engine(f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest")
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-disquest"
+        )
         users = Table(
             "rin-users-v4",
             meta,
@@ -191,7 +200,8 @@ class DisQuestV3(commands.Cog):
         )
         async with engine.connect() as conn:
             s = (
-                select(Column("id", Integer), func.sum(users.c.xp).label("txp"))
+                select(Column("id", Integer), func.sum(
+                    users.c.xp).label("txp"))
                 .group_by(users.c.id)
                 .group_by(users.c.xp)
                 .order_by(users.c.xp.desc())
@@ -204,7 +214,8 @@ class DisQuestV3(commands.Cog):
                 members[
                     i
                 ] = f"{i}. {(await self.bot.fetch_user(mem[0])).name} | XP. {mem[1]}\n"
-            embedVar = discord.Embed(color=discord.Color.from_rgb(217, 255, 251))
+            embedVar = discord.Embed(
+                color=discord.Color.from_rgb(217, 255, 251))
             embedVar.description = f"**Global Rankings**\n{''.join(members)}"
             await ctx.send(embed=embedVar)
 
