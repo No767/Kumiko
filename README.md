@@ -19,13 +19,100 @@ Via Top.gg. You can invite Rin by clicking [here](https://top.gg/bot/86588352593
 
 # Building
 
-Via [Pipenv](https://pipenv.pypa.io/en/latest/)
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+## Windows
 
-`pipenv install`
+1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
+2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
-If you haven't set up the environment yet, run this in the root directory of the git repo:
+```sh
+sudo apt-get install liblzma-dev lzma
+```
 
-`pipenv --python 3.10`
+3. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+```sh
+sudo python3.10 -m pip install --upgrade pipenv
+```
+
+5. Clone this repo.
+6. Create the Pipenv. To do so, run this command: 
+
+```sh
+pipenv --python 3.10
+```
+
+7. `cd` into the cloned repo and install all the dependencies by running this command:
+
+```sh
+pipenv install
+```
+8. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
+
+```sh
+$HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
+```
+
+Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
+
+## Linux
+
+1. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+
+```sh
+sudo apt-get install liblzma-dev lzma
+```
+
+If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
+
+```sh
+yum install -y xz-devel
+```
+
+2. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
+3. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+```sh
+sudo python3.10 -m pip install --upgrade pipenv
+```
+
+4. Clone this repo.
+5. Create the Pipenv. To do so, run this command: 
+
+```sh
+pipenv --python 3.10
+```
+
+6. `cd` into the cloned repo and install all the dependencies by running this command:
+
+```sh
+pipenv install
+```
+
+## MacOS
+
+**Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**
+
+1. Install Python 3.10. This can be installed with the installer or compiled from source (Or use Homebrew). Either way it doesn't matter. 
+2. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+```sh
+python -m pip install --upgrade pipenv
+```
+
+3. Clone this repo. 
+4. Create the Pipenv. To do so, run this command: 
+
+```sh
+pipenv --python 3.10
+```
+
+5. `cd` into the cloned repo and install all the dependencies by running this command:
+
+```sh
+pipenv install
+```
 
 # Licensing
 
