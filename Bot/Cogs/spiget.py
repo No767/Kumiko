@@ -1,9 +1,10 @@
+import asyncio
+
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands
-import asyncio
 import uvloop
+from discord.ext import commands
 
 
 class SpigetV2(commands.Cog):
@@ -51,7 +52,7 @@ class SpigetV2(commands.Cog):
                                         color=discord.Color.from_rgb(
                                             173, 156, 255),
                                     )
-                                    embedVar.description = resource[0]['tag']
+                                    embedVar.description = resource[0]["tag"]
                                     embedVar.add_field(
                                         name="Plugin Info",
                                         value=f"Author >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
@@ -98,7 +99,7 @@ class SpigetV2(commands.Cog):
                                         color=discord.Color.from_rgb(
                                             173, 156, 255),
                                     )
-                                    embedVar.description = resource[0]['tag']
+                                    embedVar.description = resource[0]["tag"]
                                     embedVar.add_field(
                                         name="Plugin Info",
                                         value=f"Author >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",

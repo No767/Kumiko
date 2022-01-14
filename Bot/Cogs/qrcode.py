@@ -1,11 +1,11 @@
+import asyncio
 import os
 
 import discord
 import discord.ext
 import qrcode
-from discord.ext import commands
-import asyncio
 import uvloop
+from discord.ext import commands
 
 
 class qrcode_maker(commands.Cog):
