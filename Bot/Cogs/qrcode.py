@@ -4,6 +4,8 @@ import discord
 import discord.ext
 import qrcode
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class qrcode_maker(commands.Cog):
@@ -24,6 +26,8 @@ class qrcode_maker(commands.Cog):
         embedVar.set_image(url="attachment://qrcode.png")
         await ctx.send(embed=embedVar, file=file)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @code.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -33,6 +37,8 @@ class qrcode_maker(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

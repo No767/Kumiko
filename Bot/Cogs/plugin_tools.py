@@ -2,6 +2,8 @@ import random
 
 import discord
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 def discord_colors():
@@ -38,6 +40,8 @@ class Utility(commands.Cog):
         )
         embed.set_thumbnail(url=bot.user.avatar_url)
         await ctx.send(embed=embed)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class Bot_Admin(commands.Cog):
@@ -81,6 +85,8 @@ class Bot_Admin(commands.Cog):
                 - If the theme of the bot matches try asking owners of larger servers to invite your bot!"""
         await ctx.send(embed=embed)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @commands.is_owner()
     @commands.command(
         name="prune", help="Removes bot from servers smaller than the specified limit"
@@ -109,6 +115,8 @@ class Bot_Admin(commands.Cog):
                 await guild.leave()
         await ctx.send(f"Left {guilds_left} server(s)!")
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @commands.is_owner()
     @commands.command(
         name="broadcast",
@@ -131,6 +139,8 @@ class Bot_Admin(commands.Cog):
                 except Exception as e:
                     await channel.send(f"There has been something wrong.\nReason: {e}")
         await ctx.send("Message broadcasted to all servers connected")
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
