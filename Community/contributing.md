@@ -37,6 +37,13 @@ Rin will start using uvloop as a replacement for asyncio, and uvloop can reach s
 
 If you want to execute the code, make sure to run it with Bash or WSL instead.
 
+**Note that Jamdict-Data requires the LZMA lib on Linux. Install them like this:**
+
+Ubuntu:
+```sh
+sudo apt-get install liblzma-dev
+```
+
 ### Linux
 
 1. Compile Python 3.10.x from source. If you need help, refer to the [docs](https://docs.python.org/3/using/unix.html) or this [article](https://computingforgeeks.com/how-to-install-python-on-ubuntu-linux-system/)
