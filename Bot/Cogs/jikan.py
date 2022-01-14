@@ -1,9 +1,10 @@
+import asyncio
+
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands
-import asyncio
 import uvloop
+from discord.ext import commands
 
 
 class JikanV1(commands.Cog):
@@ -106,6 +107,7 @@ class JikanV1(commands.Cog):
                         embedVar = discord.Embed()
                         embedVar.description = f"The query could not be performed. Please try again.\nReason: {e}"
                         await ctx.send(embed=embedVar)
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @anime.error
@@ -273,6 +275,7 @@ class JikanV2(commands.Cog):
                         )
                         embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
                         await ctx.send(emvbed=embedVar)
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @manga.error

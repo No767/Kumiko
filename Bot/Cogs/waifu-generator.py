@@ -1,10 +1,11 @@
+import asyncio
+
 import aiohttp
 import bs4
 import discord
 import orjson
-from discord.ext import commands
-import asyncio
 import uvloop
+from discord.ext import commands
 
 
 class waifu(commands.Cog):

@@ -1,10 +1,10 @@
+import asyncio
 import typing
 
 import discord
 import discord.ext
-from discord.ext import commands
-import asyncio
 import uvloop
+from discord.ext import commands
 
 
 class rinhelp(commands.Cog):
@@ -55,7 +55,8 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="YouTube", value="`.rinhelp youtube`", inline=True
                 )
-                embedVar.add_field(name="Tenor", value="`.rinhelp tenor`", inline=True)
+                embedVar.add_field(
+                    name="Tenor", value="`.rinhelp tenor`", inline=True)
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(

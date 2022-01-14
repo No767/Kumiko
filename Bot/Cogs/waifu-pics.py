@@ -1,11 +1,11 @@
+import asyncio
 import random
 
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands
 import uvloop
-import asyncio
+from discord.ext import commands
 
 
 class waifu(commands.Cog):
@@ -58,6 +58,7 @@ class waifu(commands.Cog):
                     embedVar.description = "The query was not successful"
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 

@@ -6,8 +6,6 @@ import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
 from reactionmenu import ReactionMenu
-import asyncio
-import uvloop
 
 load_dotenv()
 
@@ -22,7 +20,12 @@ class MangaDexV1(commands.Cog):
     async def manga(self, ctx, *, manga: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             try:
-                params = {"title": manga, "publicationDemographic[]": "none", "contentRating[]": "safe", "order[title]": "asc"}
+                params = {
+                    "title": manga,
+                    "publicationDemographic[]": "none",
+                    "contentRating[]": "safe",
+                    "order[title]": "asc",
+                }
                 async with session.get(
                     f"https://api.mangadex.org/manga/", params=params
                 ) as r:

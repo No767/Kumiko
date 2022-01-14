@@ -1,12 +1,12 @@
+import asyncio
 import os
 import random
 
 import asyncpraw
 import discord
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
-import asyncio
-import uvloop
 
 load_dotenv()
 
