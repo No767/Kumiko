@@ -62,8 +62,8 @@ class help(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Tenor", value="`.rinhelp tenor`", inline=True)
-                embedVar.set_author(
-                    name="Kumiko Help", icon_url=bot.user.avatar_url)
+                embedVar.set_author(name="Kumiko Help",
+                                    icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
