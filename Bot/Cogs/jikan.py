@@ -43,8 +43,8 @@ class JikanV1(commands.Cog):
                         )
                         embedVar.add_field(
                             name="Title Synonyms",
-                            value=str(anime_info_v2["title_synonyms"])
-                            .replace("'", ""),
+                            value=str(anime_info_v2["title_synonyms"]).replace(
+                                "'", ""),
                             inline=True,
                         )
                         embedVar.add_field(
@@ -93,9 +93,21 @@ class JikanV1(commands.Cog):
                             value=anime_info_v2["favorites"],
                             inline=True,
                         )
-                        embedVar.add_field(name="Official Site", value=anime_info_v2["external_links"][0]["url"], inline=True)
-                        embedVar.add_field(name="AnimeDB", value=anime_info_v2["external_links"][1]["url"], inline=True)
-                        embedVar.add_field(name="AnimeNewsNetwork", value=anime_info_v2["external_links"][2]["url"], inline=True)
+                        embedVar.add_field(
+                            name="Official Site",
+                            value=anime_info_v2["external_links"][0]["url"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="AnimeDB",
+                            value=anime_info_v2["external_links"][1]["url"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="AnimeNewsNetwork",
+                            value=anime_info_v2["external_links"][2]["url"],
+                            inline=True,
+                        )
                         embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"
                         embedVar2.add_field(
                             name="Background",
@@ -165,8 +177,8 @@ class JikanV2(commands.Cog):
                         )
                         embedVar.add_field(
                             name="Title Synonyms",
-                            value=str(manga_info_v1["title_synonyms"])
-                            .replace("'", ""),
+                            value=str(manga_info_v1["title_synonyms"]).replace(
+                                "'", ""),
                             inline=True,
                         )
                         embedVar.add_field(

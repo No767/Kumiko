@@ -5,7 +5,7 @@ import discord
 import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
-from sqlalchemy import Column, MetaData, String, Table, create_engine
+from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
@@ -18,7 +18,7 @@ Username = os.getenv("Postgres_Username")
 class tokenFetcher:
     def __init__(self):
         self.self = self
-        
+
     async def get(self):
         meta = MetaData()
         engine = create_async_engine(

@@ -1,7 +1,8 @@
-import discord
-from discord.ext import commands
 import asyncio
+
+import discord
 import uvloop
+from discord.ext import commands
 
 
 class rinping(commands.Cog):

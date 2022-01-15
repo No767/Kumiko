@@ -1,14 +1,15 @@
+import asyncio
 import re
 
+import aiohttp
 import discord
 import orjson
-import aiohttp
+import uvloop
 from discord.ext import commands
 from jamdict import Jamdict
-import asyncio
-import uvloop
 
 jam = Jamdict()
+
 
 def kanjiv2(search):
     res = jam.lookup(search.replace("\n", " "))
@@ -57,7 +58,9 @@ class jisho_dict(commands.Cog):
     async def jisho(self, ctx, search: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"keyword": search}
-            async with session.get("https://jisho.org/api/v1/search/words", params=params) as r:
+            async with session.get(
+                "https://jisho.org/api/v1/search/words", params=params
+            ) as r:
                 jisho = await r.json()
                 try:
                     res = jam.lookup(search)
@@ -68,9 +71,15 @@ class jisho_dict(commands.Cog):
                         inline=False,
                     )
                     embedVar.add_field(
-                        name="Position of Speech (POS)", value=jisho["data"][0]["senses"][0]["parts_of_speech"], inline=False
+                        name="Position of Speech (POS)",
+                        value=jisho["data"][0]["senses"][0]["parts_of_speech"],
+                        inline=False,
                     )
-                    embedVar.add_field(name="Is Common?", value=jisho["data"][0]["is_common"], inline=False)
+                    embedVar.add_field(
+                        name="Is Common?",
+                        value=jisho["data"][0]["is_common"],
+                        inline=False,
+                    )
                     embedVar.add_field(
                         name="Other Info",
                         value=f"Tags >> {jisho['data'][0]['tags']}\nJLPT >> {jisho['data'][0]['tags']}\nAntonyms >> {jisho['data'][0]['senses'][0]['antonyms']}\nSee Also >> {jisho['data'][0]['senses'][0]['see_also']}\nLinks >> {jisho['data'][0]['senses'][0]['links']}",
@@ -86,8 +95,8 @@ class jisho_dict(commands.Cog):
                         value=f"{jisho['meta']['status']}",
                         inline=False,
                     )
-                    embedVar.description = str([str(word[0])
-                                               for word in res.entries])
+                    embedVar.description = str(
+                        [str(word[0]) for word in res.entries])
                     await ctx.send(embed=embedVar)
                 except Exception as e:
                     embed_discord = discord.Embed()

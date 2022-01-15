@@ -1,13 +1,13 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 from reactionmenu import ReactionMenu
-import asyncio
-import uvloop
 
 load_dotenv()
 

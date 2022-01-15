@@ -5,7 +5,7 @@ import aiohttp
 import orjson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from sqlalchemy import Column, MetaData, String, Table, create_engine
+from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
