@@ -84,7 +84,7 @@ class disaccount:
             await conn.execute(update_values)
             await conn.close()
 
-    def addxp(self, offset):
+    async def addxp(self, offset):
         pxp = await self.getxp()
         pxp += offset
         await self.setxp(pxp)
@@ -232,7 +232,7 @@ class DisQuestV4(commands.Cog):
             return
         user = disaccount(ctx)
         reward = random.randint(0, 20)
-        user.addxp(reward)
+        await user.addxp(reward)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

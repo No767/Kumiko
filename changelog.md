@@ -8,6 +8,8 @@
 - Kinda finished the MangaDex Cog (still need to work on the reader)
 - Replace Asyncio with Uvloop (Massive performance gains)
 - Rewrite DisQuest to handle methods and queries asynchronously
+- Adjust methods for DeviantArt Token Refresher to be async
+- Rewrite Pinterest Cog to be Async 
 
 # Additions
 - Tenor API Support

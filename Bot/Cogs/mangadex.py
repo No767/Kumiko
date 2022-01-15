@@ -6,6 +6,8 @@ import orjson
 from discord.ext import commands
 from dotenv import load_dotenv
 from reactionmenu import ReactionMenu
+import asyncio
+import uvloop
 
 load_dotenv()
 
@@ -188,6 +190,8 @@ class MangaDexV1(commands.Cog):
                 embedVar.add_field(name="Reason", value=e, inline=True)
                 await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @manga.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -197,6 +201,8 @@ class MangaDexV1(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexV2(commands.Cog):
@@ -316,6 +322,8 @@ class MangaDexV2(commands.Cog):
                         embedVar.add_field(name="Reason", value=e, inline=True)
                         await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @manga_random.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -325,6 +333,8 @@ class MangaDexV2(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexV3(commands.Cog):
@@ -438,6 +448,8 @@ class MangaDexV3(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @scanlation_search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -447,6 +459,8 @@ class MangaDexV3(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexV4(commands.Cog):
@@ -554,6 +568,8 @@ class MangaDexV4(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @scanlation_id.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -563,6 +579,8 @@ class MangaDexV4(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexV5(commands.Cog):
@@ -596,6 +614,8 @@ class MangaDexV5(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @user.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -605,6 +625,8 @@ class MangaDexV5(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexV6(commands.Cog):
@@ -787,6 +809,8 @@ class MangaDexV6(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @author.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -796,6 +820,8 @@ class MangaDexV6(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexV7(commands.Cog):
@@ -967,6 +993,8 @@ class MangaDexV7(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @author_id.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -976,6 +1004,8 @@ class MangaDexV7(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MangaDexReaderV1(commands.Cog):

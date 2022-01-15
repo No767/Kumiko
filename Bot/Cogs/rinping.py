@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class rinping(commands.Cog):
@@ -19,6 +21,8 @@ class rinping(commands.Cog):
             ping_embed.description = "The command was not successful"
             ping_embed.add_field(name="Reason", value=e, inline=True)
             await ctx.send(embed=ping_embed)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

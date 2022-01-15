@@ -15,7 +15,7 @@ class JikanV1(commands.Cog):
     async def anime(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"q": search}
+            params = {"q": search, "order_by": "title", "limit": 1}
             async with session.get(
                 "https://api.jikan.moe/v3/search/anime", params=params
             ) as r:
@@ -25,6 +25,7 @@ class JikanV1(commands.Cog):
                     f"https://api.jikan.moe/v3/anime/{anime_id}"
                 ) as resp:
                     anime_info_v2 = await resp.json()
+                    print(anime_info_v2)
                     try:
                         embedVar = discord.Embed(title=anime_info_v2["title"])
                         embedVar2 = discord.Embed(
@@ -43,8 +44,6 @@ class JikanV1(commands.Cog):
                         embedVar.add_field(
                             name="Title Synonyms",
                             value=str(anime_info_v2["title_synonyms"])
-                            .replace("[", "")
-                            .replace("]", "")
                             .replace("'", ""),
                             inline=True,
                         )
@@ -94,6 +93,9 @@ class JikanV1(commands.Cog):
                             value=anime_info_v2["favorites"],
                             inline=True,
                         )
+                        embedVar.add_field(name="Official Site", value=anime_info_v2["external_links"][0]["url"], inline=True)
+                        embedVar.add_field(name="AnimeDB", value=anime_info_v2["external_links"][1]["url"], inline=True)
+                        embedVar.add_field(name="AnimeNewsNetwork", value=anime_info_v2["external_links"][2]["url"], inline=True)
                         embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"
                         embedVar2.add_field(
                             name="Background",
@@ -141,6 +143,7 @@ class JikanV2(commands.Cog):
                     f"https://api.jikan.moe/v3/manga/{manga_id}"
                 ) as re:
                     manga_info_v1 = await re.json()
+                    print(manga_info_v1)
                     try:
                         embedVar = discord.Embed(
                             title=manga_info_v1["title"],
@@ -163,8 +166,6 @@ class JikanV2(commands.Cog):
                         embedVar.add_field(
                             name="Title Synonyms",
                             value=str(manga_info_v1["title_synonyms"])
-                            .replace("[", "")
-                            .replace("]", "")
                             .replace("'", ""),
                             inline=True,
                         )
@@ -197,28 +198,6 @@ class JikanV2(commands.Cog):
                             value=str(
                                 [name["name"]
                                     for name in manga_info_v1["genres"]]
-                            )
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Demographics",
-                            value=str(
-                                [name["name"]
-                                    for name in manga_info_v1["demographics"]]
-                            )
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Themes",
-                            value=str(
-                                [name["name"]
-                                    for name in manga_info_v1["themes"]]
                             )
                             .replace("[", "")
                             .replace("]", "")
