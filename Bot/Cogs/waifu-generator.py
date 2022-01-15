@@ -1,7 +1,10 @@
+import asyncio
+
 import aiohttp
 import bs4
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -34,6 +37,8 @@ class waifu(commands.Cog):
                 embedVar.description = f"{description}"
                 embedVar.set_image(url=image_url)
                 await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

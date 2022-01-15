@@ -5,7 +5,8 @@ import aiohttp
 import orjson
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
-from sqlalchemy import Column, MetaData, String, Table, create_engine
+from sqlalchemy import Column, MetaData, String, Table
+from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
 
@@ -16,10 +17,10 @@ IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 
-def select_values():
+async def select_values():
     meta = MetaData()
-    engine = create_engine(
-        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+    engine = create_async_engine(
+        f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
         "DA_Tokens",
@@ -27,18 +28,18 @@ def select_values():
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    conn = engine.connect()
-    s = tokens.select()
-    result_select = conn.execute(s)
-    for row in result_select:
-        return row
-    conn.close()
+    async with engine.connect() as conn:
+        s = tokens.select()
+        result_select = await conn.execute(s)
+        for row in result_select:
+            return row
+        await conn.close()
 
 
-def update_values(Access_Token, Refresh_Token):
+async def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_engine(
-        f"postgresql+psycopg2://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+    engine = create_async_engine(
+        f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
         "DA_Tokens",
@@ -46,12 +47,12 @@ def update_values(Access_Token, Refresh_Token):
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    conn = engine.connect()
-    update = tokens.update().values(
-        Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
-    )
-    conn.execute(update)
-    conn.close()
+    async with engine.connect() as conn:
+        update = tokens.update().values(
+            Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
+        )
+        await conn.execute(update)
+        await conn.close()
 
 
 class tokenRefresher(commands.Cog):
@@ -61,7 +62,7 @@ class tokenRefresher(commands.Cog):
 
     @tasks.loop()
     async def refresher(self):
-        values = select_values()
+        values = await select_values()
         Refresh_Token_Select = values[1]
         await asyncio.sleep(3300)
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -77,7 +78,7 @@ class tokenRefresher(commands.Cog):
                 data = await r.json()
                 Access_token = data["access_token"]
                 Refresh_token = data["refresh_token"]
-                update_values(Access_token, Refresh_token)
+                await update_values(Access_token, Refresh_token)
 
 
 def setup(bot):

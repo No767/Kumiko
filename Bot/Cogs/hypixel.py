@@ -1,8 +1,10 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -89,6 +91,8 @@ class hypixel_api(commands.Cog):
                                 name="Reason", value=e, inline=True)
                             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @hypixel.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -98,6 +102,8 @@ class hypixel_api(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class hypixel_player_count(commands.Cog):

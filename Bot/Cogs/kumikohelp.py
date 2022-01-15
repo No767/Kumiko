@@ -1,7 +1,9 @@
+import asyncio
 import typing
 
 import discord
 import discord.ext
+import uvloop
 from discord.ext import commands
 
 
@@ -58,8 +60,10 @@ class help(commands.Cog):
                 embedVar.add_field(
                     name="Youtube", value="`.kumikohelp youtube`", inline=True
                 )
-                embedVar.set_author(name="Kumiko Help",
-                                    icon_url=bot.user.avatar_url)
+                embedVar.add_field(
+                    name="Tenor", value="`.rinhelp tenor`", inline=True)
+                embedVar.set_author(
+                    name="Kumiko Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -459,7 +463,48 @@ class help(commands.Cog):
                     text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - YouTube", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - YouTube", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+
+            if str(search) == "tenor":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`tenor-search-multiple`",
+                    value="Searches 5 gifs from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-search-one",
+                    value="Searches for 1 gif on Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-trending",
+                    value="Gets 5 trending gifs from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-search-suggestions",
+                    value="Provies some search suggetsions from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-trending-terms",
+                    value="Returns some trending terms",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="tenor-gif", value="SEarches for 1 gif on Tenor", inline=True
+                )
+                embedVar.add_field(
+                    name="tenor-random",
+                    value="Returns a random gif based on the search term",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Tenor", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
         except Exception as e:
@@ -469,6 +514,8 @@ class help(commands.Cog):
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

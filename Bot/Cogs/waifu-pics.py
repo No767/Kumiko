@@ -1,8 +1,10 @@
+import asyncio
 import random
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -48,15 +50,16 @@ class waifu(commands.Cog):
         searchterm = random.choice(waifu_list)
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
-                waifu_pics = await r.text()
-                waifu_pics_formatted = orjson.loads(waifu_pics)
+                waifu_pics = await r.json()
                 try:
-                    await ctx.send(waifu_pics_formatted["url"])
+                    await ctx.send(waifu_pics["url"])
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The query was not successful"
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

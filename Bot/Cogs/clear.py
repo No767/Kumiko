@@ -1,6 +1,8 @@
+import asyncio
 import random
 
 import discord
+import uvloop
 from discord.ext import commands
 
 
@@ -27,6 +29,8 @@ class clearMessages(commands.Cog):
             delete_after=3,
         )
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @clear.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -39,6 +43,8 @@ class clearMessages(commands.Cog):
             )
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

@@ -1,6 +1,8 @@
+import asyncio
 import random
 
 import discord
+import uvloop
 from discord.ext import commands
 
 
@@ -51,6 +53,8 @@ class Utility(commands.Cog):
         embed.add_field(name="List of all emojis", value=emojis, inline=True)
         embed.set_thumbnail(url=guild.icon_url)
         await ctx.send(embed=embed)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

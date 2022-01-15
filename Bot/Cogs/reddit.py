@@ -1,8 +1,10 @@
+import asyncio
 import os
 import random
 
 import asyncpraw
 import discord
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -37,6 +39,8 @@ class reddit(commands.Cog):
         searchterm = random.choice(searchtopics) + "memes"
         await ctx.invoke(self.bot.get_command("reddit"), search=searchterm)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @commands.command(name="transmeme", help="finds a trans related meme")
     async def transmeme(self, ctx):
         # Tried to watch onetopic in order to figure out the different subs
@@ -54,12 +58,14 @@ class reddit(commands.Cog):
         searchterm = random.choice(searchtopics)
         await ctx.invoke(self.bot.get_command("reddit"), search=searchterm)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @commands.command(name="reddit", help="browses on reddit")
     async def reddit(self, ctx, *, search: str):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:kumiko:v0.1.0 (by /u/No767)",
+            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
         ) as api:
             original_search = search
             try:
@@ -92,6 +98,8 @@ class reddit(commands.Cog):
                 embed.add_field(name="Reason", value=e, inline=True)
                 await ctx.send(embed=embed)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @reddit.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -101,6 +109,8 @@ class reddit(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
