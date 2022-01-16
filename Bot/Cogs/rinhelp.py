@@ -298,6 +298,7 @@ class rinhelp(commands.Cog):
                     value="Checks for current version of Rin",
                     inline=True,
                 )
+                embedVar.add_field(name="`.uptime`", value="Checks for Rin's Uptime", inline=True)
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
                 )
