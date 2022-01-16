@@ -80,12 +80,28 @@ class jisho_dict(commands.Cog):
                         value=jisho["data"][0]["is_common"],
                         inline=True,
                     )
-                    embedVar.add_field(name="Tags", value=jisho['data'][0]['tags'], inline=True)
-                    embedVar.add_field(name="JLPT", value=jisho['data'][0]['jlpt'], inline=True)
-                    embedVar.add_field(name="Antonmys", value=jisho['data'][0]['senses'][0]['antonyms'], inline=True)
-                    embedVar.add_field(name="See Also", value=jisho['data'][0]['senses'][0]['see_also'], inline=True)
-                    embedVar.add_field(name="Links", value=jisho['data'][0]['senses'][0]['links'], inline=True)
-                    
+                    embedVar.add_field(
+                        name="Tags", value=jisho["data"][0]["tags"], inline=True
+                    )
+                    embedVar.add_field(
+                        name="JLPT", value=jisho["data"][0]["jlpt"], inline=True
+                    )
+                    embedVar.add_field(
+                        name="Antonmys",
+                        value=jisho["data"][0]["senses"][0]["antonyms"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="See Also",
+                        value=jisho["data"][0]["senses"][0]["see_also"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Links",
+                        value=jisho["data"][0]["senses"][0]["links"],
+                        inline=True,
+                    )
+
                     embedVar.add_field(
                         name="Attributions",
                         value=f"JMDict >> {jisho['data'][0]['attribution']['jmdict']}\nJMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}\nDBPedia >> {jisho['data'][0]['attribution']['dbpedia']}",
