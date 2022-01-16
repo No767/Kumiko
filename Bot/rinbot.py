@@ -19,7 +19,6 @@ initial_extensions = [
     "Cogs.rinhelp",
     "Cogs.reddit",
     "Cogs.chat",
-    "Cogs.translate",
     "Cogs.server-info",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
@@ -32,7 +31,6 @@ initial_extensions = [
     "Cogs.nb-pride",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
-    "Cogs.spotify",
     "Cogs.rininvite",
     "Cogs.version",
     "Cogs.clear",
@@ -40,6 +38,8 @@ initial_extensions = [
     "Cogs.youtube",
     "Cogs.jisho",
     "Cogs.tenor",
+    "Cogs.uptime",
+    "Cogs.translate",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

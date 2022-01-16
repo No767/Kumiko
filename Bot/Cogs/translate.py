@@ -1,6 +1,8 @@
 import discord
 from deep_translator import GoogleTranslator
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class Utility(commands.Cog):
@@ -35,6 +37,7 @@ class Utility(commands.Cog):
         except Exception as e:
             await ctx.send(f"The query failed.\nReason: {e}")
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 def setup(bot):
     bot.add_cog(Utility(bot))
