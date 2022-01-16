@@ -10,10 +10,12 @@
 - Rewrite DisQuest to handle methods and queries asynchronously
 - Adjust methods for DeviantArt Token Refresher to be async
 - Rewrite Pinterest Cog to be Async 
+- Move Formatters to dev-dependencies section within Pipfile
 
 # Additions
 - Tenor API Support
 - Uvloop
+- Uptime Cmd
 
 # Removals
 - As always, more unused libs
