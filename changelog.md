@@ -16,7 +16,7 @@
 - Tenor API Support
 - Uvloop
 - Uptime Cmd
-
+- Full MangaDex API Support (Reader not finished)
 # Removals
 - As always, more unused libs
 - Ujson
