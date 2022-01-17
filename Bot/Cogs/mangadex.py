@@ -29,7 +29,7 @@ class MangaDexV1(commands.Cog):
                     "order[title]": "asc",
                 }
                 async with session.get(
-                    f"https://api.mangadex.org/manga/", params=params
+                    "https://api.mangadex.org/manga/", params=params
                 ) as r:
                     data = await r.json()
                     id = data["data"][0]["id"]
