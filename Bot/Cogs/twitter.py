@@ -1,70 +1,514 @@
+import asyncio
 import os
 
+import aiohttp
 import discord
-import tweepy
+import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Access the Twitter API via Tweepy
-Twitter_API_Key = os.getenv("Twitter_API_Key")
-API_Secret_Key = os.getenv("API_Secret_Key")
-Access_Token = os.getenv("Access_Token")
-Access_Token_Secret = os.getenv("Access_Token_Secret")
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
 
-auth = tweepy.Client(
-    bearer_token=Bearer_Token,
-    consumer_key=Twitter_API_Key,
-    consumer_secret=API_Secret_Key,
-    access_token=Access_Token,
-    access_token_secret=Access_Token_Secret,
-)
 
-api = tweepy.API(auth)
-
-
-class rintwitter(commands.Cog):
+class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="rt")
-    async def rintwitter(self, ctx):
-        home_timeline = api.mentions_timeline()
-        embedVar = discord.Embed()
-        embedVar.description = f"Current Timeline: {home_timeline}"
-        await ctx.send(embed=embedVar)
+    @commands.command(name="twitter-search", aliases=["ts"])
+    async def twitter_search(self, ctx, *, user: str):
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {"Authorization": f"Bearer {Bearer_Token}"}
+            params = {"q": f"from:{user}", "count": 5}
+            async with session.get(
+                "https://api.twitter.com/1.1/search/tweets.json",
+                headers=headers,
+                params=params,
+            ) as r:
+                data = await r.json()
+                try:
+                    if data["statuses"] is None:
+                        embedVar = discord.Embed()
+                        embedVar.description = (
+                            "Sadly there are no tweets from this user."
+                        )
+                        embedVar.add_field(
+                            name="Result Count",
+                            value=data["meta"]["result_count"],
+                            inline=True,
+                        )
+                        await ctx.send(embed=embedVar)
+                    else:
+                        if "extended_entities" in data["statuses"][0]:
+                            embedVar = discord.Embed()
+                            embedVar.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][0]["created_at"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Name",
+                                value=data["statuses"][0]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Username",
+                                value=data["statuses"][0]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Text",
+                                value=data["statuses"][0]["text"],
+                                inline=True,
+                            )
+                            embedVar.set_thumbnail(
+                                url=str(
+                                    data["statuses"][0]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            embedVar.set_image(
+                                url=data["statuses"][0]["extended_entities"]["media"][
+                                    0
+                                ]["media_url_https"]
+                            )
+                            await ctx.send(embed=embedVar)
+                        else:
+                            embedVar = discord.Embed()
+                            embedVar.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][0]["created_at"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Name",
+                                value=data["statuses"][0]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Username",
+                                value=data["statuses"][0]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Text",
+                                value=data["statuses"][0]["text"],
+                                inline=True,
+                            )
+                            embedVar.set_thumbnail(
+                                url=str(
+                                    data["statuses"][0]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            await ctx.send(embed=embedVar)
+
+                        if "extended_entities" in data["statuses"][1]:
+                            embedVar2 = discord.Embed()
+                            embedVar2.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][1]["created_at"],
+                                inline=True,
+                            )
+                            embedVar2.add_field(
+                                name="Name",
+                                value=data["statuses"][1]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar2.add_field(
+                                name="Username",
+                                value=data["statuses"][1]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar2.add_field(
+                                name="Text",
+                                value=data["statuses"][1]["text"],
+                                inline=True,
+                            )
+                            embedVar2.set_thumbnail(
+                                url=str(
+                                    data["statuses"][1]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            embedVar2.set_image(
+                                url=data["statuses"][1]["extended_entities"]["media"][
+                                    0
+                                ]["media_url_https"]
+                            )
+                            await ctx.send(embed=embedVar2)
+                        else:
+                            embedVar2 = discord.Embed()
+                            embedVar2.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][1]["created_at"],
+                                inline=True,
+                            )
+                            embedVar2.add_field(
+                                name="Name",
+                                value=data["statuses"][1]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar2.add_field(
+                                name="Username",
+                                value=data["statuses"][1]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar2.add_field(
+                                name="Text",
+                                value=data["statuses"][1]["text"],
+                                inline=True,
+                            )
+                            embedVar2.set_thumbnail(
+                                url=str(
+                                    data["statuses"][1]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            await ctx.send(embed=embedVar2)
+                        if "extended_entities" in data["statuses"][2]:
+                            embedVar3 = discord.Embed()
+                            embedVar3.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][2]["created_at"],
+                                inline=True,
+                            )
+                            embedVar3.add_field(
+                                name="Name",
+                                value=data["statuses"][2]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar3.add_field(
+                                name="Username",
+                                value=data["statuses"][2]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar3.add_field(
+                                name="Text",
+                                value=data["statuses"][2]["text"],
+                                inline=True,
+                            )
+                            embedVar3.set_thumbnail(
+                                url=str(
+                                    data["statuses"][2]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            embedVar3.set_image(
+                                url=data["statuses"][2]["extended_entities"]["media"][
+                                    0
+                                ]["media_url_https"]
+                            )
+                            await ctx.send(embed=embedVar3)
+                        else:
+                            embedVar3 = discord.Embed()
+                            embedVar3.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][2]["created_at"],
+                                inline=True,
+                            )
+                            embedVar3.add_field(
+                                name="Name",
+                                value=data["statuses"][2]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar3.add_field(
+                                name="Username",
+                                value=data["statuses"][2]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar3.add_field(
+                                name="Text",
+                                value=data["statuses"][2]["text"],
+                                inline=True,
+                            )
+                            embedVar3.set_thumbnail(
+                                url=str(
+                                    data["statuses"][2]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            await ctx.send(embed=embedVar3)
+                        if "extended_entities" in data["statuses"][3]:
+                            embedVar4 = discord.Embed()
+                            embedVar4.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][3]["created_at"],
+                                inline=True,
+                            )
+                            embedVar4.add_field(
+                                name="Name",
+                                value=data["statuses"][3]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar4.add_field(
+                                name="Username",
+                                value=data["statuses"][3]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar4.add_field(
+                                name="Text",
+                                value=data["statuses"][3]["text"],
+                                inline=True,
+                            )
+                            embedVar4.set_thumbnail(
+                                url=str(
+                                    data["statuses"][3]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            embedVar4.set_image(
+                                url=data["statuses"][3]["extended_entities"]["media"][
+                                    0
+                                ]["media_url_https"]
+                            )
+                            await ctx.send(embed=embedVar4)
+                        else:
+                            embedVar4 = discord.Embed()
+                            embedVar4.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][3]["created_at"],
+                                inline=True,
+                            )
+                            embedVar4.add_field(
+                                name="Name",
+                                value=data["statuses"][3]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar4.add_field(
+                                name="Username",
+                                value=data["statuses"][3]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar4.add_field(
+                                name="Text",
+                                value=data["statuses"][3]["text"],
+                                inline=True,
+                            )
+                            embedVar4.set_thumbnail(
+                                url=str(
+                                    data["statuses"][3]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            await ctx.send(embed=embedVar4)
+                        if "extended_entities" in data["statuses"][4]:
+                            embedVar5 = discord.Embed()
+                            embedVar5.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][4]["created_at"],
+                                inline=True,
+                            )
+                            embedVar5.add_field(
+                                name="Name",
+                                value=data["statuses"][4]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar5.add_field(
+                                name="Username",
+                                value=data["statuses"][4]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar5.add_field(
+                                name="Text",
+                                value=data["statuses"][4]["text"],
+                                inline=True,
+                            )
+                            embedVar5.set_thumbnail(
+                                url=str(
+                                    data["statuses"][4]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            embedVar5.set_image(
+                                url=data["statuses"][4]["extended_entities"]["media"][
+                                    0
+                                ]["media_url_https"]
+                            )
+                            await ctx.send(embed=embedVar5)
+                        else:
+                            embedVar5 = discord.Embed()
+                            embedVar5.add_field(
+                                name="Tweet Created At",
+                                value=data["statuses"][4]["created_at"],
+                                inline=True,
+                            )
+                            embedVar5.add_field(
+                                name="Name",
+                                value=data["statuses"][4]["user"]["name"],
+                                inline=True,
+                            )
+                            embedVar5.add_field(
+                                name="Username",
+                                value=data["statuses"][4]["user"]["screen_name"],
+                                inline=True,
+                            )
+                            embedVar5.add_field(
+                                name="Text",
+                                value=data["statuses"][4]["text"],
+                                inline=True,
+                            )
+                            embedVar5.set_thumbnail(
+                                url=str(
+                                    data["statuses"][4]["user"]["profile_image_url"]
+                                ).replace("_normal", "_bigger")
+                            )
+                            await ctx.send(embed=embedVar5)
+                except Exception as e:
+                    embedError = discord.Embed()
+                    embedError.description = "Something went wrong. Please try again."
+                    embedError.add_field(name="Error", value=e, inline=True)
+                    await ctx.send(embed=embedError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @twitter_search.error
+    async def on_message_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+            embedVar.description = f"Missing a requireed argument: {error.param}"
+            msg = await ctx.send(embed=embedVar, delete_after=10)
+            await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-class rtupdatestatus(commands.Cog):
+class TwitterV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # The OAuth can only handle Read requests, not post requests. adding support in the future
-    @commands.command(name="rtupdatestatus")
-    async def on_message(self, ctx, search: str):
-        twitter_query = api.update_status(status=search)
-        twitter_embed = discord.Embed()
-        twitter_embed.description = (
-            f"Your Twitter Status has been updated to {twitter_query}"
-        )
-        await ctx.send(embed=twitter_embed)
+    @commands.command(name="twitter-user", aliases=["tu"])
+    async def twitter_user(self, ctx, *, user: str):
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {"Authorization": f"Bearer {Bearer_Token}"}
+            params = {"q": user, "count": 1}
+            async with session.get(
+                "https://api.twitter.com/1.1/users/search.json",
+                headers=headers,
+                params=params,
+            ) as resp:
+                data2 = await resp.json()
+                try:
+                    if "profile_banner_url" in data2[0]:
+                        embedVar = discord.Embed()
+                        embedVar.title = f"{data2[0]['name']}'s Twitter Profile"
+                        embedVar.add_field(
+                            name="Username", value=data2[0]["screen_name"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Location",
+                            value=f'[{data2[0]["location"]}]',
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Description",
+                            value=f'[{data2[0]["description"]}]',
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Followers",
+                            value=data2[0]["followers_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Friends Count",
+                            value=data2[0]["friends_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Listed Count",
+                            value=data2[0]["listed_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Amount of Tweets/Statuses",
+                            value=data2[0]["statuses_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Created At",
+                            value=str(data2[0]["created_at"]
+                                      ).replace("+0000", ""),
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Verified", value=data2[0]["verified"], inline=True
+                        )
+                        embedVar.set_thumbnail(
+                            url=str(data2[0]["profile_image_url_https"]).replace(
+                                "_normal", ""
+                            )
+                        )
+                        embedVar.set_image(url=data2[0]["profile_banner_url"])
+                        await ctx.send(embed=embedVar)
+                    else:
+                        embedVar = discord.Embed()
+                        embedVar.title = f"{data2[0]['name']}'s Twitter Profile"
+                        embedVar.add_field(
+                            name="Username", value=data2[0]["screen_name"], inline=True
+                        )
+                        embedVar.add_field(
+                            name="Location",
+                            value=f'[{data2[0]["location"]}]',
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Description",
+                            value=f'[{data2[0]["description"]}]',
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Followers",
+                            value=data2[0]["followers_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Friends Count",
+                            value=data2[0]["friends_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Listed Count",
+                            value=data2[0]["listed_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Amount of Tweets/Statuses",
+                            value=data2[0]["statuses_count"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Created At",
+                            value=str(data2[0]["created_at"]
+                                      ).replace("+0000", ""),
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Verified", value=data2[0]["verified"], inline=True
+                        )
+                        embedVar.set_thumbnail(
+                            url=str(data2[0]["profile_image_url_https"]).replace(
+                                "_normal", ""
+                            )
+                        )
+                        await ctx.send(embed=embedVar)
 
+                except Exception as e:
+                    embedError2 = discord.Embed()
+                    embedError2.description = "Something went wrong. Please try again."
+                    embedError2.add_field(name="Error", value=e, inline=True)
+                    await ctx.send(embed=embedError2)
 
-class rtgetsaved(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # Make sure that the search input is a string, by wrapping it in '' or ""
-    @commands.command(name="rtsearch")
-    async def rtgetsaved(self, ctx, *, search: str):
-        search_embed = discord.Embed()
-        search_embed.description = f"{api.get_user(search)}"
-        await ctx.send(embed=search_embed)
+    @twitter_user.error
+    async def on_message_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
+        if isinstance(error, commands.MissingRequiredArgument):
+            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+            embedVar.description = f"Missing a requireed argument: {error.param}"
+            msg = await ctx.send(embed=embedVar, delete_after=10)
+            await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
-    bot.add_cog(rintwitter(bot))
-    bot.add_cog(rtgetsaved(bot))
-    bot.add_cog(rtupdatestatus(bot))
+    bot.add_cog(TwitterV1(bot))
+    bot.add_cog(TwitterV2(bot))

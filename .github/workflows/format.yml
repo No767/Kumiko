@@ -11,16 +11,24 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-    - name: Set up Python 3.10.0
+    - name: Set up Python 3.10.1
+      id: setup-python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10.0
+        python-version: 3.10.1
     - name: Upgrade Pip and Install Pipenv
       run: |
         pip install --upgrade pip pipenv
+    - name: Cache Pipenv
+      id: cache-pipenv
+      uses: actions/cache@v2.1.7
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
     - name: Install Pipenv Dependencies
+      if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run: |
-        pipenv install
+        pipenv install --dev
     - name: Format with Black
       run: |
         pipenv run black Bot/Cogs

@@ -1,6 +1,14 @@
+import asyncio
+import random
+
 import discord
-from Cogs import plugin_tools
+import uvloop
 from discord.ext import commands
+
+
+def pickColor():
+    colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
+    return random.choice(colors)
 
 
 class Utility(commands.Cog):
@@ -21,7 +29,7 @@ class Utility(commands.Cog):
         epox = guild.created_at
         explicit = guild.explicit_content_filter
         emojis = guild.emojis
-        embed = discord.Embed(color=plugin_tools.discord_colors())
+        embed = discord.Embed(color=pickColor())
         embed.title = "Server Info"
         embed.add_field(name="Name", value=name, inline=True)
         embed.add_field(name="# of channels", value=len(channels), inline=True)
@@ -45,6 +53,8 @@ class Utility(commands.Cog):
         embed.add_field(name="List of all emojis", value=emojis, inline=True)
         embed.set_thumbnail(url=guild.icon_url)
         await ctx.send(embed=embed)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

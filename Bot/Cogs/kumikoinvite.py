@@ -1,4 +1,7 @@
+import asyncio
+
 import discord
+import uvloop
 from discord.ext import commands
 
 
@@ -13,6 +16,8 @@ class InviteV1(commands.Cog):
         embedVar.description = "[Top.gg](https://top.gg/bot/865883525932253184/invite)\n[Discord.boats](https://discord.boats/bot/865883525932253184/invite)\n[Fallback URL](https://discord.com/api/oauth2/authorize?client_id=865883525932253184&permissions=8&scope=bot)"
         embedVar.set_author(name="Invite", icon_url=bot.user.avatar_url)
         await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

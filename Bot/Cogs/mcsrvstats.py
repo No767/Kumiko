@@ -1,6 +1,9 @@
+import asyncio
+
 import aiohttp
 import discord
-import ujson
+import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -10,7 +13,7 @@ class mcsrvstats(commands.Cog):
 
     @commands.command(name="javamcsrv", aliases=["java"])
     async def java(self, ctx, search: str):
-        async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.mcsrvstat.us/2/{search}") as r:
                 mcsrv = await r.json()
                 image_link = f"https://api.mcsrvstat.us/icon/{search}"
@@ -159,6 +162,8 @@ class mcsrvstats(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @java.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -169,6 +174,8 @@ class mcsrvstats(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
@@ -176,7 +183,7 @@ class bedrock_mcsrvstats(commands.Cog):
 
     @commands.command(name="bedrockmcsrv", aliases=["bedrock"])
     async def bedrock(self, ctx, search: str):
-        async with aiohttp.ClientSession(json_serialize=ujson.loads) as session:
+        async with aiohttp.ClientSession(json_serialize=orjson.loads) as session:
             async with session.get(f"https://api.mcsrvstat.us/bedrock/2/{search}") as r:
                 bedmcsrv = await r.json()
                 bedimage_link = f"https://api.mcsrvstat.us/icon/{search}"
@@ -335,6 +342,8 @@ class bedrock_mcsrvstats(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @bedrock.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -344,6 +353,8 @@ class bedrock_mcsrvstats(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

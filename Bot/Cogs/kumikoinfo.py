@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord_components import Button
 
 
 class info(commands.Cog):
@@ -8,7 +7,7 @@ class info(commands.Cog):
         self.bot = bot
 
     @commands.command(name="kumiko-info", help="Server Info")
-    async def on_message(self, message):
+    async def on_message(self, ctx):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
         embedVar.set_author(name="Kumiko Info", icon_url=bot.user.avatar_url)
@@ -29,32 +28,7 @@ class info(commands.Cog):
         embedVar.set_footer(
             text="Project Lead Maintainer and Original Creator of Rin and Kumiko: No767\nOriginal Creator of EasyBot.py and EasyBot Plugins: Chisaku-dev"
         )
-        await message.channel.send(
-            embed=embedVar,
-            components=[
-                [
-                    Button(
-                        label="GitHub", url="https://github.com/No767/Kumiko", style=5
-                    ),
-                    Button(
-                        label="Issue Tracker",
-                        url="https://github.com/No767/Kumiko/issues",
-                        style=5,
-                    ),
-                    Button(
-                        label="Docs",
-                        url="https://rin-docs.readthedocs.io/en/latest",
-                        style=5,
-                    ),
-                    Button(
-                        label="Invite",
-                        url="https://top.gg/bot/865883525932253184/invite",
-                        style=5,
-                    ),
-                    Button(label="Website", url="https://rinbot.live", style=5),
-                ]
-            ],
-        )
+        await ctx.send(embed=embedVar)
 
 
 def setup(bot):

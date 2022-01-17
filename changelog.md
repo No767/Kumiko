@@ -1,26 +1,31 @@
-**This is only an alpha release. The source code is stable and updated to match the commits that Rin has. The changes below are marked for Rin v1.3.0**
+**Note that this release of Kumiko is coincided with Rin v1.4.0-dev**
 
 # TD;LR
-- MangaDex API Support (Experimental)
-- Fix DeviantArt Token Refresher Cog
+- Replace Asyncio with Uvloop (Faster performance)
+- Add the beginnings of the economy system
 
 # Changes
-- Updated Translate Cog to work now
-- Use PyCord instead of Discord.py
-- Officially once and for all, the DeviantArt Token Refresher Cog is working. (Done through SQLAlchemy instead)
-- Bump to Python 3.10.1
-- Fix Snyk workflow secrets issue
-- Make McSrvStat and MangaDex async to improve performance
-- Updated Upstream (Rin)
-- Bump lxml from 4.6.4 to 4.6.5 to fix a massive security vulnerability
+- Make Reddit Cog Completely Async (This should finally speed up performance)
+- Make Waifu-Generator Cog Async
+- Use lxml for parsing HTML data instead of the default html parser
+- Kinda finished the MangaDex Cog (still need to work on the reader)
+- Replace Asyncio with Uvloop (Massive performance gains)
+- Rewrite DisQuest to handle methods and queries asynchronously
+- Adjust methods for DeviantArt Token Refresher to be async
+- Rewrite Pinterest Cog to be Async 
+- Add Bonk Cmd
+- Add Economy System (the base of the economy system)
+- Move Formatters to dev-dependencies section within Pipfile
+- Require DeviantArt Token Refresher to handle DB connections and queries asynchronously
+- Phase out Ujson as the main JSON parser
+- Bump Pillow to 9.0.0 to avoid security vulnerabilities
 
 # Additions
-- MangaDex API Support (This time all of it is completely asynchronous and http requests handled by AIOHTTP instead. This should make getting the images a lot faster)
-- Use PyCord instead
-- Codeowners (For faster code review if needed)
+- Tenor API Support
+- Uvloop
+- Uptime Cmd
+- Mangadex API Support
 
 # Removals
-- Disabled missing commands handler (for discords.com verfication)
-- EasyBot.py and EasyBot-Plugins submodule 
-- Discord.py (Discord.py is not maintained anymore)
-- Docker Workflow
+- As always, more unused libs
+- Ujson

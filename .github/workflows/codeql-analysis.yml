@@ -24,20 +24,29 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-    - name: Set up Python 3.10.0
+    - name: Set up Python 3.10.1
+      id: setup-python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10.0
-    - name: Upgrade Pip and Install Pipenv
+        python-version: 3.10.1
+    - name: Upgrade Pip + Install Pipenv
       run: |
-        pip install --upgrade pip pipenv
+        python3 -m pip install --upgrade pip setuptools pipenv
+    - name: Cache Pipenv
+      id: cache-pipenv
+      uses: actions/cache@v2.1.7
+      with:
+          path: ~/.local/share/virtualenvs
+          key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
     - name: Install Pipenv Dependencies
+      if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run: |
-        pipenv install
+          pipenv install
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
         languages: python
+        setup-python-dependencies: false
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
       with:
