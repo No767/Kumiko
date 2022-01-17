@@ -4,6 +4,8 @@ import discord
 import motor.motor_asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
+import asyncio
+import uvloop
 
 load_dotenv()
 
@@ -97,6 +99,8 @@ class Kumiko_EcoV1(commands.Cog):
             name="Balance", value=f"{res['user']['coins']} coin(s)", inline=True
         )
         await ctx.send(embed=embedVar)
+        
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class Kumiko_EcoV2(commands.Cog):
@@ -107,6 +111,8 @@ class Kumiko_EcoV2(commands.Cog):
     async def top(self, ctx):
         eco = ecoFunc(ctx)
         await eco.top()
+        
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
