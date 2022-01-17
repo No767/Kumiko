@@ -68,12 +68,12 @@ class jisho_dict(commands.Cog):
                     embedVar.add_field(
                         name="Kanji",
                         value=[str(c).replace("'", "") for c in res.chars],
-                        inline=True
+                        inline=True,
                     )
                     embedVar.add_field(
                         name="Position of Speech (POS)",
                         value=jisho["data"][0]["senses"][0]["parts_of_speech"],
-                        inline=True
+                        inline=True,
                     )
                     embedVar.add_field(
                         name="Is Common?",
@@ -108,9 +108,7 @@ class jisho_dict(commands.Cog):
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="HTTP Status (Jisho API)",
-                        value=r.status,
-                        inline=True
+                        name="HTTP Status (Jisho API)", value=r.status, inline=True
                     )
                     embedVar.description = str(
                         [str(word[0]) for word in res.entries])

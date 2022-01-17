@@ -61,7 +61,8 @@ class help(commands.Cog):
                     name="Youtube", value="`.kumikohelp youtube`", inline=True
                 )
                 embedVar.add_field(
-                    name="Tenor", value="`.kumikohelp tenor`", inline=True)
+                    name="Tenor", value="`.kumikohelp tenor`", inline=True
+                )
                 embedVar.set_author(name="Kumiko Help",
                                     icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
