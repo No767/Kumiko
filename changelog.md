@@ -12,10 +12,12 @@
 - Rewrite Pinterest Cog to be Async 
 - Add Bonk Cmd
 - Add Economy System (the base of the economy system)
+- Move Formatters to dev-dependencies section within Pipfile
 
 # Additions
 - Tenor API Support
 - Uvloop
+- Uptime Cmd
 
 # Removals
 - As always, more unused libs

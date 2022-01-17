@@ -129,8 +129,6 @@ class PinterestV3(commands.Cog):
 
     @commands.command(name="pinterest-board", aliases=["pt-board"])
     async def board(self, ctx, board_id: int):
-        board = get_board(board_id)
-        board_list = get_list_board(board_id)
         headers = {"Authorization": f"Bearer {Pinterest_API_Access_Token}"}
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(

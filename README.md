@@ -19,68 +19,17 @@ Still in early production. Not ready for release yet
 
 # Building
 
-Getting the environment set up for the bot is a kinda complex process. Kumiko now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
 ## Windows
 
 1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
-2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+2. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma
-```
-3. Make sure you also have `libffi-dev` and `python3.10-dev` installed. If not, run this command:
-
-```sh
-sudo apt install libffi-dev python3.10-dev
+sudo apt-get install liblzma-dev lzma python3.10-dev
 ```
 
-4. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
-5. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
-
-```sh
-sudo python3.10 -m pip install --upgrade pipenv
-```
-
-6. Clone this repo.
-7. Create the Pipenv. To do so, run this command: 
-
-```sh
-pipenv --python 3.10
-```
-
-8. `cd` into the cloned repo and install all the dependencies by running this command:
-
-```sh
-pipenv install
-```
-9. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
-
-```sh
-$HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
-```
-
-Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
-
-## Linux
-
-1. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
-
-```sh
-sudo apt-get install liblzma-dev lzma
-```
-
-If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
-
-```sh
-yum install -y xz-devel
-```
-
-2. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
-3. Make sure you also have `libffi-dev` and `python3.10-dev` installed. If not, run this command:
-
-```sh
-sudo apt install libffi-dev python3.10-dev
-```
+3. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
 4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
 ```sh
@@ -95,6 +44,47 @@ pipenv --python 3.10
 ```
 
 7. `cd` into the cloned repo and install all the dependencies by running this command:
+
+```sh
+pipenv install
+```
+8. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
+
+```sh
+$HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
+```
+
+Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
+
+## Linux
+
+1. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+
+```sh
+sudo apt-get install liblzma-dev lzma python3.10-dev
+```
+
+If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
+
+```sh
+yum install -y xz-devel
+```
+
+2. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
+3. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+```sh
+sudo python3.10 -m pip install --upgrade pipenv
+```
+
+4. Clone this repo.
+5. Create the Pipenv. To do so, run this command: 
+
+```sh
+pipenv --python 3.10
+```
+
+6. `cd` into the cloned repo and install all the dependencies by running this command:
 
 ```sh
 pipenv install

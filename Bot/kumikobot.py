@@ -44,6 +44,7 @@ initial_extensions = [
     "Cogs.bonk",
     "Cogs.tenor",
     "Cogs.economy-base",
+    "Cogs.uptime",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

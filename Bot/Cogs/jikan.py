@@ -25,7 +25,6 @@ class JikanV1(commands.Cog):
                     f"https://api.jikan.moe/v3/anime/{anime_id}"
                 ) as resp:
                     anime_info_v2 = await resp.json()
-                    print(anime_info_v2)
                     try:
                         embedVar = discord.Embed(title=anime_info_v2["title"])
                         embedVar2 = discord.Embed(
@@ -155,7 +154,6 @@ class JikanV2(commands.Cog):
                     f"https://api.jikan.moe/v3/manga/{manga_id}"
                 ) as re:
                     manga_info_v1 = await re.json()
-                    print(manga_info_v1)
                     try:
                         embedVar = discord.Embed(
                             title=manga_info_v1["title"],

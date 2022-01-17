@@ -19,7 +19,7 @@ class help(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** | **[Docs](https://rin-docs.readthedocs.io/en/latest/)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
+                        **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
                         """
                 embedVar.add_field(
                     name="Admin", value="`.kumikohelp admin`", inline=True
@@ -61,7 +61,7 @@ class help(commands.Cog):
                     name="Youtube", value="`.kumikohelp youtube`", inline=True
                 )
                 embedVar.add_field(
-                    name="Tenor", value="`.rinhelp tenor`", inline=True)
+                    name="Tenor", value="`.kumikohelp tenor`", inline=True)
                 embedVar.set_author(name="Kumiko Help",
                                     icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -303,6 +303,9 @@ class help(commands.Cog):
                     name="`version`",
                     value="Checks for current version of Rin",
                     inline=True,
+                )
+                embedVar.add_field(
+                    name="`.uptime`", value="Checks for Kumiko's Uptime", inline=True
                 )
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url

@@ -28,7 +28,7 @@ jobs:
     - name: Install Pipenv Dependencies
       if: steps.cache-pipenv.outputs.cache-hit != 'true'
       run: |
-        pipenv install
+        pipenv install --dev
     - name: Format with Black
       run: |
         pipenv run black Bot/Cogs

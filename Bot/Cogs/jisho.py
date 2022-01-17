@@ -68,32 +68,49 @@ class jisho_dict(commands.Cog):
                     embedVar.add_field(
                         name="Kanji",
                         value=[str(c).replace("'", "") for c in res.chars],
-                        inline=False,
+                        inline=True
                     )
                     embedVar.add_field(
                         name="Position of Speech (POS)",
                         value=jisho["data"][0]["senses"][0]["parts_of_speech"],
-                        inline=False,
+                        inline=True
                     )
                     embedVar.add_field(
                         name="Is Common?",
                         value=jisho["data"][0]["is_common"],
-                        inline=False,
+                        inline=True,
                     )
                     embedVar.add_field(
-                        name="Other Info",
-                        value=f"Tags >> {jisho['data'][0]['tags']}\nJLPT >> {jisho['data'][0]['tags']}\nAntonyms >> {jisho['data'][0]['senses'][0]['antonyms']}\nSee Also >> {jisho['data'][0]['senses'][0]['see_also']}\nLinks >> {jisho['data'][0]['senses'][0]['links']}",
-                        inline=False,
+                        name="Tags", value=jisho["data"][0]["tags"], inline=True
                     )
+                    embedVar.add_field(
+                        name="JLPT", value=jisho["data"][0]["jlpt"], inline=True
+                    )
+                    embedVar.add_field(
+                        name="Antonmys",
+                        value=jisho["data"][0]["senses"][0]["antonyms"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="See Also",
+                        value=jisho["data"][0]["senses"][0]["see_also"],
+                        inline=True,
+                    )
+                    embedVar.add_field(
+                        name="Links",
+                        value=jisho["data"][0]["senses"][0]["links"],
+                        inline=True,
+                    )
+
                     embedVar.add_field(
                         name="Attributions",
                         value=f"JMDict >> {jisho['data'][0]['attribution']['jmdict']}\nJMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}\nDBPedia >> {jisho['data'][0]['attribution']['dbpedia']}",
-                        inline=False,
+                        inline=True,
                     )
                     embedVar.add_field(
                         name="HTTP Status (Jisho API)",
-                        value=f"{jisho['meta']['status']}",
-                        inline=False,
+                        value=r.status,
+                        inline=True
                     )
                     embedVar.description = str(
                         [str(word[0]) for word in res.entries])
