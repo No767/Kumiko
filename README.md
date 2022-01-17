@@ -23,13 +23,13 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 ## Windows
 
 1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
-2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+2. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma
+sudo apt-get install liblzma-dev lzma python3.10-dev
 ```
 
-3. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
+3. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
 4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
 ```sh
@@ -61,7 +61,7 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
 1. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma
+sudo apt-get install liblzma-dev lzma python3.10-dev
 ```
 
 If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
@@ -70,7 +70,7 @@ If you are on a different distro that doesn't use `apt` like CentOS, install LZM
 yum install -y xz-devel
 ```
 
-2. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
+2. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
 3. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
 ```sh
@@ -133,6 +133,6 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 <div align=center>
     
  [![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
-  
+ [![Discord.boats](https://discord.boats/api/widget/865883525932253184?type=svg)](https://discord.boats/bot/865883525932253184) 
     
 </div>
