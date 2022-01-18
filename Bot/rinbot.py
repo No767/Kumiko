@@ -18,7 +18,6 @@ initial_extensions = [
     "Cogs.valid",
     "Cogs.rinhelp",
     "Cogs.reddit",
-    "Cogs.chat",
     "Cogs.server-info",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
