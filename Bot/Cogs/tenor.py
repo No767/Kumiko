@@ -1,12 +1,12 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
-import asyncio
-import uvloop
 
 load_dotenv()
 
@@ -253,6 +253,7 @@ class TenorV5(commands.Cog):
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class TenorV6(commands.Cog):
     def __init__(self, bot):

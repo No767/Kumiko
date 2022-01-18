@@ -1,12 +1,12 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
-import asyncio
-import uvloop
 
 load_dotenv()
 
@@ -94,7 +94,7 @@ class TopGGV1(commands.Cog):
                     await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
+
     @topgg_search_one.error
     async def on_message(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -104,6 +104,7 @@ class TopGGV1(commands.Cog):
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class TopGGV2(commands.Cog):
     def __init__(self, bot):
@@ -172,6 +173,7 @@ class TopGGV2(commands.Cog):
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
     bot.add_cog(TopGGV1(bot))
