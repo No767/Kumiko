@@ -371,7 +371,7 @@
                 "sha256:7940bcf167b1b213b8e2cf0dbf54c3e1a7a5c95121bf698dbb72bb82f7a48feb",
                 "sha256:effb7093ab66c621970439600c50ef87117e34f5fef5260b0eea76b62b0f96ad"
             ],
-            "markers": "python_version < '4' and python_full_version >= '3.6.0'",
+            "markers": "python_version < '4.0' and python_full_version >= '3.6.0'",
             "version": "==1.4.9"
         },
         "greenlet": {
@@ -781,10 +781,10 @@
         },
         "reactionmenu": {
             "hashes": [
-                "sha256:e927735135207adee1a3684ca8ec01ae68aa13f9a6268591a86a03db7eba20e8"
+                "sha256:caf1d2228b1895a273e6592f516c56864ee1b6c20095ba9cf65db40df09c3a93"
             ],
             "index": "pypi",
-            "version": "==2.0.3"
+            "version": "==2.0.4"
         },
         "requests": {
             "hashes": [
@@ -881,7 +881,7 @@
                 "sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed",
                 "sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
             "version": "==1.26.8"
         },
         "uvloop": {

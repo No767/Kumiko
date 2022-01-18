@@ -13,14 +13,14 @@ load_dotenv()
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
 Password = os.getenv("Postgres_Password")
-IP = os.getenv("Postgres_Server_IP")
+ServerIP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 
 async def select_values():
     meta = MetaData()
     engine = create_async_engine(
-        f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+        f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
         "DA_Tokens",
@@ -39,7 +39,7 @@ async def select_values():
 async def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
     engine = create_async_engine(
-        f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+        f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
         "DA_Tokens",

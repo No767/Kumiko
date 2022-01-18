@@ -157,7 +157,7 @@ class DisQuestV2(commands.Cog):
                 .order_by(users.c.xp.desc())
             )
             results = await conn.execute(s)
-            members = list(await results.fetchall())
+            members = list(results.fetchall())
             for i, mem in enumerate(members):
                 members[
                     i
@@ -208,7 +208,7 @@ class DisQuestV3(commands.Cog):
                 .limit(10)
             )
             results = await conn.execute(s)
-            results_fetched = await results.fetchall()
+            results_fetched = results.fetchall()
             members = list(results_fetched)
             for i, mem in enumerate(members):
                 members[

@@ -62,6 +62,8 @@ class Chat(commands.Cog):
             embedVar.add_field(name="Reason", value=e, inline=True)
             await message.channel.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
     bot.add_cog(Chat(bot))

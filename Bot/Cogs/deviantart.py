@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 load_dotenv()
 
 Password = os.getenv("Postgres_Password")
-IP = os.getenv("Postgres_Server_IP")
+Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 
@@ -22,7 +22,7 @@ class tokenFetcher:
     async def get(self):
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
         )
         tokens = Table(
             "DA_Tokens",

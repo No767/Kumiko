@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class rinpinger(commands.Cog):
@@ -23,6 +25,8 @@ class rinpinger(commands.Cog):
         except Exception as e:
             await ctx.send(f"The pinger cog didnt work. Please try again.\nReason: {e}")
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @pinger.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -32,6 +36,8 @@ class rinpinger(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

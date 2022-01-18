@@ -4,6 +4,8 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from instagram_private_api import Client
+import asyncio
+import uvloop
 
 load_dotenv()
 
@@ -96,6 +98,8 @@ class instagram(commands.Cog):
             )
             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @info.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -110,6 +114,8 @@ class instagram(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class iginfo(commands.Cog):
@@ -175,6 +181,8 @@ class iginfo(commands.Cog):
             )
             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @user_search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -189,6 +197,8 @@ class iginfo(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class top_search(commands.Cog):
@@ -247,6 +257,8 @@ class top_search(commands.Cog):
             )
             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tag.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -261,6 +273,8 @@ class top_search(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class username_checker(commands.Cog):
@@ -313,6 +327,8 @@ class username_checker(commands.Cog):
             )
             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @username.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -327,6 +343,8 @@ class username_checker(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class userfeed(commands.Cog):
@@ -360,6 +378,8 @@ class userfeed(commands.Cog):
             )
             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @feed.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -374,6 +394,8 @@ class userfeed(commands.Cog):
             embedVar.description = f"Missing a requireed argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

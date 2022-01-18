@@ -5,6 +5,8 @@ import spotipy
 from discord.ext import commands
 from dotenv import load_dotenv
 from spotipy.oauth2 import SpotifyClientCredentials
+import asyncio
+import uvloop
 
 load_dotenv()
 
@@ -54,6 +56,8 @@ class SpotifyV1(commands.Cog):
             embedVar.add_field(name="Error", value=e, inline=False)
             await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -63,6 +67,8 @@ class SpotifyV1(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

@@ -49,6 +49,8 @@ class Global(commands.Cog):
                         # if all criteria met then send
                         await channel.send(embed=message_embed)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
     bot.add_cog(Global(bot))

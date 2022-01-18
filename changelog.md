@@ -11,12 +11,16 @@
 - Adjust methods for DeviantArt Token Refresher to be async
 - Rewrite Pinterest Cog to be Async 
 - Move Formatters to dev-dependencies section within Pipfile
+- Literally add Uvloop to every single cog
+- Use Bullseye Tag for Dockerfile
 
 # Additions
 - Tenor API Support
 - Uvloop
 - Uptime Cmd
 - Full MangaDex API Support (Reader not finished)
+
 # Removals
 - As always, more unused libs
 - Ujson
+- Disabled Translate Cog (in case if discord bot verifiers want to exploit this cmd )

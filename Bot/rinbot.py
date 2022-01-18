@@ -39,7 +39,7 @@ initial_extensions = [
     "Cogs.jisho",
     "Cogs.tenor",
     "Cogs.uptime",
-    "Cogs.translate",
+    "Cogs.mangadex",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
