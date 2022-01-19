@@ -2,6 +2,7 @@ import asyncio
 
 import discord
 from discord.ext import commands
+import uvloop
 
 
 class Global(commands.Cog):

@@ -344,8 +344,8 @@ class TenorV7(commands.Cog):
             }
             async with session.get(
                 "https://g.tenor.com/v1/random", params=params
-            ) as object:
-                data8 = await object.json()
+            ) as object3:
+                data8 = await object3.json()
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = data8["results"][0]["content_description"]
