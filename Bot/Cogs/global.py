@@ -38,7 +38,7 @@ class Global(commands.Cog):
                 # if user uploaded image
                 try:
                     message_embed.set_image(url=message.attachments[0].url)
-                except:
+                except BaseException:
                     await asyncio.sleep(0)
             # add message text to embed
             message_embed.description = message.content
