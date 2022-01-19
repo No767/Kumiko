@@ -14,16 +14,16 @@ To get started, you'll need these things installed:
 ## Installing Dependencies
 
 Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
-### Windows
+## Windows
 
 1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
-2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+2. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma
+sudo apt-get install liblzma-dev lzma python3.10-dev
 ```
 
-3. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
+3. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
 4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
 ```sh
@@ -50,12 +50,12 @@ $HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
 
 Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
 
-### Linux
+## Linux
 
 1. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma
+sudo apt-get install liblzma-dev lzma python3.10-dev
 ```
 
 If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
@@ -64,7 +64,7 @@ If you are on a different distro that doesn't use `apt` like CentOS, install LZM
 yum install -y xz-devel
 ```
 
-2. Compile Python 3.10 from source. If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
+2. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
 3. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
 ```sh
@@ -84,7 +84,7 @@ pipenv --python 3.10
 pipenv install
 ```
 
-### MacOS
+## MacOS
 
 **Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**
 
