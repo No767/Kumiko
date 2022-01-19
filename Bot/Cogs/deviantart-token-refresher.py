@@ -7,6 +7,7 @@ from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
+import uvloop
 
 load_dotenv()
 
@@ -79,6 +80,8 @@ class tokenRefresher(commands.Cog):
                 Access_token = data["access_token"]
                 Refresh_token = data["refresh_token"]
                 await update_values(Access_token, Refresh_token)
+                
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
