@@ -1,8 +1,8 @@
 import asyncio
 
 import discord
-from discord.ext import commands
 import uvloop
+from discord.ext import commands
 
 
 class Global(commands.Cog):
