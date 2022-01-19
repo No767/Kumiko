@@ -1,10 +1,10 @@
+import asyncio
 import os
 
 import discord
 import orjson
-from discord.ext import commands
-import asyncio
 import uvloop
+from discord.ext import commands
 
 
 class Chat(commands.Cog):
