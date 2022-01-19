@@ -21,7 +21,7 @@ class UptimeV1(commands.Cog):
         uptime = datetime.timedelta(
             seconds=int(round(time.time() - startTime)))
         embed = discord.Embed(color=discord.Color.from_rgb(245, 227, 255))
-        embed.description = f"Rin's Uptime: `{uptime.days} Days, {uptime.seconds//3600} Hours, {(uptime.seconds//60)%60} Minutes, {uptime.seconds} Seconds`"
+        embed.description = f"Rin's Uptime: `{uptime.days} Days, {uptime.seconds//3600} Hours, {(uptime.seconds//60)%60} Minutes`"
         await ctx.send(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

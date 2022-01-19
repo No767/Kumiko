@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class valid(commands.Cog):

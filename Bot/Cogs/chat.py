@@ -3,6 +3,8 @@ import os
 import discord
 import orjson
 from discord.ext import commands
+import asyncio
+import uvloop
 
 
 class Chat(commands.Cog):

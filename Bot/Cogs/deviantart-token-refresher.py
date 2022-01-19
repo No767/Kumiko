@@ -13,7 +13,7 @@ load_dotenv()
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
 Password = os.getenv("Postgres_Password")
-ServerIP = os.getenv("Postgres_Server_IP")
+Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 
