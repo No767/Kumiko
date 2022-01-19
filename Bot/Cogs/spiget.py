@@ -1,6 +1,9 @@
+import asyncio
+
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -49,9 +52,10 @@ class SpigetV2(commands.Cog):
                                         color=discord.Color.from_rgb(
                                             173, 156, 255),
                                     )
+                                    embedVar.description = resource[0]["tag"]
                                     embedVar.add_field(
                                         name="Plugin Info",
-                                        value=f"Tag >> {resource[0]['tag']}\nAuthor >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                                        value=f"Author >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                                         inline=False,
                                     )
                                     embedVar.add_field(
@@ -95,9 +99,10 @@ class SpigetV2(commands.Cog):
                                         color=discord.Color.from_rgb(
                                             173, 156, 255),
                                     )
+                                    embedVar.description = resource[0]["tag"]
                                     embedVar.add_field(
                                         name="Plugin Info",
-                                        value=f"Tag >> {resource[0]['tag']}\nAuthor >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
+                                        value=f"Author >> {author_details_v1['name']}\nDownloads >> {resource[0]['downloads']}\nRating >> {resource[0]['rating']['average']}",
                                         inline=False,
                                     )
                                     embedVar.add_field(
@@ -144,6 +149,8 @@ class SpigetV2(commands.Cog):
                                 )
                                 await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @spigetSearch.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -153,6 +160,8 @@ class SpigetV2(commands.Cog):
             embedVar.description = "Missing a required argument: Plugin Name\n\nFor selecting a plugin, the name must be the exact as the one from Spigot. So for example, if I wanted to search up FastAsyncWorldEdit (FAWE), I would put `Fast Async WorldEdit`"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class SpigetV4(commands.Cog):
@@ -211,6 +220,8 @@ class SpigetV4(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class SpigetV5(commands.Cog):
     def __init__(self, bot):
@@ -238,6 +249,8 @@ class SpigetV5(commands.Cog):
                         f"The query failed. Please Try Again.\nReason: {e}"
                     )
                     await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

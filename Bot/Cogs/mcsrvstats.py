@@ -1,6 +1,9 @@
+import asyncio
+
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -159,6 +162,8 @@ class mcsrvstats(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @java.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -168,6 +173,8 @@ class mcsrvstats(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class bedrock_mcsrvstats(commands.Cog):
@@ -335,6 +342,8 @@ class bedrock_mcsrvstats(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @bedrock.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -344,6 +353,8 @@ class bedrock_mcsrvstats(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

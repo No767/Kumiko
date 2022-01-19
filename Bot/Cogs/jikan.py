@@ -1,6 +1,9 @@
+import asyncio
+
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -12,7 +15,7 @@ class JikanV1(commands.Cog):
     async def anime(self, ctx, *, search: str):
         search = search.replace(" ", "%20")
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"q": search}
+            params = {"q": search, "order_by": "title", "limit": 1}
             async with session.get(
                 "https://api.jikan.moe/v3/search/anime", params=params
             ) as r:
@@ -39,10 +42,8 @@ class JikanV1(commands.Cog):
                         )
                         embedVar.add_field(
                             name="Title Synonyms",
-                            value=str(anime_info_v2["title_synonyms"])
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
+                            value=str(anime_info_v2["title_synonyms"]).replace(
+                                "'", ""),
                             inline=True,
                         )
                         embedVar.add_field(
@@ -91,6 +92,21 @@ class JikanV1(commands.Cog):
                             value=anime_info_v2["favorites"],
                             inline=True,
                         )
+                        embedVar.add_field(
+                            name="Official Site",
+                            value=anime_info_v2["external_links"][0]["url"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="AnimeDB",
+                            value=anime_info_v2["external_links"][1]["url"],
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="AnimeNewsNetwork",
+                            value=anime_info_v2["external_links"][2]["url"],
+                            inline=True,
+                        )
                         embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"
                         embedVar2.add_field(
                             name="Background",
@@ -105,6 +121,8 @@ class JikanV1(commands.Cog):
                         embedVar.description = f"The query could not be performed. Please try again.\nReason: {e}"
                         await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @anime.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -114,6 +132,8 @@ class JikanV1(commands.Cog):
             embedVar.description = "Missing a required argument: Anime name"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class JikanV2(commands.Cog):
@@ -155,10 +175,8 @@ class JikanV2(commands.Cog):
                         )
                         embedVar.add_field(
                             name="Title Synonyms",
-                            value=str(manga_info_v1["title_synonyms"])
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
+                            value=str(manga_info_v1["title_synonyms"]).replace(
+                                "'", ""),
                             inline=True,
                         )
                         embedVar.add_field(
@@ -190,28 +208,6 @@ class JikanV2(commands.Cog):
                             value=str(
                                 [name["name"]
                                     for name in manga_info_v1["genres"]]
-                            )
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Demographics",
-                            value=str(
-                                [name["name"]
-                                    for name in manga_info_v1["demographics"]]
-                            )
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Themes",
-                            value=str(
-                                [name["name"]
-                                    for name in manga_info_v1["themes"]]
                             )
                             .replace("[", "")
                             .replace("]", "")
@@ -269,6 +265,8 @@ class JikanV2(commands.Cog):
                         embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
                         await ctx.send(emvbed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @manga.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -278,6 +276,8 @@ class JikanV2(commands.Cog):
             embedVar.description = "Missing a required argument: Manga name"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class JikanV3(commands.Cog):

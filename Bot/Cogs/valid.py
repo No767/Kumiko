@@ -1,4 +1,7 @@
+import asyncio
+
 import discord
+import uvloop
 from discord.ext import commands
 
 
@@ -26,6 +29,8 @@ class valid(commands.Cog):
                 f"There seems to be an error. Please try again.\n Reason: {e}"
             )
             await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

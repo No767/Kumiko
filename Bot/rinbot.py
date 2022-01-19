@@ -18,8 +18,6 @@ initial_extensions = [
     "Cogs.valid",
     "Cogs.rinhelp",
     "Cogs.reddit",
-    "Cogs.chat",
-    "Cogs.translate",
     "Cogs.server-info",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
@@ -32,17 +30,18 @@ initial_extensions = [
     "Cogs.nb-pride",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
-    "Cogs.spotify",
-    "Cogs.pinterest",
     "Cogs.rininvite",
     "Cogs.version",
     "Cogs.clear",
     "Cogs.twitter",
     "Cogs.youtube",
     "Cogs.jisho",
+    "Cogs.tenor",
+    "Cogs.uptime",
+    "Cogs.mangadex",
     "Cogs.disquest",
+    "Cogs.deviantart-token-refresher",
     "Cogs.deviantart",
-    "Cogs.deviantart-token-refresher"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

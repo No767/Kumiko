@@ -1,7 +1,9 @@
+import asyncio
 import typing
 
 import discord
 import discord.ext
+import uvloop
 from discord.ext import commands
 
 
@@ -17,7 +19,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-                        **[GitHub](https://github.com/No767/Rin)** | **[Issue Tracker](https://github.com/No767/Rin/issues)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
+                        **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
                     name="Admin", value="`.rinhelp admin`", inline=True)
@@ -53,6 +55,8 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="YouTube", value="`.rinhelp youtube`", inline=True
                 )
+                embedVar.add_field(
+                    name="Tenor", value="`.rinhelp tenor`", inline=True)
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -294,6 +298,9 @@ class rinhelp(commands.Cog):
                     value="Checks for current version of Rin",
                     inline=True,
                 )
+                embedVar.add_field(
+                    name="`uptime`", value="Checks for Rin's Uptime", inline=True
+                )
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
                 )
@@ -421,41 +428,82 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.send(embed=embedVar)
 
-                if str(search) == "youtube":
-                    bot = self.bot
-                    embedVar = discord.Embed(color=14414079)
-                    embedVar.add_field(
-                        name="`youtube-search`",
-                        value="Returns 5 videos given the search query",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-channel`",
-                        value="Returns info about the given channel",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-playlists`",
-                        value="Finds and returns 5 playlists from the given channel",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-comments`",
-                        value="Returns 5 comments (sorted by time) from the given video",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="`youtube-video`",
-                        value="Return info about the given video",
-                        inline=True,
-                    )
-                    embedVar.set_footer(
-                        text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
-                    )
-                    embedVar.set_author(
-                        name="Rin Help - YouTube", icon_url=bot.user.avatar_url
-                    )
-                    await ctx.send(embed=embedVar)
+            if str(search) == "youtube":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`youtube-search`",
+                    value="Returns 5 videos given the search query",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-channel`",
+                    value="Returns info about the given channel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-playlists`",
+                    value="Finds and returns 5 playlists from the given channel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-comments`",
+                    value="Returns 5 comments (sorted by time) from the given video",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`youtube-video`",
+                    value="Return info about the given video",
+                    inline=True,
+                )
+                embedVar.set_footer(
+                    text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
+                )
+                embedVar.set_author(
+                    name="Rin Help - YouTube", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+
+            if str(search) == "tenor":
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`tenor-search-multiple`",
+                    value="Searches 5 gifs from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`tenor-search-one`",
+                    value="Searches for 1 gif on Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`tenor-trending`",
+                    value="Gets 5 trending gifs from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`tenor-search-suggestions`",
+                    value="Provies some search suggetsions from Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`tenor-trending-terms`",
+                    value="Returns some trending terms",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`tenor-gif`", value="SEarches for 1 gif on Tenor", inline=True
+                )
+                embedVar.add_field(
+                    name="`tenor-random`",
+                    value="Returns a random gif based on the search term",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - Tenor", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
@@ -463,6 +511,8 @@ class rinhelp(commands.Cog):
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.avatar_url)
             await ctx.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

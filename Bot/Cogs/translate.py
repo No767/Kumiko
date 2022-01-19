@@ -1,4 +1,7 @@
+import asyncio
+
 import discord
+import uvloop
 from deep_translator import GoogleTranslator
 from discord.ext import commands
 
@@ -34,6 +37,8 @@ class Utility(commands.Cog):
             await ctx.send(embed=translate_embed)
         except Exception as e:
             await ctx.send(f"The query failed.\nReason: {e}")
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

@@ -1,4 +1,4 @@
-FROM python:3.10.1
+FROM python:3.10.1-bullseye
 WORKDIR /Bot
 COPY Pipfile ./ /Bot/
 COPY Pipfile.lock ./ /Bot/
