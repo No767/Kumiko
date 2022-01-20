@@ -32,5 +32,6 @@ class valid(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+
 def setup(bot):
     bot.add_cog(valid(bot))
