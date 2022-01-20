@@ -110,7 +110,10 @@ class Kumiko_EcoV2(commands.Cog):
     @commands.command(name="eco-top", aliases=["top"])
     async def top(self, ctx):
         eco = ecoFunc(ctx)
-        await eco.top()
+        eco_top = await eco.top()
+        embedVar = discord.Embed()
+        embedVar.description = eco_top
+        await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
