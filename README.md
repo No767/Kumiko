@@ -134,5 +134,6 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
     
  [![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
  [![Discord.boats](https://discord.boats/api/widget/865883525932253184?type=svg)](https://discord.boats/bot/865883525932253184) 
+ [![Top.gg](https://top.gg/api/widget/865883525932253184.svg)(https://top.gg/bot/865883525932253184)
     
 </div>
