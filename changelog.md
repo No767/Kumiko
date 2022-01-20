@@ -1,10 +1,5 @@
 # TD;LR
-- Fix Data Not Being Inserted into PostgreSQL
+- Fix DeviantArt cog breaking due to asyncio issues
 
 # Changes
-- Fix where the data would not get inserted into the PostgreSQL DB. 
-# Additions
-
-
-# Removals
-
+- Fix where the DeviantArt cog would break due to an asyncio issue (the coroutine needed to be passed as a variable and then indexed)
