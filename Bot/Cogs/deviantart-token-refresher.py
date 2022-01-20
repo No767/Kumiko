@@ -29,7 +29,7 @@ async def select_values():
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    async with engine.connect() as conn:
+    async with engine.begin() as conn:
         s = tokens.select()
         result_select = await conn.stream(s)
         async for row in result_select:
