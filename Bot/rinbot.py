@@ -39,9 +39,9 @@ initial_extensions = [
     "Cogs.tenor",
     "Cogs.uptime",
     "Cogs.mangadex",
+    "Cogs.deviantart",
     "Cogs.disquest",
     "Cogs.deviantart-token-refresher",
-    "Cogs.deviantart",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

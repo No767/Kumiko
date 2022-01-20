@@ -44,11 +44,12 @@ class DeviantArtV1(commands.Cog):
     @commands.command(name="deviantart-item", aliases=["da-item"])
     async def da(self, ctx, *, deviation_id: str):
         token = tokenFetcher()
+        accessToken = await token.get()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "with_session": "false",
                 "limit": "5",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}",
@@ -149,13 +150,14 @@ class DeviantArtV2(commands.Cog):
     async def da_query(self, ctx, *, search: str):
         token = tokenFetcher()
         search = search.replace(" ", "%20")
+        accessToken = await token.get()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "q": f"{search}",
                 "with_session": "false",
                 "limit": 10,
                 "mature_content": "False",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/newest", params=params
@@ -412,6 +414,7 @@ class DeviantArtV3(commands.Cog):
     @commands.command(name="deviantart-popular", aliases=["da-popular"])
     async def deviantart_popular(self, ctx, *, search: str):
         token = tokenFetcher()
+        accessToken = await token.get()
         search = search.replace(" ", "%20")
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -419,7 +422,7 @@ class DeviantArtV3(commands.Cog):
                 "with_session": "false",
                 "limit": "10",
                 "mature_content": "false",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/popular", params=params
@@ -676,6 +679,7 @@ class DeviantArtV4(commands.Cog):
     @commands.command(name="deviantart-tag-search", aliases=["da-tag-search"])
     async def tags(self, ctx, *, search: str):
         token = tokenFetcher()
+        accessToken = await token.get()
         search = search.replace(" ", "%20")
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -683,7 +687,7 @@ class DeviantArtV4(commands.Cog):
                 "with_session": "false",
                 "limit": "10",
                 "mature_content": "false",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/tags", params=params
@@ -935,13 +939,14 @@ class DeviantArtV5(commands.Cog):
     @commands.command(name="deviantart-user", aliases=["da-user"])
     async def user(self, ctx, *, search: str):
         token = tokenFetcher()
+        accessToken = await token.get()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "ext_collections": "false",
                 "ext_galleries": "false",
                 "with_session": "false",
                 "mature_content": "false",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 f"https://www.deviantart.com/api/v1/oauth2/user/profile/{search}",
