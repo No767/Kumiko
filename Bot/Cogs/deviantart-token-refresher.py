@@ -31,10 +31,9 @@ async def select_values():
     )
     async with engine.connect() as conn:
         s = tokens.select()
-        result_select = await conn.execute(s)
-        for row in result_select:
+        result_select = await conn.stream(s)
+        async for row in result_select:
             return row
-        await conn.close()
 
 
 async def update_values(Access_Token, Refresh_Token):
@@ -48,12 +47,11 @@ async def update_values(Access_Token, Refresh_Token):
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    async with engine.connect() as conn:
+    async with engine.begin() as conn:
         update = tokens.update().values(
             Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
         )
         await conn.execute(update)
-        await conn.close()
 
 
 class tokenRefresher(commands.Cog):

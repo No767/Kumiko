@@ -32,10 +32,9 @@ class tokenFetcher:
         )
         async with engine.connect() as conn:
             s = tokens.select()
-            result_select = await conn.execute(s)
-            for row in result_select:
+            result_select = await conn.stream(s)
+            async for row in result_select:
                 return row
-            await conn.close()
 
 
 class DeviantArtV1(commands.Cog):
