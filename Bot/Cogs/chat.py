@@ -1,7 +1,8 @@
 import os
-
+import asyncio
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 
 
@@ -61,6 +62,8 @@ class Chat(commands.Cog):
             embedVar.description = "Oops! Something went wrong! Please try again"
             embedVar.add_field(name="Reason", value=e, inline=True)
             await message.channel.send(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

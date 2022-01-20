@@ -19,7 +19,11 @@ class kumikoHelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
+<<<<<<< HEAD:Bot/Cogs/kumikohelp.py
                         **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
+=======
+                        **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
+>>>>>>> fdfec3fa3f1816451da78211925f0bb4c1f590b1:Bot/Cogs/rinhelp.py
                         """
                 embedVar.add_field(
                     name="Admin", value="`.kumikohelp admin`", inline=True
@@ -306,7 +310,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`.uptime`", value="Checks for Kumiko's Uptime", inline=True
+                    name="`uptime`", value="Checks for Kumiko's Uptime", inline=True
                 )
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.avatar_url
@@ -480,30 +484,30 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="tenor-search-one",
+                    name="`tenor-search-one`",
                     value="Searches for 1 gif on Tenor",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="tenor-trending",
+                    name="`tenor-trending`",
                     value="Gets 5 trending gifs from Tenor",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="tenor-search-suggestions",
+                    name="`tenor-search-suggestions`",
                     value="Provies some search suggetsions from Tenor",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="tenor-trending-terms",
+                    name="`tenor-trending-terms`",
                     value="Returns some trending terms",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="tenor-gif", value="SEarches for 1 gif on Tenor", inline=True
+                    name="`tenor-gif`", value="SEarches for 1 gif on Tenor", inline=True
                 )
                 embedVar.add_field(
-                    name="tenor-random",
+                    name="`tenor-random`",
                     value="Returns a random gif based on the search term",
                     inline=True,
                 )

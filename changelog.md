@@ -19,6 +19,7 @@
 - Require DeviantArt Token Refresher to handle DB connections and queries asynchronously
 - Phase out Ujson as the main JSON parser
 - Bump Pillow to 9.0.0 to avoid security vulnerabilities
+- Fix where the DeviantArt cog would break due to an asyncio issue (the coroutine needed to be passed as a variable and then indexed)
 
 # Additions
 - Tenor API Support

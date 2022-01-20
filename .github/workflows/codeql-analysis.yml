@@ -50,10 +50,5 @@ jobs:
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
       with:
-        category: Analysis
-        output: results.sarif
-    - name: Upload Results to GitHub Code Scanning
-      uses: github/codeql-action/upload-sarif@v1
-      with: 
-        category: Upload
-        sarif_file: results.sarif
+        upload: true
+

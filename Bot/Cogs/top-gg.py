@@ -1,8 +1,10 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -91,6 +93,8 @@ class TopGGV1(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @topgg_search_one.error
     async def on_message(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -98,6 +102,8 @@ class TopGGV1(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TopGGV2(commands.Cog):
@@ -156,6 +162,8 @@ class TopGGV2(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @topgg_search_users.error
     async def on_message(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.MissingRequiredArgument):
@@ -163,6 +171,8 @@ class TopGGV2(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

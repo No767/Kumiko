@@ -1,6 +1,7 @@
 import asyncio
 
 import discord
+import uvloop
 from discord.ext import commands
 
 
@@ -37,7 +38,7 @@ class Global(commands.Cog):
                 # if user uploaded image
                 try:
                     message_embed.set_image(url=message.attachments[0].url)
-                except:
+                except BaseException:
                     await asyncio.sleep(0)
             # add message text to embed
             message_embed.description = message.content
@@ -48,6 +49,8 @@ class Global(commands.Cog):
                     if channel.name == "global" and channel.id != message.channel.id:
                         # if all criteria met then send
                         await channel.send(embed=message_embed)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

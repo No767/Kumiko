@@ -53,7 +53,6 @@ class disaccount:
             else:
                 for row in results_fetched:
                     return row
-            await conn.close()
 
     async def setxp(self, xp):
         meta = MetaData()
@@ -74,7 +73,7 @@ class disaccount:
             Column("gid", BigInteger),
             Column("xp", Integer),
         )
-        async with engine.connect() as conn:
+        async with engine.begin() as conn:
             update_values = (
                 users.update()
                 .values(xp=xp)
@@ -82,7 +81,6 @@ class disaccount:
                 .filter(users.c.gid == self.gid)
             )
             await conn.execute(update_values)
-            await conn.close()
 
     async def addxp(self, offset):
         pxp = await self.getxp()
@@ -157,7 +155,7 @@ class DisQuestV2(commands.Cog):
                 .order_by(users.c.xp.desc())
             )
             results = await conn.execute(s)
-            members = list(await results.fetchall())
+            members = list(results.fetchall())
             for i, mem in enumerate(members):
                 members[
                     i
@@ -208,7 +206,7 @@ class DisQuestV3(commands.Cog):
                 .limit(10)
             )
             results = await conn.execute(s)
-            results_fetched = await results.fetchall()
+            results_fetched = results.fetchall()
             members = list(results_fetched)
             for i, mem in enumerate(members):
                 members[

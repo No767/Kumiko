@@ -208,6 +208,8 @@ class hypixel_player_count(commands.Cog):
                         name="Reason", value=str(e), inline=False)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class hypixel_status(commands.Cog):
     def __init__(self, bot):

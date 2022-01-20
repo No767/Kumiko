@@ -1,3 +1,6 @@
+import asyncio
+
+import uvloop
 from discord.ext import commands
 
 
@@ -17,6 +20,8 @@ class nbPride(commands.Cog):
         for emoji in reactions:
             await ctx.send(emoji)
 
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 def setup(bot):
     bot.add_cog(nbPride(bot))

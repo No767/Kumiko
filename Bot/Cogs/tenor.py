@@ -1,8 +1,10 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -59,6 +61,8 @@ class TenorV1(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tenor_search.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -68,6 +72,8 @@ class TenorV1(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV2(commands.Cog):
@@ -101,6 +107,8 @@ class TenorV2(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tenor_search_one.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -110,6 +118,8 @@ class TenorV2(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV3(commands.Cog):
@@ -161,6 +171,8 @@ class TenorV3(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class TenorV4(commands.Cog):
     def __init__(self, bot):
@@ -188,6 +200,8 @@ class TenorV4(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tenor_search_suggestions.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -197,6 +211,8 @@ class TenorV4(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV5(commands.Cog):
@@ -224,6 +240,8 @@ class TenorV5(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tenor_trending_terms.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -233,6 +251,8 @@ class TenorV5(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV6(commands.Cog):
@@ -293,6 +313,8 @@ class TenorV6(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tenor_gif.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -302,6 +324,8 @@ class TenorV6(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV7(commands.Cog):
@@ -320,8 +344,8 @@ class TenorV7(commands.Cog):
             }
             async with session.get(
                 "https://g.tenor.com/v1/random", params=params
-            ) as another_object:
-                data8 = await another_object.json()
+            ) as object3:
+                data8 = await object3.json()
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = data8["results"][0]["content_description"]
@@ -345,6 +369,8 @@ class TenorV7(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tenor_random.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -354,6 +380,8 @@ class TenorV7(commands.Cog):
             embedVar.description = f"Missing a required argument: {error.param}"
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

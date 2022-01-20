@@ -3,6 +3,7 @@ import os
 
 import aiohttp
 import orjson
+import uvloop
 from discord.ext import commands, tasks
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table
@@ -13,14 +14,14 @@ load_dotenv()
 Client_ID = os.getenv("DeviantArt_Client_ID")
 Client_Secret = os.getenv("DeviantArt_Client_Secret")
 Password = os.getenv("Postgres_Password")
-IP = os.getenv("Postgres_Server_IP")
+Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 
 async def select_values():
     meta = MetaData()
     engine = create_async_engine(
-        f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+        f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
         "DA_Tokens",
@@ -30,16 +31,15 @@ async def select_values():
     )
     async with engine.connect() as conn:
         s = tokens.select()
-        result_select = await conn.execute(s)
-        for row in result_select:
+        result_select = await conn.stream(s)
+        async for row in result_select:
             return row
-        await conn.close()
 
 
 async def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
     engine = create_async_engine(
-        f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+        f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
         "DA_Tokens",
@@ -47,12 +47,11 @@ async def update_values(Access_Token, Refresh_Token):
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    async with engine.connect() as conn:
+    async with engine.begin() as conn:
         update = tokens.update().values(
             Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
         )
         await conn.execute(update)
-        await conn.close()
 
 
 class tokenRefresher(commands.Cog):
@@ -79,6 +78,8 @@ class tokenRefresher(commands.Cog):
                 Access_token = data["access_token"]
                 Refresh_token = data["refresh_token"]
                 await update_values(Access_token, Refresh_token)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

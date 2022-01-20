@@ -14,13 +14,10 @@ bot = commands.Bot(command_prefix=".", help_command=None)
 initial_extensions = [
     "Cogs.kumikoinfo",
     "Cogs.plugin_tools",
-    "Cogs.global",
     "Cogs.kumikoping",
     "Cogs.valid",
     "Cogs.kumikohelp",
     "Cogs.reddit",
-    "Cogs.chat",
-    "Cogs.translate",
     "Cogs.server-info",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
@@ -45,6 +42,7 @@ initial_extensions = [
     "Cogs.tenor",
     "Cogs.economy-base",
     "Cogs.uptime",
+    "Cogs.jisho",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
