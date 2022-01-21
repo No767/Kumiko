@@ -958,7 +958,7 @@ class DeviantArtV5(commands.Cog):
                         title=users["user"]["username"],
                         color=discord.Color.from_rgb(255, 156, 192),
                     )
-                    embedVar.description = users['bio']
+                    embedVar.description = users["bio"]
                     embedVar.add_field(
                         name="Real Name", value=f"[{users['real_name']}]", inline=True
                     )
