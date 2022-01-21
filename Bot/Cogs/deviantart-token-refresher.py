@@ -38,7 +38,7 @@ async def select_values():
 
 async def update_values(Access_Token, Refresh_Token):
     meta = MetaData()
-    engine = create_async_engine(
+    engine2 = create_async_engine(
         f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
     )
     tokens = Table(
@@ -47,11 +47,11 @@ async def update_values(Access_Token, Refresh_Token):
         Column("Access_Tokens", String),
         Column("Refresh_Tokens", String),
     )
-    async with engine.begin() as conn:
+    async with engine2.begin() as conn2:
         update = tokens.update().values(
             Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
         )
-        await conn.execute(update)
+        await conn2.execute(update)
 
 
 class tokenRefresher(commands.Cog):
