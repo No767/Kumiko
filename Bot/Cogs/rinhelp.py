@@ -329,6 +329,11 @@ class rinhelp(commands.Cog):
                     value="Returns 5 works of art based on selected tags",
                     inline=True,
                 )
+                embedVar.add_field(
+                    name="`deviantart-user`",
+                    value="Returns info about the given user",
+                    inline=True,
+                )
                 embedVar.set_footer(
                     text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
                 )
@@ -358,6 +363,11 @@ class rinhelp(commands.Cog):
             if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`jikan-anime`",
+                    value="Seaches on Jikan/MyAnimeList and provides info about the given anime",
+                    inline=True,
+                )
                 embedVar.add_field(
                     name="`jikan-manga`",
                     value="Seaches on Jikan/MyAnimeList and provides info about the given manga",

@@ -32,8 +32,8 @@ class tokenFetcher:
         )
         async with engine.connect() as conn:
             s = tokens.select()
-            result_select = await conn.stream(s)
-            async for row in result_select:
+            result_select = await conn.execute(s)
+            for row in result_select:
                 return row
 
 
@@ -958,14 +958,12 @@ class DeviantArtV5(commands.Cog):
                         title=users["user"]["username"],
                         color=discord.Color.from_rgb(255, 156, 192),
                     )
+                    embedVar.description = users['bio']
                     embedVar.add_field(
                         name="Real Name", value=f"[{users['real_name']}]", inline=True
                     )
                     embedVar.add_field(
                         name="Tagline", value=f"[{users['tagline']}]", inline=True
-                    )
-                    embedVar.add_field(
-                        name="Bio", value=f"[{users['bio']}]", inline=True
                     )
                     embedVar.add_field(
                         name="Type", value=users["user"]["type"], inline=True

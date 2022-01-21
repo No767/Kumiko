@@ -1,5 +1,5 @@
 # TD;LR
-- Fix DeviantArt cog breaking due to asyncio issues
+- Fix DeviantArt Token Refresher (the insert would not make it through)
 
 # Changes
-- Fix where the DeviantArt cog would break due to an asyncio issue (the coroutine needed to be passed as a variable and then indexed)
+- Fix DeviantArt Token Refresher (the insert would not make it through)
