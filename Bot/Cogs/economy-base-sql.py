@@ -13,8 +13,8 @@ Username = os.getenv("Postgres_Username")
 
 class kumikoEcoUtils:
     def __init__(self, ctx):
-        self.id = 454357482102587393  # ctx.author.id
-        self.gid = 866199405090308116  # ctx.guild.id
+        self.id = ctx.author.id
+        self.gid = ctx.guild.id
 
     async def get_amount(self):
         meta = MetaData()
