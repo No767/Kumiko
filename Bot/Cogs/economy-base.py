@@ -117,5 +117,6 @@ class Kumiko_EcoV2(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+
 def setup(bot):
     bot.add_cog(Kumiko_EcoV1(bot))
