@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from sqlalchemy import (BigInteger, Column, Integer, MetaData, Table, select)
+from sqlalchemy import BigInteger, Column, Integer, MetaData, Table, select
 from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
