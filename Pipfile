@@ -28,6 +28,7 @@ asyncpg = "*"
 uvloop = "*"
 odmantic = "*"
 requests = "*"
+mongosanitizer = "*"
 
 [dev-packages]
 black = "*"
