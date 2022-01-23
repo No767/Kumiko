@@ -61,3 +61,36 @@ class kumikoEcoUtils:
                 .filter(users.c.gid == self.gid)
             )
             await conn2.execute(update_values)
+    
+    async def trade_init(self, coins):
+        meta = MetaData()
+        users = Table(
+            "kumiko-users",
+            meta,
+            Column("id", BigInteger),
+            Column("gid", BigInteger),
+            Column("coins", Integer),
+        )
+        engine3 = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko-eco"
+        )
+        async with engine3.begin() as conn3:
+            update_trade = users.update().values(coins=coins).filter(users.c.id == self.id)
+            await conn3.execute(update_trade)
+            
+    async def trade_trans(self, trader_id, coins):
+        meta = MetaData()
+        users = Table(
+            "kumiko-users",
+            meta,
+            Column("id", BigInteger),
+            Column("gid", BigInteger),
+            Column("coins", Integer),
+        )
+        engine4 = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko-eco"
+        )
+        async with engine4.begin() as conn4:
+            update_trade = users.update().values(coins=coins).filter(users.c.id == trader_id)
+            await conn4.execute(update_trade)
+            
