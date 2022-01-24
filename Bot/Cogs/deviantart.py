@@ -1,14 +1,14 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
-import asyncio
-import uvloop
 
 load_dotenv()
 
@@ -393,7 +393,7 @@ class DeviantArtV2(commands.Cog):
                     await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
+
     @da_query.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -671,7 +671,6 @@ class DeviantArtV3(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class DeviantArtV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -917,7 +916,7 @@ class DeviantArtV4(commands.Cog):
                     await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
+
     @tags.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -929,7 +928,6 @@ class DeviantArtV4(commands.Cog):
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 class DeviantArtV5(commands.Cog):
@@ -1039,7 +1037,6 @@ class DeviantArtV5(commands.Cog):
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 def setup(bot):

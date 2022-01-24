@@ -22,6 +22,7 @@ Password = os.getenv("Postgres_Password")
 Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
+
 class tokenRefresherUtils:
     def __init__(self):
         self.self = self
@@ -42,7 +43,7 @@ class tokenRefresherUtils:
             result_select = await conn.execute(s)
             for row in result_select:
                 return row
-            
+
     async def update_values(self, Access_Token, Refresh_Token):
         meta = MetaData()
         engine2 = create_async_engine(
@@ -59,8 +60,6 @@ class tokenRefresherUtils:
                 Access_Tokens=f"{Access_Token}", Refresh_Tokens=f"{Refresh_Token}"
             )
             await conn2.execute(update)
-
-
 
 
 class tokenRefresher(commands.Cog):
@@ -88,7 +87,6 @@ class tokenRefresher(commands.Cog):
                 Access_token = data["access_token"]
                 Refresh_token = data["refresh_token"]
                 await tokens.update_values(Access_token, Refresh_token)
-
 
 
 def setup(bot):
