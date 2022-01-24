@@ -1,6 +1,6 @@
 # TD;LR
-- Fix DeviantArt Token Refresher (the insert would not make it through)
+- Move DeviantArt Token Refresher to a separate script and docker container (This should fix it)
 
 # Changes
-- Fix DeviantArt Token Refresher (the insert would not make it through)
-- Update Docker Image to Python 3.10.2
+- Add seconds counter for uptime cog
+- Move DeviantArt Token Refresher to a separate script and docker container (This should fix it)
