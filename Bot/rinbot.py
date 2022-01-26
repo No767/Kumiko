@@ -6,14 +6,13 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+TOKEN = os.getenv("Hanako_Token")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".", help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
     "Cogs.rininfo",
-    "Cogs.plugin_tools",
     "Cogs.rinping",
     "Cogs.valid",
     "Cogs.rinhelp",
@@ -32,15 +31,14 @@ initial_extensions = [
     "Cogs.global-error-handling",
     "Cogs.rininvite",
     "Cogs.version",
-    "Cogs.clear",
     "Cogs.twitter",
     "Cogs.youtube",
     "Cogs.jisho",
     "Cogs.tenor",
     "Cogs.uptime",
     "Cogs.mangadex",
-    "Cogs.deviantart",
-    "Cogs.disquest",
+    "Cogs.bot-info",
+    "Cogs.openai-gpt3"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

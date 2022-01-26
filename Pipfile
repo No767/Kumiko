@@ -26,6 +26,7 @@ pillow = "==9.0.0"
 asyncpg = "*"
 uvloop = "*"
 requests = "*"
+ujson = "*"
 
 [dev-packages]
 black = "*"
