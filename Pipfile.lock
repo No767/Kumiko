@@ -344,11 +344,11 @@
         },
         "charset-normalizer": {
             "hashes": [
-                "sha256:876d180e9d7432c5d1dfd4c5d26b72f099d503e8fcc0feb7532c9289be60fcbd",
-                "sha256:cb957888737fc0bbcd78e3df769addb41fd1ff8cf950dc9e7ad7793f1bf44455"
+                "sha256:2842d8f5e82a1f6aa437380934d5e1cd4fcf2003b06fed6940769c164a480a45",
+                "sha256:98398a9d69ee80548c762ba991a4728bfc3836768ed226b3945908d1a688371c"
             ],
             "markers": "python_version >= '3'",
-            "version": "==2.0.10"
+            "version": "==2.0.11"
         },
         "chirptext": {
             "hashes": [
@@ -372,22 +372,6 @@
             ],
             "index": "pypi",
             "version": "==1.6.1"
-        },
-        "discord.py": {
-            "hashes": [
-                "sha256:462cd0fe307aef8b29cbfa8dd613e548ae4b2cb581d46da9ac0d46fb6ea19408",
-                "sha256:c6f64db136de0e18e090f6752ea68bdd4ab0a61b82dfe7acecefa22d6477bb0c"
-            ],
-            "markers": "python_full_version >= '3.5.3'",
-            "version": "==1.7.3"
-        },
-        "dislash.py": {
-            "hashes": [
-                "sha256:7940bcf167b1b213b8e2cf0dbf54c3e1a7a5c95121bf698dbb72bb82f7a48feb",
-                "sha256:effb7093ab66c621970439600c50ef87117e34f5fef5260b0eea76b62b0f96ad"
-            ],
-            "markers": "python_version >= '3.6' and python_version < '4'",
-            "version": "==1.4.9"
         },
         "greenlet": {
             "hashes": [
@@ -783,10 +767,10 @@
         },
         "reactionmenu": {
             "hashes": [
-                "sha256:caf1d2228b1895a273e6592f516c56864ee1b6c20095ba9cf65db40df09c3a93"
+                "sha256:676d1b347e52974b4a75d32fee62b3a2d014684caae9409a700799f01c307c75"
             ],
             "index": "pypi",
-            "version": "==2.0.4"
+            "version": "==3.0.0"
         },
         "requests": {
             "hashes": [
