@@ -57,6 +57,8 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Tenor", value="`.rinhelp tenor`", inline=True)
+                embedVar.add_field(
+                    name="OpenAI", value="`.rinhelp openai`", inline=True)
                 embedVar.set_author(
                     name="Rin Help", icon_url=bot.user.avatar_url)
                 embedVar.set_footer(
@@ -514,6 +516,30 @@ class rinhelp(commands.Cog):
                     name="Rin Help - Tenor", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
+
+            if str(search) in ["openai", "ai", "gpt-3"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`openai-complete`",
+                    value="Completes a sentence using GPT-3",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`openai-classify`",
+                    value="Classifies a sentence into negative or positive (using AI)",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`openai-answers`",
+                    value="Generates answers written by AI for a given question",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - OpenAI", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+            
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
