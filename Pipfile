@@ -15,8 +15,6 @@ pynacl = "*"
 cchardet = "*"
 aiodns = "*"
 brotli = "*"
-py-cord = {extras = ["voice"], version = "*"}
-aiohttp = "<=3.7.4.post0"
 sqlalchemy = "*"
 orjson = "*"
 reactionmenu = "*"
@@ -29,6 +27,8 @@ uvloop = "*"
 odmantic = "*"
 requests = "*"
 ujson = "*"
+py-cord = {version = "==2.0.0b1", extras = ["voice"]}
+aiohttp = "==3.8.1"
 
 [dev-packages]
 black = "*"
