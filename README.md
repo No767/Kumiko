@@ -20,7 +20,7 @@ The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moder
 Kumiko is a multipurpose fork of [Rin](https://github.com/No767/Rin), and includes features like an economy system, and more. Currently Kumiko is in heavy development, and is not ready for use. Just like 
 Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of the services that Rin has.
 
-# Rin
+## Rin
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services (for the more technical, this is done by contacting APIs). For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses Uvloop under the 
