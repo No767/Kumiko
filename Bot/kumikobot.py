@@ -13,7 +13,6 @@ bot = commands.Bot(command_prefix=".", help_command=None)
 # Loads in all extensions
 initial_extensions = [
     "Cogs.kumikoinfo",
-    "Cogs.plugin_tools",
     "Cogs.kumikoping",
     "Cogs.valid",
     "Cogs.kumikohelp",
@@ -35,7 +34,6 @@ initial_extensions = [
     "Cogs.kumikoinvite",
     "Cogs.mangadex",
     "Cogs.version",
-    "Cogs.clear",
     "Cogs.twitter",
     "Cogs.youtube",
     "Cogs.bonk",
@@ -43,6 +41,9 @@ initial_extensions = [
     "Cogs.economy-base",
     "Cogs.uptime",
     "Cogs.jisho",
+    "Cogs.mangadex",
+    "Cogs.bot-info",
+    "Cogs.openai-gpt3"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

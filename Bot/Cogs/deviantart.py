@@ -1,8 +1,10 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
+import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table
@@ -32,8 +34,8 @@ class tokenFetcher:
         )
         async with engine.connect() as conn:
             s = tokens.select()
-            result_select = await conn.stream(s)
-            async for row in result_select:
+            result_select = await conn.execute(s)
+            for row in result_select:
                 return row
 
 
@@ -126,6 +128,8 @@ class DeviantArtV1(commands.Cog):
                     )
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @da.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -136,10 +140,7 @@ class DeviantArtV1(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-    @da.before_invoke
-    async def before_command(self, ctx=None):
-        token = tokenFetcher()
-        await token.get()
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class DeviantArtV2(commands.Cog):
@@ -391,6 +392,8 @@ class DeviantArtV2(commands.Cog):
                         name="Status", value=art["status"], inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @da_query.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -401,10 +404,7 @@ class DeviantArtV2(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-    @da_query.before_invoke
-    async def on_command(self, ctx=None):
-        token = tokenFetcher()
-        await token.get()
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class DeviantArtV3(commands.Cog):
@@ -656,6 +656,8 @@ class DeviantArtV3(commands.Cog):
                         name="Status", value=pop["status"], inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @deviantart_popular.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -666,10 +668,7 @@ class DeviantArtV3(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-    @deviantart_popular.before_invoke
-    async def on_command(self, ctx=None):
-        token = tokenFetcher()
-        await token.get()
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class DeviantArtV4(commands.Cog):
@@ -916,6 +915,8 @@ class DeviantArtV4(commands.Cog):
                         name="Status", value=tags["status"], inline=True)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @tags.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -926,10 +927,7 @@ class DeviantArtV4(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-    @tags.before_invoke
-    async def on_command(self, ctx=None):
-        token = tokenFetcher()
-        await token.get()
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class DeviantArtV5(commands.Cog):
@@ -958,14 +956,12 @@ class DeviantArtV5(commands.Cog):
                         title=users["user"]["username"],
                         color=discord.Color.from_rgb(255, 156, 192),
                     )
+                    embedVar.description = users["bio"]
                     embedVar.add_field(
                         name="Real Name", value=f"[{users['real_name']}]", inline=True
                     )
                     embedVar.add_field(
                         name="Tagline", value=f"[{users['tagline']}]", inline=True
-                    )
-                    embedVar.add_field(
-                        name="Bio", value=f"[{users['bio']}]", inline=True
                     )
                     embedVar.add_field(
                         name="Type", value=users["user"]["type"], inline=True
@@ -1028,6 +1024,8 @@ class DeviantArtV5(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     await ctx.send(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @user.error
     async def on_message_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -1038,10 +1036,7 @@ class DeviantArtV5(commands.Cog):
             msg = await ctx.send(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-    @user.before_invoke
-    async def on_command(self, ctx=None):
-        token = tokenFetcher()
-        await token.get()
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

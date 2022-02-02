@@ -19,11 +19,7 @@ class kumikoHelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
-<<<<<<< HEAD:Bot/Cogs/kumikohelp.py
                         **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
-=======
-                        **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
->>>>>>> fdfec3fa3f1816451da78211925f0bb4c1f590b1:Bot/Cogs/rinhelp.py
                         """
                 embedVar.add_field(
                     name="Admin", value="`.kumikohelp admin`", inline=True
@@ -66,6 +62,9 @@ class kumikoHelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Tenor", value="`.kumikohelp tenor`", inline=True
+                )
+                embedVar.add_field(
+                    name="OpenAI", value="`.kumikohelp openai`", inline=True
                 )
                 embedVar.set_author(name="Kumiko Help",
                                     icon_url=bot.user.avatar_url)
@@ -340,6 +339,11 @@ class kumikoHelp(commands.Cog):
                     value="Returns 5 works of art based on selected tags",
                     inline=True,
                 )
+                embedVar.add_field(
+                    name="`deviantart-user`",
+                    value="Returns info about the given user",
+                    inline=True,
+                )
                 embedVar.set_footer(
                     text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
                 )
@@ -369,6 +373,11 @@ class kumikoHelp(commands.Cog):
             if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`jikan-anime`",
+                    value="Seaches on Jikan/MyAnimeList and provides info about the given anime",
+                    inline=True,
+                )
                 embedVar.add_field(
                     name="`jikan-manga`",
                     value="Seaches on Jikan/MyAnimeList and provides info about the given manga",
@@ -515,6 +524,30 @@ class kumikoHelp(commands.Cog):
                     name="Kumiko Help - Tenor", icon_url=bot.user.avatar_url
                 )
                 await ctx.send(embed=embedVar)
+
+            if str(search) in ["openai", "ai", "gpt-3"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`openai-complete`",
+                    value="Completes a sentence using GPT-3",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`openai-classify`",
+                    value="Classifies a sentence into negative or positive (using AI)",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`openai-answers`",
+                    value="Generates answers written by AI for a given question",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - OpenAI", icon_url=bot.user.avatar_url
+                )
+                await ctx.send(embed=embedVar)
+
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)

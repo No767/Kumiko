@@ -28,7 +28,7 @@ asyncpg = "*"
 uvloop = "*"
 odmantic = "*"
 requests = "*"
-mongosanitizer = "*"
+ujson = "*"
 
 [dev-packages]
 black = "*"

@@ -13,6 +13,19 @@ The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moder
 
 <div align=left>
 
+# Info
+
+## Kumiko 
+
+Kumiko is a multipurpose fork of [Rin](https://github.com/No767/Rin), and includes features like an economy system, and more. Currently Kumiko is in heavy development, and is not ready for use. Just like 
+Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of the services that Rin has.
+
+# Rin
+
+Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services (for the more technical, this is done by contacting APIs). For example, you could look up some memes with the Reddit service, 
+or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses Uvloop under the 
+hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. For more info, please check out the [Docs](https://docs.rinbot.live/).
+
 # Inviting the Bot
 
 Still in early production. Not ready for release yet
@@ -26,7 +39,7 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
 2. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma python3.10-dev
+sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
 ```
 
 3. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
@@ -61,7 +74,7 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
 1. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
-sudo apt-get install liblzma-dev lzma python3.10-dev
+sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
 ```
 
 If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
