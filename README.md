@@ -71,7 +71,7 @@ sudo python3.10 -m pip install --upgrade pipenv
 git clone https://github.com/No767/Rin.git
 ```
 
-8. `cd into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
+8. `cd` into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
 
 ```sh
 cd Rin && pipenv --python 3.10
@@ -141,7 +141,7 @@ sudo python3.10 -m pip install --upgrade pipenv
 git clone https://github.com/No767/Rin.git
 ```
 
-8. `cd into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
+8. `cd` into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
 
 ```sh
 cd Rin && pipenv --python 3.10
