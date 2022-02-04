@@ -16,7 +16,7 @@ A Discord bot focused on obtaining data from third-party services
 # Info
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services (for the more technical, this is done by contacting APIs). For example, you could look up some memes with the Reddit service, 
-or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses Uvloop under the 
+or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
 hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
 # Inviting the Bot
@@ -29,13 +29,66 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 ## Windows
 
 1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
-2. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+2. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
+
+```sh
+sudo apt-get install software-properties-common
+```
+    
+3. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
 ```sh
 sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
 ```
 
-3. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
+4. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. Note that this guide is for Ubuntu 20.04, so depending on your distro, it may be different.
+5. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+```sh
+sudo python3.10 -m pip install --upgrade pipenv
+```
+
+6. Clone this repo.
+7. Create the Pipenv. To do so, run this command: 
+
+```sh
+pipenv --python 3.10
+```
+
+8. `cd` into the cloned repo and install all the dependencies by running this command:
+
+```sh
+pipenv install
+```
+9. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
+
+```sh
+$HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
+```
+
+Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
+
+## Linux
+    
+1. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
+
+```sh
+sudo apt-get install software-properties-common
+```
+    
+2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+
+```sh
+sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
+```
+
+If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
+
+```sh
+yum install -y xz-devel
+```
+
+3. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
 4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
 ```sh
@@ -50,47 +103,6 @@ pipenv --python 3.10
 ```
 
 7. `cd` into the cloned repo and install all the dependencies by running this command:
-
-```sh
-pipenv install
-```
-8. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
-
-```sh
-$HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
-```
-
-Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
-
-## Linux
-
-1. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
-
-```sh
-sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
-```
-
-If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
-
-```sh
-yum install -y xz-devel
-```
-
-2. Compile Python 3.10 from source (or install it with your package manager). If you need a guide, [here's](https://realpython.com/installing-python/#how-to-build-python-from-source-code) one. 
-3. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
-
-```sh
-sudo python3.10 -m pip install --upgrade pipenv
-```
-
-4. Clone this repo.
-5. Create the Pipenv. To do so, run this command: 
-
-```sh
-pipenv --python 3.10
-```
-
-6. `cd` into the cloned repo and install all the dependencies by running this command:
 
 ```sh
 pipenv install
@@ -131,9 +143,16 @@ See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributi
 # Links 
 
 - [Documentation](https://docs.rinbot.live)
-- [Top.gg](https://top.gg/bot/865883525932253184)
 - [Website](https://rinbot.live)
 - [Status Tracker](https://status.rinbot.live)
+    
+## Bot Discovery Network Links
+    
+- [Top.gg](https://top.gg/bot/865883525932253184)
+- [Discord.boats](https://discord.boats/bot/865883525932253184)
+- [Discords.com](https://discords.com/bots/bot/865883525932253184)
+- [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184)
+
 
 
 <div align=center>
