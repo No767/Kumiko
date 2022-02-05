@@ -15,7 +15,7 @@ def fast_embed(content):
     return discord.Embed(description=content, color=discord_colors())
 
 
-class Utility(commands.Cog):
+class botInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -38,11 +38,11 @@ class Utility(commands.Cog):
             value=average_members_per_guild,
             inline=False,
         )
-        embed.set_thumbnail(url=bot.user.avatar_url)
+        embed.set_thumbnail(url=bot.user.display_avatar)
         await ctx.send(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
-    bot.add_cog(Utility(bot))
+    bot.add_cog(botInfo(bot))

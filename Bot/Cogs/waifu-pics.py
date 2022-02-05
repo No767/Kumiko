@@ -8,7 +8,7 @@ import uvloop
 from discord.ext import commands
 
 
-class waifu(commands.Cog):
+class waifuPics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -63,4 +63,4 @@ class waifu(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(waifu(bot))
+    bot.add_cog(waifuPics(bot))

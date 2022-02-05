@@ -6,7 +6,7 @@ from deep_translator import GoogleTranslator
 from discord.ext import commands
 
 
-class Utility(commands.Cog):
+class utils(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -32,7 +32,7 @@ class Utility(commands.Cog):
             translate_embed = discord.Embed(description=translatev2)
             translate_embed.set_footer(
                 text=f"Requested by {ctx.message.author.name}",
-                icon_url=ctx.message.author.avatar_url,
+                icon_url=ctx.message.author.display_avatar,
             )
             await ctx.send(embed=translate_embed)
         except Exception as e:
@@ -42,4 +42,4 @@ class Utility(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Utility(bot))
+    bot.add_cog(utils(bot))

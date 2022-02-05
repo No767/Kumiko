@@ -9,14 +9,14 @@ class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="rininfo", help="Server Info")
-    async def on_message(self, ctx):
+    @commands.command(name="rininfo", aliases=["info"])
+    async def rinInfo(self, ctx):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
-        embedVar.set_author(name="Rin Info", icon_url=bot.user.avatar_url)
+        embedVar.set_author(name="Rin Info", icon_url=bot.user.display_avatar)
         embedVar.add_field(
             name="About",
-            value="Rin is a discord bot which supports obtaining data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others. And you can request such data just from Discord. More services are planned to be supported, such as Twitch, and many others. (The MangaDex service is planned for you to be able to read manga from Discord). If you are interested in a general-purpose version of Rin, check out Kumiko",
+            value="Rin is a Discord bot focused on providing data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others. Rin allows you to find memes on Reddit with the Reddit service, or get info about your favorite anime with the MAL service. If you want a multipurpose version of Rin, check out Kumiko.",
             inline=False,
         )
         embedVar.add_field(

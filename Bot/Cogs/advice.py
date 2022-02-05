@@ -24,7 +24,7 @@ class advice_slip(commands.Cog):
                     embedVar.description = f"{advice_slip_formatted['slip']['advice']}"
                     embedVar.set_footer(
                         text=f"Requested by {ctx.message.author.name}",
-                        icon_url=ctx.message.author.avatar_url,
+                        icon_url=ctx.message.author.avatar,
                     )
                     await ctx.send(embed=embedVar)
                 except Exception as e:
