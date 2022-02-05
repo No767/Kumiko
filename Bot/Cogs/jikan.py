@@ -30,66 +30,16 @@ class JikanV1(commands.Cog):
                         embedVar2 = discord.Embed(
                             title=f"Synopsis - {anime_info_v2['title_english']}"
                         )
-                        embedVar.add_field(
-                            name="English Title",
-                            value=anime_info_v2["title_english"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Japanese Title",
-                            value=anime_info_v2["title_japanese"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Title Synonyms",
-                            value=str(anime_info_v2["title_synonyms"]).replace(
-                                "'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Type", value=anime_info_v2["type"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Source", value=anime_info_v2["source"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Status", value=anime_info_v2["status"], inline=True
-                        )
+                        excludedKeys = {"request_hash", "request_cached", "request_cache_expiry", "image_url", "aired",
+                                        "synopsis", "related", "licensors", "studios", "external_links",
+                                        "producers", "title", "trailer_url", "background", "genres", "demographics", "themes", 
+                                        "opening_themes", "ending_themes", "title_english"}
+                        for key, val in anime_info_v2.items():
+                            if key not in excludedKeys:
+                                embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
                         embedVar.add_field(
                             name="Aired",
                             value=anime_info_v2["aired"]["string"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Premiered",
-                            value=anime_info_v2["premiered"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Rating", value=anime_info_v2["rating"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Score", value=anime_info_v2["score"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Scored By",
-                            value=anime_info_v2["scored_by"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Rank", value=anime_info_v2["rank"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Popularity",
-                            value=anime_info_v2["popularity"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Members", value=anime_info_v2["members"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Favorites",
-                            value=anime_info_v2["favorites"],
                             inline=True,
                         )
                         embedVar.add_field(
@@ -163,44 +113,15 @@ class JikanV2(commands.Cog):
                             title=f"Synopsis - {manga_info_v1['title']}",
                             color=discord.Color.from_rgb(145, 197, 255),
                         )
-                        embedVar.add_field(
-                            name="English Title",
-                            value=manga_info_v1["title_english"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Japanese Title",
-                            value=manga_info_v1["title_japanese"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Title Synonyms",
-                            value=str(manga_info_v1["title_synonyms"]).replace(
-                                "'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Status", value=manga_info_v1["status"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Type", value=manga_info_v1["type"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Published",
-                            value=manga_info_v1["publishing"],
-                            inline=True,
-                        )
+                        excludedKeys = ["request_hash", "request_cached", "request_cache_expiry", "image_url",
+                                        "published", "synopsis", "related", "genres", "external_links", "background",
+                                        "serializations", "demographics", "authors", "themes", "title_english", "title"]
+                        for key, val in manga_info_v1.items():
+                            if key not in excludedKeys:
+                                embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
                         embedVar.add_field(
                             name="Published Status",
                             value=manga_info_v1["published"]["string"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Volumes", value=manga_info_v1["volumes"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Chapters",
-                            value=manga_info_v1["chapters"],
                             inline=True,
                         )
                         embedVar.add_field(
@@ -223,30 +144,6 @@ class JikanV2(commands.Cog):
                             .replace("[", "")
                             .replace("]", "")
                             .replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Rank", value=manga_info_v1["rank"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Score", value=manga_info_v1["score"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Scored by",
-                            value=manga_info_v1["scored_by"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Popularity",
-                            value=manga_info_v1["popularity"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Members", value=manga_info_v1["members"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Favorites",
-                            value=manga_info_v1["favorites"],
                             inline=True,
                         )
                         embedVar2.description = f"{manga_info_v1['synopsis']}"

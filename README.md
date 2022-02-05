@@ -183,7 +183,7 @@ Rin is licensed under Apache-2.0. This project uses some of the cogs from EasyBo
 
 # Contributing
 
-See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
+See [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
 
 # Links 
 
