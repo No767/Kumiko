@@ -20,7 +20,7 @@ class Global(commands.Cog):
             message_embed = discord.Embed()
             message_embed.set_footer(
                 text=f"Sent by {message.author.name} at {message.author.guild.name}",
-                icon_url=message.author.avatar_url,
+                icon_url=message.author.display_avatar,
             )
 
             # if image as link

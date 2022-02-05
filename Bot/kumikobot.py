@@ -43,7 +43,7 @@ initial_extensions = [
     "Cogs.jisho",
     "Cogs.mangadex",
     "Cogs.bot-info",
-    "Cogs.openai-gpt3"
+    "Cogs.openai-gpt3",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

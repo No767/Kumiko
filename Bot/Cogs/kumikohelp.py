@@ -67,7 +67,7 @@ class kumikoHelp(commands.Cog):
                     name="OpenAI", value="`.kumikohelp openai`", inline=True
                 )
                 embedVar.set_author(name="Kumiko Help",
-                                    icon_url=bot.user.avatar_url)
+                                    icon_url=bot.user.display_avatar)
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -96,7 +96,7 @@ class kumikoHelp(commands.Cog):
                     name="`ping`", value="Checks the ping for the bot", inline=True
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Admin", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Admin", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -114,7 +114,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Twitter", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Twitter", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -135,7 +135,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Reddit", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Reddit", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -193,7 +193,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Minecraft", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -227,7 +227,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Fun", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Fun", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -256,7 +256,7 @@ class kumikoHelp(commands.Cog):
                     text="Note: There is a 20 sec cooldown for each command. This is to prevent rate limiting."
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Instagram", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Instagram", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -273,7 +273,7 @@ class kumikoHelp(commands.Cog):
                     value="Clears number of messages specified from the channel in which in the command was called",
                 )
                 embedVar.set_author(
-                    name="Rin Help - Chat", icon_url=bot.user.avatar_url
+                    name="Rin Help - Chat", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -312,7 +312,7 @@ class kumikoHelp(commands.Cog):
                     name="`uptime`", value="Checks for Kumiko's Uptime", inline=True
                 )
                 embedVar.set_author(
-                    name="Rin Help - Misc", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Misc", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -348,7 +348,7 @@ class kumikoHelp(commands.Cog):
                     text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Deviantart", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Deviantart", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -366,7 +366,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Anime", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Anime", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -402,7 +402,7 @@ class kumikoHelp(commands.Cog):
                     text='Also note that the prefix can be shorten down to "jk"'
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - MyAnimeList/Jikan", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - MyAnimeList/Jikan", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -420,7 +420,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Topgg", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Topgg", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -444,11 +444,11 @@ class kumikoHelp(commands.Cog):
                     text='The Pinterest cmds also have aliases just like Jikan and DeviantArt. The alias prefix is "pt". Note that the Pinterest API only supports getting info about the user that it is logged into, which means it is grabbing info from my own account. It is not recommended to use this service.'
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Pinterest", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Pinterest", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
-            if str(search) == "youtube":
+            if str(search) in ["youtube", "yt"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -480,7 +480,7 @@ class kumikoHelp(commands.Cog):
                     text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - YouTube", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - YouTube", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -521,7 +521,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Tenor", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - Tenor", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -544,7 +544,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - OpenAI", icon_url=bot.user.avatar_url
+                    name="Kumiko Help - OpenAI", icon_url=bot.user.display_avatar
                 )
                 await ctx.send(embed=embedVar)
 
@@ -553,7 +553,7 @@ class kumikoHelp(commands.Cog):
             embedVar = discord.Embed(title="Rin Help", color=14414079)
             embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
-            embedVar.set_thumbnail(url=bot.user.avatar_url)
+            embedVar.set_thumbnail(url=bot.user.display_avatar)
             await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

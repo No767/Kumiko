@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-key = os.getenv("Top_GG_API_Key")
+apiKey = os.getenv("Top_GG_API_Key")
 
 
 class TopGGV1(commands.Cog):
@@ -20,7 +20,7 @@ class TopGGV1(commands.Cog):
     @commands.command(name="topgg-search")
     async def topgg_search_one(self, ctx, *, search: int):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": key}
+            headers = {"Authorization": apiKey}
             async with session.get(
                 f"https://top.gg/api/bots/{search}", headers=headers
             ) as r:
@@ -30,60 +30,19 @@ class TopGGV1(commands.Cog):
                         title=getOneBotInfo["username"],
                         color=discord.Color.from_rgb(191, 242, 255),
                     )
-                    embedVar.add_field(
-                        name="Long Description",
-                        value=str(getOneBotInfo["longdesc"])
+                    embedVar.description = (
+                        str(getOneBotInfo["longdesc"])
                         .replace("\r", "")
-                        .replace("\n", ""),
-                        inline=False,
+                        .replace("<div align=center>", "")
+                        .replace("<div align=left>", "")
+                        .replace("<div align=right>", "")
                     )
-                    embedVar.add_field(
-                        name="Short Description",
-                        value=getOneBotInfo["shortdesc"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Prefix", value=getOneBotInfo["prefix"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="GitHub",
-                        value=str(getOneBotInfo["github"])
-                        .replace('"', "")
-                        .replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Website",
-                        value=str(getOneBotInfo["website"])
-                        .replace('"', "")
-                        .replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Invite",
-                        value=str(getOneBotInfo["invite"]),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Points",
-                        value=str(getOneBotInfo["points"]),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Certified Bot",
-                        value=str(getOneBotInfo["certifiedBot"]),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Owners",
-                        value=str(getOneBotInfo["owners"]).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Tags",
-                        value=str(getOneBotInfo["tags"]).replace("'", ""),
-                        inline=True,
-                    )
+                    excludedKeys = {"longdesc", "lib"}
+                    for key, val in getOneBotInfo.items():
+                        if key not in excludedKeys:
+                            embedVar.add_field(
+                                name=key, value=str(val).replace("'", ""), inline=True
+                            )
                     await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
@@ -113,46 +72,35 @@ class TopGGV2(commands.Cog):
     @commands.command(name="topgg-search-users")
     async def topgg_search_users(self, ctx, *, search: int):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": key}
+            headers = {"Authorization": apiKey}
             async with session.get(
                 f"https://top.gg/api/users/{search}", headers=headers
             ) as response:
                 user = await response.json()
                 try:
-                    if str(user["error"]) in "Not found":
-                        embedVar = discord.Embed(
-                            color=discord.Color.from_rgb(255, 51, 51)
+                    if "error" in user:
+                        embed = discord.Embed()
+                        embed.description = (
+                            "Sorry, but the user could not be found. Please try again"
                         )
-                        embedVar.description = (
-                            "The user was not found. Please try again."
+                        embed.set_footer(
+                            text="Tip: Try finding a user on the Top.gg Disord Server"
                         )
-                        embedVar.add_field(
-                            name="Reason", value=user["error"], inline=True
-                        )
-                        await ctx.send(embed=embedVar)
+                        embed.add_field(
+                            name="Reason", value=user["error"], inline=True)
+                        await ctx.send(embed=embed)
                     else:
                         embedVar = discord.Embed(
                             title=user["username"],
                             color=discord.Color.from_rgb(191, 242, 255),
                         )
-                        embedVar.add_field(
-                            name="Bio", value=user["bio"], inline=True)
-                        embedVar.add_field(
-                            name="Admin", value=user["admin"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Web Mod", value=user["webMod"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Mod", value=user["mod"], inline=True)
-                        embedVar.add_field(
-                            name="Certified Dev",
-                            value=user["certifiedDev"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Supporter", value=user["supporter"], inline=True
-                        )
+                        embedVar.description = user["bio"]
+                        excludedKeys = {"bio"}
+                        for key, val in user.items():
+                            if key not in excludedKeys:
+                                embedVar.add_field(
+                                    name=key, value=val, inline=True)
+
                         await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
