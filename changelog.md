@@ -1,7 +1,7 @@
 # TD;LR
-- Move DeviantArt Token Refresher to a separate script and docker container (This should fix it)
+- Upgrade Rin to Pycord v2.0.0 (Beta as of now)
+- Dynamically load data compared to statically loading data 
 
 # Changes
-- Add seconds counter for uptime cog
-- Move DeviantArt Token Refresher to a separate script and docker container (This should fix it)
-- Add OpenAI/GPT-3 API Support
+- Upgrade Rin to Pycord v2.0.0 (Beta as of now)
+- Dynamically load data compared to statically loading data
