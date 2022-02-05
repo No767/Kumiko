@@ -61,7 +61,10 @@ class rinhelp(commands.Cog):
                     name="OpenAI", value="`.rinhelp openai`", inline=True
                 )
                 embedVar.set_author(
-                    name="Rin Help", url=discord.Embed.Empty, icon_url=bot.user.display_avatar)
+                    name="Rin Help",
+                    url=discord.Embed.Empty,
+                    icon_url=bot.user.display_avatar,
+                )
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -220,8 +223,9 @@ class rinhelp(commands.Cog):
                     value="Sends a non-binary flag and a trans flag into the channel",
                     inline=True,
                 )
-                embedVar.set_author(name="Rin Help - Fun",
-                                    icon_url=bot.user.display_avatar)
+                embedVar.set_author(
+                    name="Rin Help - Fun", icon_url=bot.user.display_avatar
+                )
                 await ctx.send(embed=embedVar)
 
             if str(search) in ("instagram", "ig"):
@@ -395,7 +399,8 @@ class rinhelp(commands.Cog):
                     text='Also note that the prefix can be shorten down to "jk"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - MyAnimeList/Jikan", icon_url=bot.user.display_avatar
+                    name="Rin Help - MyAnimeList/Jikan",
+                    icon_url=bot.user.display_avatar,
                 )
                 await ctx.send(embed=embedVar)
 
