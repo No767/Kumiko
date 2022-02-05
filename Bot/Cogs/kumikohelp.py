@@ -66,8 +66,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.add_field(
                     name="OpenAI", value="`.kumikohelp openai`", inline=True
                 )
-                embedVar.set_author(name="Kumiko Help",
-                                    icon_url=bot.user.display_avatar)
+                embedVar.set_author(
+                    name="Kumiko Help", icon_url=bot.user.display_avatar
+                )
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "."'
                 )
@@ -402,7 +403,8 @@ class kumikoHelp(commands.Cog):
                     text='Also note that the prefix can be shorten down to "jk"'
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - MyAnimeList/Jikan", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - MyAnimeList/Jikan",
+                    icon_url=bot.user.display_avatar,
                 )
                 await ctx.send(embed=embedVar)
 
