@@ -53,9 +53,21 @@ class SpigetV2(commands.Cog):
                                             173, 156, 255),
                                     )
                                     embedVar.description = resource[0]["tag"]
-                                    embedVar.add_field(name="Author", value=author_details_v1['name'], inline=True)
-                                    embedVar.add_field(name="Downloads", value=resource[0]['downloads'], inline=True)
-                                    embedVar.add_field(name="Rating", value=resource[0]['rating']["average"], inline=True)
+                                    embedVar.add_field(
+                                        name="Author",
+                                        value=author_details_v1["name"],
+                                        inline=True,
+                                    )
+                                    embedVar.add_field(
+                                        name="Downloads",
+                                        value=resource[0]["downloads"],
+                                        inline=True,
+                                    )
+                                    embedVar.add_field(
+                                        name="Rating",
+                                        value=resource[0]["rating"]["average"],
+                                        inline=True,
+                                    )
                                     embedVar.add_field(
                                         name="Tested Versions",
                                         value=str(
@@ -81,7 +93,7 @@ class SpigetV2(commands.Cog):
                                     )
                                     embedVar.add_field(
                                         name="Download Type",
-                                        value=resource[0]['file']['type'],
+                                        value=resource[0]["file"]["type"],
                                         inline=True,
                                     )
                                     embedVar.add_field(
@@ -98,10 +110,21 @@ class SpigetV2(commands.Cog):
                                             173, 156, 255),
                                     )
                                     embedVar.description = resource[0]["tag"]
-                                    embedVar.add_field(name="Author", value=author_details_v1['name'], inline=True)
-                                    embedVar.add_field(name="Downloads", value=resource[0]['downloads'], inline=True)
-                                    embedVar.add_field(name="Rating", value=resource[0]['rating']["average"],
-                                                       inline=True)
+                                    embedVar.add_field(
+                                        name="Author",
+                                        value=author_details_v1["name"],
+                                        inline=True,
+                                    )
+                                    embedVar.add_field(
+                                        name="Downloads",
+                                        value=resource[0]["downloads"],
+                                        inline=True,
+                                    )
+                                    embedVar.add_field(
+                                        name="Rating",
+                                        value=resource[0]["rating"]["average"],
+                                        inline=True,
+                                    )
                                     embedVar.add_field(
                                         name="Tested Versions",
                                         value=str(
@@ -127,10 +150,14 @@ class SpigetV2(commands.Cog):
                                     )
                                     embedVar.add_field(
                                         name="Download Info",
-                                        value=resource[0]['file']['type'],
+                                        value=resource[0]["file"]["type"],
                                         inline=True,
                                     )
-                                    embedVar.add_field(name="Download Size", value=file_size, inline=True)
+                                    embedVar.add_field(
+                                        name="Download Size",
+                                        value=file_size,
+                                        inline=True,
+                                    )
                                     embedVar.add_field(
                                         name="Download URL",
                                         value=f"{download_url_external_false}",
@@ -180,7 +207,7 @@ class SpigetV4(commands.Cog):
                     )
                     for key, val in total_stats["stats"].items():
                         embedVar.add_field(name=key, value=val, inline=True)
-                    
+
                     await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
