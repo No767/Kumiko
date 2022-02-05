@@ -30,13 +30,35 @@ class JikanV1(commands.Cog):
                         embedVar2 = discord.Embed(
                             title=f"Synopsis - {anime_info_v2['title_english']}"
                         )
-                        excludedKeys = {"request_hash", "request_cached", "request_cache_expiry", "image_url", "aired",
-                                        "synopsis", "related", "licensors", "studios", "external_links",
-                                        "producers", "title", "trailer_url", "background", "genres", "demographics", "themes", 
-                                        "opening_themes", "ending_themes", "title_english"}
+                        excludedKeys = {
+                            "request_hash",
+                            "request_cached",
+                            "request_cache_expiry",
+                            "image_url",
+                            "aired",
+                            "synopsis",
+                            "related",
+                            "licensors",
+                            "studios",
+                            "external_links",
+                            "producers",
+                            "title",
+                            "trailer_url",
+                            "background",
+                            "genres",
+                            "demographics",
+                            "themes",
+                            "opening_themes",
+                            "ending_themes",
+                            "title_english",
+                        }
                         for key, val in anime_info_v2.items():
                             if key not in excludedKeys:
-                                embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
+                                embedVar.add_field(
+                                    name=key,
+                                    value=str(val).replace("'", ""),
+                                    inline=True,
+                                )
                         embedVar.add_field(
                             name="Aired",
                             value=anime_info_v2["aired"]["string"],
@@ -113,12 +135,31 @@ class JikanV2(commands.Cog):
                             title=f"Synopsis - {manga_info_v1['title']}",
                             color=discord.Color.from_rgb(145, 197, 255),
                         )
-                        excludedKeys = ["request_hash", "request_cached", "request_cache_expiry", "image_url",
-                                        "published", "synopsis", "related", "genres", "external_links", "background",
-                                        "serializations", "demographics", "authors", "themes", "title_english", "title"]
+                        excludedKeys = [
+                            "request_hash",
+                            "request_cached",
+                            "request_cache_expiry",
+                            "image_url",
+                            "published",
+                            "synopsis",
+                            "related",
+                            "genres",
+                            "external_links",
+                            "background",
+                            "serializations",
+                            "demographics",
+                            "authors",
+                            "themes",
+                            "title_english",
+                            "title",
+                        ]
                         for key, val in manga_info_v1.items():
                             if key not in excludedKeys:
-                                embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
+                                embedVar.add_field(
+                                    name=key,
+                                    value=str(val).replace("'", ""),
+                                    inline=True,
+                                )
                         embedVar.add_field(
                             name="Published Status",
                             value=manga_info_v1["published"]["string"],

@@ -30,11 +30,19 @@ class TopGGV1(commands.Cog):
                         title=getOneBotInfo["username"],
                         color=discord.Color.from_rgb(191, 242, 255),
                     )
-                    embedVar.description = str(getOneBotInfo["longdesc"]).replace("\r", "").replace("<div align=center>", "").replace("<div align=left>", "").replace("<div align=right>", "")
+                    embedVar.description = (
+                        str(getOneBotInfo["longdesc"])
+                        .replace("\r", "")
+                        .replace("<div align=center>", "")
+                        .replace("<div align=left>", "")
+                        .replace("<div align=right>", "")
+                    )
                     excludedKeys = {"longdesc", "lib"}
                     for key, val in getOneBotInfo.items():
                         if key not in excludedKeys:
-                            embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
+                            embedVar.add_field(
+                                name=key, value=str(val).replace("'", ""), inline=True
+                            )
                     await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
@@ -72,9 +80,14 @@ class TopGGV2(commands.Cog):
                 try:
                     if "error" in user:
                         embed = discord.Embed()
-                        embed.description = "Sorry, but the user could not be found. Please try again"
-                        embed.set_footer(text="Tip: Try finding a user on the Top.gg Disord Server")
-                        embed.add_field(name="Reason", value=user["error"], inline=True)
+                        embed.description = (
+                            "Sorry, but the user could not be found. Please try again"
+                        )
+                        embed.set_footer(
+                            text="Tip: Try finding a user on the Top.gg Disord Server"
+                        )
+                        embed.add_field(
+                            name="Reason", value=user["error"], inline=True)
                         await ctx.send(embed=embed)
                     else:
                         embedVar = discord.Embed(
@@ -85,8 +98,9 @@ class TopGGV2(commands.Cog):
                         excludedKeys = {"bio"}
                         for key, val in user.items():
                             if key not in excludedKeys:
-                                embedVar.add_field(name=key, value=val, inline=True)
-                                
+                                embedVar.add_field(
+                                    name=key, value=val, inline=True)
+
                         await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
