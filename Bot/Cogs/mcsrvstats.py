@@ -22,21 +22,29 @@ class mcsrvstats(commands.Cog):
                         embedVar = discord.Embed(
                             title="Infomation (Java Edition)", color=0xC27C0E
                         )
-                        embedVar.description = str(mcsrv["motd"]["clean"]).replace("[", "").replace("]", "").replace("'", "")
+                        embedVar.description = (
+                            str(mcsrv["motd"]["clean"])
+                            .replace("[", "")
+                            .replace("]", "")
+                            .replace("'", "")
+                        )
                         excludedKeys = {"debug", "players", "motd", "icon"}
-                        
+
                         for k, v in mcsrv.get("players").items():
                             embedVar.add_field(name=k, value=v, inline=True)
-                            
+
                         for key, val in mcsrv.items():
                             if key not in excludedKeys:
-                                embedVar.add_field(name=key, value=val, inline=True)
-                        
+                                embedVar.add_field(
+                                    name=key, value=val, inline=True)
+
                         for key1, value in mcsrv.get("debug").items():
-                            embedVar.add_field(name=key1, value=value, inline=True)
-                        
-                        
-                        embedVar.add_field(name="HTTP Status (McSrvStat)", value=r.status, inline=True)
+                            embedVar.add_field(
+                                name=key1, value=value, inline=True)
+
+                        embedVar.add_field(
+                            name="HTTP Status (McSrvStat)", value=r.status, inline=True
+                        )
                         embedVar.set_thumbnail(url=image_link)
                         await ctx.send(embed=embedVar)
                     else:
@@ -46,11 +54,14 @@ class mcsrvstats(commands.Cog):
                         excludedKeys = {"debug"}
                         for key, val in mcsrv.items():
                             if key not in excludedKeys:
-                                embedVar.add_field(name=key, value=val, inline=True)
+                                embedVar.add_field(
+                                    name=key, value=val, inline=True)
 
                         for keyDict, valueDict in mcsrv.get("debug").items():
-                            embedVar.add_field(name=keyDict, value=valueDict, inline=True)
-                        
+                            embedVar.add_field(
+                                name=keyDict, value=valueDict, inline=True
+                            )
+
                         embedVar.add_field(
                             name="HTTP Status (MCSrvStat)",
                             value=r.status,
@@ -93,20 +104,29 @@ class bedrock_mcsrvstats(commands.Cog):
                 try:
                     if str(bedmcsrv["online"]) == "True":
                         embedVar = discord.Embed(
-                                title="Information (Bedrock Edition)", color=0x607D8B
-                            )
-                        embedVar.description = str(bedmcsrv["motd"]["clean"]).replace("[", "").replace("]", "").replace("'", "")
+                            title="Information (Bedrock Edition)", color=0x607D8B
+                        )
+                        embedVar.description = (
+                            str(bedmcsrv["motd"]["clean"])
+                            .replace("[", "")
+                            .replace("]", "")
+                            .replace("'", "")
+                        )
                         excludedKeys = {"debug", "players", "motd"}
                         for keys, value in bedmcsrv.get("players").items():
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                         for key, val in bedmcsrv.items():
                             if key not in excludedKeys:
-                                embedVar.add_field(name=key, value=val, inline=True)
+                                embedVar.add_field(
+                                    name=key, value=val, inline=True)
 
                         for k, v in bedmcsrv.get("debug").items():
                             embedVar.add_field(name=k, value=v, inline=True)
-                            
-                        embedVar.add_field(name="HTTP Status (McSrvStat)", value=r.status, inline=True)
+
+                        embedVar.add_field(
+                            name="HTTP Status (McSrvStat)", value=r.status, inline=True
+                        )
                         embedVar.set_thumbnail(url=bedimage_link)
                         await ctx.send(embed=embedVar)
                     else:
@@ -116,10 +136,12 @@ class bedrock_mcsrvstats(commands.Cog):
                         excludedKeys2 = {"debug"}
                         for key2, val2 in bedmcsrv.items():
                             if key2 not in excludedKeys2:
-                                embedVar.add_field(name=key2, value=val2, inline=True)
+                                embedVar.add_field(
+                                    name=key2, value=val2, inline=True)
 
                         for key3, value3 in bedmcsrv.get("debug").items():
-                            embedVar.add_field(name=key3, value=value3, inline=True)
+                            embedVar.add_field(
+                                name=key3, value=value3, inline=True)
                         embedVar.set_thumbnail(url=bedimage_link)
                         await ctx.send(embed=embedVar)
                 except Exception as e:
