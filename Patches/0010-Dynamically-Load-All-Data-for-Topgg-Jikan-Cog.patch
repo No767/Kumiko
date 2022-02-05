@@ -1,0 +1,340 @@
+From 0c02d269309b26d95351ede07a628dd99614601e Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Fri, 4 Feb 2022 23:40:53 -0800
+Subject: [PATCH] Dynamically Load All Data for Topgg + Jikan Cog
+
+Should fix No767/Kumiko#32 as well
+---
+ Bot/Cogs/jikan.py  | 129 +++++----------------------------------------
+ Bot/Cogs/top-gg.py | 106 +++++++------------------------------
+ README.md          |   2 +-
+ 3 files changed, 34 insertions(+), 203 deletions(-)
+
+diff --git a/Bot/Cogs/jikan.py b/Bot/Cogs/jikan.py
+index 5b4e6d2..9a9ebbc 100644
+--- a/Bot/Cogs/jikan.py
++++ b/Bot/Cogs/jikan.py
+@@ -30,68 +30,18 @@ class JikanV1(commands.Cog):
+                         embedVar2 = discord.Embed(
+                             title=f"Synopsis - {anime_info_v2['title_english']}"
+                         )
+-                        embedVar.add_field(
+-                            name="English Title",
+-                            value=anime_info_v2["title_english"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Japanese Title",
+-                            value=anime_info_v2["title_japanese"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Title Synonyms",
+-                            value=str(anime_info_v2["title_synonyms"]).replace(
+-                                "'", ""),
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Type", value=anime_info_v2["type"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Source", value=anime_info_v2["source"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Status", value=anime_info_v2["status"], inline=True
+-                        )
++                        excludedKeys = {"request_hash", "request_cached", "request_cache_expiry", "image_url", "aired",
++                                        "synopsis", "related", "licensors", "studios", "external_links",
++                                        "producers", "title", "trailer_url", "background", "genres", "demographics", "themes", 
++                                        "opening_themes", "ending_themes", "title_english"}
++                        for key, val in anime_info_v2.items():
++                            if key not in excludedKeys:
++                                embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
+                         embedVar.add_field(
+                             name="Aired",
+                             value=anime_info_v2["aired"]["string"],
+                             inline=True,
+                         )
+-                        embedVar.add_field(
+-                            name="Premiered",
+-                            value=anime_info_v2["premiered"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Rating", value=anime_info_v2["rating"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Score", value=anime_info_v2["score"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Scored By",
+-                            value=anime_info_v2["scored_by"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Rank", value=anime_info_v2["rank"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Popularity",
+-                            value=anime_info_v2["popularity"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Members", value=anime_info_v2["members"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Favorites",
+-                            value=anime_info_v2["favorites"],
+-                            inline=True,
+-                        )
+                         embedVar.add_field(
+                             name="Official Site",
+                             value=anime_info_v2["external_links"][0]["url"],
+@@ -163,46 +113,17 @@ class JikanV2(commands.Cog):
+                             title=f"Synopsis - {manga_info_v1['title']}",
+                             color=discord.Color.from_rgb(145, 197, 255),
+                         )
+-                        embedVar.add_field(
+-                            name="English Title",
+-                            value=manga_info_v1["title_english"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Japanese Title",
+-                            value=manga_info_v1["title_japanese"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Title Synonyms",
+-                            value=str(manga_info_v1["title_synonyms"]).replace(
+-                                "'", ""),
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Status", value=manga_info_v1["status"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Type", value=manga_info_v1["type"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Published",
+-                            value=manga_info_v1["publishing"],
+-                            inline=True,
+-                        )
++                        excludedKeys = ["request_hash", "request_cached", "request_cache_expiry", "image_url",
++                                        "published", "synopsis", "related", "genres", "external_links", "background",
++                                        "serializations", "demographics", "authors", "themes", "title_english", "title"]
++                        for key, val in manga_info_v1.items():
++                            if key not in excludedKeys:
++                                embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
+                         embedVar.add_field(
+                             name="Published Status",
+                             value=manga_info_v1["published"]["string"],
+                             inline=True,
+                         )
+-                        embedVar.add_field(
+-                            name="Volumes", value=manga_info_v1["volumes"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Chapters",
+-                            value=manga_info_v1["chapters"],
+-                            inline=True,
+-                        )
+                         embedVar.add_field(
+                             name="Genre",
+                             value=str(
+@@ -225,30 +146,6 @@ class JikanV2(commands.Cog):
+                             .replace("'", ""),
+                             inline=True,
+                         )
+-                        embedVar.add_field(
+-                            name="Rank", value=manga_info_v1["rank"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Score", value=manga_info_v1["score"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Scored by",
+-                            value=manga_info_v1["scored_by"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Popularity",
+-                            value=manga_info_v1["popularity"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Members", value=manga_info_v1["members"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Favorites",
+-                            value=manga_info_v1["favorites"],
+-                            inline=True,
+-                        )
+                         embedVar2.description = f"{manga_info_v1['synopsis']}"
+                         embedVar2.add_field(
+                             name="Background",
+diff --git a/Bot/Cogs/top-gg.py b/Bot/Cogs/top-gg.py
+index 176bd59..85b8f30 100644
+--- a/Bot/Cogs/top-gg.py
++++ b/Bot/Cogs/top-gg.py
+@@ -10,7 +10,7 @@ from dotenv import load_dotenv
+ 
+ load_dotenv()
+ 
+-key = os.getenv("Top_GG_API_Key")
++apiKey = os.getenv("Top_GG_API_Key")
+ 
+ 
+ class TopGGV1(commands.Cog):
+@@ -20,7 +20,7 @@ class TopGGV1(commands.Cog):
+     @commands.command(name="topgg-search")
+     async def topgg_search_one(self, ctx, *, search: int):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"Authorization": key}
++            headers = {"Authorization": apiKey}
+             async with session.get(
+                 f"https://top.gg/api/bots/{search}", headers=headers
+             ) as r:
+@@ -30,60 +30,11 @@ class TopGGV1(commands.Cog):
+                         title=getOneBotInfo["username"],
+                         color=discord.Color.from_rgb(191, 242, 255),
+                     )
+-                    embedVar.add_field(
+-                        name="Long Description",
+-                        value=str(getOneBotInfo["longdesc"])
+-                        .replace("\r", "")
+-                        .replace("\n", ""),
+-                        inline=False,
+-                    )
+-                    embedVar.add_field(
+-                        name="Short Description",
+-                        value=getOneBotInfo["shortdesc"],
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Prefix", value=getOneBotInfo["prefix"], inline=True
+-                    )
+-                    embedVar.add_field(
+-                        name="GitHub",
+-                        value=str(getOneBotInfo["github"])
+-                        .replace('"', "")
+-                        .replace("'", ""),
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Website",
+-                        value=str(getOneBotInfo["website"])
+-                        .replace('"', "")
+-                        .replace("'", ""),
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Invite",
+-                        value=str(getOneBotInfo["invite"]),
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Points",
+-                        value=str(getOneBotInfo["points"]),
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Certified Bot",
+-                        value=str(getOneBotInfo["certifiedBot"]),
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Owners",
+-                        value=str(getOneBotInfo["owners"]).replace("'", ""),
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Tags",
+-                        value=str(getOneBotInfo["tags"]).replace("'", ""),
+-                        inline=True,
+-                    )
++                    embedVar.description = str(getOneBotInfo["longdesc"]).replace("\r", "").replace("<div align=center>", "").replace("<div align=left>", "").replace("<div align=right>", "")
++                    excludedKeys = {"longdesc", "lib"}
++                    for key, val in getOneBotInfo.items():
++                        if key not in excludedKeys:
++                            embedVar.add_field(name=key, value=str(val).replace("'", ""), inline=True)
+                     await ctx.send(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed(
+@@ -113,46 +64,29 @@ class TopGGV2(commands.Cog):
+     @commands.command(name="topgg-search-users")
+     async def topgg_search_users(self, ctx, *, search: int):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"Authorization": key}
++            headers = {"Authorization": apiKey}
+             async with session.get(
+                 f"https://top.gg/api/users/{search}", headers=headers
+             ) as response:
+                 user = await response.json()
+                 try:
+-                    if str(user["error"]) in "Not found":
+-                        embedVar = discord.Embed(
+-                            color=discord.Color.from_rgb(255, 51, 51)
+-                        )
+-                        embedVar.description = (
+-                            "The user was not found. Please try again."
+-                        )
+-                        embedVar.add_field(
+-                            name="Reason", value=user["error"], inline=True
+-                        )
+-                        await ctx.send(embed=embedVar)
++                    if "error" in user:
++                        embed = discord.Embed()
++                        embed.description = "Sorry, but the user could not be found. Please try again"
++                        embed.set_footer(text="Tip: Try finding a user on the Top.gg Disord Server")
++                        embed.add_field(name="Reason", value=user["error"], inline=True)
++                        await ctx.send(embed=embed)
+                     else:
+                         embedVar = discord.Embed(
+                             title=user["username"],
+                             color=discord.Color.from_rgb(191, 242, 255),
+                         )
+-                        embedVar.add_field(
+-                            name="Bio", value=user["bio"], inline=True)
+-                        embedVar.add_field(
+-                            name="Admin", value=user["admin"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Web Mod", value=user["webMod"], inline=True
+-                        )
+-                        embedVar.add_field(
+-                            name="Mod", value=user["mod"], inline=True)
+-                        embedVar.add_field(
+-                            name="Certified Dev",
+-                            value=user["certifiedDev"],
+-                            inline=True,
+-                        )
+-                        embedVar.add_field(
+-                            name="Supporter", value=user["supporter"], inline=True
+-                        )
++                        embedVar.description = user["bio"]
++                        excludedKeys = {"bio"}
++                        for key, val in user.items():
++                            if key not in excludedKeys:
++                                embedVar.add_field(name=key, value=val, inline=True)
++                                
+                         await ctx.send(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed(
+diff --git a/README.md b/README.md
+index 4e921e2..710180e 100644
+--- a/README.md
++++ b/README.md
+@@ -183,7 +183,7 @@ Rin is licensed under Apache-2.0. This project uses some of the cogs from EasyBo
+ 
+ # Contributing
+ 
+-See [Contributing](https://github.com/No767/Rin/blob/master/Community/contributing.md)
++See [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
+ 
+ # Links 
+ 
+-- 
+2.34.1
+
