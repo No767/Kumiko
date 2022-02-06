@@ -30,31 +30,15 @@ class TenorV1(commands.Cog):
             async with session.get("https://g.tenor.com/v1/search", params=params) as r:
                 data = await r.json()
                 try:
-                    embed1 = discord.Embed()
-                    embed1.title = data["results"][0]["content_description"]
-                    embed1.set_image(
-                        url=data["results"][0]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed1)
-                    embed2 = discord.Embed()
-                    embed2.title = data["results"][1]["content_description"]
-                    embed2.set_image(
-                        url=data["results"][1]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed2)
-                    embed3 = discord.Embed()
-                    embed3.title = data["results"][2]["content_description"]
-                    embed3.set_image(
-                        url=data["results"][2]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed3)
-                    embed4 = discord.Embed()
-                    embed4.title = data["results"][3]["content_description"]
-                    embed4.set_image(
-                        url=data["results"][3]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed4)
-                    embed5 = discord.Embed()
-                    embed5.title = data["results"][4]["content_description"]
-                    embed5.set_image(
-                        url=data["results"][4]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed5)
+                    embedVar = discord.Embed()
+                    filterList = ["created", "bg_color", "content_rating", "title", "h1_title", "itemurl", "url", "shares", "hasaudio", "hascaption", "source_id", "composite", "tags", "flags", "media", "content_description"]
+                    for dictItem in data["results"]:
+                        for key in dictItem.items():
+                            if key not in filterList:
+                                embedVar.title = dictItem["content_description"]
+                        for item in dictItem.get("media"):
+                            embedVar.set_image(url=item["gif"]["url"])
+                        await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = f"Sorry, but the search for {search} has failed. Please try again..."
@@ -87,7 +71,7 @@ class TenorV2(commands.Cog):
                 "q": search_one,
                 "key": Tenor_API_Key,
                 "contentfilter": "medium",
-                "limit": 2,
+                "limit": 1,
                 "media_filter": "minimal",
             }
             async with session.get(
@@ -140,31 +124,15 @@ class TenorV3(commands.Cog):
             ) as response:
                 data3 = await response.json()
                 try:
-                    embed1 = discord.Embed()
-                    embed1.title = data3["results"][0]["content_description"]
-                    embed1.set_image(
-                        url=data3["results"][0]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed1)
-                    embed2 = discord.Embed()
-                    embed2.title = data3["results"][1]["content_description"]
-                    embed2.set_image(
-                        url=data3["results"][1]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed2)
-                    embed3 = discord.Embed()
-                    embed3.title = data3["results"][2]["content_description"]
-                    embed3.set_image(
-                        url=data3["results"][2]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed3)
-                    embed4 = discord.Embed()
-                    embed4.title = data3["results"][3]["content_description"]
-                    embed4.set_image(
-                        url=data3["results"][3]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed4)
-                    embed5 = discord.Embed()
-                    embed5.title = data3["results"][4]["content_description"]
-                    embed5.set_image(
-                        url=data3["results"][4]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed5)
+                    embedVar = discord.Embed()
+                    filterList2 = ["created", "bg_color", "content_rating", "title", "h1_title", "itemurl", "url", "shares", "hasaudio", "hascaption", "source_id", "composite", "tags", "flags", "media", "content_description"]
+                    for dictItem2 in data3["results"]:
+                        for key in dictItem2.items():
+                            if key not in filterList2:
+                                embedVar.title = dictItem2["content_description"]
+                        for item2 in dictItem2.get("media"):
+                            embedVar.set_image(url=item2["gif"]["url"])
+                        await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
@@ -260,11 +228,11 @@ class TenorV6(commands.Cog):
         self.bot = bot
 
     @commands.command(name="tenor-gif", aliases=["tg"])
-    async def tenor_gif(self, ctx, *, search_gif: str):
+    async def tenor_gif(self, ctx, *, search_gif: int):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,
-                "q": search_gif,
+                "ids": search_gif,
                 "limit": 1,
                 "media_filter": "minimal",
             }
@@ -274,37 +242,15 @@ class TenorV6(commands.Cog):
                 data7 = await respon.json()
                 try:
                     embedVar = discord.Embed()
-                    embedVar.title = data7["results"][0]["content_description"]
-                    embedVar.add_field(
-                        name="GIF ID", value=data7["results"][0]["id"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Item URL",
-                        value=data7["results"][0]["itemurl"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Tags",
-                        value=[items for items in data7["results"][0]["tags"]],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        names="Flags",
-                        value=[items for items in data7["results"][0]["flags"]],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Shares", value=data7["results"][0]["shares"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Has Audio",
-                        value=data7["results"][0]["has_audio"],
-                        inline=True,
-                    )
-                    embedVar.set_image(
-                        url=data7["results"][0]["media"][0]["gif"]["url"]
-                    )
-                    await ctx.send(embed=embedVar)
+                    filterList2 = ["created", "bg_color", "content_rating", "title", "h1_title", "url", "hasaudio", "hascaption", "source_id", "composite", "media", "tags", "flags", "content_description", "shares"]
+                    for dictValues in data7["results"]:
+                        for k, v in dictValues.items():
+                            if k not in filterList2:
+                                embedVar.title = dictValues["content_description"]
+                                embedVar.add_field(name=str(k).capitalize(), value=v, inline=True)
+                        for item3 in dictValues.get("media"):
+                            embedVar.set_image(url=item3["gif"]["url"])
+                        await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = (
@@ -337,7 +283,7 @@ class TenorV7(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,
-                "limit": 1,
+                "limit": 5,
                 "media_filter": "minimal",
                 "contentfilter": "medium",
                 "q": search_random,
@@ -348,19 +294,12 @@ class TenorV7(commands.Cog):
                 data8 = await object3.json()
                 try:
                     embedVar = discord.Embed()
-                    embedVar.title = data8["results"][0]["content_description"]
-                    embedVar.add_field(
-                        name="GIF ID", value=data8["results"][0]["id"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Item URL",
-                        value=data8["results"][0]["itemurl"],
-                        inline=True,
-                    )
-                    embedVar.set_image(
-                        url=data8["results"][0]["media"][0]["gif"]["url"]
-                    )
-                    await ctx.send(embed=embedVar)
+                    for dict_items in data8["results"]:
+                        for _ in dict_items.items():
+                                embedVar.title = dict_items["content_description"]
+                        for item3 in dict_items.get("media"):
+                                embedVar.set_image(url=item3["gif"]["url"])
+                        await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = (
