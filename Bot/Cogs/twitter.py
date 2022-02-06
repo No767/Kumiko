@@ -29,7 +29,6 @@ class TwitterV1(commands.Cog):
             ) as r:
                 data = await r.json()
 
-               
                 try:
                     if data["statuses"] is None:
                         embedVar = discord.Embed()
@@ -69,25 +68,49 @@ class TwitterV1(commands.Cog):
                             "user",
                             "favorited",
                             "retweeted",
-                            "lang"
+                            "lang",
                         }
                         for dictItem in data["statuses"]:
                             if "extended_entities" in dictItem:
                                 for keys, val in dictItem.items():
                                     if keys not in excludedKeys:
-                                        embed.add_field(name=str(keys).replace("_", " ").capitalize(), value=val, inline=True)
+                                        embed.add_field(
+                                            name=str(keys)
+                                            .replace("_", " ")
+                                            .capitalize(),
+                                            value=val,
+                                            inline=True,
+                                        )
                                         embed.remove_field(6)
                                 embed.description = dictItem["text"]
-                                embed.set_image(url=dictItem["extended_entities"]["media"][0]["media_url_https"])
-                                embed.set_thumbnail(url=str(dictItem["user"]["profile_image_url_https"]).replace("_normal", "_bigger"))
+                                embed.set_image(
+                                    url=dictItem["extended_entities"]["media"][0][
+                                        "media_url_https"
+                                    ]
+                                )
+                                embed.set_thumbnail(
+                                    url=str(
+                                        dictItem["user"]["profile_image_url_https"]
+                                    ).replace("_normal", "_bigger")
+                                )
                                 await ctx.send(embed=embed)
                             else:
                                 for keys2, val2 in dictItem.items():
                                     if keys2 not in excludedKeys:
-                                        embed.add_field(name=str(keys2).replace("_", " ").capitalize(), value=val2, inline=True)
+                                        embed.add_field(
+                                            name=str(keys2)
+                                            .replace("_", " ")
+                                            .capitalize(),
+                                            value=val2,
+                                            inline=True,
+                                        )
                                         embed.remove_field(6)
                                 embed.description = dictItem["text"]
-                                embed.set_thumbnail(url=str(dictItem["user"]["profile_image_url_https"]).replace("_normal", "_bigger"))
+                                embed.set_thumbnail(
+                                    url=str(
+                                        dictItem["user"]["profile_image_url_https"]
+                                    ).replace("_normal", "_bigger")
+                                )
                                 await ctx.send(embed=embed)
                 except Exception as e:
                     embedError = discord.Embed()
@@ -125,28 +148,74 @@ class TwitterV2(commands.Cog):
                 params=params,
             ) as resp:
                 data2 = await resp.json()
-                itemFilter = {"profile_image_url_https", "id", "id_str", "name", "description", "entities", "status", "profile_background_color", "profile_background_image_url", "profile_background_image_url_https", "profile_background_tile", "profile_image_url", "profile_link_color", "profile_sidebar_border_color", "profile_sidebar_fill_color", "profile_text_color", "profile_use_background_image", "has_extended_profile", "default_profile", "default_profile_image", "follow_request_sent", "following", "notifications", "translator_type", "url", "profile_banner_url", "withheld_in_countries"}
+                itemFilter = {
+                    "profile_image_url_https",
+                    "id",
+                    "id_str",
+                    "name",
+                    "description",
+                    "entities",
+                    "status",
+                    "profile_background_color",
+                    "profile_background_image_url",
+                    "profile_background_image_url_https",
+                    "profile_background_tile",
+                    "profile_image_url",
+                    "profile_link_color",
+                    "profile_sidebar_border_color",
+                    "profile_sidebar_fill_color",
+                    "profile_text_color",
+                    "profile_use_background_image",
+                    "has_extended_profile",
+                    "default_profile",
+                    "default_profile_image",
+                    "follow_request_sent",
+                    "following",
+                    "notifications",
+                    "translator_type",
+                    "url",
+                    "profile_banner_url",
+                    "withheld_in_countries",
+                }
                 try:
                     embedVar = discord.Embed()
                     for userItem in data2:
                         if "profile_banner_url" in data2:
                             for keys, val in userItem.items():
                                 if keys not in itemFilter:
-                                    embedVar.add_field(name=str(keys).replace("_", " ").capitalize(), value=f"[{val}]", inline=True)
+                                    embedVar.add_field(
+                                        name=str(keys).replace(
+                                            "_", " ").capitalize(),
+                                        value=f"[{val}]",
+                                        inline=True,
+                                    )
                             embedVar.title = userItem["name"]
                             embedVar.description = userItem["description"]
-                            embedVar.set_image(url=userItem["profile_banner_url"])
-                            embedVar.set_thumbnail(url=str(userItem["profile_image_url_https"]).replace("_normal", "_bigger"))
+                            embedVar.set_image(
+                                url=userItem["profile_banner_url"])
+                            embedVar.set_thumbnail(
+                                url=str(userItem["profile_image_url_https"]).replace(
+                                    "_normal", "_bigger"
+                                )
+                            )
                             await ctx.send(embed=embedVar)
                         else:
                             for keys2, val2 in userItem.items():
                                 if keys2 not in itemFilter:
-                                    embedVar.add_field(name=str(keys2).replace("_", " ").capitalize(), value=f"[{val2}]", inline=True)
+                                    embedVar.add_field(
+                                        name=str(keys2).replace(
+                                            "_", " ").capitalize(),
+                                        value=f"[{val2}]",
+                                        inline=True,
+                                    )
                             embedVar.title = userItem["name"]
                             embedVar.description = userItem["description"]
-                            embedVar.set_thumbnail(url=str(userItem["profile_image_url_https"]).replace("_normal", "_bigger"))
+                            embedVar.set_thumbnail(
+                                url=str(userItem["profile_image_url_https"]).replace(
+                                    "_normal", "_bigger"
+                                )
+                            )
                             await ctx.send(embed=embedVar)
-                    
 
                 except Exception as e:
                     embedError2 = discord.Embed()
