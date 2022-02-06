@@ -31,7 +31,24 @@ class TenorV1(commands.Cog):
                 data = await r.json()
                 try:
                     embedVar = discord.Embed()
-                    filterList = ["created", "bg_color", "content_rating", "title", "h1_title", "itemurl", "url", "shares", "hasaudio", "hascaption", "source_id", "composite", "tags", "flags", "media", "content_description"]
+                    filterList = [
+                        "created",
+                        "bg_color",
+                        "content_rating",
+                        "title",
+                        "h1_title",
+                        "itemurl",
+                        "url",
+                        "shares",
+                        "hasaudio",
+                        "hascaption",
+                        "source_id",
+                        "composite",
+                        "tags",
+                        "flags",
+                        "media",
+                        "content_description",
+                    ]
                     for dictItem in data["results"]:
                         for key in dictItem.items():
                             if key not in filterList:
@@ -125,7 +142,24 @@ class TenorV3(commands.Cog):
                 data3 = await response.json()
                 try:
                     embedVar = discord.Embed()
-                    filterList2 = ["created", "bg_color", "content_rating", "title", "h1_title", "itemurl", "url", "shares", "hasaudio", "hascaption", "source_id", "composite", "tags", "flags", "media", "content_description"]
+                    filterList2 = [
+                        "created",
+                        "bg_color",
+                        "content_rating",
+                        "title",
+                        "h1_title",
+                        "itemurl",
+                        "url",
+                        "shares",
+                        "hasaudio",
+                        "hascaption",
+                        "source_id",
+                        "composite",
+                        "tags",
+                        "flags",
+                        "media",
+                        "content_description",
+                    ]
                     for dictItem2 in data3["results"]:
                         for key in dictItem2.items():
                             if key not in filterList2:
@@ -242,12 +276,30 @@ class TenorV6(commands.Cog):
                 data7 = await respon.json()
                 try:
                     embedVar = discord.Embed()
-                    filterList2 = ["created", "bg_color", "content_rating", "title", "h1_title", "url", "hasaudio", "hascaption", "source_id", "composite", "media", "tags", "flags", "content_description", "shares"]
+                    filterList2 = [
+                        "created",
+                        "bg_color",
+                        "content_rating",
+                        "title",
+                        "h1_title",
+                        "url",
+                        "hasaudio",
+                        "hascaption",
+                        "source_id",
+                        "composite",
+                        "media",
+                        "tags",
+                        "flags",
+                        "content_description",
+                        "shares",
+                    ]
                     for dictValues in data7["results"]:
                         for k, v in dictValues.items():
                             if k not in filterList2:
                                 embedVar.title = dictValues["content_description"]
-                                embedVar.add_field(name=str(k).capitalize(), value=v, inline=True)
+                                embedVar.add_field(
+                                    name=str(k).capitalize(), value=v, inline=True
+                                )
                         for item3 in dictValues.get("media"):
                             embedVar.set_image(url=item3["gif"]["url"])
                         await ctx.send(embed=embedVar)
@@ -296,9 +348,9 @@ class TenorV7(commands.Cog):
                     embedVar = discord.Embed()
                     for dict_items in data8["results"]:
                         for _ in dict_items.items():
-                                embedVar.title = dict_items["content_description"]
+                            embedVar.title = dict_items["content_description"]
                         for item3 in dict_items.get("media"):
-                                embedVar.set_image(url=item3["gif"]["url"])
+                            embedVar.set_image(url=item3["gif"]["url"])
                         await ctx.send(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
