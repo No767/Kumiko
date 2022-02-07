@@ -38,23 +38,28 @@ class YoutubeV1(commands.Cog):
                         color=discord.Color.from_rgb(212, 255, 223)
                     )
                     sizeFilter = ["default", "medium"]
-                    itemFilter = ["thumbnails", "channelId", "title", "description", "publishTime"]
+                    itemFilter = [
+                        "thumbnails",
+                        "channelId",
+                        "title",
+                        "description",
+                        "publishTime",
+                    ]
                     for dictItem in data["items"]:
                         for i, values in dictItem["snippet"]["thumbnails"].items():
                             if i not in sizeFilter:
                                 embedVar.set_image(url=values["url"])
-                                
+
                         for items, val in dictItem["snippet"].items():
                             if items not in itemFilter:
-                                embedVar.insert_field_at(index=1, name=items, value=val, inline=True)
+                                embedVar.insert_field_at(
+                                    index=1, name=items, value=val, inline=True
+                                )
                                 embedVar.remove_field(3)
                             embedVar.title = dictItem["snippet"]["title"]
                         embedVar.description = dictItem["snippet"]["description"]
                         await ctx.send(embed=embedVar)
-                        
-                            
-                                
-                    
+
                 except Exception as e:
                     embedError = discord.Embed()
                     embedError.description = (
