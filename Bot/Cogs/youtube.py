@@ -37,198 +37,24 @@ class YoutubeV1(commands.Cog):
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(212, 255, 223)
                     )
-                    embedVar.title = data["items"][0]["snippet"]["title"]
-                    embedVar.add_field(
-                        name="Channel Title",
-                        value=data["items"][0]["snippet"]["channelTitle"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Channel ID",
-                        value=data["items"][0]["snippet"]["channelId"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Published Time",
-                        value=data["items"][0]["snippet"]["publishedAt"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Video ID",
-                        value=data["items"][0]["id"]["videoId"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Youtube Link",
-                        value=f"https://www.youtube.com/watch?v={data['items'][0]['id']['videoId']}",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Youtube Channel Link",
-                        value=f"https://www.youtube.com/channel/{data['items'][0]['snippet']['channelId']}",
-                        inline=True,
-                    )
-                    embedVar.description = data["items"][0]["snippet"]["description"]
-                    embedVar.set_image(
-                        url=data["items"][0]["snippet"]["thumbnails"]["high"]["url"]
-                    )
-                    await ctx.send(embed=embedVar)
-                    embedVar2 = discord.Embed(
-                        color=discord.Color.from_rgb(212, 238, 255)
-                    )
-                    embedVar2.title = data["items"][1]["snippet"]["title"]
-                    embedVar2.add_field(
-                        name="Channel Title",
-                        value=data["items"][1]["snippet"]["channelTitle"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Channel ID",
-                        value=data["items"][1]["snippet"]["channelId"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Published Time",
-                        value=data["items"][1]["snippet"]["publishedAt"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Video ID",
-                        value=data["items"][1]["id"]["videoId"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Youtube Link",
-                        value=f"https://www.youtube.com/watch?v={data['items'][1]['id']['videoId']}",
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Youtube Channel Link",
-                        value=f"https://www.youtube.com/channel/{data['items'][1]['snippet']['channelId']}",
-                        inline=True,
-                    )
-                    embedVar2.description = data["items"][1]["snippet"]["description"]
-                    embedVar2.set_image(
-                        url=data["items"][1]["snippet"]["thumbnails"]["high"]["url"]
-                    )
-                    await ctx.send(embed=embedVar2)
-                    embedVar3 = discord.Embed(
-                        color=discord.Color.from_rgb(223, 212, 255)
-                    )
-                    embedVar3.title = data["items"][2]["snippet"]["title"]
-                    embedVar3.add_field(
-                        name="Channel Title",
-                        value=data["items"][2]["snippet"]["channelTitle"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Channel ID",
-                        value=data["items"][2]["snippet"]["channelId"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Published Time",
-                        value=data["items"][2]["snippet"]["publishedAt"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Video ID",
-                        value=data["items"][2]["id"]["videoId"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Youtube Link",
-                        value=f"https://www.youtube.com/watch?v={data['items'][2]['id']['videoId']}",
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Youtube Channel Link",
-                        value=f"https://www.youtube.com/channel/{data['items'][2]['snippet']['channelId']}",
-                        inline=True,
-                    )
-                    embedVar3.description = data["items"][2]["snippet"]["description"]
-                    embedVar3.set_image(
-                        url=data["items"][2]["snippet"]["thumbnails"]["high"]["url"]
-                    )
-                    await ctx.send(embed=embedVar3)
-                    embedVar4 = discord.Embed(
-                        color=discord.Color.from_rgb(255, 212, 253)
-                    )
-                    embedVar4.title = data["items"][3]["snippet"]["title"]
-                    embedVar4.add_field(
-                        name="Channel Title",
-                        value=data["items"][3]["snippet"]["channelTitle"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Channel ID",
-                        value=data["items"][3]["snippet"]["channelId"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Published Time",
-                        value=data["items"][3]["snippet"]["publishedAt"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Video ID",
-                        value=data["items"][3]["id"]["videoId"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Youtube Link",
-                        value=f"https://www.youtube.com/watch?v={data['items'][3]['id']['videoId']}",
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Youtube Channel Link",
-                        value=f"https://www.youtube.com/channel/{data['items'][3]['snippet']['channelId']}",
-                        inline=True,
-                    )
-                    embedVar4.description = data["items"][3]["snippet"]["description"]
-                    embedVar4.set_image(
-                        url=data["items"][3]["snippet"]["thumbnails"]["high"]["url"]
-                    )
-                    await ctx.send(embed=embedVar4)
-                    embedVar5 = discord.Embed(
-                        color=discord.Color.from_rgb(255, 212, 212)
-                    )
-                    embedVar5.title = data["items"][4]["snippet"]["title"]
-                    embedVar5.add_field(
-                        name="Channel Title",
-                        value=data["items"][4]["snippet"]["channelTitle"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Channel ID",
-                        value=data["items"][4]["snippet"]["channelId"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Published Time",
-                        value=data["items"][4]["snippet"]["publishedAt"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Video ID",
-                        value=data["items"][4]["id"]["videoId"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Youtube Link",
-                        value=f"https://www.youtube.com/watch?v={data['items'][4]['id']['videoId']}",
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Youtube Channel Link",
-                        value=f"https://www.youtube.com/channel/{data['items'][4]['snippet']['channelId']}",
-                        inline=True,
-                    )
-                    embedVar5.description = data["items"][4]["snippet"]["description"]
-                    embedVar5.set_image(
-                        url=data["items"][4]["snippet"]["thumbnails"]["high"]["url"]
-                    )
-                    await ctx.send(embed=embedVar5)
+                    sizeFilter = ["default", "medium"]
+                    itemFilter = ["thumbnails", "channelId", "title", "description", "publishTime"]
+                    for dictItem in data["items"]:
+                        for i, values in dictItem["snippet"]["thumbnails"].items():
+                            if i not in sizeFilter:
+                                embedVar.set_image(url=values["url"])
+                                
+                        for items, val in dictItem["snippet"].items():
+                            if items not in itemFilter:
+                                embedVar.insert_field_at(index=1, name=items, value=val, inline=True)
+                                embedVar.remove_field(3)
+                            embedVar.title = dictItem["snippet"]["title"]
+                        embedVar.description = dictItem["snippet"]["description"]
+                        await ctx.send(embed=embedVar)
+                        
+                            
+                                
+                    
                 except Exception as e:
                     embedError = discord.Embed()
                     embedError.description = (
