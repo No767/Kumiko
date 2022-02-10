@@ -1,0 +1,131 @@
+From 66be6c2559f6125a6ea5040320821aeb4f401817 Mon Sep 17 00:00:00 2001
+From: "dependabot[bot]" <49699333+dependabot[bot]@users.noreply.github.com>
+Date: Thu, 10 Feb 2022 22:31:20 +0000
+Subject: [PATCH] [pip](deps): Bump py-cord from 2.0.0b3 to 2.0.0b4
+
+Bumps [py-cord](https://github.com/Pycord-Development/pycord) from 2.0.0b3 to 2.0.0b4.
+- [Release notes](https://github.com/Pycord-Development/pycord/releases)
+- [Commits](https://github.com/Pycord-Development/pycord/commits)
+
+---
+updated-dependencies:
+- dependency-name: py-cord
+  dependency-type: direct:production
+  update-type: version-update:semver-patch
+...
+
+Signed-off-by: dependabot[bot] <support@github.com>
+---
+ Pipfile      |  2 +-
+ Pipfile.lock | 28 ++++++++++++++--------------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/Pipfile b/Pipfile
+index a9781a8..3c2c16d 100644
+--- a/Pipfile
++++ b/Pipfile
+@@ -24,7 +24,7 @@ asyncpg = "*"
+ uvloop = "*"
+ requests = "*"
+ ujson = "*"
+-py-cord = {version = "==2.0.0b3", extras = ["voice"]}
++py-cord = {version = "==2.0.0b4", extras = ["voice"]}
+ aiohttp = "==3.8.1"
+ 
+ [dev-packages]
+diff --git a/Pipfile.lock b/Pipfile.lock
+index 1e4d084..7fa0414 100644
+--- a/Pipfile.lock
++++ b/Pipfile.lock
+@@ -1,7 +1,7 @@
+ {
+     "_meta": {
+         "hash": {
+-            "sha256": "4260a9f63a29620da0056274b52c84b046f094214e64056a36a1abc11c42e09d"
++            "sha256": "5e8eeccd24e2191384265159414329b7b490a5bafee28313a76712147a74406b"
+         },
+         "pipfile-spec": 6,
+         "requires": {
+@@ -130,7 +130,7 @@
+                 "sha256:01c7bf666359b4967d2cda0000cc2e4af16a0ae098cbffcb8472fb9e8ad6585b",
+                 "sha256:6ebb3d106c12920aaae42ccb6f787ef5eefdcdd166ea3d628fa8476abe712144"
+             ],
+-            "markers": "python_full_version >= '3.5.0'",
++            "markers": "python_version >= '3.5'",
+             "version": "==1.10"
+         },
+         "async-timeout": {
+@@ -382,14 +382,14 @@
+                 "sha256:2842d8f5e82a1f6aa437380934d5e1cd4fcf2003b06fed6940769c164a480a45",
+                 "sha256:98398a9d69ee80548c762ba991a4728bfc3836768ed226b3945908d1a688371c"
+             ],
+-            "markers": "python_full_version >= '3.5.0'",
++            "markers": "python_version >= '3.5'",
+             "version": "==2.0.11"
+         },
+         "chirptext": {
+             "hashes": [
+                 "sha256:643c9c11508f509b37257e3f3a629a668c0908ae5f582d7b9f131234a7379303"
+             ],
+-            "markers": "python_full_version >= '3.5.0'",
++            "markers": "python_version >= '3.5'",
+             "version": "==0.1.2"
+         },
+         "deep-translator": {
+@@ -769,11 +769,11 @@
+                 "voice"
+             ],
+             "hashes": [
+-                "sha256:08df16fce33f0acf0295580971e84c1d12e7586b70c72ec44edb9ccd4cb85f38",
+-                "sha256:1b8fc69e1f8957dbd98851d9b648cdebcf0c44c1f9891caf85ec372477efd8d7"
++                "sha256:34ef313b814997d819458d5e7147b011a18b9613f02f369bb432c9ca52924173",
++                "sha256:49b216af4595781f110725660786c8d650b661c45aff4c392d74e886d0f3c4c0"
+             ],
+             "index": "pypi",
+-            "version": "==2.0.0b3"
++            "version": "==2.0.0b4"
+         },
+         "pycares": {
+             "hashes": [
+@@ -1009,7 +1009,7 @@
+                 "sha256:000ca7f471a233c2251c6c7023ee85305721bfdf18621ebff4fd17a8653427ed",
+                 "sha256:0e7c33d9a63e7ddfcb86780aac87befc2fbddf46c58dbb487e0855f7ceec283c"
+             ],
+-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
++            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
+             "version": "==1.26.8"
+         },
+         "uvloop": {
+@@ -1190,11 +1190,11 @@
+         },
+         "platformdirs": {
+             "hashes": [
+-                "sha256:1d7385c7db91728b83efd0ca99a5afb296cab9d0ed8313a45ed8ba17967ecfca",
+-                "sha256:440633ddfebcc36264232365d7840a970e75e1018d15b4327d11f91909045fda"
++                "sha256:30671902352e97b1eafd74ade8e4a694782bd3471685e78c32d0fdfd3aa7e7bb",
++                "sha256:8ec11dfba28ecc0715eb5fb0147a87b1bf325f349f3da9aab2cd6b50b96b692b"
+             ],
+             "markers": "python_version >= '3.7'",
+-            "version": "==2.4.1"
++            "version": "==2.5.0"
+         },
+         "pycodestyle": {
+             "hashes": [
+@@ -1222,11 +1222,11 @@
+         },
+         "tomli": {
+             "hashes": [
+-                "sha256:b5bde28da1fed24b9bd1d4d2b8cba62300bfb4ec9a6187a957e8ddb9434c5224",
+-                "sha256:c292c34f58502a1eb2bbb9f5bbc9a5ebc37bee10ffb8c2d6bbdfa8eb13cc14e1"
++                "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
++                "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
+             ],
+             "markers": "python_version >= '3.7'",
+-            "version": "==2.0.0"
++            "version": "==2.0.1"
+         }
+     }
+ }
+-- 
+2.35.1
+
