@@ -26,7 +26,7 @@ uvloop = "*"
 odmantic = "*"
 requests = "*"
 ujson = "*"
-py-cord = {version = "==2.0.0b3", extras = ["voice"]}
+py-cord = {version = "==2.0.0b4", extras = ["voice"]}
 aiohttp = "==3.8.1"
 
 [dev-packages]
