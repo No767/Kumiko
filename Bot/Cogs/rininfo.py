@@ -2,15 +2,17 @@ import asyncio
 
 import discord
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="rininfo", description="Info about Rin", guild_ids=[866199405090308116])
+    @slash_command(
+        name="rininfo", description="Info about Rin", guild_ids=[866199405090308116]
+    )
     async def rinInfo(self, ctx):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)

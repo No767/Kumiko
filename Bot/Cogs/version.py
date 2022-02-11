@@ -2,15 +2,19 @@ import asyncio
 
 import discord
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class VersionV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="version", description="Returns Current Version of Rin", guild_ids=[866199405090308116])
+    @slash_command(
+        name="version",
+        description="Returns Current Version of Rin",
+        guild_ids=[866199405090308116],
+    )
     async def version(self, ctx):
         embedVar = discord.Embed()
         embedVar.description = "Build Version: v1.5.0-dev"

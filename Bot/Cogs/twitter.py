@@ -5,9 +5,9 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-from discord.commands import slash_command
 
 load_dotenv()
 
@@ -18,7 +18,11 @@ class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="twitter-search", description="Returns up to 5 recent tweets given the Twitter user", guild_ids=[866199405090308116])
+    @slash_command(
+        name="twitter-search",
+        description="Returns up to 5 recent tweets given the Twitter user",
+        guild_ids=[866199405090308116],
+    )
     async def twitter_search(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
@@ -138,7 +142,11 @@ class TwitterV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="twitter-user", description="Returns Info about the given Twitter user", guild_ids=[866199405090308116])
+    @slash_command(
+        name="twitter-user",
+        description="Returns Info about the given Twitter user",
+        guild_ids=[866199405090308116],
+    )
     async def twitter_user(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}

@@ -4,8 +4,8 @@ import time
 
 import discord
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class UptimeV1(commands.Cog):
@@ -16,8 +16,12 @@ class UptimeV1(commands.Cog):
     async def on_ready(self):
         global startTime
         startTime = time.time()
-    
-    @slash_command(name="uptime", description="Returns Uptime for Rin", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="uptime",
+        description="Returns Uptime for Rin",
+        guild_ids=[866199405090308116],
+    )
     async def botUptime(self, ctx):
         uptime = datetime.timedelta(
             seconds=int(round(time.time() - startTime)))

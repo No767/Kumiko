@@ -5,15 +5,19 @@ import aiohttp
 import discord
 import orjson
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class waifuPics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="waifupics", description="Returns a random image of a waifu from waifu.pics", guild_ids=[866199405090308116])
+    @slash_command(
+        name="waifupics",
+        description="Returns a random image of a waifu from waifu.pics",
+        guild_ids=[866199405090308116],
+    )
     async def on_messsage(self, ctx):
         waifu_list = [
             "waifu",

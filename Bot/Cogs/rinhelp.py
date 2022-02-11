@@ -1,20 +1,50 @@
 import asyncio
 
-
 import discord
 import discord.ext
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 
 
 class rinhelp(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.last_member = None
-        
-    @slash_command(name="rinhelp", description="The Help Page for Rin", guild_ids=[866199405090308116])
-    async def rinHelp(self, ctx, *, search: Option(str, choices=["Admin", "Twitter", "Reddit", "Minecraft", "Fun", "Misc", "Instagram", "Chat", "Misc", "DeviantArt", "Anime", "Top.gg", "Pinterest", "MyAnimeList/Jikan", "YouTube", "Tenor", "OpenAI"], required=False)):
+
+    @slash_command(
+        name="rinhelp",
+        description="The Help Page for Rin",
+        guild_ids=[866199405090308116],
+    )
+    async def rinHelp(
+        self,
+        ctx,
+        *,
+        search: Option(
+            str,
+            choices=[
+                "Admin",
+                "Twitter",
+                "Reddit",
+                "Minecraft",
+                "Fun",
+                "Misc",
+                "Instagram",
+                "Chat",
+                "Misc",
+                "DeviantArt",
+                "Anime",
+                "Top.gg",
+                "Pinterest",
+                "MyAnimeList/Jikan",
+                "YouTube",
+                "Tenor",
+                "OpenAI",
+            ],
+            required=False,
+        )
+    ):
         try:
             if search is None:
                 bot = self.bot
@@ -368,7 +398,13 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["jikan", "jk", "myanimelist", "mal", "MyAnimeList/Jikan"]:
+            if str(search) in [
+                "jikan",
+                "jk",
+                "myanimelist",
+                "mal",
+                "MyAnimeList/Jikan",
+            ]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
