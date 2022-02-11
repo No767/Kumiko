@@ -47,7 +47,7 @@ for extension in initial_extensions:
 # Adds in the bot presence
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=".rinhelp"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/rinhelp"))
 
 # Run the bot
 bot.run(TOKEN)

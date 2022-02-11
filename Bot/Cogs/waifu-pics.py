@@ -6,13 +6,14 @@ import discord
 import orjson
 import uvloop
 from discord.ext import commands
+from discord.commands import slash_command
 
 
 class waifuPics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="waifupics", aliases=["wp"])
+    @slash_command(name="waifupics", description="Returns a random image of a waifu from waifu.pics", guild_ids=[866199405090308116])
     async def on_messsage(self, ctx):
         waifu_list = [
             "waifu",
@@ -52,12 +53,12 @@ class waifuPics(commands.Cog):
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
                 waifu_pics = await r.json()
                 try:
-                    await ctx.send(waifu_pics["url"])
+                    await ctx.respond(waifu_pics["url"])
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The query was not successful"
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

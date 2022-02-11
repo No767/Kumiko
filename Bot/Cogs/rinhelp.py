@@ -1,19 +1,20 @@
 import asyncio
-import typing
+
 
 import discord
 import discord.ext
 import uvloop
 from discord.ext import commands
+from discord.commands import slash_command, Option
 
 
 class rinhelp(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.last_member = None
-
-    @commands.command(name="rinhelp", aliases=["help"])
-    async def on_message(self, ctx, *, search: typing.Optional[str] = None):
+        
+    @slash_command(name="rinhelp", description="The Help Page for Rin", guild_ids=[866199405090308116])
+    async def rinHelp(self, ctx, *, search: Option(str, choices=["Admin", "Twitter", "Reddit", "Minecraft", "Fun", "Misc", "Instagram", "Chat", "Misc", "DeviantArt", "Anime", "Top.gg", "Pinterest", "MyAnimeList/Jikan", "YouTube", "Tenor", "OpenAI"], required=False)):
         try:
             if search is None:
                 bot = self.bot
@@ -22,43 +23,43 @@ class rinhelp(commands.Cog):
                         **[GitHub](https://github.com/No767/Rin)** | **[Docs](https://docs.rinbot.live)** | **[Invite](https://top.gg/bot/865883525932253184/invite)** | **[Website](https://rinbot.live)**
                         """
                 embedVar.add_field(
-                    name="Admin", value="`.rinhelp admin`", inline=True)
+                    name="Admin", value="`/rinhelp admin`", inline=True)
                 embedVar.add_field(
-                    name="Twitter", value="`.rinhelp twitter`", inline=True
+                    name="Twitter", value="`/rinhelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Reddit", value="`.rinhelp reddit`", inline=True
+                    name="Reddit", value="`/rinhelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.rinhelp mc`", inline=True)
+                    name="Minecraft", value="`/rinhelp mc`", inline=True)
                 embedVar.add_field(
-                    name="Fun", value="`.rinhelp fun`", inline=True)
+                    name="Fun", value="`/rinhelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Instagram", value="`.rinhelp ig`", inline=True)
+                    name="Instagram", value="`/rinhelp ig`", inline=True)
                 embedVar.add_field(
-                    name="Chat", value="`.rinhelp chat`", inline=True)
+                    name="Chat", value="`/rinhelp chat`", inline=True)
                 embedVar.add_field(
-                    name="Misc", value="`.rinhelp misc`", inline=True)
+                    name="Misc", value="`/rinhelp misc`", inline=True)
                 embedVar.add_field(
-                    name="Deviantart", value="`.rinhelp da`", inline=True
+                    name="Deviantart", value="`/rinhelp da`", inline=True
                 )
                 embedVar.add_field(
-                    name="Anime", value="`.rinhelp anime`", inline=True)
+                    name="Anime", value="`/rinhelp anime`", inline=True)
                 embedVar.add_field(
-                    name="Top.gg", value="`.rinhelp topgg`", inline=True)
+                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
                 embedVar.add_field(
-                    name="Pinterest", value="`.rinhelp pinterest`", inline=True
+                    name="Pinterest", value="`/rinhelp pinterest`", inline=True
                 )
                 embedVar.add_field(
-                    name="MyAnimeList/Jikan", value="`.rinhelp jikan`", inline=True
+                    name="MyAnimeList/Jikan", value="`/rinhelp jikan`", inline=True
                 )
                 embedVar.add_field(
-                    name="YouTube", value="`.rinhelp youtube`", inline=True
+                    name="YouTube", value="`/rinhelp youtube`", inline=True
                 )
                 embedVar.add_field(
-                    name="Tenor", value="`.rinhelp tenor`", inline=True)
+                    name="Tenor", value="`/rinhelp tenor`", inline=True)
                 embedVar.add_field(
-                    name="OpenAI", value="`.rinhelp openai`", inline=True
+                    name="OpenAI", value="`/rinhelp openai`", inline=True
                 )
                 embedVar.set_author(
                     name="Rin Help",
@@ -66,11 +67,11 @@ class rinhelp(commands.Cog):
                     icon_url=bot.user.display_avatar,
                 )
                 embedVar.set_footer(
-                    text='Remember, the command prefix for this bot is "."'
+                    text='Remember, the command prefix for this bot is "/"'
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "admin":
+            if search in ["admin", "Admin"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -95,9 +96,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Admin", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "twitter":
+            if str(search) in ["twitter", "Twitter"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -113,9 +114,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Twitter", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "reddit":
+            if str(search) in ["reddit", "Reddit"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -134,9 +135,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Reddit", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("minecraft", "mc"):
+            if str(search) in ["minecraft", "mc", "Minecraft"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -192,9 +193,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "fun":
+            if str(search) in ["fun", "Fun"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -226,9 +227,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Fun", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("instagram", "ig"):
+            if str(search) in ["instagram", "ig", "Instgram"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -255,9 +256,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Instagram", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "chat":
+            if str(search) in ["chat", "Chat"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -272,9 +273,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Chat", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "misc":
+            if str(search) in ["misc", "Misc"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -311,9 +312,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Misc", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("deviantart", "da"):
+            if str(search) in ["deviantart", "da", "DevintArt"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -347,9 +348,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Deviantart", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "anime":
+            if str(search) in ["anime", "Anime"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -365,9 +366,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Anime", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
+            if str(search) in ["jikan", "jk", "myanimelist", "mal", "MyAnimeList/Jikan"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -402,9 +403,9 @@ class rinhelp(commands.Cog):
                     name="Rin Help - MyAnimeList/Jikan",
                     icon_url=bot.user.display_avatar,
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "topgg":
+            if str(search) in ["topgg", "Top.gg"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -420,9 +421,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Topgg", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("pinterest", "pt"):
+            if str(search) in ["pinterest", "pt", "Pinterest"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -444,9 +445,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Pinterest", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ["youtube", "yt"]:
+            if str(search) in ["youtube", "yt", "YouTube"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -480,9 +481,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - YouTube", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "tenor":
+            if str(search) in ["tenor", "Tenor"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -521,9 +522,9 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Tenor", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ["openai", "ai", "gpt-3"]:
+            if str(search) in ["openai", "ai", "gpt-3", "OpenAI"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -544,7 +545,7 @@ class rinhelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - OpenAI", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
         except Exception as e:
             bot = self.bot
@@ -552,7 +553,7 @@ class rinhelp(commands.Cog):
             embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.display_avatar)
-            await ctx.send(embed=embedVar)
+            await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

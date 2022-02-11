@@ -3,17 +3,18 @@ import asyncio
 import discord
 import uvloop
 from discord.ext import commands
+from discord.commands import slash_command
 
 
 class VersionV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="version")
+    @slash_command(name="version", description="Returns Current Version of Rin", guild_ids=[866199405090308116])
     async def version(self, ctx):
         embedVar = discord.Embed()
-        embedVar.description = "Build Version: v1.4.4"
-        await ctx.send(embed=embedVar)
+        embedVar.description = "Build Version: v1.5.0-dev"
+        await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

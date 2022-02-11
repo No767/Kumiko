@@ -3,13 +3,14 @@ import asyncio
 import discord
 import uvloop
 from discord.ext import commands
+from discord.commands import slash_command
 
 
 class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="rininfo", aliases=["info"])
+    @slash_command(name="rininfo", description="Info about Rin", guild_ids=[866199405090308116])
     async def rinInfo(self, ctx):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
@@ -29,9 +30,9 @@ class info(commands.Cog):
             value="If you have any questions, or any issues, or just an idea that you would like to add, please report them on the [GitHub Issue Tracker](https://github.com/No767/Rin/issues). Note that Rin does not any type of support discord server nor do I plan to make one to begin with.",
         )
         embedVar.set_footer(
-            text="Project Lead Maintainer and Original Creator of Rin: No767\nOriginal Creator of EasyBot.py and EasyBot Plugins: Isaac-To\n\nFun fact: use .version to check the current version of Rin"
+            text="Project Lead Maintainer and Original Creator of Rin: No767\nOriginal Creator of EasyBot.py and EasyBot Plugins: Isaac-To\n\nFun fact: use /version to check the current version of Rin"
         )
-        await ctx.send(embed=embedVar)
+        await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
