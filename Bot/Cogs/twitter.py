@@ -17,7 +17,7 @@ Bearer_Token = os.getenv("Twitter_Bearer_Token")
 class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     @slash_command(
         name="twitter-search",
         description="Returns up to 5 recent tweets given the Twitter user",
@@ -88,7 +88,8 @@ class TwitterV1(commands.Cog):
                                         )
                                         embed.remove_field(6)
                                 for v in dictItem["extended_entities"].items():
-                                    embed.set_image(url=v[1][0]["media_url_https"])
+                                    embed.set_image(
+                                        url=v[1][0]["media_url_https"])
                                 embed.description = dictItem["text"]
                                 embed.set_thumbnail(
                                     url=str(

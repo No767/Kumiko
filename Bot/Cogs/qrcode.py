@@ -5,8 +5,8 @@ import discord
 import discord.ext
 import qrcode
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class qrcode_maker(commands.Cog):

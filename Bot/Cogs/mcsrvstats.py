@@ -4,15 +4,19 @@ import aiohttp
 import discord
 import orjson
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="java", description="Returns info about the given Minecraft Java server", guild_ids=[866199405090308116])
+    @slash_command(
+        name="java",
+        description="Returns info about the given Minecraft Java server",
+        guild_ids=[866199405090308116],
+    )
     async def java(self, ctx, server: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.mcsrvstat.us/2/{server}") as r:
@@ -103,7 +107,11 @@ class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="bedrock", description="Returns info about the given Minecraft Bedrock server", guild_ids=[866199405090308116])
+    @slash_command(
+        name="bedrock",
+        description="Returns info about the given Minecraft Bedrock server",
+        guild_ids=[866199405090308116],
+    )
     async def bedrock(self, ctx, server: str):
         async with aiohttp.ClientSession(json_serialize=orjson.loads) as session:
             async with session.get(f"https://api.mcsrvstat.us/bedrock/2/{server}") as r:

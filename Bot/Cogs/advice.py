@@ -4,15 +4,19 @@ import aiohttp
 import discord
 import orjson
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class advice_slip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="advice", description="Gives some advice from Adviceslip", guild_ids=[866199405090308116])
+    @slash_command(
+        name="advice",
+        description="Gives some advice from Adviceslip",
+        guild_ids=[866199405090308116],
+    )
     async def on_message(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.adviceslip.com/advice") as r:
