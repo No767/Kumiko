@@ -5,8 +5,8 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,7 +18,11 @@ class YoutubeV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="youtube-search", description="Finds up to 5 videos on YouTube based on the given search term", guild_ids=[866199405090308116])
+    @slash_command(
+        name="youtube-search",
+        description="Finds up to 5 videos on YouTube based on the given search term",
+        guild_ids=[866199405090308116],
+    )
     async def youtube_search(self, ctx, *, search: Option(str, "Video Search Term")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -76,7 +80,11 @@ class YoutubeV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="youtube-channel", description="Returns Given YouTube Channel Info", guild_ids=[866199405090308116])
+    @slash_command(
+        name="youtube-channel",
+        description="Returns Given YouTube Channel Info",
+        guild_ids=[866199405090308116],
+    )
     async def youtube_channel(self, ctx, *, channel: Option(str, "Channel Name")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             search_params = {
@@ -107,20 +115,31 @@ class YoutubeV2(commands.Cog):
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 0, 0)
                         )
-                        filter = {"kind", "etag", "snippet", "statistics", "localized"}
-                        snippetFilter = ["title", "description", "thumbnails", "localized"]
+                        filter = {"kind", "etag", "snippet",
+                                  "statistics", "localized"}
+                        snippetFilter = [
+                            "title",
+                            "description",
+                            "thumbnails",
+                            "localized",
+                        ]
                         for dictItem in data["items"]:
                             for key, val in dictItem.items():
                                 if key not in filter:
-                                    embedVar.add_field(name=key, value=val, inline=True)
+                                    embedVar.add_field(
+                                        name=key, value=val, inline=True)
                             for k, v in dictItem["snippet"].items():
                                 if k not in snippetFilter:
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                             for keys, value in dictItem["statistics"].items():
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                             embedVar.title = dictItem["snippet"]["title"]
                             embedVar.description = dictItem["snippet"]["description"]
-                            embedVar.set_thumbnail(url=dictItem["snippet"]["thumbnails"]["high"]["url"])
+                            embedVar.set_thumbnail(
+                                url=dictItem["snippet"]["thumbnails"]["high"]["url"]
+                            )
                             await ctx.respond(embed=embedVar)
                     except Exception as e:
                         embedError = discord.Embed()
@@ -134,13 +153,18 @@ class YoutubeV2(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class YoutubeV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="youtube-playlists", description="Returns up to 5 YouTube playlists based on the given YT channel", guild_ids=[866199405090308116])
-    async def youtube_playlists(self, ctx, *, channel_name: Option(str, "Channel Name")):
+    @slash_command(
+        name="youtube-playlists",
+        description="Returns up to 5 YouTube playlists based on the given YT channel",
+        guild_ids=[866199405090308116],
+    )
+    async def youtube_playlists(
+        self, ctx, *, channel_name: Option(str, "Channel Name")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             search_params = {
                 "key": YouTube_API_Key,
@@ -169,30 +193,44 @@ class YoutubeV3(commands.Cog):
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 224, 224)
                         )
-                        filterList = ["localized", "kind", "etag", "contentDetails", "snippet", "id"]
-                        snippetList = ["thumbnails", "localized", "title", "description"]
+                        filterList = [
+                            "localized",
+                            "kind",
+                            "etag",
+                            "contentDetails",
+                            "snippet",
+                            "id",
+                        ]
+                        snippetList = [
+                            "thumbnails",
+                            "localized",
+                            "title",
+                            "description",
+                        ]
                         videoFilter = ["default", "medium", "high", "standard"]
                         for dictItems in data["items"]:
                             for k, v in dictItems.items():
                                 if k not in filterList:
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                                     embedVar.remove_field(3)
 
                             for keys, val in dictItems["snippet"].items():
                                 if keys not in snippetList:
-                                    embedVar.add_field(name=keys, value=val, inline=True)
+                                    embedVar.add_field(
+                                        name=keys, value=val, inline=True
+                                    )
                                     embedVar.remove_field(3)
 
                             for item, res in dictItems["snippet"]["thumbnails"].items():
                                 if item not in videoFilter:
                                     embedVar.set_image(url=res["url"])
-                                    
+
                             embedVar.title = dictItems["snippet"]["title"]
                             embedVar.description = dictItems["snippet"]["description"]
-                                
+
                             await ctx.respond(embed=embedVar)
-                            
-                            
+
                     except Exception as e:
                         embedError = discord.Embed()
                         embedError.description = (
@@ -208,8 +246,12 @@ class YoutubeV3(commands.Cog):
 class YoutubeV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="youtube-comments", description="Returns up to 5 comments within a given video", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="youtube-comments",
+        description="Returns up to 5 comments within a given video",
+        guild_ids=[866199405090308116],
+    )
     async def youtube_comments(self, ctx, *, vid_id: Option(str, "YT Video ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -241,32 +283,61 @@ class YoutubeV4(commands.Cog):
                             color=discord.Color.from_rgb(255, 125, 125)
                         )
                         snippetFilter = ["topLevelComment", "videoId"]
-                        topLevelCommentFilter = ["authorChannelId", "authorProfileImageUrl", "textOriginal",
-                                                 "textDisplay", "videoId", "authorDisplayName", "viewerRating", "canRate", "id", "authorChannelUrl", "videoId"]
-                        pfpFilter = ["videoId", "textDisplay", "textOriginal", "authorDisplayName", "authorChannelId",
-                                     "canRate", "viewerRating", "likeCount", "publishedAt", "updatedAt",
-                                     "authorChannelUrl"]
+                        topLevelCommentFilter = [
+                            "authorChannelId",
+                            "authorProfileImageUrl",
+                            "textOriginal",
+                            "textDisplay",
+                            "videoId",
+                            "authorDisplayName",
+                            "viewerRating",
+                            "canRate",
+                            "id",
+                            "authorChannelUrl",
+                            "videoId",
+                        ]
+                        pfpFilter = [
+                            "videoId",
+                            "textDisplay",
+                            "textOriginal",
+                            "authorDisplayName",
+                            "authorChannelId",
+                            "canRate",
+                            "viewerRating",
+                            "likeCount",
+                            "publishedAt",
+                            "updatedAt",
+                            "authorChannelUrl",
+                        ]
 
                         for dictVal in data["items"]:
-                            embedVar.title = dictVal["snippet"]["topLevelComment"]["snippet"]["authorDisplayName"]
-                            embedVar.description = dictVal["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
-                                    
+                            embedVar.title = dictVal["snippet"]["topLevelComment"][
+                                "snippet"
+                            ]["authorDisplayName"]
+                            embedVar.description = dictVal["snippet"][
+                                "topLevelComment"
+                            ]["snippet"]["textDisplay"]
 
                             for k, v in dictVal["snippet"].items():
                                 if k not in snippetFilter:
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                                     embedVar.remove_field(6)
 
-                            for key, res in dictVal["snippet"]["topLevelComment"]["snippet"].items():
+                            for key, res in dictVal["snippet"]["topLevelComment"][
+                                "snippet"
+                            ].items():
                                 if key not in topLevelCommentFilter:
-                                    embedVar.add_field(name=key, value=res, inline=True)
+                                    embedVar.add_field(
+                                        name=key, value=res, inline=True)
                                     embedVar.remove_field(6)
 
-                            for item, img in dictVal["snippet"]["topLevelComment"]["snippet"].items():
+                            for item, img in dictVal["snippet"]["topLevelComment"][
+                                "snippet"
+                            ].items():
                                 if item not in pfpFilter:
                                     embedVar.set_thumbnail(url=img)
-                                    
-                                    
+
                             await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedError = discord.Embed()
@@ -279,12 +350,15 @@ class YoutubeV4(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class YoutubeV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="youtube-video", description="Provides info about the given video", guild_ids=[866199405090308116])
+    @slash_command(
+        name="youtube-video",
+        description="Provides info about the given video",
+        guild_ids=[866199405090308116],
+    )
     async def youtube_video(self, ctx, *, video_id: Option(str, "YT Video ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -300,12 +374,14 @@ class YoutubeV5(commands.Cog):
                 try:
                     embed = discord.Embed(
                         color=discord.Color.from_rgb(255, 0, 0))
-                    snippetFilter = ["title", "description", "thumbnails", "localized"]
+                    snippetFilter = ["title", "description",
+                                     "thumbnails", "localized"]
                     picFilter = ["default", "medium", "high", "standard"]
                     for items in data["items"]:
                         for keys, val in items["snippet"].items():
                             if keys not in snippetFilter:
-                                embed.add_field(name=keys, value=val, inline=True)
+                                embed.add_field(
+                                    name=keys, value=val, inline=True)
                         embed.title = items["snippet"]["title"]
                         embed.description = items["snippet"]["description"]
                         for key, value in items["statistics"].items():
@@ -323,7 +399,6 @@ class YoutubeV5(commands.Cog):
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 def setup(bot):
