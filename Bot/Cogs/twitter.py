@@ -17,7 +17,7 @@ Bearer_Token = os.getenv("Twitter_Bearer_Token")
 class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
+    
     @slash_command(
         name="twitter-search",
         description="Returns up to 5 recent tweets given the Twitter user",
@@ -87,12 +87,9 @@ class TwitterV1(commands.Cog):
                                             inline=True,
                                         )
                                         embed.remove_field(6)
+                                for v in dictItem["extended_entities"].items():
+                                    embed.set_image(url=v[1][0]["media_url_https"])
                                 embed.description = dictItem["text"]
-                                embed.set_image(
-                                    url=dictItem["extended_entities"]["media"][0][
-                                        "media_url_https"
-                                    ]
-                                )
                                 embed.set_thumbnail(
                                     url=str(
                                         dictItem["user"]["profile_image_url_https"]
@@ -189,7 +186,7 @@ class TwitterV2(commands.Cog):
                 try:
                     embedVar = discord.Embed()
                     for userItem in data2:
-                        if "profile_banner_url" in data2:
+                        if "profile_banner_url" in userItem:
                             for keys, val in userItem.items():
                                 if keys not in itemFilter:
                                     embedVar.add_field(
@@ -201,7 +198,7 @@ class TwitterV2(commands.Cog):
                             embedVar.title = userItem["name"]
                             embedVar.description = userItem["description"]
                             embedVar.set_image(
-                                url=userItem["profile_banner_url"])
+                                url=str(userItem["profile_banner_url"]))
                             embedVar.set_thumbnail(
                                 url=str(userItem["profile_image_url_https"]).replace(
                                     "_normal", "_bigger"

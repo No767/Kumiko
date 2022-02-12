@@ -3,6 +3,7 @@ import random
 
 import discord
 import uvloop
+from discord.commands import slash_command
 from discord.ext import commands
 
 
@@ -19,7 +20,11 @@ class botInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="botinfo", help="Statistics about this bot")
+    @slash_command(
+        name="botinfo",
+        description="Returns Stats for Rin",
+        guild_ids=[866199405090308116],
+    )
     async def botinfo(self, ctx):
         bot = self.bot
         name = bot.user.name
@@ -39,7 +44,7 @@ class botInfo(commands.Cog):
             inline=False,
         )
         embed.set_thumbnail(url=bot.user.display_avatar)
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
