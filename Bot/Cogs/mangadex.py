@@ -7,7 +7,6 @@ import orjson
 import uvloop
 from discord.ext import commands
 from dotenv import load_dotenv
-from reactionmenu import ReactionMenu
 
 load_dotenv()
 
@@ -1040,20 +1039,7 @@ class MangaDexReaderV1(commands.Cog):
                         embedVar.set_image(
                             url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
                         )
-                        embedVar2 = discord.Embed(title="test")
-                        menu = ReactionMenu(
-                            ctx,
-                            back_button=ReactionMenu.EMOJI_BACK_BUTTON,
-                            next_button=ReactionMenu.EMOJI_NEXT_BUTTON,
-                            config=ReactionMenu.STATIC,
-                            clear_reactions_after=False,
-                        )
-                        menu.add_page(embedVar)
-                        for _ in list_of_images:
-                            menu.add_page(embedVar)
-                            menu.add_page(embedVar2)
-                        await menu.start()
-
+                        await ctx.send(embed=embedVar)
         except Exception as e:
             await ctx.send(e)
 
