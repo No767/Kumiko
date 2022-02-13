@@ -5,6 +5,7 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -17,7 +18,11 @@ class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="twitter-search", aliases=["ts"])
+    @slash_command(
+        name="twitter-search",
+        description="Returns up to 5 recent tweets given the Twitter user",
+        guild_ids=[866199405090308116],
+    )
     async def twitter_search(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
@@ -40,7 +45,7 @@ class TwitterV1(commands.Cog):
                             value=data["meta"]["result_count"],
                             inline=True,
                         )
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
                     else:
                         embed = discord.Embed()
                         excludedKeys = {
@@ -82,18 +87,16 @@ class TwitterV1(commands.Cog):
                                             inline=True,
                                         )
                                         embed.remove_field(6)
+                                for v in dictItem["extended_entities"].items():
+                                    embed.set_image(
+                                        url=v[1][0]["media_url_https"])
                                 embed.description = dictItem["text"]
-                                embed.set_image(
-                                    url=dictItem["extended_entities"]["media"][0][
-                                        "media_url_https"
-                                    ]
-                                )
                                 embed.set_thumbnail(
                                     url=str(
                                         dictItem["user"]["profile_image_url_https"]
                                     ).replace("_normal", "_bigger")
                                 )
-                                await ctx.send(embed=embed)
+                                await ctx.respond(embed=embed)
                             else:
                                 for keys2, val2 in dictItem.items():
                                     if keys2 not in excludedKeys:
@@ -111,12 +114,12 @@ class TwitterV1(commands.Cog):
                                         dictItem["user"]["profile_image_url_https"]
                                     ).replace("_normal", "_bigger")
                                 )
-                                await ctx.send(embed=embed)
+                                await ctx.respond(embed=embed)
                 except Exception as e:
                     embedError = discord.Embed()
                     embedError.description = "Something went wrong. Please try again."
                     embedError.add_field(name="Error", value=e, inline=True)
-                    await ctx.send(embed=embedError)
+                    await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -127,7 +130,7 @@ class TwitterV1(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
             embedVar.description = f"Missing a requireed argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
+            msg = await ctx.respond(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -137,7 +140,11 @@ class TwitterV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="twitter-user", aliases=["tu"])
+    @slash_command(
+        name="twitter-user",
+        description="Returns Info about the given Twitter user",
+        guild_ids=[866199405090308116],
+    )
     async def twitter_user(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
@@ -180,7 +187,7 @@ class TwitterV2(commands.Cog):
                 try:
                     embedVar = discord.Embed()
                     for userItem in data2:
-                        if "profile_banner_url" in data2:
+                        if "profile_banner_url" in userItem:
                             for keys, val in userItem.items():
                                 if keys not in itemFilter:
                                     embedVar.add_field(
@@ -192,13 +199,13 @@ class TwitterV2(commands.Cog):
                             embedVar.title = userItem["name"]
                             embedVar.description = userItem["description"]
                             embedVar.set_image(
-                                url=userItem["profile_banner_url"])
+                                url=str(userItem["profile_banner_url"]))
                             embedVar.set_thumbnail(
                                 url=str(userItem["profile_image_url_https"]).replace(
                                     "_normal", "_bigger"
                                 )
                             )
-                            await ctx.send(embed=embedVar)
+                            await ctx.respond(embed=embedVar)
                         else:
                             for keys2, val2 in userItem.items():
                                 if keys2 not in itemFilter:
@@ -215,13 +222,13 @@ class TwitterV2(commands.Cog):
                                     "_normal", "_bigger"
                                 )
                             )
-                            await ctx.send(embed=embedVar)
+                            await ctx.respond(embed=embedVar)
 
                 except Exception as e:
                     embedError2 = discord.Embed()
                     embedError2.description = "Something went wrong. Please try again."
                     embedError2.add_field(name="Error", value=e, inline=True)
-                    await ctx.send(embed=embedError2)
+                    await ctx.respond(embed=embedError2)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -232,7 +239,7 @@ class TwitterV2(commands.Cog):
         if isinstance(error, commands.MissingRequiredArgument):
             embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
             embedVar.description = f"Missing a requireed argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
+            msg = await ctx.respond(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

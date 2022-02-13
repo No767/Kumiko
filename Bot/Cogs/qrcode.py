@@ -5,6 +5,7 @@ import discord
 import discord.ext
 import qrcode
 import uvloop
+from discord.commands import slash_command
 from discord.ext import commands
 
 
@@ -12,7 +13,11 @@ class qrcode_maker(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="qrcode")
+    @slash_command(
+        name="qrcode",
+        description="Creates a QR Code based on given input",
+        guild_ids=[866199405090308116],
+    )
     async def code(self, ctx, *, link: str):
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
         if str(os.path.isfile("/qrcode/qrcode.png")) == "False":

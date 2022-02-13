@@ -178,7 +178,7 @@ This projects uses a ton of linters and formatters. The main formatters are Blac
 In order to prevent merge conflicts for the upstream project [Kumiko](https://github.com/No767/Kumiko), all major changes for Rin needs to be added as a patch file (make sure that you make the commit first). To create one, run this cmd:
 
 ```sh
-git format-patch -1 -o ./Patches
+git format-patch [commit-hash] -o ./Patches/[commit-name]
 ```
 
 Make sure that it is either outputting it to the `Patches` directory, or that you are in the `Patches` directory. This will create a patch file, and you can use that to push to the main repo. From downstream, this cmd can be run:

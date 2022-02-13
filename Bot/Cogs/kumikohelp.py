@@ -1,9 +1,9 @@
 import asyncio
-import typing
 
 import discord
 import discord.ext
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
 
 
@@ -12,69 +12,94 @@ class kumikoHelp(commands.Cog):
         self.bot = bot
         self.last_member = None
 
-    @commands.command(name="kumikohelp", aliases=["help"])
-    async def on_message(self, ctx, *, search: typing.Optional[str] = None):
+    @slash_command(
+        name="kumikohelp",
+        description="The Help Page for Kumiko",
+        guild_ids=[866199405090308116],
+    )
+    async def kumikoHelp(
+        self,
+        ctx,
+        *,
+        category: Option(
+            str,
+            choices=[
+                "Admin",
+                "Twitter",
+                "Reddit",
+                "Minecraft",
+                "Fun",
+                "Misc",
+                "Instagram",
+                "Chat",
+                "Misc",
+                "DeviantArt",
+                "Anime",
+                "Top.gg",
+                "Pinterest",
+                "MyAnimeList/Jikan",
+                "YouTube",
+                "Tenor",
+                "OpenAI",
+            ],
+            required=False,
+        )
+    ):
         try:
-            if search is None:
+            if category is None:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
                         **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
                         """
                 embedVar.add_field(
-                    name="Admin", value="`.kumikohelp admin`", inline=True
+                    name="Admin", value="`/kumikohelp admin`", inline=True)
+                embedVar.add_field(
+                    name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Twitter", value="`.kumikohelp twitter`", inline=True
+                    name="Reddit", value="`/kumikohelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Reddit", value="`.kumikohelp reddit`", inline=True
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                embedVar.add_field(
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Instagram", value="`/kumikohelp ig`", inline=True)
+                embedVar.add_field(
+                    name="Chat", value="`/kumikohelp chat`", inline=True)
+                embedVar.add_field(
+                    name="Misc", value="`/kumikohelp misc`", inline=True)
+                embedVar.add_field(
+                    name="Deviantart", value="`/kumikohelp da`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`.kumikohelp mc`", inline=True
+                    name="Anime", value="`/kumikohelp anime`", inline=True)
+                embedVar.add_field(
+                    name="Top.gg", value="`/kumikohelp topgg`", inline=True)
+                embedVar.add_field(
+                    name="Pinterest", value="`/kumikohelp pinterest`", inline=True
                 )
                 embedVar.add_field(
-                    name="Fun", value="`.kumikohelp fun`", inline=True)
-                embedVar.add_field(
-                    name="Instagram", value="`.kumikohelp ig`", inline=True
+                    name="MyAnimeList/Jikan", value="`/kumikohelp jikan`", inline=True
                 )
                 embedVar.add_field(
-                    name="Chat", value="`.kumikohelp chat`", inline=True)
-                embedVar.add_field(
-                    name="Misc", value="`.kumikohelp misc`", inline=True)
-                embedVar.add_field(
-                    name="Deviantart", value="`.kumikohelp da`", inline=True
+                    name="YouTube", value="`/kumikohelp youtube`", inline=True
                 )
                 embedVar.add_field(
-                    name="Anime", value="`.kumikohelp anime`", inline=True
-                )
+                    name="Tenor", value="`/kumikohelp tenor`", inline=True)
                 embedVar.add_field(
-                    name="Top.gg", value="`.kumikohelp topgg`", inline=True
-                )
-                embedVar.add_field(
-                    name="Pinterest", value="`.kumikohelp pinterest`", inline=True
-                )
-                embedVar.add_field(
-                    name="MyAnimeList/Jikan", value="`.kumikohelp jikan`", inline=True
-                )
-                embedVar.add_field(
-                    name="Youtube", value="`.kumikohelp youtube`", inline=True
-                )
-                embedVar.add_field(
-                    name="Tenor", value="`.kumikohelp tenor`", inline=True
-                )
-                embedVar.add_field(
-                    name="OpenAI", value="`.kumikohelp openai`", inline=True
+                    name="OpenAI", value="`/kumikohelp openai`", inline=True
                 )
                 embedVar.set_author(
                     name="Kumiko Help", icon_url=bot.user.display_avatar
                 )
                 embedVar.set_footer(
-                    text='Remember, the command prefix for this bot is "."'
+                    text='Remember, the command prefix for this bot is "/"'
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "admin":
+            if category in ["admin", "Admin"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -99,9 +124,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Admin", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "twitter":
+            if category in ["twitter", "Twitter"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -117,9 +142,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Twitter", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "reddit":
+            if category in ["reddit", "Reddit"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -138,9 +163,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Reddit", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("minecraft", "mc"):
+            if category in ["minecraft", "mc", "Minecraft"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -196,9 +221,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "fun":
+            if category in ["fun", "Fun"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -230,9 +255,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Fun", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("instagram", "ig"):
+            if category in ["instagram", "ig", "Instgram"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -259,9 +284,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Instagram", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "chat":
+            if category in ["chat", "Chat"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -276,9 +301,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Rin Help - Chat", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "misc":
+            if category in ["misc", "Misc"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -315,9 +340,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Misc", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("deviantart", "da"):
+            if category in ["deviantart", "da", "DevintArt"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -351,9 +376,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Deviantart", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "anime":
+            if category in ["anime", "Anime"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -369,9 +394,15 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Anime", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ["jikan", "jk", "myanimelist", "mal"]:
+            if category in [
+                "jikan",
+                "jk",
+                "myanimelist",
+                "mal",
+                "MyAnimeList/Jikan",
+            ]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -406,9 +437,9 @@ class kumikoHelp(commands.Cog):
                     name="Kumiko Help - MyAnimeList/Jikan",
                     icon_url=bot.user.display_avatar,
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "topgg":
+            if category in ["topgg", "Top.gg"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -424,9 +455,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Topgg", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ("pinterest", "pt"):
+            if category in ["pinterest", "pt", "Pinterest"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -448,9 +479,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Pinterest", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ["youtube", "yt"]:
+            if category in ["youtube", "yt", "YouTube"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -484,9 +515,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - YouTube", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) == "tenor":
+            if category in ["tenor", "Tenor"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -525,9 +556,9 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - Tenor", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
-            if str(search) in ["openai", "ai", "gpt-3"]:
+            if category in ["openai", "ai", "gpt-3", "OpenAI"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -548,7 +579,7 @@ class kumikoHelp(commands.Cog):
                 embedVar.set_author(
                     name="Kumiko Help - OpenAI", icon_url=bot.user.display_avatar
                 )
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
         except Exception as e:
             bot = self.bot
@@ -556,7 +587,7 @@ class kumikoHelp(commands.Cog):
             embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.display_avatar)
-            await ctx.send(embed=embedVar)
+            await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

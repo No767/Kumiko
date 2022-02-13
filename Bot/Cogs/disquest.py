@@ -5,6 +5,7 @@ import random
 
 import discord
 import uvloop
+from discord.commands import slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import (BigInteger, Column, Integer, MetaData, Sequence, Table,
@@ -103,9 +104,10 @@ class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
+    @slash_command(
         name="mylvl",
-        help="Displays your activity level!",
+        description="Displays your activity level!",
+        guild_ids=[866199405090308116],
     )
     async def mylvl(self, ctx):
         user = disaccount(ctx)
@@ -116,7 +118,7 @@ class DisQuest(commands.Cog):
         embedVar.add_field(name="LVL", value=f"{lvl.cur(xp)}", inline=True)
         embedVar.add_field(
             name="XP", value=f"{xp}/{lvl.next(xp)*100}", inline=True)
-        await ctx.send(embed=embedVar)
+        await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -127,6 +129,11 @@ class DisQuestV2(commands.Cog):
 
     @commands.command(
         name="rank", help="Displays the most active members of your server!"
+    )
+    @slash_command(
+        name="rank",
+        description="Displays the most active members of your server!",
+        guild_ids=[866199405090308116],
     )
     async def rank(self, ctx):
         gid = ctx.guild.id
@@ -163,7 +170,7 @@ class DisQuestV2(commands.Cog):
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(254, 255, 217))
             embedVar.description = f"**Server Rankings**\n{''.join(members)}"
-            await ctx.send(embed=embedVar)
+            await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -172,10 +179,10 @@ class DisQuestV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
+    @slash_command(
         name="globalrank",
-        help="Displays the most active members of all servers that this bot is connected to!",
-        aliases=["grank"],
+        description="Displays the most active members of all servers that this bot is connected to!",
+        guild_ids=[866199405090308116],
     )
     async def grank(self, ctx):
         meta = MetaData()
@@ -215,7 +222,7 @@ class DisQuestV3(commands.Cog):
             embedVar = discord.Embed(
                 color=discord.Color.from_rgb(217, 255, 251))
             embedVar.description = f"**Global Rankings**\n{''.join(members)}"
-            await ctx.send(embed=embedVar)
+            await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
