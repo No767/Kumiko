@@ -53,7 +53,8 @@ class kumikoHelp(commands.Cog):
                         **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
                         """
                 embedVar.add_field(
-                    name="Admin", value="`/kumikohelp admin`", inline=True)
+                    name="Admin", value="`/kumikohelp admin`", inline=True
+                )
                 embedVar.add_field(
                     name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
@@ -61,11 +62,13 @@ class kumikoHelp(commands.Cog):
                     name="Reddit", value="`/kumikohelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True
+                )
                 embedVar.add_field(
                     name="Fun", value="`/kumikohelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Instagram", value="`/kumikohelp ig`", inline=True)
+                    name="Instagram", value="`/kumikohelp ig`", inline=True
+                )
                 embedVar.add_field(
                     name="Chat", value="`/kumikohelp chat`", inline=True)
                 embedVar.add_field(
@@ -74,9 +77,11 @@ class kumikoHelp(commands.Cog):
                     name="Deviantart", value="`/kumikohelp da`", inline=True
                 )
                 embedVar.add_field(
-                    name="Anime", value="`/kumikohelp anime`", inline=True)
+                    name="Anime", value="`/kumikohelp anime`", inline=True
+                )
                 embedVar.add_field(
-                    name="Top.gg", value="`/kumikohelp topgg`", inline=True)
+                    name="Top.gg", value="`/kumikohelp topgg`", inline=True
+                )
                 embedVar.add_field(
                     name="Pinterest", value="`/kumikohelp pinterest`", inline=True
                 )
@@ -87,7 +92,8 @@ class kumikoHelp(commands.Cog):
                     name="YouTube", value="`/kumikohelp youtube`", inline=True
                 )
                 embedVar.add_field(
-                    name="Tenor", value="`/kumikohelp tenor`", inline=True)
+                    name="Tenor", value="`/kumikohelp tenor`", inline=True
+                )
                 embedVar.add_field(
                     name="OpenAI", value="`/kumikohelp openai`", inline=True
                 )
