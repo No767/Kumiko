@@ -14,10 +14,8 @@ bot = commands.Bot(command_prefix=".", help_command=None)
 initial_extensions = [
     "Cogs.rininfo",
     "Cogs.rinping",
-    "Cogs.valid",
     "Cogs.rinhelp",
     "Cogs.reddit",
-    "Cogs.server-info",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
     "Cogs.hypixel",
@@ -26,7 +24,6 @@ initial_extensions = [
     "Cogs.qrcode",
     "Cogs.spiget",
     "Cogs.jikan",
-    "Cogs.nb-pride",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
     "Cogs.rininvite",
