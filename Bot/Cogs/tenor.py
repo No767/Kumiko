@@ -5,8 +5,8 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,8 +18,14 @@ class TenorV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-search-multiple", description="Searches for up to 5 gifs on Tenor", guild_ids=[866199405090308116])
-    async def tenor_search(self, ctx, *, search_term: Option(str, "Search Term for GIFs")):
+    @slash_command(
+        name="tenor-search-multiple",
+        description="Searches for up to 5 gifs on Tenor",
+        guild_ids=[866199405090308116],
+    )
+    async def tenor_search(
+        self, ctx, *, search_term: Option(str, "Search Term for GIFs")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "q": search_term,
@@ -66,14 +72,18 @@ class TenorV1(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
-
 class TenorV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-search-one", description="Searches for a single gif on Tenor", guild_ids=[866199405090308116])
-    async def tenor_search_one(self, ctx, *, search_one_term: Option(str, "Search Term for GIF")):
+    @slash_command(
+        name="tenor-search-one",
+        description="Searches for a single gif on Tenor",
+        guild_ids=[866199405090308116],
+    )
+    async def tenor_search_one(
+        self, ctx, *, search_one_term: Option(str, "Search Term for GIF")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "q": search_one_term,
@@ -106,7 +116,11 @@ class TenorV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-trending", description="Returns up to 5 trending gifs from Tenor", guild_ids=[866199405090308116])
+    @slash_command(
+        name="tenor-trending",
+        description="Returns up to 5 trending gifs from Tenor",
+        guild_ids=[866199405090308116],
+    )
     async def tenor_trending(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -148,7 +162,9 @@ class TenorV3(commands.Cog):
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "Sorry, but the query has failed. Please try again..."
+                    embedVar.description = (
+                        "Sorry, but the query has failed. Please try again..."
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
@@ -159,9 +175,18 @@ class TenorV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-search-suggestions", description="Gives a list of suggested search terms based on given topic", guild_ids=[866199405090308116])
+    @slash_command(
+        name="tenor-search-suggestions",
+        description="Gives a list of suggested search terms based on given topic",
+        guild_ids=[866199405090308116],
+    )
     @commands.command(name="tenor-search-suggestions", aliases=["tss"])
-    async def tenor_search_suggestions(self, ctx, *, search_suggestion: Option(str, "Topic/Search Term for Search Suggestion")):
+    async def tenor_search_suggestions(
+        self,
+        ctx,
+        *,
+        search_suggestion: Option(str, "Topic/Search Term for Search Suggestion"),
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": Tenor_API_Key,
                       "q": search_suggestion, "limit": 25}
@@ -189,9 +214,11 @@ class TenorV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-trending-terms",
-                   description="Gives a list of trending search terms on Tenor",
-                   guild_ids=[866199405090308116])
+    @slash_command(
+        name="tenor-trending-terms",
+        description="Gives a list of trending search terms on Tenor",
+        guild_ids=[866199405090308116],
+    )
     async def tenor_trending_terms(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": Tenor_API_Key, "limit": 25}
@@ -215,12 +242,15 @@ class TenorV5(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class TenorV6(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-gif", description="Gives a gif based on the given GIF ID", guild_ids=[866199405090308116])
+    @slash_command(
+        name="tenor-gif",
+        description="Gives a gif based on the given GIF ID",
+        guild_ids=[866199405090308116],
+    )
     async def tenor_gif(self, ctx, *, search_gif: Option(int, "Tenor GIF ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -273,13 +303,18 @@ class TenorV6(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class TenorV7(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="tenor-random", description="Gives a random gif from Tenor based on given search term", guild_ids=[866199405090308116])
-    async def tenor_random(self, ctx, *, search_random_term: Option(str, "Search Term")):
+    @slash_command(
+        name="tenor-random",
+        description="Gives a random gif from Tenor based on given search term",
+        guild_ids=[866199405090308116],
+    )
+    async def tenor_random(
+        self, ctx, *, search_random_term: Option(str, "Search Term")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,

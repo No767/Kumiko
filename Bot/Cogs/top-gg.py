@@ -5,8 +5,8 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,7 +18,11 @@ class TopGGV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="topgg-search", description="Returns Info about the given Discord bot on Top.gg", guild_ids=[866199405090308116])
+    @slash_command(
+        name="topgg-search",
+        description="Returns Info about the given Discord bot on Top.gg",
+        guild_ids=[866199405090308116],
+    )
     async def topgg_search_one(self, ctx, bot_id: Option(str, "Discord Bot ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
@@ -60,8 +64,11 @@ class TopGGV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="topgg-search-users", description="Returns Info about the given user on Top.gg",
-                   guild_ids=[866199405090308116])
+    @slash_command(
+        name="topgg-search-users",
+        description="Returns Info about the given user on Top.gg",
+        guild_ids=[866199405090308116],
+    )
     async def topgg_search_users(self, ctx, *, user_id: Option(str, "User ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}

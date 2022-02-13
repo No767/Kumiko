@@ -5,8 +5,8 @@ import bs4
 import discord
 import orjson
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 
 
 class waifu(commands.Cog):
@@ -42,7 +42,6 @@ class waifu(commands.Cog):
                 embedVar.description = f"{description}"
                 embedVar.set_image(url=image_url)
                 await ctx.respond(embed=embedVar)
-
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

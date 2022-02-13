@@ -5,13 +5,12 @@ import random
 
 import discord
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
+from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import (BigInteger, Column, Integer, MetaData, Sequence, Table,
                         func, select)
 from sqlalchemy.ext.asyncio import create_async_engine
-
 
 load_dotenv()
 
@@ -105,7 +104,11 @@ class DisQuest(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="mylvl", description="Displays your activity level!", guild_ids=[866199405090308116])
+    @slash_command(
+        name="mylvl",
+        description="Displays your activity level!",
+        guild_ids=[866199405090308116],
+    )
     async def mylvl(self, ctx):
         user = disaccount(ctx)
         xp = await user.getxp()
@@ -127,7 +130,11 @@ class DisQuestV2(commands.Cog):
     @commands.command(
         name="rank", help="Displays the most active members of your server!"
     )
-    @slash_command(name="rank", description="Displays the most active members of your server!", guild_ids=[866199405090308116])
+    @slash_command(
+        name="rank",
+        description="Displays the most active members of your server!",
+        guild_ids=[866199405090308116],
+    )
     async def rank(self, ctx):
         gid = ctx.guild.id
         meta = MetaData()
@@ -172,7 +179,11 @@ class DisQuestV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="globalrank", description="Displays the most active members of all servers that this bot is connected to!", guild_ids=[866199405090308116])
+    @slash_command(
+        name="globalrank",
+        description="Displays the most active members of all servers that this bot is connected to!",
+        guild_ids=[866199405090308116],
+    )
     async def grank(self, ctx):
         meta = MetaData()
         engine = create_async_engine(

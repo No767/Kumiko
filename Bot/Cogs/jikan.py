@@ -60,7 +60,11 @@ class JikanV1(commands.Cog):
                                     inline=True,
                                 )
                         for dictItem in anime_info_v2["external_links"]:
-                            embedVar.add_field(name=dictItem["name"], value=dictItem["url"], inline=True)
+                            embedVar.add_field(
+                                name=dictItem["name"],
+                                value=dictItem["url"],
+                                inline=True,
+                            )
                         embedVar.add_field(
                             name="Aired",
                             value=anime_info_v2["aired"]["string"],
