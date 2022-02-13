@@ -24,7 +24,7 @@ class info(commands.Cog):
         )
         embedVar.add_field(
             name="Getting Started",
-            value="To help you get started, type in `.rinhelp` or `.help` in order to access the help page. This will provide you with all of the commands that is available to use as of now.",
+            value="To help you get started, type in `/rinhelp` in order to access the help page. This will provide you with all of the commands that is available to use as of now.",
             inline=False,
         )
         embedVar.add_field(

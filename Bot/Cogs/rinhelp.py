@@ -21,7 +21,7 @@ class rinhelp(commands.Cog):
         self,
         ctx,
         *,
-        search: Option(
+        category: Option(
             str,
             choices=[
                 "Admin",
@@ -46,7 +46,7 @@ class rinhelp(commands.Cog):
         )
     ):
         try:
-            if search is None:
+            if category is None:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = """
@@ -101,7 +101,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if search in ["admin", "Admin"]:
+            if category in ["admin", "Admin"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -128,7 +128,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["twitter", "Twitter"]:
+            if category in ["twitter", "Twitter"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -146,7 +146,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["reddit", "Reddit"]:
+            if category in ["reddit", "Reddit"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -167,7 +167,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["minecraft", "mc", "Minecraft"]:
+            if category in ["minecraft", "mc", "Minecraft"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -225,7 +225,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["fun", "Fun"]:
+            if category in ["fun", "Fun"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -259,7 +259,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["instagram", "ig", "Instgram"]:
+            if category in ["instagram", "ig", "Instgram"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -288,7 +288,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["chat", "Chat"]:
+            if category in ["chat", "Chat"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -305,7 +305,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["misc", "Misc"]:
+            if category in ["misc", "Misc"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -344,7 +344,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["deviantart", "da", "DevintArt"]:
+            if category in ["deviantart", "da", "DevintArt"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -380,7 +380,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["anime", "Anime"]:
+            if category in ["anime", "Anime"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -398,7 +398,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in [
+            if category in [
                 "jikan",
                 "jk",
                 "myanimelist",
@@ -441,7 +441,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["topgg", "Top.gg"]:
+            if category in ["topgg", "Top.gg"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -459,7 +459,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["pinterest", "pt", "Pinterest"]:
+            if category in ["pinterest", "pt", "Pinterest"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -483,7 +483,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["youtube", "yt", "YouTube"]:
+            if category in ["youtube", "yt", "YouTube"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -519,7 +519,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["tenor", "Tenor"]:
+            if category in ["tenor", "Tenor"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
@@ -560,7 +560,7 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if str(search) in ["openai", "ai", "gpt-3", "OpenAI"]:
+            if category in ["openai", "ai", "gpt-3", "OpenAI"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(

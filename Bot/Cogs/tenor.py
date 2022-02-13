@@ -6,6 +6,7 @@ import discord
 import orjson
 import uvloop
 from discord.ext import commands
+from discord.commands import slash_command, Option
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,11 +18,11 @@ class TenorV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-search-multiple", aliases=["tsm"])
-    async def tenor_search(self, ctx, *, search: str):
+    @slash_command(name="tenor-search-multiple", description="Searches for up to 5 gifs on Tenor", guild_ids=[866199405090308116])
+    async def tenor_search(self, ctx, *, search_term: Option(str, "Search Term for GIFs")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "q": search,
+                "q": search_term,
                 "key": Tenor_API_Key,
                 "contentfilter": "medium",
                 "limit": 5,
@@ -55,37 +56,27 @@ class TenorV1(commands.Cog):
                                 embedVar.title = dictItem["content_description"]
                         for item in dictItem.get("media"):
                             embedVar.set_image(url=item["gif"]["url"])
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = f"Sorry, but the search for {search} has failed. Please try again..."
+                    embedVar.description = f"Sorry, but the search for {search_term} has failed. Please try again..."
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @tenor_search.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
 
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-search-one", aliases=["tso"])
-    async def tenor_search_one(self, ctx, *, search_one: str):
+    @slash_command(name="tenor-search-one", description="Searches for a single gif on Tenor", guild_ids=[866199405090308116])
+    async def tenor_search_one(self, ctx, *, search_one_term: Option(str, "Search Term for GIF")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "q": search_one,
+                "q": search_one_term,
                 "key": Tenor_API_Key,
                 "contentfilter": "medium",
                 "limit": 1,
@@ -104,21 +95,9 @@ class TenorV2(commands.Cog):
                     await ctx.send(embed=embedVar1)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
+                    embedVar.description = f"Sorry, but the search for {search_one_term} has failed. Please try again..."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.send(embed=embedVar)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @tenor_search_one.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -127,7 +106,7 @@ class TenorV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-trending", aliases=["tt"])
+    @slash_command(name="tenor-trending", description="Returns up to 5 trending gifs from Tenor", guild_ids=[866199405090308116])
     async def tenor_trending(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
@@ -166,12 +145,12 @@ class TenorV3(commands.Cog):
                                 embedVar.title = dictItem2["content_description"]
                         for item2 in dictItem2.get("media"):
                             embedVar.set_image(url=item2["gif"]["url"])
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
+                    embedVar.description = "Sorry, but the query has failed. Please try again..."
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -180,8 +159,9 @@ class TenorV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @slash_command(name="tenor-search-suggestions", description="Gives a list of suggested search terms based on given topic", guild_ids=[866199405090308116])
     @commands.command(name="tenor-search-suggestions", aliases=["tss"])
-    async def tenor_search_suggestions(self, ctx, *, search_suggestion: str):
+    async def tenor_search_suggestions(self, ctx, *, search_suggestion: Option(str, "Topic/Search Term for Search Suggestion")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": Tenor_API_Key,
                       "q": search_suggestion, "limit": 25}
@@ -204,24 +184,14 @@ class TenorV4(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @tenor_search_suggestions.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 class TenorV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-trending-terms", aliases=["tt-terms"])
+    @slash_command(name="tenor-trending-terms",
+                   description="Gives a list of trending search terms on Tenor",
+                   guild_ids=[866199405090308116])
     async def tenor_trending_terms(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": Tenor_API_Key, "limit": 25}
@@ -235,34 +205,23 @@ class TenorV5(commands.Cog):
                     embedVar.description = str(
                         [items for items in data6["results"]]
                     ).replace("'", "")
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @tenor_trending_terms.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV6(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-gif", aliases=["tg"])
-    async def tenor_gif(self, ctx, *, search_gif: int):
+    @slash_command(name="tenor-gif", description="Gives a gif based on the given GIF ID", guild_ids=[866199405090308116])
+    async def tenor_gif(self, ctx, *, search_gif: Option(int, "Tenor GIF ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,
@@ -302,43 +261,32 @@ class TenorV6(commands.Cog):
                                 )
                         for item3 in dictValues.get("media"):
                             embedVar.set_image(url=item3["gif"]["url"])
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = (
                         "Sorry, but the query failed. Please try again..."
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @tenor_gif.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TenorV7(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-random", aliases=["tr"])
-    async def tenor_random(self, ctx, *, search_random: str):
+    @slash_command(name="tenor-random", description="Gives a random gif from Tenor based on given search term", guild_ids=[866199405090308116])
+    async def tenor_random(self, ctx, *, search_random_term: Option(str, "Search Term")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,
                 "limit": 5,
                 "media_filter": "minimal",
                 "contentfilter": "medium",
-                "q": search_random,
+                "q": search_random_term,
             }
             async with session.get(
                 "https://g.tenor.com/v1/random", params=params
@@ -351,26 +299,14 @@ class TenorV7(commands.Cog):
                             embedVar.title = dict_items["content_description"]
                         for item3 in dict_items.get("media"):
                             embedVar.set_image(url=item3["gif"]["url"])
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = (
                         "Sorry, but the query failed. Please try again..."
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @tenor_random.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

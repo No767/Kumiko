@@ -59,24 +59,11 @@ class JikanV1(commands.Cog):
                                     value=str(val).replace("'", ""),
                                     inline=True,
                                 )
+                        for dictItem in anime_info_v2["external_links"]:
+                            embedVar.add_field(name=dictItem["name"], value=dictItem["url"], inline=True)
                         embedVar.add_field(
                             name="Aired",
                             value=anime_info_v2["aired"]["string"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Official Site",
-                            value=anime_info_v2["external_links"][0]["url"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="AnimeDB",
-                            value=anime_info_v2["external_links"][1]["url"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="AnimeNewsNetwork",
-                            value=anime_info_v2["external_links"][2]["url"],
                             inline=True,
                         )
                         embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"

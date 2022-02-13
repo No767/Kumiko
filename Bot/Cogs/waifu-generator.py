@@ -6,13 +6,18 @@ import discord
 import orjson
 import uvloop
 from discord.ext import commands
+from discord.commands import slash_command
 
 
 class waifu(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="waifu")
+    @slash_command(
+        name="waifu",
+        description="Gives you a random waifu",
+        guild_ids=[866199405090308116],
+    )
     async def on_message(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {
@@ -36,7 +41,8 @@ class waifu(commands.Cog):
                 )
                 embedVar.description = f"{description}"
                 embedVar.set_image(url=image_url)
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
+
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
