@@ -19,15 +19,15 @@ Getting the environment set up for the bot is a kinda complex process. Kumiko no
 1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
 2. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
 
-```sh
-sudo apt-get install software-properties-common
-```
+    ```sh
+    sudo apt-get install software-properties-common
+    ```
     
 3. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
-```sh
-sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
-```
+    ```sh
+    sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
+    ```
 
 4. Install Python 3.10. Chances are the `python3.10-dev` package requires Python 3.10 as a dependency, so make sure Python 3.10 is installed. If you did it this way, you will more than likely need to get pip, and you will need to use the get-pip.py method to do so. 
 
@@ -49,33 +49,33 @@ sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
 
 6. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
-```sh
-sudo python3.10 -m pip install --upgrade pipenv
-```
+    ```sh
+    sudo python3.10 -m pip install --upgrade pipenv
+    ```
 
 7. Clone this repo. If you need the cmd to do so, run this cmd:
 
-```sh
-git clone https://github.com/No767/Rin.git
-```
+    ```sh
+    git clone https://github.com/No767/Rin.git
+    ```
 
-8. `cd into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
+8. `cd` into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
 
-```sh
-cd Rin && pipenv --python 3.10
-```
+    ```sh
+    cd Rin && pipenv --python 3.10
+    ```
 
 9. And now finally install all the dependencies by running this command:
 
-```sh
-pipenv install
-```
+    ```sh
+    pipenv install
+    ```
 
 10. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
 
-```sh
-$HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
-```
+    ```sh
+    $HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
+    ```
 
 Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-7. Then connect to WSL, and select the repo as a folder to open. 
 
@@ -83,21 +83,21 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     
 1. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
 
-```sh
-sudo apt-get install software-properties-common
-```
+    ```sh
+    sudo apt-get install software-properties-common
+    ```
     
 2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
 
-```sh
-sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
-```
+    ```sh
+    sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
+    ```
 
-If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
+    If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
 
-```sh
-yum install -y xz-devel
-```
+    ```sh
+    yum install -y xz-devel
+    ```
 
 4. Install Python 3.10. Chances are the `python3.10-dev` package requires Python 3.10 as a dependency, so make sure Python 3.10 is installed. If you did it this way, you will more than likely need to get pip, and you will need to use the get-pip.py method to do so. 
 
@@ -119,27 +119,27 @@ yum install -y xz-devel
 
 6. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
-```sh
-sudo python3.10 -m pip install --upgrade pipenv
-```
+    ```sh
+    sudo python3.10 -m pip install --upgrade pipenv
+    ```
 
 7. Clone this repo. If you need the cmd to do so, run this cmd:
 
-```sh
-git clone https://github.com/No767/Rin.git
-```
+    ```sh
+    git clone https://github.com/No767/Rin.git
+    ```
 
-8. `cd into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
+8. `cd` into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
 
-```sh
-cd Rin && pipenv --python 3.10
-```
+    ```sh
+    cd Rin && pipenv --python 3.10
+    ```
 
 9. And now finally install all the dependencies by running this command:
 
-```sh
-pipenv install
-```
+    ```sh
+    pipenv install
+    ```
 
 ### MacOS
 
@@ -148,22 +148,22 @@ pipenv install
 1. Install Python 3.10. This can be installed with the installer or compiled from source (Or use Homebrew). Either way it doesn't matter. 
 2. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
 
-```sh
-python -m pip install --upgrade pipenv
-```
+    ```sh
+    python -m pip install --upgrade pipenv
+    ```
 
 3. Clone this repo. 
 4. `cd` into the cloned repo and create the Pipenv. To do so, run this command: 
 
-```sh
-pipenv --python 3.10
-```
+    ```sh
+    cd Rin && pipenv --python 3.10
+    ```
 
-5. `cd` into the cloned repo and install all the dependencies by running this command:
+5. And now install all the dependencies by running this command:
 
-```sh
-pipenv install
-```
+    ```sh
+    pipenv install
+    ```
 
 ## Pull Requests and Commits
 
