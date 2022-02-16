@@ -57,14 +57,16 @@ class kumikoHelp(commands.Cog):
                     name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True
+                )
                 embedVar.add_field(
                     name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
                 embedVar.add_field(
                     name="Fun", value="`/kumikohelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Instagram", value="`/kumikohelp ig`", inline=True)
+                    name="Instagram", value="`/kumikohelp ig`", inline=True
+                )
                 embedVar.add_field(
                     name="Misc", value="`/kumikohelp misc`", inline=True)
                 embedVar.add_field(
