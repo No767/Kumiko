@@ -180,7 +180,6 @@ class TenorV4(commands.Cog):
         description="Gives a list of suggested search terms based on given topic",
         guild_ids=[866199405090308116],
     )
-    @commands.command(name="tenor-search-suggestions", aliases=["tss"])
     async def tenor_search_suggestions(
         self,
         ctx,
