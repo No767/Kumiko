@@ -58,7 +58,9 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="Minecraft", value="`/rinhelp mc`", inline=True)
-                embedVar.add_field(name="Hypixel", value="`/rinhelp hypixel`", inline=True)
+                embedVar.add_field(
+                    name="Hypixel", value="`/rinhelp hypixel`", inline=True
+                )
                 embedVar.add_field(
                     name="Fun", value="`/rinhelp fun`", inline=True)
                 embedVar.add_field(
@@ -95,7 +97,6 @@ class rinhelp(commands.Cog):
                     text='Remember, the command prefix for this bot is "/"'
                 )
                 await ctx.respond(embed=embedVar)
-
 
             if category in ["twitter", "Twitter"]:
                 bot = self.bot
@@ -190,7 +191,11 @@ class rinhelp(commands.Cog):
                     value="Determine if the player is online or not",
                     inline=True,
                 )
-                embedVar.add_field(name="`hypixel-punishments-stats`", value="Returns some stats about the amount of punishments given on Hypixel", inline=True)
+                embedVar.add_field(
+                    name="`hypixel-punishments-stats`",
+                    value="Returns some stats about the amount of punishments given on Hypixel",
+                    inline=True,
+                )
                 embedVar.set_author(
                     name="Rin Help - Hypixel", icon_url=bot.user.display_avatar
                 )
