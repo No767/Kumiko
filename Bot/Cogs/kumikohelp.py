@@ -24,15 +24,13 @@ class kumikoHelp(commands.Cog):
         category: Option(
             str,
             choices=[
-                "Admin",
                 "Twitter",
                 "Reddit",
                 "Minecraft",
+                "Hypixel",
                 "Fun",
                 "Misc",
                 "Instagram",
-                "Chat",
-                "Misc",
                 "DeviantArt",
                 "Anime",
                 "Top.gg",
@@ -53,13 +51,24 @@ class kumikoHelp(commands.Cog):
                         **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
                         """
                 embedVar.add_field(
-                    name="Admin", value="`/kumikohelp admin`", inline=True
+                    name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
                     name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Reddit", value="`/kumikohelp reddit`", inline=True
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                embedVar.add_field(
+                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
+                )
+                embedVar.add_field(
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Instagram", value="`/kumikohelp ig`", inline=True)
+                embedVar.add_field(
+                    name="Misc", value="`/kumikohelp misc`", inline=True)
+                embedVar.add_field(
+                    name="Deviantart", value="`/kumikohelp da`", inline=True
                 )
                 embedVar.add_field(
                     name="Minecraft", value="`/kumikohelp mc`", inline=True
@@ -102,33 +111,6 @@ class kumikoHelp(commands.Cog):
                 )
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "/"'
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["admin", "Admin"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`botgrowth`",
-                    value="Tips based on bot statistics on how to reach more people!",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`prune`",
-                    value="Removes bot from servers smaller than the specified limit\n",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`botinfo`", value="Statistics about this bot", inline=True
-                )
-                embedVar.add_field(
-                    name="`serverinfo`", value="Known server information", inline=True
-                )
-                embedVar.add_field(
-                    name="`ping`", value="Checks the ping for the bot", inline=True
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Admin", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -189,27 +171,6 @@ class kumikoHelp(commands.Cog):
                     name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True
                 )
                 embedVar.add_field(
-                    name="`hypixel`",
-                    value="Gain Insight in Hypixel's player data",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`hypixelcount`",
-                    value="Obtain the amount of players online within the servers",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`hypixelplayerstatus`",
-                    value="Determine if the player requests is online or " "not",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`skywarsinfo`",
-                    value="Get the position and score of the player within "
-                    "**ranked** skywars",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`spiget-search`",
                     value="Searches for Minecraft plugins via Spiget and returns information on such plugin",
                     inline=True,
@@ -228,13 +189,37 @@ class kumikoHelp(commands.Cog):
                     name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
+            if category in ["Hypixel", "hypixel"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`hypixel-user`",
+                    value="Gain Insight in Hypixel's player data",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`hypixel-count`",
+                    value="Obtain the amount of players online within the servers",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`hypixel-player-status`",
+                    value="Determine if the player is online or not",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`hypixel-punishments-stats`",
+                    value="Returns some stats about the amount of punishments given on Hypixel",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - Hypixel", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
 
             if category in ["fun", "Fun"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`valid`", value="Provides some valid feedback", inline=True
-                )
                 embedVar.add_field(
                     name="`mylvl`", value="Displays DisQuest Level", inline=True
                 )
@@ -251,11 +236,6 @@ class kumikoHelp(commands.Cog):
                 embedVar.add_field(
                     name="`advice`",
                     value="Returns some advice from Advice Slip",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`nb-pride`",
-                    value="Sends a non-binary flag and a trans flag into the channel",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -292,23 +272,6 @@ class kumikoHelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["chat", "Chat"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`chathelp`",
-                    value="The chat is automatically generated based on prewritten responses. Responses that are not documented will be ignored",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`clear`",
-                    value="Clears number of messages specified from the channel in which in the command was called",
-                )
-                embedVar.set_author(
-                    name="Rin Help - Chat", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
             if category in ["misc", "Misc"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -326,11 +289,6 @@ class kumikoHelp(commands.Cog):
                     name="`kumikohelp`", value="Kumiko's Help command", inline=True
                 )
                 embedVar.add_field(
-                    name="`help`",
-                    value="Alias for `rinhelp`. Replaces the default help command",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`kumikoinvite`",
                     value="Kumiko's invite links. Also can be reached with `.invite`.",
                     inline=True,
@@ -342,6 +300,12 @@ class kumikoHelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`uptime`", value="Checks for Kumiko's Uptime", inline=True
+                )
+                embedVar.add_field(
+                    name="`botinfo`", value="Statistics about this bot", inline=True
+                )
+                embedVar.add_field(
+                    name="`ping`", value="Checks the ping for the bot", inline=True
                 )
                 embedVar.set_author(
                     name="Kumiko Help - Misc", icon_url=bot.user.display_avatar
