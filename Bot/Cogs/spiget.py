@@ -19,160 +19,63 @@ class SpigetV2(commands.Cog):
                 f"https://api.spiget.org/v2/search/resources/{search}", headers=headers
             ) as r:
                 resource = await r.json()
-                author_id = resource[0]["author"]["id"]
-                resource_id = resource[0]["id"]
-                async with session.get(
-                    f"https://api.spiget.org/v2/authors/{author_id}", headers=headers
-                ) as resp:
-                    author_details_v1 = await resp.json()
-                    async with session.get(
-                        f"https://api.spiget.org/v2/resources/{resource_id}/versions",
-                        headers=headers,
-                    ) as response:
-                        spigetv3 = await response.json()
-                        async with session.get(
-                            f"https://api.spiget.org/v2/resources/{resource_id}/versions/latest",
-                            headers=headers,
-                        ) as another_response:
-                            plugin_version = await another_response.json()
-                            thumbnail = (
-                                "https://www.spigotmc.org/" +
-                                resource[0]["icon"]["url"]
+                try:
+                    for dictItem in resource:
+                        thumbnail = (
+                            "https://www.spigotmc.org/" +
+                           dictItem["icon"]["url"]
+                        )
+                        download_url_external_false = "https://spigotmc.org/" + str(
+                           dictItem["file"]["url"]
+                        )
+                        filter = ["icon", "links", "releaseDate", "updateDate", "category", "author",
+                                  "version", "id", "external", "tag", "rating", "existenceStatus", "name", "file"]
+                        itemFilter = ["url"]
+                        if dictItem["file"]["type"] in "external":
+                            embedVar = discord.Embed(
+                                title=resource[0]["name"],
+                                color=discord.Color.from_rgb(
+                                    173, 156, 255),
                             )
-                            file_size = str(resource[0]["file"]["size"]) + str(
-                                resource[0]["file"]["sizeUnit"]
+                            embedVar.description = dictItem["tag"]
+                            for key, value in dictItem.items():
+                                if key not in filter:
+                                    embedVar.add_field(name=key, value=value, inline=True)
+                            for item1, res1 in dictItem["file"].items():
+                                if item1 not in itemFilter:
+                                    embedVar.add_field(name=item1, value=f"{[res1]}".replace("'", ""), inline=True)
+                            embedVar.add_field(name="Rating", value=dictItem["rating"]["average"], inline=True)
+                            embedVar.set_thumbnail(url=str(thumbnail))
+                            await ctx.send(embed=embedVar)
+                        else:
+                            embedVar = discord.Embed(
+                                title=resource[0]["name"],
+                                color=discord.Color.from_rgb(
+                                    173, 156, 255),
                             )
-                            download_url_external_false = "https://spigotmc.org/" + str(
-                                resource[0]["file"]["url"]
+                            embedVar.description = dictItem["tag"] 
+                            for k, v in dictItem.items():
+                                if k not in filter:
+                                    embedVar.add_field(name=k, value=v, inline=True)
+                            for item, res in dictItem["file"].items():
+                                if item not in itemFilter:
+                                    embedVar.add_field(name=item, value=f"{[res]}".replace("'", ""), inline=True)
+                            embedVar.add_field(name="Rating", value=dictItem["rating"]["average"], inline=True)
+                            embedVar.add_field(
+                                name="Download URL",
+                                value=f"{download_url_external_false}",
+                                inline=False,
                             )
-                            try:
-                                if resource[0]["file"]["type"] in "external":
-                                    embedVar = discord.Embed(
-                                        title=resource[0]["name"],
-                                        color=discord.Color.from_rgb(
-                                            173, 156, 255),
-                                    )
-                                    embedVar.description = resource[0]["tag"]
-                                    embedVar.add_field(
-                                        name="Author",
-                                        value=author_details_v1["name"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Downloads",
-                                        value=resource[0]["downloads"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Rating",
-                                        value=resource[0]["rating"]["average"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Tested Versions",
-                                        value=str(
-                                            resource[0]["testedVersions"])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Latest Plugin Version",
-                                        value=str(plugin_version["name"]),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Plugin Versions",
-                                        value=str([name["name"]
-                                                  for name in spigetv3])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download Type",
-                                        value=resource[0]["file"]["type"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download URL",
-                                        value=f"{resource[0]['file']['externalUrl']}",
-                                        inline=False,
-                                    )
-                                    embedVar.set_thumbnail(url=str(thumbnail))
-                                    await ctx.send(embed=embedVar)
-                                else:
-                                    embedVar = discord.Embed(
-                                        title=resource[0]["name"],
-                                        color=discord.Color.from_rgb(
-                                            173, 156, 255),
-                                    )
-                                    embedVar.description = resource[0]["tag"]
-                                    embedVar.add_field(
-                                        name="Author",
-                                        value=author_details_v1["name"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Downloads",
-                                        value=resource[0]["downloads"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Rating",
-                                        value=resource[0]["rating"]["average"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Tested Versions",
-                                        value=str(
-                                            resource[0]["testedVersions"])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Latest Plugin Version",
-                                        value=str(plugin_version["name"]),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Plugin Versions",
-                                        value=str([name["name"]
-                                                  for name in spigetv3])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download Info",
-                                        value=resource[0]["file"]["type"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download Size",
-                                        value=file_size,
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download URL",
-                                        value=f"{download_url_external_false}",
-                                        inline=False,
-                                    )
-                                    embedVar.set_thumbnail(url=str(thumbnail))
-                                    await ctx.send(embed=embedVar)
-                            except Exception as e:
-                                embedVar = discord.Embed(
-                                    color=discord.Color.from_rgb(173, 156, 255)
-                                )
-                                embedVar.description = (
-                                    f"The query failed. Please Try Again.\nReason: {e}"
-                                )
-                                await ctx.send(embed=embedVar)
+                            embedVar.set_thumbnail(url=str(thumbnail))
+                            await ctx.send(embed=embedVar)
+                except Exception as e:
+                    embedVar = discord.Embed(
+                        color=discord.Color.from_rgb(173, 156, 255)
+                    )
+                    embedVar.description = (
+                        f"The query failed. Please Try Again.\nReason: {e}"
+                    )
+                    await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
