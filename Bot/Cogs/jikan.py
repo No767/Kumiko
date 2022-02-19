@@ -4,22 +4,43 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 
 
 class JikanV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="jikan-anime", description="Fetches up to 5 anime from MAL", guild_ids=[866199405090308116])
+    @slash_command(
+        name="jikan-anime",
+        description="Fetches up to 5 anime from MAL",
+        guild_ids=[866199405090308116],
+    )
     async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"limit": 5, "q": anime_name, "sfw": "true", "order_by": "title"}
-            async with session.get("https://api.jikan.moe/v4/anime/", params=params) as r:
+            params = {"limit": 5, "q": anime_name,
+                      "sfw": "true", "order_by": "title"}
+            async with session.get(
+                "https://api.jikan.moe/v4/anime/", params=params
+            ) as r:
                 data = await r.json()
-                filterList = ["images", "title", "aired", "synopsis", "background", "broadcast", "producers",
-                              "licensors", "studios", "genres", "explicit_genres", "themes", "demographics", "trailer"]
+                filterList = [
+                    "images",
+                    "title",
+                    "aired",
+                    "synopsis",
+                    "background",
+                    "broadcast",
+                    "producers",
+                    "licensors",
+                    "studios",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "trailer",
+                ]
                 try:
                     for dictItem in data["data"]:
                         embedVar = discord.Embed()
@@ -27,19 +48,38 @@ class JikanV1(commands.Cog):
                         embedVar.description = dictItem["synopsis"]
                         for key, value in dictItem.items():
                             if key not in filterList:
-                                embedVar.add_field(name=str(key).replace("_", " ").capitalize(), value=value, inline=True)
+                                embedVar.add_field(
+                                    name=str(key).replace(
+                                        "_", " ").capitalize(),
+                                    value=value,
+                                    inline=True,
+                                )
                         for item in dictItem["genres"]:
-                            embedVar.add_field(name="Genres", value=f'[{item["name"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Genres", value=f'[{item["name"]}]', inline=True
+                            )
                         for item2 in dictItem["demographics"]:
-                            embedVar.add_field(name="Demographics", value=f'[{item2["name"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Demographics",
+                                value=f'[{item2["name"]}]',
+                                inline=True,
+                            )
                         for item3 in dictItem["themes"]:
-                            embedVar.add_field(name="Themes", value=f'[{item3["name"]}]', inline=True)
-                        embedVar.add_field(name="Aired", value=dictItem["aired"]["string"], inline=True)
-                        embedVar.set_image(url=dictItem["images"]["jpg"]["large_image_url"])
+                            embedVar.add_field(
+                                name="Themes", value=f'[{item3["name"]}]', inline=True
+                            )
+                        embedVar.add_field(
+                            name="Aired", value=dictItem["aired"]["string"], inline=True
+                        )
+                        embedVar.set_image(
+                            url=dictItem["images"]["jpg"]["large_image_url"]
+                        )
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "The query could not be done. Please try again"
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
@@ -49,39 +89,84 @@ class JikanV1(commands.Cog):
 class JikanV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="jikan-manga", description="Fetches up to 5 mangas from MAL", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="jikan-manga",
+        description="Fetches up to 5 mangas from MAL",
+        guild_ids=[866199405090308116],
+    )
     async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"limit": 5, "q": manga_name, "sfw": "true", "order_by": "title"}
-            async with session.get("https://api.jikan.moe/v4/manga", params=params) as response:
+            params = {"limit": 5, "q": manga_name,
+                      "sfw": "true", "order_by": "title"}
+            async with session.get(
+                "https://api.jikan.moe/v4/manga", params=params
+            ) as response:
                 data = await response.json()
-                filterList = ["title", "images", "published", "authors", "serializations", "genres", "explicit_genres",
-                              "themes", "demographics", "background", "synopsis"]
+                filterList = [
+                    "title",
+                    "images",
+                    "published",
+                    "authors",
+                    "serializations",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "background",
+                    "synopsis",
+                ]
                 try:
                     for dataItem in data["data"]:
                         embedVar = discord.Embed()
                         embedVar.title = dataItem["title"]
                         embedVar.description = dataItem["synopsis"]
-                        embedVar.set_image(url=dataItem["images"]["jpg"]["large_image_url"])
+                        embedVar.set_image(
+                            url=dataItem["images"]["jpg"]["large_image_url"]
+                        )
                         for key, value in dataItem.items():
                             if key not in filterList:
-                                embedVar.add_field(name=str(key).replace("_", " ").capitalize(), value=value, inline=True)
+                                embedVar.add_field(
+                                    name=str(key).replace(
+                                        "_", " ").capitalize(),
+                                    value=value,
+                                    inline=True,
+                                )
                         for name in dataItem["authors"]:
-                            embedVar.add_field(name="Authors", value=f'[{name["name"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Authors", value=f'[{name["name"]}]', inline=True
+                            )
                         for obj in dataItem["serializations"]:
-                            embedVar.add_field(name="Serializations", value=f'[{obj["name"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Serializations",
+                                value=f'[{obj["name"]}]',
+                                inline=True,
+                            )
                         for genre in dataItem["genres"]:
-                            embedVar.add_field(name="Genres", value=f'[{genre["name"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Genres", value=f'[{genre["name"]}]', inline=True
+                            )
                         for theme in dataItem["themes"]:
-                            embedVar.add_field(name="Themes", value=f'[{theme["name"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Themes", value=f'[{theme["name"]}]', inline=True
+                            )
                         for demographic in dataItem["demographics"]:
-                            embedVar.add_field(name="Demographics", value=f'[{demographic["name"]}]', inline=True)
-                        embedVar.add_field(name="Published", value=dataItem["published"]["string"], inline=True)
+                            embedVar.add_field(
+                                name="Demographics",
+                                value=f'[{demographic["name"]}]',
+                                inline=True,
+                            )
+                        embedVar.add_field(
+                            name="Published",
+                            value=dataItem["published"]["string"],
+                            inline=True,
+                        )
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "The query could not be done. Please try again"
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
@@ -91,117 +176,232 @@ class JikanV2(commands.Cog):
 class JikanV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="jikan-random-anime", description="Fetches a random anime from MAL", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="jikan-random-anime",
+        description="Fetches a random anime from MAL",
+        guild_ids=[866199405090308116],
+    )
     async def animeRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/anime") as response:
                 data = await response.json()
-                mainFilter = ["images", "trailer", "aired", "producers", "licensors", "studios", "genres",
-                              "explicit_genres", "themes", "demographics", "synopsis", "title", "broadcast", "background"]
+                mainFilter = [
+                    "images",
+                    "trailer",
+                    "aired",
+                    "producers",
+                    "licensors",
+                    "studios",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "synopsis",
+                    "title",
+                    "broadcast",
+                    "background",
+                ]
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = data["data"]["title"]
                     embedVar.description = data["data"]["synopsis"]
                     for key, value in data["data"].items():
                         if key not in mainFilter:
-                            embedVar.add_field(name=str(key).replace("_", " ").capitalize(), value=value, inline=True)
-                    embedVar.set_image(url=data["data"]["images"]["jpg"]["large_image_url"])
+                            embedVar.add_field(
+                                name=str(key).replace("_", " ").capitalize(),
+                                value=value,
+                                inline=True,
+                            )
+                    embedVar.set_image(
+                        url=data["data"]["images"]["jpg"]["large_image_url"]
+                    )
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "The query could not be done. Please try again"
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
-                    
+
+
 class JikanV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="jikan-random-manga", description="Fetches a random manga from MAL", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="jikan-random-manga",
+        description="Fetches a random manga from MAL",
+        guild_ids=[866199405090308116],
+    )
     async def mangaRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/manga") as r:
                 data = await r.json()
-                mangaFilter = ["title", "published", "authors", "serializations", "genres", "explicit_genres", "themes",
-                               "demographics", "published", "images", "background", "synopsis"]
+                mangaFilter = [
+                    "title",
+                    "published",
+                    "authors",
+                    "serializations",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "published",
+                    "images",
+                    "background",
+                    "synopsis",
+                ]
                 embedVar = discord.Embed()
                 try:
                     embedVar.title = data["data"]["title"]
                     embedVar.description = data["data"]["synopsis"]
                     for key, value in data["data"].items():
                         if key not in mangaFilter:
-                            embedVar.add_field(name=str(key).replace("_", " ").capitalize(), value=value, inline=True)
-                    embedVar.set_image(url=data["data"]["images"]["jpg"]["large_image_url"])
+                            embedVar.add_field(
+                                name=str(key).replace("_", " ").capitalize(),
+                                value=value,
+                                inline=True,
+                            )
+                    embedVar.set_image(
+                        url=data["data"]["images"]["jpg"]["large_image_url"]
+                    )
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
-                    embedVar.description = "The query could not be done. Please try again"
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
+
 
 class JikanV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="jikan-seasons", description="Returns animes for the given season and year", guild_ids=[866199405090308116])
-    async def season(self, ctx, year: Option(int, "Which year for the season"), *, season: Option(str, "Anime Season - Winter, Spring, Summer or Fall")):
+    @slash_command(
+        name="jikan-seasons",
+        description="Returns animes for the given season and year",
+        guild_ids=[866199405090308116],
+    )
+    async def season(
+        self,
+        ctx,
+        year: Option(int, "Which year for the season"),
+        *,
+        season: Option(str, "Anime Season - Winter, Spring, Summer or Fall"),
+    ):
         if season in ["winter", "spring", "summer", "fall"]:
-            async with aiohttp.ClientSession(
-                json_serialize=orjson.dumps
-            ) as session:
+            async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
                 async with session.get(
                     f"https://api.jikan.moe/v4/seasons/{year}/{season}"
                 ) as response:
                     seasons = await response.json()
-                    mainSeasonsFilter = ["images", "trailer", "aired", "producers", "licensors", "studios", "genres",
-                                  "explicit_genres", "themes", "demographics", "title", "synopsis", "background", "broadcast"]
+                    mainSeasonsFilter = [
+                        "images",
+                        "trailer",
+                        "aired",
+                        "producers",
+                        "licensors",
+                        "studios",
+                        "genres",
+                        "explicit_genres",
+                        "themes",
+                        "demographics",
+                        "title",
+                        "synopsis",
+                        "background",
+                        "broadcast",
+                    ]
                     embedVar = discord.Embed()
                     for dictItem in seasons["data"]:
                         embedVar.title = dictItem["title"]
                         embedVar.description = dictItem["synopsis"]
                         for k, v in dictItem.items():
                             if k not in mainSeasonsFilter:
-                                embedVar.add_field(name=str(k).replace("_", " ").capitalize(), value=v, inline=True)
+                                embedVar.add_field(
+                                    name=str(k).replace("_", " ").capitalize(),
+                                    value=v,
+                                    inline=True,
+                                )
                         for item in dictItem["genres"]:
-                            embedVar.add_field(name="Genres", value=item["name"], inline=True)
+                            embedVar.add_field(
+                                name="Genres", value=item["name"], inline=True
+                            )
                         for item1 in dictItem["themes"]:
-                            embedVar.add_field(name="Themes", value=item1["name"], inline=True)
+                            embedVar.add_field(
+                                name="Themes", value=item1["name"], inline=True
+                            )
                         for item2 in dictItem["demographics"]:
-                            embedVar.add_field(name="Demographics", value=item2["name"], inline=True)
-                        embedVar.set_image(url=dictItem["images"]["jpg"]["large_image_url"])
+                            embedVar.add_field(
+                                name="Demographics", value=item2["name"], inline=True
+                            )
+                        embedVar.set_image(
+                            url=dictItem["images"]["jpg"]["large_image_url"]
+                        )
                         await ctx.respond(embed=embedVar)
-
 
 
 class JikanV6(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="jikan-season-upcoming", description="Returns anime for the upcoming season (will return ALL of it)", guild_ids=[866199405090308116])
+    @slash_command(
+        name="jikan-season-upcoming",
+        description="Returns anime for the upcoming season (will return ALL of it)",
+        guild_ids=[866199405090308116],
+    )
     async def seasonsUpcoming(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 "https://api.jikan.moe/v4/seasons/upcoming"
             ) as full_response:
                 data = await full_response.json()
-                mainFilter = ["broadcast", "title", "synopsis", "images", "trailer", "producers", "licensors",
-                              "studios", "genres", "explicit_genres", "themes", "demographics", "broadcast", "aired"]
+                mainFilter = [
+                    "broadcast",
+                    "title",
+                    "synopsis",
+                    "images",
+                    "trailer",
+                    "producers",
+                    "licensors",
+                    "studios",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "broadcast",
+                    "aired",
+                ]
                 for dictItem in data["data"]:
                     embedVar = discord.Embed()
                     embedVar.title = dictItem["title"]
                     embedVar.description = dictItem["synopsis"]
-                    embedVar.set_image(url=dictItem["images"]["jpg"]["large_image_url"])
-                    embedVar.add_field(name="Aired", value=dictItem["aired"]["string"], inline=True)
+                    embedVar.set_image(
+                        url=dictItem["images"]["jpg"]["large_image_url"])
+                    embedVar.add_field(
+                        name="Aired", value=dictItem["aired"]["string"], inline=True
+                    )
                     for key, value in dictItem.items():
                         if key not in mainFilter:
-                            embedVar.add_field(name=str(key).replace("_", " ").capitalize(), value=value, inline=True)
+                            embedVar.add_field(
+                                name=str(key).replace("_", " ").capitalize(),
+                                value=value,
+                                inline=True,
+                            )
                     await ctx.respond(embed=embedVar)
+
 
 class JikanV7(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="jikan-user-profile", description="Returns info about given user on MAL", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="jikan-user-profile",
+        description="Returns info about given user on MAL",
+        guild_ids=[866199405090308116],
+    )
     async def userLookup(self, ctx, *, username: Option(str, "Username of the user")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
@@ -210,16 +410,22 @@ class JikanV7(commands.Cog):
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = data["data"]["username"]
-                    embedVar.set_thumbnail(url=data["data"]["images"]["jpg"]["image_url"])
+                    embedVar.set_thumbnail(
+                        url=data["data"]["images"]["jpg"]["image_url"]
+                    )
                     for key, value in data["data"].items():
                         if key not in userFilter:
-                            embedVar.add_field(name=key, value=value, inline=True)
-                    
+                            embedVar.add_field(
+                                name=key, value=value, inline=True)
+
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
-                    embedVar.description = "The query could not be done. Please try again"
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
+
 
 def setup(bot):
     bot.add_cog(JikanV1(bot))
