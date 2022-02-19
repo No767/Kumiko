@@ -1,0 +1,191 @@
+From 1dbfea4146ebfa4e3b8d5d27fdca0fe0db3b2f12 Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Fri, 18 Feb 2022 21:12:57 -0800
+Subject: [PATCH] Finish Spiget Cog Using Recursion
+
+now much much faster
+---
+ Bot/Cogs/spiget.py | 83 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 52 insertions(+), 31 deletions(-)
+
+diff --git a/Bot/Cogs/spiget.py b/Bot/Cogs/spiget.py
+index 1870e62..33dcbb4 100644
+--- a/Bot/Cogs/spiget.py
++++ b/Bot/Cogs/spiget.py
+@@ -5,18 +5,20 @@ import discord
+ import orjson
+ import uvloop
+ from discord.ext import commands
++from discord.commands import slash_command, Option
+ 
+ 
+ class SpigetV2(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    @commands.command(name="spiget-search")
+-    async def spigetSearch(self, ctx, *, search: str):
++    @slash_command(name="spiget-search", description="Finds up to 5 plugins matching the name of the given plugin", guild_ids=[866199405090308116])
++    async def spigetSearch(self, ctx, *, plugin_name: Option(str, "The name of the plugin")):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             headers = {"User-Agent": "Mozilla/5.0"}
++            params = {"size": 5}
+             async with session.get(
+-                f"https://api.spiget.org/v2/search/resources/{search}", headers=headers
++                f"https://api.spiget.org/v2/search/resources/{plugin_name}", headers=headers, params=params
+             ) as r:
+                 resource = await r.json()
+                 try:
+@@ -47,7 +49,7 @@ class SpigetV2(commands.Cog):
+                         itemFilter = ["url"]
+                         if dictItem["file"]["type"] in "external":
+                             embedVar = discord.Embed(
+-                                title=resource[0]["name"],
++                                title=dictItem["name"],
+                                 color=discord.Color.from_rgb(173, 156, 255),
+                             )
+                             embedVar.description = dictItem["tag"]
+@@ -69,10 +71,10 @@ class SpigetV2(commands.Cog):
+                                 inline=True,
+                             )
+                             embedVar.set_thumbnail(url=str(thumbnail))
+-                            await ctx.send(embed=embedVar)
++                            await ctx.respond(embed=embedVar)
+                         else:
+                             embedVar = discord.Embed(
+-                                title=resource[0]["name"],
++                                title=dictItem["name"],
+                                 color=discord.Color.from_rgb(173, 156, 255),
+                             )
+                             embedVar.description = dictItem["tag"]
+@@ -98,37 +100,53 @@ class SpigetV2(commands.Cog):
+                                 inline=False,
+                             )
+                             embedVar.set_thumbnail(url=str(thumbnail))
+-                            await ctx.send(embed=embedVar)
++                            await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed(
+                         color=discord.Color.from_rgb(173, 156, 255)
+                     )
+                     embedVar.description = (
+-                        f"The query failed. Please Try Again.\nReason: {e}"
++                        "The query failed. Please Try Again...."
+                     )
+-                    await ctx.send(embed=embedVar)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-    @spigetSearch.error
+-    async def on_message_error(
+-        self, ctx: commands.Context, error: commands.CommandError
+-    ):
+-        if isinstance(error, commands.MissingRequiredArgument):
+-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+-            embedVar.description = "Missing a required argument: Plugin Name\n\nFor selecting a plugin, the name must be the exact as the one from Spigot. So for example, if I wanted to search up FastAsyncWorldEdit (FAWE), I would put `Fast Async WorldEdit`"
+-            msg = await ctx.send(embed=embedVar, delete_after=10)
+-            await msg.delete(delay=10)
++                    embedVar.add_field(name="Reason", value=e, inline=True)
++                    await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
++class SpigetV3(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="spiget-author", description="Returns some info about a plugin author", guild_ids=[866199405090308116])
++    async def spigetAuthor(self, ctx, *, author_name: Option(str, "Name of the plugin author")):
++        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
++            headers = {"User-Agent": "Mozilla/5.0"}
++            params = {"size": 5}
++            async with session.get(f"https://api.spiget.org/v2/search/authors/{author_name}", headers=headers, params=params) as r:
++                data = await r.json()
++                authorFilter = ["icon", "name", "identities"]
++                embedVar = discord.Embed()
++                try:
++                    for dictItem in data:
++                        embedVar.title = dictItem["name"]
++                        embedVar.set_thumbnail(url=dictItem["icon"]["url"])
++                        for k, v in dictItem.items():
++                            if k not in authorFilter:
++                                embedVar.add_field(name=k, value=v, inline=True)
++                        for keys, value in dictItem["identities"].items():
++                            embedVar.add_field(name=keys, value=value, inline=True)
++                        await ctx.respond(embed=embedVar)
++                except Exception as e:
++                    embedVar.description = "The query failed. Please Try Again...."
++                    embedVar.add_field(name="Reason", value=e, inline=True)
++                    await ctx.respond(embed=embedVar)
+ 
+ class SpigetV4(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    @commands.command(name="spiget-stats")
+-    async def on_message(self, ctx):
++    @slash_command(name="spiget-stats", description="Returns stats for SpigotMC", guild_ids=[866199405090308116])
++    async def spigetStats(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             headers = {"User-Agent": "Mozilla/5.0"}
+             async with session.get(
+@@ -142,15 +160,16 @@ class SpigetV4(commands.Cog):
+                     for key, val in total_stats["stats"].items():
+                         embedVar.add_field(name=key, value=val, inline=True)
+ 
+-                    await ctx.send(embed=embedVar)
++                    await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed(
+                         color=discord.Color.from_rgb(173, 156, 255)
+                     )
+                     embedVar.description = (
+-                        f"The query failed. Please Try Again.\nReason: {e}"
++                        "The query failed. Please Try Again"
+                     )
+-                    await ctx.send(embed=embedVar)
++                    embedVar.add_field(name="Reason", value=e, inline=True)
++                    await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+@@ -159,8 +178,8 @@ class SpigetV5(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    @commands.command(name="spiget-status")
+-    async def on_message(self, ctx):
++    @slash_command(name="spiget-status", description="Returns the status of Spiget (HTTP Status)", guild_ids=[866199405090308116])
++    async def spigetStatus(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             headers = {"User-Agent": "Mozilla/5.0"}
+             async with session.get(
+@@ -172,20 +191,22 @@ class SpigetV5(commands.Cog):
+                     )
+                     embedVar.add_field(
+                         name="Status", value=r.status, inline=True)
+-                    await ctx.send(embed=embedVar)
++                    await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed(
+                         color=discord.Color.from_rgb(173, 156, 255)
+                     )
+                     embedVar.description = (
+-                        f"The query failed. Please Try Again.\nReason: {e}"
++                        "The query failed. Please Try Again."
+                     )
+-                    await ctx.send(embed=embedVar)
++                    embedVar.add_field(name="Reason", value=e, inline=True)
++                    await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+ 
+ def setup(bot):
+     bot.add_cog(SpigetV2(bot))
++    bot.add_cog(SpigetV3(bot))
+     bot.add_cog(SpigetV4(bot))
+     bot.add_cog(SpigetV5(bot))
+-- 
+2.35.1
+
