@@ -4,21 +4,29 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="spiget-search", description="Finds up to 5 plugins matching the name of the given plugin", guild_ids=[866199405090308116])
-    async def spigetSearch(self, ctx, *, plugin_name: Option(str, "The name of the plugin")):
+    @slash_command(
+        name="spiget-search",
+        description="Finds up to 5 plugins matching the name of the given plugin",
+        guild_ids=[866199405090308116],
+    )
+    async def spigetSearch(
+        self, ctx, *, plugin_name: Option(str, "The name of the plugin")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
             params = {"size": 5}
             async with session.get(
-                f"https://api.spiget.org/v2/search/resources/{plugin_name}", headers=headers, params=params
+                f"https://api.spiget.org/v2/search/resources/{plugin_name}",
+                headers=headers,
+                params=params,
             ) as r:
                 resource = await r.json()
                 try:
@@ -105,24 +113,33 @@ class SpigetV2(commands.Cog):
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.description = (
-                        "The query failed. Please Try Again...."
-                    )
+                    embedVar.description = "The query failed. Please Try Again...."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+
 class SpigetV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="spiget-author", description="Returns some info about a plugin author", guild_ids=[866199405090308116])
-    async def spigetAuthor(self, ctx, *, author_name: Option(str, "Name of the plugin author")):
+
+    @slash_command(
+        name="spiget-author",
+        description="Returns some info about a plugin author",
+        guild_ids=[866199405090308116],
+    )
+    async def spigetAuthor(
+        self, ctx, *, author_name: Option(str, "Name of the plugin author")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
             params = {"size": 5}
-            async with session.get(f"https://api.spiget.org/v2/search/authors/{author_name}", headers=headers, params=params) as r:
+            async with session.get(
+                f"https://api.spiget.org/v2/search/authors/{author_name}",
+                headers=headers,
+                params=params,
+            ) as r:
                 data = await r.json()
                 authorFilter = ["icon", "name", "identities"]
                 embedVar = discord.Embed()
@@ -132,20 +149,27 @@ class SpigetV3(commands.Cog):
                         embedVar.set_thumbnail(url=dictItem["icon"]["url"])
                         for k, v in dictItem.items():
                             if k not in authorFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                         for keys, value in dictItem["identities"].items():
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = "The query failed. Please Try Again...."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
+
 class SpigetV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="spiget-stats", description="Returns stats for SpigotMC", guild_ids=[866199405090308116])
+    @slash_command(
+        name="spiget-stats",
+        description="Returns stats for SpigotMC",
+        guild_ids=[866199405090308116],
+    )
     async def spigetStats(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
@@ -165,9 +189,7 @@ class SpigetV4(commands.Cog):
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.description = (
-                        "The query failed. Please Try Again"
-                    )
+                    embedVar.description = "The query failed. Please Try Again"
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
@@ -178,7 +200,11 @@ class SpigetV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="spiget-status", description="Returns the status of Spiget (HTTP Status)", guild_ids=[866199405090308116])
+    @slash_command(
+        name="spiget-status",
+        description="Returns the status of Spiget (HTTP Status)",
+        guild_ids=[866199405090308116],
+    )
     async def spigetStatus(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
@@ -196,9 +222,7 @@ class SpigetV5(commands.Cog):
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.description = (
-                        "The query failed. Please Try Again."
-                    )
+                    embedVar.description = "The query failed. Please Try Again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
