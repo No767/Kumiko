@@ -80,7 +80,7 @@ class MangaDexV1(commands.Cog):
                                         url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}"
                                     )
 
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
 
             except Exception as e:
                 embedVar = discord.Embed()
@@ -88,7 +88,7 @@ class MangaDexV1(commands.Cog):
                     "Sadly this command didn't work. Please try again"
                 )
                 embedVar.add_field(name="Reason", value=e, inline=True)
-                await ctx.send(embed=embedVar)
+                await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
