@@ -4,15 +4,19 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 
 
 class MangaDexV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="mangadex-search", description="Searches for up to 5 manga on MangaDex", guild_ids=[866199405090308116])
+    @slash_command(
+        name="mangadex-search",
+        description="Searches for up to 5 manga on MangaDex",
+        guild_ids=[866199405090308116],
+    )
     async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             try:
@@ -28,22 +32,40 @@ class MangaDexV1(commands.Cog):
                 ) as r:
                     data = await r.json()
                     embedVar = discord.Embed()
-                    mangaFilter = ["tags", "title", "altTitles", "description", "links", "background"]
+                    mangaFilter = [
+                        "tags",
+                        "title",
+                        "altTitles",
+                        "description",
+                        "links",
+                        "background",
+                    ]
 
                     for dictItem in data["data"]:
                         mangaID = dictItem["id"]
                         embedVar.title = dictItem["attributes"]["title"]["en"]
-                        embedVar.description = dictItem["attributes"]["description"]["en"]
+                        embedVar.description = dictItem["attributes"]["description"][
+                            "en"
+                        ]
                         for k, v in dictItem["attributes"].items():
                             if k not in mangaFilter:
-                                embedVar.add_field(name=k, value=f"[{v}]", inline=True)
+                                embedVar.add_field(
+                                    name=k, value=f"[{v}]", inline=True)
                         for item in dictItem["attributes"]["tags"]:
-                                            embedVar.add_field(name="Tags", value=f'[{item["attributes"]["name"]["en"]}]', inline=True)
+                            embedVar.add_field(
+                                name="Tags",
+                                value=f'[{item["attributes"]["name"]["en"]}]',
+                                inline=True,
+                            )
                         for item1, res in dictItem["attributes"]["links"].items():
-                            embedVar.add_field(name=item1, value=f"[{res}]", inline=True)
+                            embedVar.add_field(
+                                name=item1, value=f"[{res}]", inline=True
+                            )
                         for titles in dictItem["attributes"]["altTitles"]:
                             for keys, values in titles.items():
-                                embedVar.add_field(name=keys, value=f"[{values}]", inline=True)         
+                                embedVar.add_field(
+                                    name=keys, value=f"[{values}]", inline=True
+                                )
                         for item in dictItem["relationships"]:
                             if item["type"] not in ["manga", "author", "artist"]:
                                 coverArtID = item["id"]
@@ -51,10 +73,13 @@ class MangaDexV1(commands.Cog):
                                     f"https://api.mangadex.org/cover/{coverArtID}"
                                 ) as rp:
                                     cover_art_data = await rp.json()
-                                    cover_art = cover_art_data["data"]["attributes"]["fileName"]
-                                    embedVar.set_image(url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}")
-                                    
-                                        
+                                    cover_art = cover_art_data["data"]["attributes"][
+                                        "fileName"
+                                    ]
+                                    embedVar.set_image(
+                                        url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}"
+                                    )
+
                         await ctx.send(embed=embedVar)
 
             except Exception as e:
@@ -66,7 +91,6 @@ class MangaDexV1(commands.Cog):
                 await ctx.send(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 class MangaDexV2(commands.Cog):
