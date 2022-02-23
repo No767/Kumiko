@@ -6,4 +6,4 @@ task:
       pip install --upgrade pip pipenv
       pipenv --python 3.10
       pipenv install
-    command: python3 ./Bot/rinbot.pys
+    command: python3 ./Bot/rinbot.py
