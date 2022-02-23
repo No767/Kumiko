@@ -31,7 +31,7 @@ class info(commands.Cog):
         embedVar.set_author(name="Rin Info", icon_url=bot.user.display_avatar)
         embedVar.add_field(
             name="About",
-            value="Rin is a Discord bot focused on providing data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others with the advantage of speed. Rin allows you to find memes on Reddit with the Reddit service, or get info about your favorite anime with the MAL service. Under the hood, Rin uses [Uvloop](https://github.com/MagicStack/uvloop), which is 2x faster than Node.js and has the same performance as many Go programs. Soon Rin will be using RustPython, therefore speeding up Rin's performance as well. If you want a multipurpose version of Rin, check out Kumiko.",
+            value="Rin is a Discord bot focused on providing data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others with the advantage of speed. Rin allows you to find memes on Reddit with the Reddit service, or get info about your favorite anime with the MAL service. Under the hood, Rin uses [Uvloop](https://github.com/MagicStack/uvloop), which is 2x faster than Node.js and has the same performance as many Go programs. If you want a multipurpose version of Rin, check out Kumiko.",
             inline=False,
         )
         embedVar.add_field(
