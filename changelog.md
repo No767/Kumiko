@@ -24,3 +24,4 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 
 - Translate, Chat, Global, Pinger, Clear, Server-Info, NB-Pride, and Vaild Cogs have been removed
 - Support for legacy prefix
+- Pinterest API Support
