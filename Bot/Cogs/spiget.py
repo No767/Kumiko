@@ -4,6 +4,7 @@ import aiohttp
 import discord
 import orjson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
 
 
@@ -11,190 +12,165 @@ class SpigetV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="spiget-search")
-    async def spigetSearch(self, ctx, *, search: str):
+    @slash_command(
+        name="spiget-search",
+        description="Finds up to 5 plugins matching the name of the given plugin",
+        guild_ids=[866199405090308116],
+    )
+    async def spigetSearch(
+        self, ctx, *, plugin_name: Option(str, "The name of the plugin")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
+            params = {"size": 5}
             async with session.get(
-                f"https://api.spiget.org/v2/search/resources/{search}", headers=headers
+                f"https://api.spiget.org/v2/search/resources/{plugin_name}",
+                headers=headers,
+                params=params,
             ) as r:
                 resource = await r.json()
-                author_id = resource[0]["author"]["id"]
-                resource_id = resource[0]["id"]
-                async with session.get(
-                    f"https://api.spiget.org/v2/authors/{author_id}", headers=headers
-                ) as resp:
-                    author_details_v1 = await resp.json()
-                    async with session.get(
-                        f"https://api.spiget.org/v2/resources/{resource_id}/versions",
-                        headers=headers,
-                    ) as response:
-                        spigetv3 = await response.json()
-                        async with session.get(
-                            f"https://api.spiget.org/v2/resources/{resource_id}/versions/latest",
-                            headers=headers,
-                        ) as another_response:
-                            plugin_version = await another_response.json()
-                            thumbnail = (
-                                "https://www.spigotmc.org/" +
-                                resource[0]["icon"]["url"]
+                try:
+                    for dictItem in resource:
+                        thumbnail = (
+                            "https://www.spigotmc.org/" +
+                            dictItem["icon"]["url"]
+                        )
+                        download_url_external_false = "https://spigotmc.org/" + str(
+                            dictItem["file"]["url"]
+                        )
+                        filter = [
+                            "icon",
+                            "links",
+                            "releaseDate",
+                            "updateDate",
+                            "category",
+                            "author",
+                            "version",
+                            "id",
+                            "external",
+                            "tag",
+                            "rating",
+                            "existenceStatus",
+                            "name",
+                            "file",
+                        ]
+                        itemFilter = ["url"]
+                        if dictItem["file"]["type"] in "external":
+                            embedVar = discord.Embed(
+                                title=dictItem["name"],
+                                color=discord.Color.from_rgb(173, 156, 255),
                             )
-                            file_size = str(resource[0]["file"]["size"]) + str(
-                                resource[0]["file"]["sizeUnit"]
+                            embedVar.description = dictItem["tag"]
+                            for key, value in dictItem.items():
+                                if key not in filter:
+                                    embedVar.add_field(
+                                        name=key, value=value, inline=True
+                                    )
+                            for item1, res1 in dictItem["file"].items():
+                                if item1 not in itemFilter:
+                                    embedVar.add_field(
+                                        name=item1,
+                                        value=f"{[res1]}".replace("'", ""),
+                                        inline=True,
+                                    )
+                            embedVar.add_field(
+                                name="Rating",
+                                value=dictItem["rating"]["average"],
+                                inline=True,
                             )
-                            download_url_external_false = "https://spigotmc.org/" + str(
-                                resource[0]["file"]["url"]
+                            embedVar.set_thumbnail(url=str(thumbnail))
+                            await ctx.respond(embed=embedVar)
+                        else:
+                            embedVar = discord.Embed(
+                                title=dictItem["name"],
+                                color=discord.Color.from_rgb(173, 156, 255),
                             )
-                            try:
-                                if resource[0]["file"]["type"] in "external":
-                                    embedVar = discord.Embed(
-                                        title=resource[0]["name"],
-                                        color=discord.Color.from_rgb(
-                                            173, 156, 255),
-                                    )
-                                    embedVar.description = resource[0]["tag"]
+                            embedVar.description = dictItem["tag"]
+                            for k, v in dictItem.items():
+                                if k not in filter:
                                     embedVar.add_field(
-                                        name="Author",
-                                        value=author_details_v1["name"],
+                                        name=k, value=v, inline=True)
+                            for item, res in dictItem["file"].items():
+                                if item not in itemFilter:
+                                    embedVar.add_field(
+                                        name=item,
+                                        value=f"{[res]}".replace("'", ""),
                                         inline=True,
                                     )
-                                    embedVar.add_field(
-                                        name="Downloads",
-                                        value=resource[0]["downloads"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Rating",
-                                        value=resource[0]["rating"]["average"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Tested Versions",
-                                        value=str(
-                                            resource[0]["testedVersions"])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Latest Plugin Version",
-                                        value=str(plugin_version["name"]),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Plugin Versions",
-                                        value=str([name["name"]
-                                                  for name in spigetv3])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download Type",
-                                        value=resource[0]["file"]["type"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download URL",
-                                        value=f"{resource[0]['file']['externalUrl']}",
-                                        inline=False,
-                                    )
-                                    embedVar.set_thumbnail(url=str(thumbnail))
-                                    await ctx.send(embed=embedVar)
-                                else:
-                                    embedVar = discord.Embed(
-                                        title=resource[0]["name"],
-                                        color=discord.Color.from_rgb(
-                                            173, 156, 255),
-                                    )
-                                    embedVar.description = resource[0]["tag"]
-                                    embedVar.add_field(
-                                        name="Author",
-                                        value=author_details_v1["name"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Downloads",
-                                        value=resource[0]["downloads"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Rating",
-                                        value=resource[0]["rating"]["average"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Tested Versions",
-                                        value=str(
-                                            resource[0]["testedVersions"])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Latest Plugin Version",
-                                        value=str(plugin_version["name"]),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Plugin Versions",
-                                        value=str([name["name"]
-                                                  for name in spigetv3])
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download Info",
-                                        value=resource[0]["file"]["type"],
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download Size",
-                                        value=file_size,
-                                        inline=True,
-                                    )
-                                    embedVar.add_field(
-                                        name="Download URL",
-                                        value=f"{download_url_external_false}",
-                                        inline=False,
-                                    )
-                                    embedVar.set_thumbnail(url=str(thumbnail))
-                                    await ctx.send(embed=embedVar)
-                            except Exception as e:
-                                embedVar = discord.Embed(
-                                    color=discord.Color.from_rgb(173, 156, 255)
-                                )
-                                embedVar.description = (
-                                    f"The query failed. Please Try Again.\nReason: {e}"
-                                )
-                                await ctx.send(embed=embedVar)
+                            embedVar.add_field(
+                                name="Rating",
+                                value=dictItem["rating"]["average"],
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="Download URL",
+                                value=f"{download_url_external_false}",
+                                inline=False,
+                            )
+                            embedVar.set_thumbnail(url=str(thumbnail))
+                            await ctx.respond(embed=embedVar)
+                except Exception as e:
+                    embedVar = discord.Embed(
+                        color=discord.Color.from_rgb(173, 156, 255)
+                    )
+                    embedVar.description = "The query failed. Please Try Again...."
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @spigetSearch.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+
+class SpigetV3(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @slash_command(
+        name="spiget-author",
+        description="Returns some info about a plugin author",
+        guild_ids=[866199405090308116],
+    )
+    async def spigetAuthor(
+        self, ctx, *, author_name: Option(str, "Name of the plugin author")
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = "Missing a required argument: Plugin Name\n\nFor selecting a plugin, the name must be the exact as the one from Spigot. So for example, if I wanted to search up FastAsyncWorldEdit (FAWE), I would put `Fast Async WorldEdit`"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {"User-Agent": "Mozilla/5.0"}
+            params = {"size": 5}
+            async with session.get(
+                f"https://api.spiget.org/v2/search/authors/{author_name}",
+                headers=headers,
+                params=params,
+            ) as r:
+                data = await r.json()
+                authorFilter = ["icon", "name", "identities"]
+                embedVar = discord.Embed()
+                try:
+                    for dictItem in data:
+                        embedVar.title = dictItem["name"]
+                        embedVar.set_thumbnail(url=dictItem["icon"]["url"])
+                        for k, v in dictItem.items():
+                            if k not in authorFilter:
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
+                        for keys, value in dictItem["identities"].items():
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
+                        await ctx.respond(embed=embedVar)
+                except Exception as e:
+                    embedVar.description = "The query failed. Please Try Again...."
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
 
 
 class SpigetV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="spiget-stats")
-    async def on_message(self, ctx):
+    @slash_command(
+        name="spiget-stats",
+        description="Returns stats for SpigotMC",
+        guild_ids=[866199405090308116],
+    )
+    async def spigetStats(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
             async with session.get(
@@ -208,15 +184,14 @@ class SpigetV4(commands.Cog):
                     for key, val in total_stats["stats"].items():
                         embedVar.add_field(name=key, value=val, inline=True)
 
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.description = (
-                        f"The query failed. Please Try Again.\nReason: {e}"
-                    )
-                    await ctx.send(embed=embedVar)
+                    embedVar.description = "The query failed. Please Try Again"
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -225,8 +200,12 @@ class SpigetV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="spiget-status")
-    async def on_message(self, ctx):
+    @slash_command(
+        name="spiget-status",
+        description="Returns the status of Spiget (HTTP Status)",
+        guild_ids=[866199405090308116],
+    )
+    async def spigetStatus(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"User-Agent": "Mozilla/5.0"}
             async with session.get(
@@ -238,20 +217,20 @@ class SpigetV5(commands.Cog):
                     )
                     embedVar.add_field(
                         name="Status", value=r.status, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.description = (
-                        f"The query failed. Please Try Again.\nReason: {e}"
-                    )
-                    await ctx.send(embed=embedVar)
+                    embedVar.description = "The query failed. Please Try Again."
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
     bot.add_cog(SpigetV2(bot))
+    bot.add_cog(SpigetV3(bot))
     bot.add_cog(SpigetV4(bot))
     bot.add_cog(SpigetV5(bot))

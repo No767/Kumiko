@@ -1,0 +1,254 @@
+From d3c7e0b6b49f97e39892ce5045d15d6e978e4c83 Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Tue, 22 Feb 2022 00:35:48 -0800
+Subject: [PATCH] why mangadex...
+
+This took me a very long time to figure out....
+---
+ Bot/Cogs/mangadex.py | 201 +++++++------------------------------------
+ 1 file changed, 33 insertions(+), 168 deletions(-)
+
+diff --git a/Bot/Cogs/mangadex.py b/Bot/Cogs/mangadex.py
+index c97ee87..a786ab6 100644
+--- a/Bot/Cogs/mangadex.py
++++ b/Bot/Cogs/mangadex.py
+@@ -1,24 +1,19 @@
+ import asyncio
+-import os
+ 
+ import aiohttp
+ import discord
+ import orjson
+ import uvloop
+ from discord.ext import commands
+-from dotenv import load_dotenv
+-
+-load_dotenv()
+-
+-MangaDex_API_Key = os.getenv("MangaDex_Access_Token")
++from discord.commands import slash_command, Option
+ 
+ 
+ class MangaDexV1(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    @commands.command(name="mangadex-search", aliases=["md-search"])
+-    async def manga(self, ctx, *, manga: str):
++    @slash_command(name="mangadex-search", description="Searches for up to 5 manga on MangaDex", guild_ids=[866199405090308116])
++    async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             try:
+                 params = {
+@@ -26,160 +21,41 @@ class MangaDexV1(commands.Cog):
+                     "publicationDemographic[]": "none",
+                     "contentRating[]": "safe",
+                     "order[title]": "asc",
++                    "limit": 5,
+                 }
+                 async with session.get(
+                     f"https://api.mangadex.org/manga/", params=params
+                 ) as r:
+                     data = await r.json()
+-                    id = data["data"][0]["id"]
+-                    async with session.get(
+-                        f'https://api.mangadex.org/manga/{id}?includes["cover_art"]&contentRating["safe"]&order[title]=asc'
+-                    ) as resp:
+-                        md_data = await resp.json()
+-                        cover_art_id = md_data["data"]["relationships"][2]["id"]
+-                        async with session.get(
+-                            f"https://api.mangadex.org/cover/{cover_art_id}"
+-                        ) as rp:
+-                            cover_art_data = await rp.json()
+-                            cover_art = cover_art_data["data"]["attributes"]["fileName"]
+-                            if "en" in data["data"][0]["attributes"]["title"]:
+-                                embedVar = discord.Embed()
+-                                embedVar.title = md_data["data"]["attributes"]["title"][
+-                                    "en"
+-                                ]
+-                                embedVar.description = (
+-                                    str(
+-                                        md_data["data"]["attributes"]["description"][
+-                                            "en"
+-                                        ]
+-                                    )
+-                                    .replace("\n", "")
+-                                    .replace("\r", "")
+-                                    .replace("'", "")
+-                                )
+-                                embedVar.add_field(
+-                                    name="Alt Titles",
+-                                    value=str(
+-                                        [
+-                                            title["en"]
+-                                            for title in md_data["data"]["attributes"][
+-                                                "altTitles"
+-                                            ]
+-                                        ]
+-                                    ).replace("'", ""),
+-                                    inline=True,
+-                                )
+-                                embedVar.add_field(
+-                                    name="Publication Demographics",
+-                                    value=md_data["data"]["attributes"][
+-                                        "publicationDemographic"
+-                                    ],
+-                                    inline=True,
+-                                )
+-                                embedVar.add_field(
+-                                    name="Status",
+-                                    value=md_data["data"]["attributes"]["status"],
+-                                    inline=True,
+-                                )
+-                                embedVar.add_field(
+-                                    name="Last Volume",
+-                                    value=md_data["data"]["attributes"]["lastVolume"],
+-                                    inline=True,
+-                                )
+-                                embedVar.add_field(
+-                                    name="Last Chapter",
+-                                    value=md_data["data"]["attributes"]["lastChapter"],
+-                                    inline=True,
+-                                )
+-                                embedVar.add_field(
+-                                    name="Tags",
+-                                    value=str(
+-                                        [
+-                                            str(item["attributes"]
+-                                                ["name"]["en"])
+-                                            .replace("\n", "")
+-                                            .replace("'", "")
+-                                            for item in md_data["data"]["attributes"][
+-                                                "tags"
+-                                            ][0:-1]
+-                                        ]
+-                                    ),
+-                                    inline=True,
+-                                )
+-
+-                                embedVar.set_image(
+-                                    url=f"https://uploads.mangadex.org/covers/{id}/{cover_art}"
+-                                )
+-                                await ctx.send(embed=embedVar)
+-                            elif "ja" in data["data"][0]["attributes"]["title"]:
+-                                embedVar2 = discord.Embed()
+-                                embedVar2.title = md_data["data"]["attributes"][
+-                                    "title"
+-                                ]["ja"]
+-                                embedVar2.description = (
+-                                    str(
+-                                        md_data["data"]["attributes"]["description"][
+-                                            "ja"
+-                                        ]
+-                                    )
+-                                    .replace("\n", "")
+-                                    .replace("\r", "")
+-                                    .replace("'", "")
+-                                )
+-                                embedVar2.add_field(
+-                                    name="Alt Titles",
+-                                    value=str(
+-                                        [
+-                                            title["en"]
+-                                            for title in md_data["data"]["attributes"][
+-                                                "altTitles"
+-                                            ]
+-                                        ]
+-                                    ).replace("'", ""),
+-                                    inline=True,
+-                                )
+-                                embedVar2.add_field(
+-                                    name="Publication Demographics",
+-                                    value=md_data["data"]["attributes"][
+-                                        "publicationDemographic"
+-                                    ],
+-                                    inline=True,
+-                                )
+-                                embedVar2.add_field(
+-                                    name="Status",
+-                                    value=md_data["data"]["attributes"]["status"],
+-                                    inline=True,
+-                                )
+-                                embedVar2.add_field(
+-                                    name="Last Volume",
+-                                    value=md_data["data"]["attributes"]["lastVolume"],
+-                                    inline=True,
+-                                )
+-                                embedVar2.add_field(
+-                                    name="Last Chapter",
+-                                    value=md_data["data"]["attributes"]["lastChapter"],
+-                                    inline=True,
+-                                )
+-                                embedVar2.add_field(
+-                                    name="Tags",
+-                                    value=str(
+-                                        [
+-                                            str(item["attributes"]
+-                                                ["name"]["en"])
+-                                            .replace("\n", "")
+-                                            .replace("'", "")
+-                                            for item in md_data["data"]["attributes"][
+-                                                "tags"
+-                                            ][0:-1]
+-                                        ]
+-                                    ),
+-                                    inline=True,
+-                                )
+-
+-                                embedVar2.set_image(
+-                                    url=f"https://uploads.mangadex.org/covers/{id}/{cover_art}"
+-                                )
+-                                await ctx.send(embed=embedVar2)
++                    embedVar = discord.Embed()
++                    mangaFilter = ["tags", "title", "altTitles", "description", "links", "background"]
++
++                    for dictItem in data["data"]:
++                        mangaID = dictItem["id"]
++                        embedVar.title = dictItem["attributes"]["title"]["en"]
++                        embedVar.description = dictItem["attributes"]["description"]["en"]
++                        for k, v in dictItem["attributes"].items():
++                            if k not in mangaFilter:
++                                embedVar.add_field(name=k, value=f"[{v}]", inline=True)
++                        for item in dictItem["attributes"]["tags"]:
++                                            embedVar.add_field(name="Tags", value=f'[{item["attributes"]["name"]["en"]}]', inline=True)
++                        for item1, res in dictItem["attributes"]["links"].items():
++                            embedVar.add_field(name=item1, value=f"[{res}]", inline=True)
++                        for titles in dictItem["attributes"]["altTitles"]:
++                            for keys, values in titles.items():
++                                embedVar.add_field(name=keys, value=f"[{values}]", inline=True)         
++                        for item in dictItem["relationships"]:
++                            if item["type"] not in ["manga", "author", "artist"]:
++                                coverArtID = item["id"]
++                                async with session.get(
++                                    f"https://api.mangadex.org/cover/{coverArtID}"
++                                ) as rp:
++                                    cover_art_data = await rp.json()
++                                    cover_art = cover_art_data["data"]["attributes"]["fileName"]
++                                    embedVar.set_image(url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}")
++                                    
++                                        
++                        await ctx.send(embed=embedVar)
+ 
+             except Exception as e:
+                 embedVar = discord.Embed()
+@@ -191,17 +67,6 @@ class MangaDexV1(commands.Cog):
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+-    @manga.error
+-    async def on_message_error(
+-        self, ctx: commands.Context, error: commands.CommandError
+-    ):
+-        if isinstance(error, commands.MissingRequiredArgument):
+-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+-            embedVar.description = f"Missing a required argument: {error.param}"
+-            msg = await ctx.send(embed=embedVar, delete_after=10)
+-            await msg.delete(delay=10)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+ 
+ class MangaDexV2(commands.Cog):
+-- 
+2.35.1
+

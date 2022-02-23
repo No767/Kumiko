@@ -1,0 +1,226 @@
+From 36dd78f334c2c2f29b61924504ea97f47ade4ab6 Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Tue, 22 Feb 2022 23:05:57 -0800
+Subject: [PATCH] Use Slash Commands for OpenAI/GPT-3 Cog
+
+---
+ Bot/Cogs/openai-gpt3.py | 128 ++++++++--------------------------------
+ 1 file changed, 24 insertions(+), 104 deletions(-)
+
+diff --git a/Bot/Cogs/openai-gpt3.py b/Bot/Cogs/openai-gpt3.py
+index bd9df7d..81c0f8e 100644
+--- a/Bot/Cogs/openai-gpt3.py
++++ b/Bot/Cogs/openai-gpt3.py
+@@ -6,6 +6,7 @@ import discord
+ import ujson
+ import uvloop
+ from discord.ext import commands
++from discord.commands import slash_command, Option
+ from dotenv import load_dotenv
+ 
+ load_dotenv()
+@@ -16,9 +17,9 @@ OpenAI_API_KEY = os.getenv("OpenAI_API_Key")
+ class OpenAI1(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+-
+-    @commands.command(name="openai-complete", aliases=["ai-complete"])
+-    async def openaiComplete(self, ctx, *, completion=None):
++    
++    @slash_command(name="openai-complete", description="Completes a sentence using OpenAI's GPT-3 AI", guild_ids=[866199405090308116])
++    async def openaiComplete(self, ctx, *, completion: Option(str, "The beginning of the sentence to complete", required=False)):
+         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+             headers = {
+                 "Authorization": f"Bearer {OpenAI_API_KEY}",
+@@ -39,24 +40,12 @@ class OpenAI1(commands.Cog):
+                 try:
+                     embedVar = discord.Embed()
+                     embedVar.description = data["choices"][0]["text"]
+-                    await ctx.send(embed=embedVar)
++                    await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = "The query was not successful."
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+-                    await ctx.send(embed=embedVar)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-    @openaiComplete.error
+-    async def on_message_error(
+-        self, ctx: commands.Context, error: commands.CommandError
+-    ):
+-        if isinstance(error, commands.MissingRequiredArgument):
+-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+-            embedVar.description = f"Missing a requireed argument: {error.param}"
+-            msg = await ctx.send(embed=embedVar, delete_after=10)
+-            await msg.delete(delay=10)
++                    await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+@@ -64,36 +53,21 @@ class OpenAI1(commands.Cog):
+ class OpenAI2(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+-
+-    @commands.command(name="openai-classify", aliases=["ai-classify"])
+-    async def openaiClassify(self, ctx):
+-        def check(ms):
+-            return ms.channel == ctx.message.channel and ms.author == ctx.message.author
+-
+-        await ctx.send("Enter in query here:")
+-        query1 = await self.bot.wait_for("message", check=check)
+-        await ctx.send("Enter in an example in order to get classify:")
+-        searchTerm1 = await self.bot.wait_for("message", check=check)
+-        await ctx.send(
+-            "Is the example above a negative example or positive example? (For example, I am sad would be considered negative):"
+-        )
+-        posOrNegExample1 = await self.bot.wait_for("message", check=check)
+-        await ctx.send("Enter in another example:")
+-        searchTerm2 = await self.bot.wait_for("message", check=check)
+-        await ctx.send("Is the example above a negative example or positive example?:")
+-        posOrNegExample2 = await self.bot.wait_for("message", check=check)
++    
++    @slash_command(name="openai-classify", description="Classifies a sentence using OpenAI's GPT-3 AI", guild_ids=[866199405090308116])
++    async def openaiClassify(self, ctx, *, query: Option(str, "The sentence to classify"), example1: Option(str, "The first example"), pos_or_neg1: Option(str, "Is the example above a negative example or positive example?", choices=["Positive", "Negative"]), example2: Option(str, "The second example"), pos_or_neg2: Option(str, "Is the example above a negative example or positive example?", choices=["Positive", "Negative"])):
+         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+             headers = {
+                 "Authorization": f"Bearer {OpenAI_API_KEY}",
+                 "Content-Type": "application/json",
+             }
+             payload = {
+-                "query": f"{query1.content}",
++                "query": f"{query}",
+                 "search_model": "curie",
+                 "model": "curie",
+                 "examples": [
+-                    [f"{searchTerm1.content}", f"{posOrNegExample1.content}"],
+-                    [f"{searchTerm2.content}", f"{posOrNegExample2.content}"],
++                    [f"{example1}", f"{pos_or_neg1}"],
++                    [f"{example2}", f"{pos_or_neg2}"],
+                 ],
+             }
+             async with session.post(
+@@ -104,47 +78,15 @@ class OpenAI2(commands.Cog):
+                 data = await poster.json()
+                 try:
+                     embedVar = discord.Embed()
+-                    embedVar.add_field(
+-                        name="Label (Query)", value=data["label"], inline=True
+-                    )
+-                    embedVar.add_field(
+-                        name="Label",
+-                        value=data["selected_examples"][0]["label"],
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Text",
+-                        value=data["selected_examples"][0]["text"],
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Label",
+-                        value=data["selected_examples"][1]["label"],
+-                        inline=True,
+-                    )
+-                    embedVar.add_field(
+-                        name="Text",
+-                        value=data["selected_examples"][1]["text"],
+-                        inline=True,
+-                    )
+-                    await ctx.send(embed=embedVar)
++                    for dictItem in data["selected_examples"]:
++                        for keys, value in dictItem.items():
++                            embedVar.add_field(name=keys, value=value, inline=True)
++                    await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = "The query was not successful."
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+-                    await ctx.send(embed=embedVar)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-    @openaiClassify.error
+-    async def on_message_error(
+-        self, ctx: commands.Context, error: commands.CommandError
+-    ):
+-        if isinstance(error, commands.MissingRequiredArgument):
+-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+-            embedVar.description = f"Missing a requireed argument: {error.param}"
+-            msg = await ctx.send(embed=embedVar, delete_after=10)
+-            await msg.delete(delay=10)
++                    await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+@@ -153,19 +95,8 @@ class OpenAI3(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    @commands.command(name="openai-answers", aliases=["ai-answers"])
+-    async def openaiAnswers(self, ctx):
+-        def check(ms):
+-            return ms.channel == ctx.message.channel and ms.author == ctx.message.author
+-
+-        await ctx.send("Enter in question here:")
+-        question1 = await self.bot.wait_for("message", check=check)
+-        await ctx.send("Enter in an example question:")
+-        exampleQuestion = await self.bot.wait_for("message", check=check)
+-        await ctx.send("Enter the answer for the question you just sent:")
+-        exampleAnswer = await self.bot.wait_for("message", check=check)
+-        await ctx.send("Enter in some context for the questions you just wrote:")
+-        context = await self.bot.wait_for("message", check=check)
++    @slash_command(name="openai-answers", description="Forms an answer based on your question", guild_ids=[866199405090308116])
++    async def openaiAnswers(self, ctx, *, question: Option(str, "The question to answer"), example_question: Option(str, "An example question to use as context"), example_answer: Option(str, "An example answer to use as context"), context: Option(str, "Some context for the answer you wrote")):
+         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
+             headers = {
+                 "Authorization": f"Bearer {OpenAI_API_KEY}",
+@@ -173,11 +104,11 @@ class OpenAI3(commands.Cog):
+             }
+             payload = {
+                 "model": "ada",
+-                "question": question1.content,
++                "question": question,
+                 "examples": [
+-                    [f"{exampleQuestion.content}", f"{exampleAnswer.content}"]
++                    [f"{example_question}", f"{example_answer}"]
+                 ],
+-                "examples_context": context.content,
++                "examples_context": context,
+                 "documents": [],
+             }
+             async with session.post(
+@@ -192,26 +123,15 @@ class OpenAI3(commands.Cog):
+                         .replace("]", "")
+                         .replace("'", "")
+                     )
+-                    await ctx.send(embed=embedVar)
++                    await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = "The query was not successful."
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+-                    await ctx.send(embed=embedVar)
++                    await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+-    @openaiAnswers.error
+-    async def on_message_error(
+-        self, ctx: commands.Context, error: commands.CommandError
+-    ):
+-        if isinstance(error, commands.MissingRequiredArgument):
+-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+-            embedVar.description = f"Missing a requireed argument: {error.param}"
+-            msg = await ctx.send(embed=embedVar, delete_after=10)
+-            await msg.delete(delay=10)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+ 
+ def setup(bot):
+-- 
+2.35.1
+

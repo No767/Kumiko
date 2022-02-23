@@ -42,6 +42,7 @@ initial_extensions = [
     "Cogs.mangadex",
     "Cogs.bot-info",
     "Cogs.openai-gpt3",
+    "Cogs.help",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
