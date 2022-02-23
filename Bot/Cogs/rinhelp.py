@@ -424,7 +424,6 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-
             if category in ["youtube", "yt", "YouTube"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
