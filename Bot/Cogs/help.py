@@ -7,17 +7,17 @@ from discord.commands import Option, slash_command
 from discord.ext import commands
 
         
-class rinhelp(commands.Cog):
+class helper(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.last_member = None
 
     @slash_command(
-        name="rinhelp",
-        description="The Help Page for Rin",
+        name="help",
+        description="The Help Page for Rin (Aliased from /rinhelp)",
         guild_ids=[866199405090308116],
     )
-    async def rinHelp(
+    async def helper(
         self,
         ctx,
         *,
@@ -549,4 +549,4 @@ class rinhelp(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(rinhelp(bot))
+    bot.add_cog(helper(bot))
