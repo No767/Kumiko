@@ -5,7 +5,7 @@ import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
 
-        
+
 class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -17,9 +17,17 @@ class info(commands.Cog):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
         view = discord.ui.View(timeout=None)
-        view.add_item(discord.ui.Button(label="GitHub", url="https://github.com/No767/Rin"))
-        view.add_item(discord.ui.Button(label="Docs", url="https://docs.rinbot.live"))
-        view.add_item(discord.ui.Button(label="Invite", url="https://top.gg/bot/865883525932253184/invite"))
+        view.add_item(
+            discord.ui.Button(
+                label="GitHub", url="https://github.com/No767/Rin")
+        )
+        view.add_item(discord.ui.Button(
+            label="Docs", url="https://docs.rinbot.live"))
+        view.add_item(
+            discord.ui.Button(
+                label="Invite", url="https://top.gg/bot/865883525932253184/invite"
+            )
+        )
         embedVar.set_author(name="Rin Info", icon_url=bot.user.display_avatar)
         embedVar.add_field(
             name="About",

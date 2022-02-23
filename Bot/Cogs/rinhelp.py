@@ -6,7 +6,7 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 
-        
+
 class rinhelp(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -94,10 +94,25 @@ class rinhelp(commands.Cog):
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "/"'
                 )
-                view.add_item(discord.ui.Button(label="GitHub", url="https://github.com/No767/Rin"))
-                view.add_item(discord.ui.Button(label="Docs", url="https://docs.rinbot.live"))
-                view.add_item(discord.ui.Button(label="Invite", url="https://top.gg/bot/865883525932253184/invite"))
-                view.add_item(discord.ui.Button(label="Website", url="https://rinbot.live"))
+                view.add_item(
+                    discord.ui.Button(
+                        label="GitHub", url="https://github.com/No767/Rin"
+                    )
+                )
+                view.add_item(
+                    discord.ui.Button(
+                        label="Docs", url="https://docs.rinbot.live")
+                )
+                view.add_item(
+                    discord.ui.Button(
+                        label="Invite",
+                        url="https://top.gg/bot/865883525932253184/invite",
+                    )
+                )
+                view.add_item(
+                    discord.ui.Button(
+                        label="Website", url="https://rinbot.live")
+                )
                 await ctx.respond(embed=embedVar, view=view)
 
             if category in ["twitter", "Twitter"]:
