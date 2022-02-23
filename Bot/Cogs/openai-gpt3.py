@@ -5,8 +5,8 @@ import aiohttp
 import discord
 import ujson
 import uvloop
+from discord.commands import Option, slash_command
 from discord.ext import commands
-from discord.commands import slash_command, Option
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,9 +17,20 @@ OpenAI_API_KEY = os.getenv("OpenAI_API_Key")
 class OpenAI1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    @slash_command(name="openai-complete", description="Completes a sentence using OpenAI's GPT-3 AI", guild_ids=[866199405090308116])
-    async def openaiComplete(self, ctx, *, completion: Option(str, "The beginning of the sentence to complete", required=False)):
+
+    @slash_command(
+        name="openai-complete",
+        description="Completes a sentence using OpenAI's GPT-3 AI",
+        guild_ids=[866199405090308116],
+    )
+    async def openaiComplete(
+        self,
+        ctx,
+        *,
+        completion: Option(
+            str, "The beginning of the sentence to complete", required=False
+        ),
+    ):
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             headers = {
                 "Authorization": f"Bearer {OpenAI_API_KEY}",
@@ -53,9 +64,30 @@ class OpenAI1(commands.Cog):
 class OpenAI2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    @slash_command(name="openai-classify", description="Classifies a sentence using OpenAI's GPT-3 AI", guild_ids=[866199405090308116])
-    async def openaiClassify(self, ctx, *, query: Option(str, "The sentence to classify"), example1: Option(str, "The first example"), pos_or_neg1: Option(str, "Is the example above a negative example or positive example?", choices=["Positive", "Negative"]), example2: Option(str, "The second example"), pos_or_neg2: Option(str, "Is the example above a negative example or positive example?", choices=["Positive", "Negative"])):
+
+    @slash_command(
+        name="openai-classify",
+        description="Classifies a sentence using OpenAI's GPT-3 AI",
+        guild_ids=[866199405090308116],
+    )
+    async def openaiClassify(
+        self,
+        ctx,
+        *,
+        query: Option(str, "The sentence to classify"),
+        example1: Option(str, "The first example"),
+        pos_or_neg1: Option(
+            str,
+            "Is the example above a negative example or positive example?",
+            choices=["Positive", "Negative"],
+        ),
+        example2: Option(str, "The second example"),
+        pos_or_neg2: Option(
+            str,
+            "Is the example above a negative example or positive example?",
+            choices=["Positive", "Negative"],
+        ),
+    ):
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             headers = {
                 "Authorization": f"Bearer {OpenAI_API_KEY}",
@@ -80,7 +112,8 @@ class OpenAI2(commands.Cog):
                     embedVar = discord.Embed()
                     for dictItem in data["selected_examples"]:
                         for keys, value in dictItem.items():
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
@@ -95,8 +128,20 @@ class OpenAI3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="openai-answers", description="Forms an answer based on your question", guild_ids=[866199405090308116])
-    async def openaiAnswers(self, ctx, *, question: Option(str, "The question to answer"), example_question: Option(str, "An example question to use as context"), example_answer: Option(str, "An example answer to use as context"), context: Option(str, "Some context for the answer you wrote")):
+    @slash_command(
+        name="openai-answers",
+        description="Forms an answer based on your question",
+        guild_ids=[866199405090308116],
+    )
+    async def openaiAnswers(
+        self,
+        ctx,
+        *,
+        question: Option(str, "The question to answer"),
+        example_question: Option(str, "An example question to use as context"),
+        example_answer: Option(str, "An example answer to use as context"),
+        context: Option(str, "Some context for the answer you wrote"),
+    ):
         async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
             headers = {
                 "Authorization": f"Bearer {OpenAI_API_KEY}",
@@ -105,9 +150,7 @@ class OpenAI3(commands.Cog):
             payload = {
                 "model": "ada",
                 "question": question,
-                "examples": [
-                    [f"{example_question}", f"{example_answer}"]
-                ],
+                "examples": [[f"{example_question}", f"{example_answer}"]],
                 "examples_context": context,
                 "documents": [],
             }
@@ -131,7 +174,6 @@ class OpenAI3(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 def setup(bot):
