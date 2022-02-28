@@ -5,8 +5,6 @@ name = "pypi"
 
 [packages]
 python-dotenv = "==0.19.2"
-jamdict = "==0.1a11.post2"
-jamdict-data = "==1.5"
 cchardet = "*"
 aiodns = "*"
 brotli = "*"

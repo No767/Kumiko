@@ -1,0 +1,9 @@
+tasks:
+  - before: |
+      pyenv install 3.10.2 
+      pyenv local 3.10.2
+  - init: |
+      pip install --upgrade pip pipenv
+      pipenv --python 3.10
+      pipenv install
+    command: python3 ./Bot/rinbot.py
