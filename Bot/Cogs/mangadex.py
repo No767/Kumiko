@@ -43,12 +43,23 @@ class MangaDexV1(commands.Cog):
                     try:
                         for dictItem in data["data"]:
                             mangaID = dictItem["id"]
-                            mangaTitle = [val6 for keys6, val6 in dictItem["attributes"]["title"].items()]
-                            mainDesc = [val7 for keys7, val7 in dictItem["attributes"]["description"].items()]
+                            mangaTitle = [
+                                val6
+                                for keys6, val6 in dictItem["attributes"][
+                                    "title"
+                                ].items()
+                            ]
+                            mainDesc = [
+                                val7
+                                for keys7, val7 in dictItem["attributes"][
+                                    "description"
+                                ].items()
+                            ]
                             for k, v in dictItem["attributes"].items():
                                 if k not in mangaFilter:
                                     embedVar.add_field(
-                                        name=k, value=f"[{v}]", inline=True)
+                                        name=k, value=f"[{v}]", inline=True
+                                    )
                             for item in dictItem["attributes"]["tags"]:
                                 embedVar.add_field(
                                     name="Tags",
@@ -71,20 +82,35 @@ class MangaDexV1(commands.Cog):
                                         f"https://api.mangadex.org/cover/{coverArtID}"
                                     ) as rp:
                                         cover_art_data = await rp.json()
-                                        cover_art = cover_art_data["data"]["attributes"][
-                                            "fileName"
-                                        ]
+                                        cover_art = cover_art_data["data"][
+                                            "attributes"
+                                        ]["fileName"]
                                         embedVar.set_image(
                                             url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}"
                                         )
-                            embedVar.title = str(mangaTitle).replace("'", "").replace("[", "").replace("]", "")
-                            embedVar.description = str(mainDesc).replace("'", "").replace("[", "").replace("]", "")
+                            embedVar.title = (
+                                str(mangaTitle)
+                                .replace("'", "")
+                                .replace("[", "")
+                                .replace("]", "")
+                            )
+                            embedVar.description = (
+                                str(mainDesc)
+                                .replace("'", "")
+                                .replace("[", "")
+                                .replace("]", "")
+                            )
                             await ctx.respond(embed=embedVar)
                     except Exception as e:
                         embedErrorAlt = discord.Embed()
-                        embedErrorAlt.description = "Sorry, but there was an error. Please try again."
-                        embedErrorAlt.add_field(name="Reason", value=e, inline=True)
-                        embedErrorAlt.add_field(name="HTTP Response Code", value=r.status, inline=True)
+                        embedErrorAlt.description = (
+                            "Sorry, but there was an error. Please try again."
+                        )
+                        embedErrorAlt.add_field(
+                            name="Reason", value=e, inline=True)
+                        embedErrorAlt.add_field(
+                            name="HTTP Response Code", value=r.status, inline=True
+                        )
                         await ctx.respond(embed=embedErrorAlt)
 
             except Exception as e:
@@ -102,7 +128,11 @@ class MangaDexV2(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="mangadex-random", description="Returns a random manga from MangaDex", guild_ids=[866199405090308116])
+    @slash_command(
+        name="mangadex-random",
+        description="Returns a random manga from MangaDex",
+        guild_ids=[866199405090308116],
+    )
     async def manga_random(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.mangadex.org/manga/random") as r:
@@ -121,20 +151,39 @@ class MangaDexV2(commands.Cog):
                     if r.status == 500:
                         embedErrorMain = discord.Embed()
                         embedErrorMain.description = "It seems like there is no manga to select from... Don't worry about it, just try again"
-                        embedErrorMain.add_field(name="HTTP Response Code", value=r.status, inline=True)
+                        embedErrorMain.add_field(
+                            name="HTTP Response Code", value=r.status, inline=True
+                        )
                         await ctx.respond(embed=embedErrorMain)
                     else:
-                        mangaTitle2 = [val8 for keys8, val8 in data["data"]["attributes"]["title"].items()]
-                        mainDesc2 = [val9 for keys9, val9 in data["data"]["attributes"]["description"].items()]
+                        mangaTitle2 = [
+                            val8
+                            for keys8, val8 in data["data"]["attributes"][
+                                "title"
+                            ].items()
+                        ]
+                        mainDesc2 = [
+                            val9
+                            for keys9, val9 in data["data"]["attributes"][
+                                "description"
+                            ].items()
+                        ]
                         for titles in data["data"]["attributes"]["altTitles"]:
-                            allAltTitles = [value for keys, value in titles.items()]
+                            allAltTitles = [value for keys,
+                                            value in titles.items()]
                         for k, v in data["data"]["attributes"].items():
                             if k not in mangaFilter2:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                         for keys, value in data["data"]["attributes"]["links"].items():
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                         for tagItem in data["data"]["attributes"]["tags"]:
-                            mainTags = [v["name"]["en"] for k, v in tagItem.items() if k not in tagFilter]
+                            mainTags = [
+                                v["name"]["en"]
+                                for k, v in tagItem.items()
+                                if k not in tagFilter
+                            ]
                         for item in data["data"]["relationships"]:
                             mangaID2 = data["data"]["id"]
                             if item["type"] not in ["manga", "author", "artist"]:
@@ -149,27 +198,55 @@ class MangaDexV2(commands.Cog):
                                     embedVar.set_image(
                                         url=f"https://uploads.mangadex.org/covers/{mangaID2}/{cover_art2}"
                                     )
-                        embedVar.title = str(mangaTitle2).replace("'", "").replace("[", "").replace("]", "")
-                        embedVar.description = str(mainDesc2).replace("'", "").replace("[", "").replace("]", "")
-                        embedVar.add_field(name="Alt Titles", value=str(allAltTitles).replace("'", ""), inline=True)
-                        embedVar.add_field(name="Tags", value=str(mainTags).replace("'", ""), inline=True)
+                        embedVar.title = (
+                            str(mangaTitle2)
+                            .replace("'", "")
+                            .replace("[", "")
+                            .replace("]", "")
+                        )
+                        embedVar.description = (
+                            str(mainDesc2)
+                            .replace("'", "")
+                            .replace("[", "")
+                            .replace("]", "")
+                        )
+                        embedVar.add_field(
+                            name="Alt Titles",
+                            value=str(allAltTitles).replace("'", ""),
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="Tags",
+                            value=str(mainTags).replace("'", ""),
+                            inline=True,
+                        )
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedError = discord.Embed()
-                    embedError.description = "Sorry, but something went wrong... Please try again"
+                    embedError.description = (
+                        "Sorry, but something went wrong... Please try again"
+                    )
                     embedError.add_field(name="Reason", value=e, inline=True)
-                    embedError.add_field(name="HTTP Response Code", value=r.status, inline=True)
+                    embedError.add_field(
+                        name="HTTP Response Code", value=r.status, inline=True
+                    )
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class MangaDexV3(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    @slash_command(name="mangadex-scanlation-search", description="Returns info about a scanlation group on MangaDex", guild_ids=[866199405090308116])
-    async def scanlation_search(self, ctx, *, name: Option(str, "The name of the scanlation group")):
+
+    @slash_command(
+        name="mangadex-scanlation-search",
+        description="Returns info about a scanlation group on MangaDex",
+        guild_ids=[866199405090308116],
+    )
+    async def scanlation_search(
+        self, ctx, *, name: Option(str, "The name of the scanlation group")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "limit": 5,
@@ -204,7 +281,8 @@ class MangaDexV3(commands.Cog):
                             embed2.description = dictItem["attributes"]["description"]
                             for k, v in dictItem["attributes"].items():
                                 if k not in mdFilter:
-                                    embed2.add_field(name=k, value=v, inline=True)
+                                    embed2.add_field(
+                                        name=k, value=v, inline=True)
                             await ctx.respond(embed=embed2)
                 except Exception as e:
                     embedVar = discord.Embed()
@@ -220,9 +298,15 @@ class MangaDexV3(commands.Cog):
 class MangaDexV4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
-    @slash_command(name="mangadex-scanlation-id", description="Returns info about a scanlation group on MangaDex (Done via ID)", guild_ids=[866199405090308116])
-    async def scanlation_id(self, ctx, *, scanlation_id: Option(str, "The ID of the scanlation group")):
+
+    @slash_command(
+        name="mangadex-scanlation-id",
+        description="Returns info about a scanlation group on MangaDex (Done via ID)",
+        guild_ids=[866199405090308116],
+    )
+    async def scanlation_id(
+        self, ctx, *, scanlation_id: Option(str, "The ID of the scanlation group")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.mangadex.org/group/{scanlation_id}"
@@ -247,7 +331,9 @@ class MangaDexV4(commands.Cog):
                         embed4 = discord.Embed()
                         mdFilter2 = ["altNames", "description", "name"]
                         embed4.title = payload["data"]["attributes"]["name"]
-                        embed4.description = payload["data"]["attributes"]["description"]
+                        embed4.description = payload["data"]["attributes"][
+                            "description"
+                        ]
                         for k, v in payload["data"]["attributes"].items():
                             if k not in mdFilter2:
                                 embed4.add_field(name=k, value=v, inline=True)
@@ -267,7 +353,11 @@ class MangaDexV5(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="mangadex-user", description="Returns info about a user on MangaDex", guild_ids=[866199405090308116])
+    @slash_command(
+        name="mangadex-user",
+        description="Returns info about a user on MangaDex",
+        guild_ids=[866199405090308116],
+    )
     async def user(self, ctx, *, user_id: Option(str, "The ID of the user")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.mangadex.org/user/{user_id}") as rep:
@@ -278,7 +368,9 @@ class MangaDexV5(commands.Cog):
                     embed.title = payload["data"]["attributes"]["username"]
                     for payloadKeys, payloadValues in payload["data"].items():
                         if payloadKeys not in mainFilter:
-                            embed.add_field(name=payloadKeys, value=payloadValues, inline=True)
+                            embed.add_field(
+                                name=payloadKeys, value=payloadValues, inline=True
+                            )
                     for k, v in payload["data"]["attributes"].items():
                         if k not in "username":
                             embed.add_field(name=k, value=v, inline=True)
@@ -298,7 +390,11 @@ class MangaDexV6(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="mangadex-author", description="Returns info about an author on MangaDex", guild_ids=[866199405090308116])
+    @slash_command(
+        name="mangadex-author",
+        description="Returns info about an author on MangaDex",
+        guild_ids=[866199405090308116],
+    )
     async def author(self, ctx, *, author_name: Option(str, "The name of the author")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"limit": 5, "name": author_name, "order[name]": "asc"}
@@ -315,13 +411,15 @@ class MangaDexV6(commands.Cog):
                         embedVar.description = authorDictItem["attributes"]["biography"]
                         for keys, value in authorDictItem.items():
                             if keys not in mainFilterV3:
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                                 embedVar.remove_field(17)
                         for k, v in authorDictItem["attributes"].items():
                             if k not in authorFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                                 embedVar.remove_field(17)
-                        
+
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
@@ -332,7 +430,6 @@ class MangaDexV6(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 class MangaDexReaderV1(commands.Cog):
