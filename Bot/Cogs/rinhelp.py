@@ -251,7 +251,11 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`rinhelp`", value="Rin's Help command", inline=True
                 )
-                embedVar.add_field(name="`help`", value="Rin's Help command (the same as /rinhelp)", inline=True)
+                embedVar.add_field(
+                    name="`help`",
+                    value="Rin's Help command (the same as /rinhelp)",
+                    inline=True,
+                )
                 embedVar.add_field(
                     name="`rininvite`",
                     value="Rin's invite links. Also can be reached with `.invite`.",

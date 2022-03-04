@@ -3,13 +3,13 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import pyjion
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
 
-import pyjion
-
 pyjion.enable()
+
 
 class advice_slip(commands.Cog):
     def __init__(self, bot):
