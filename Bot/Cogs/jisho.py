@@ -7,7 +7,9 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 
+import pyjion
 
+pyjion.enable()
 class jishoDict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

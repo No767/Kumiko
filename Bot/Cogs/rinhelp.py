@@ -240,35 +240,6 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["instagram", "ig", "Instgram"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`iguserinfo`",
-                    value="Uses the User's Client ID in order to obtain Instagram User Info",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`igusersearch`",
-                    value="Searches for users on Instagram",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`igtaginfo`", value="Obtains Tag Info", inline=True
-                )
-                embedVar.add_field(
-                    name="`igusernamecheck`",
-                    value="Checks if the specified username is taken or not",
-                    inline=True,
-                )
-                embedVar.set_footer(
-                    text="Note: There is a 20 sec cooldown for each command. This is to prevent rate limiting."
-                )
-                embedVar.set_author(
-                    name="Rin Help - Instagram", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
             if category in ["misc", "Misc"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -278,13 +249,9 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`translate`",
-                    value="Translates the given message to any language supported by Google Translate",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`rinhelp`", value="Rin's Help command", inline=True
                 )
+                embedVar.add_field(name="`help`", value="Rin's Help command (the same as /rinhelp)", inline=True)
                 embedVar.add_field(
                     name="`rininvite`",
                     value="Rin's invite links. Also can be reached with `.invite`.",

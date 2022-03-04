@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 python-dotenv = "==0.19.2"
-cchardet = "*"
 aiodns = "*"
 brotli = "*"
 sqlalchemy = "*"
@@ -20,6 +19,9 @@ aiohttp = "==3.8.1"
 qrcode = {extras = ["pil"], version = "*"}
 spotipy = "*"
 instagram-private-api = {git = "https://git@github.com/ping/instagram_private_api.git"}
+pyjion = "*"
+cchardet = "*"
+beautifulsoup4 = "*"
 
 [dev-packages]
 black = "*"
