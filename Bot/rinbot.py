@@ -4,9 +4,6 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 
-import pyjion
-
-pyjion.enable()
 
 
 # Grabs the bot's token from the .env file

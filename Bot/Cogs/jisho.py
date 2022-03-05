@@ -3,12 +3,10 @@ import asyncio
 import aiohttp
 import discord
 import orjson
-import pyjion
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 
-pyjion.enable()
 
 
 class jishoDict(commands.Cog):

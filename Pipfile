@@ -17,9 +17,6 @@ ujson = "*"
 py-cord = {version = "==2.0.0b4", extras = ["voice"]}
 aiohttp = "==3.8.1"
 qrcode = {extras = ["pil"], version = "*"}
-spotipy = "*"
-instagram-private-api = {git = "https://git@github.com/ping/instagram_private_api.git"}
-pyjion = "*"
 cchardet = "*"
 beautifulsoup4 = "*"
 

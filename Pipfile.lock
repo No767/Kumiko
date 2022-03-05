@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "65bb8796dfcabf842d56928cf5c22ff8d142a4da6fdd9f3626f42648f00ae2e7"
+            "sha256": "446947f22a0d3cc27d8fa47647d6cc496fb41999a208811671cabb3705380770"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -130,7 +130,7 @@
                 "sha256:01c7bf666359b4967d2cda0000cc2e4af16a0ae098cbffcb8472fb9e8ad6585b",
                 "sha256:6ebb3d106c12920aaae42ccb6f787ef5eefdcdd166ea3d628fa8476abe712144"
             ],
-            "markers": "python_version >= '3.5'",
+            "markers": "python_full_version >= '3.5.0'",
             "version": "==1.10"
         },
         "async-timeout": {
@@ -382,7 +382,7 @@
                 "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597",
                 "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"
             ],
-            "markers": "python_version >= '3.5'",
+            "markers": "python_full_version >= '3.5.0'",
             "version": "==2.0.12"
         },
         "frozenlist": {
@@ -518,10 +518,6 @@
             ],
             "markers": "python_version >= '3'",
             "version": "==3.3"
-        },
-        "instagram-private-api": {
-            "git": "https://git@github.com/ping/instagram_private_api.git",
-            "ref": "0fda0369ac02bc03d56f5f3f99bc9de2cc25ffaa"
         },
         "lxml": {
             "hashes": [
@@ -731,7 +727,6 @@
                 "sha256:f154d173286a5d1863637a7dcd8c3437bb557520b01bddb0be0258dcb72696b5",
                 "sha256:f25ed6e28ddf50de7e7ea99d7a976d6a9c415f03adcaac9c41ff6ff41b6d86ac"
             ],
-            "markers": "python_version >= '3.7'",
             "version": "==9.0.1"
         },
         "py-cord": {
@@ -788,17 +783,6 @@
             ],
             "version": "==2.21"
         },
-        "pyjion": {
-            "hashes": [
-                "sha256:17e4c5b3a6a51117bae0d54baa62eb59dbc7158c5dfc675882a2214f4d51d212",
-                "sha256:6f34835879dd9c7e78c027f9336e058947f3d9d6e77edec43ced0abfb039fee6",
-                "sha256:91af971a7a3a368e8f54145cf0716e7f32a9f7b577612bfd857cf3cb169799b4",
-                "sha256:cb6e4c82fb11508b6fb507488fc658c918d73e7e2722b175ad6e121221dfa96d",
-                "sha256:e80141d480d0e969bde174ecc385f0b7d0f1217b176ed4268eae5b74261611e4"
-            ],
-            "index": "pypi",
-            "version": "==1.2.6"
-        },
         "pynacl": {
             "hashes": [
                 "sha256:06b8f6fa7f5de8d5d2f7573fe8c863c051225a27b61e6860fd047b1775807858",
@@ -840,14 +824,6 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==2.27.1"
         },
-        "six": {
-            "hashes": [
-                "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
-                "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
-            ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==1.16.0"
-        },
         "soupsieve": {
             "hashes": [
                 "sha256:1a3cca2617c6b38c0343ed661b1fa5de5637f257d4fe22bd9f1338010a1efefb",
@@ -855,15 +831,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2.3.1"
-        },
-        "spotipy": {
-            "hashes": [
-                "sha256:766f9ef96d61851d7884c4553f2de2527c3af01df603985f6987543bb28e3ff5",
-                "sha256:904f6e813dba837758e9510c1bee51d7ca217f169246625a13e693733dc33543",
-                "sha256:dd6de229351bb6cf4d9bc169c5e183288da795f5a8265968dd98e95c037f9e7a"
-            ],
-            "index": "pypi",
-            "version": "==2.19.0"
         },
         "sqlalchemy": {
             "hashes": [
