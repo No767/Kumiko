@@ -39,6 +39,7 @@ initial_extensions = [
     "Cogs.bot-info",
     "Cogs.openai-gpt3",
     "Cogs.help",
+    "Cogs.modrinth",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
