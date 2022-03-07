@@ -14,11 +14,11 @@ asyncpraw = "*"
 asyncpg = "*"
 uvloop = "*"
 ujson = "*"
-py-cord = {version = "==2.0.0b4", extras = ["voice"]}
 aiohttp = "==3.8.1"
 qrcode = {extras = ["pil"], version = "*"}
 cchardet = "*"
 beautifulsoup4 = "*"
+py-cord = {version = "==2.0.0b5", extras = ["voice"]}
 
 [dev-packages]
 black = "*"
