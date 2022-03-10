@@ -17,6 +17,7 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 ## Additions
 
 - Modrinth API Support
+- CurseForge API Support
 
 ## Changes
 - Upgrade Rin to Pycord v2.0.0 (Beta as of now)
