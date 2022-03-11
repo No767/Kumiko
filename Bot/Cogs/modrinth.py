@@ -110,9 +110,8 @@ class ModrinthV2(commands.Cog):
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
-                    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-                    
 
 
 class ModrinthV3(commands.Cog):
@@ -146,7 +145,15 @@ class ModrinthV3(commands.Cog):
                 f"https://api.modrinth.com/v2/project/{mod_name}/version", params=params
             ) as res:
                 versionData = await res.json()
-                versionFilter = ["changelog", "name", "dependencies", "files", "id", "project_id", "author_id"]
+                versionFilter = [
+                    "changelog",
+                    "name",
+                    "dependencies",
+                    "files",
+                    "id",
+                    "project_id",
+                    "author_id",
+                ]
                 embedVar = discord.Embed()
                 try:
                     for dictVersions in versionData:
@@ -174,7 +181,7 @@ class ModrinthV3(commands.Cog):
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
-                    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
@@ -220,7 +227,9 @@ class ModrinthV4(commands.Cog):
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class ModrinthV5(commands.Cog):
     def __init__(self, bot):
@@ -259,6 +268,7 @@ class ModrinthV5(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class ModrinthV6(commands.Cog):
     def __init__(self, bot):
@@ -319,7 +329,9 @@ class ModrinthV6(commands.Cog):
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class ModrinthV7(commands.Cog):
     def __init__(self, bot):
@@ -363,6 +375,8 @@ class ModrinthV7(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
 class ModrinthV8(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -403,7 +417,9 @@ class ModrinthV8(commands.Cog):
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
     bot.add_cog(ModrinthV1(bot))
