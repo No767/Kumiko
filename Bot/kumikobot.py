@@ -4,6 +4,8 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 
+
+
 # Grabs the bot's token from the .env file
 load_dotenv()
 TOKEN = os.getenv("Kumiko")
@@ -43,6 +45,7 @@ initial_extensions = [
     "Cogs.bot-info",
     "Cogs.openai-gpt3",
     "Cogs.help",
+    "Cogs.modrinth",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

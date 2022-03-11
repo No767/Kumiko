@@ -14,14 +14,24 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 - Dynamically load data compared to statically loading data 
 - Use Slash Commands instead of old legacy commands
 
+## Additions
+
+- Modrinth API Support
+- CurseForge API Support
+
 ## Changes
 - Upgrade Rin to Pycord v2.0.0 (Beta as of now)
 - Dynamically load data compared to statically loading data
 - Use Recursion looping to load data for Twitter, Jikan, Topgg, and other cogs
 - Readjust RinHelp to align with V2 commands
+- Literally removed over 4,000 lines of code that were used for statically loading the data
+- Test out Pyjion for faster runtime speeds (Python 3.10 JIT Compiler)
+- Add in Modrinth API Support
 
 ## Removals
 
 - Translate, Chat, Global, Pinger, Clear, Server-Info, NB-Pride, and Vaild Cogs have been removed
 - Support for legacy prefix
 - Pinterest API Support
+- Instagram API Support
+- Spotify API Support

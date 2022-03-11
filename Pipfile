@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 python-dotenv = "==0.19.2"
-cchardet = "*"
 aiodns = "*"
 brotli = "*"
 sqlalchemy = "*"
@@ -17,11 +16,11 @@ asyncpg = "*"
 uvloop = "*"
 odmantic = "*"
 ujson = "*"
-py-cord = {version = "==2.0.0b4", extras = ["voice"]}
 aiohttp = "==3.8.1"
 qrcode = {extras = ["pil"], version = "*"}
-spotipy = "*"
-instagram-private-api = {git = "https://git@github.com/ping/instagram_private_api.git"}
+cchardet = "*"
+beautifulsoup4 = "*"
+py-cord = {version = "==2.0.0b5", extras = ["voice"]}
 
 [dev-packages]
 black = "*"

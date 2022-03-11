@@ -24,7 +24,7 @@ Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services (for the more technical, this is done by contacting APIs). For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
-hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. For more info, please check out the [Docs](https://docs.rinbot.live/).
+hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. Rin also leverages [Pyjion](https://github.com/tonybaloney/Pyjion) to allow for JIT support via .NET, and for faster speeds as well. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
 # Inviting the Bot
 
@@ -96,8 +96,7 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     $HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
     ```
 
-Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-7. Then connect to WSL, and select the repo as a folder to open. 
-
+Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
 ## Linux
     
 1. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
