@@ -13,7 +13,9 @@ The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moder
 
 <div align=left>
 
-# Info
+# Important Message
+    
+So far, Kumiko has not gotten as much updates as Rin. For a more detailed explanation, see [here](https://gist.github.com/No767/a17da14edc4f06dcc837477b8811a50a)
 
 ## Kumiko 
 
