@@ -23,21 +23,23 @@ class rinhelp(commands.Cog):
         *,
         category: Option(
             str,
+            "The different categories of services that Rin offers",
             choices=[
-                "Twitter",
-                "Reddit",
-                "Minecraft",
-                "Hypixel",
-                "Fun",
-                "Misc",
-                "Instagram",
-                "DeviantArt",
                 "Anime",
-                "Top.gg",
-                "MyAnimeList/Jikan",
-                "YouTube",
-                "Tenor",
+                "DeviantArt",
+                "Fun",
+                "Hypixel",
+                "Minecraft",
+                "Misc",
+                "Modrinth",
+                "MyAnimeList",
                 "OpenAI",
+                "Reddit",
+                "Spigot",
+                "Tenor",
+                "Top.gg",
+                "Twitter",
+                "YouTube"
             ],
             required=False,
         )
@@ -47,41 +49,21 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
-                embedVar.add_field(
-                    name="Twitter", value="`/rinhelp twitter`", inline=True
-                )
-                embedVar.add_field(
-                    name="Reddit", value="`/rinhelp reddit`", inline=True
-                )
-                embedVar.add_field(
-                    name="Minecraft", value="`/rinhelp mc`", inline=True)
-                embedVar.add_field(
-                    name="Hypixel", value="`/rinhelp hypixel`", inline=True
-                )
-                embedVar.add_field(
-                    name="Fun", value="`/rinhelp fun`", inline=True)
-                embedVar.add_field(
-                    name="Instagram", value="`/rinhelp ig`", inline=True)
-                embedVar.add_field(
-                    name="Misc", value="`/rinhelp misc`", inline=True)
-                embedVar.add_field(
-                    name="Deviantart", value="`/rinhelp da`", inline=True
-                )
-                embedVar.add_field(
-                    name="Anime", value="`/rinhelp anime`", inline=True)
-                embedVar.add_field(
-                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
-                embedVar.add_field(
-                    name="MyAnimeList/Jikan", value="`/rinhelp jikan`", inline=True
-                )
-                embedVar.add_field(
-                    name="YouTube", value="`/rinhelp youtube`", inline=True
-                )
-                embedVar.add_field(
-                    name="Tenor", value="`/rinhelp tenor`", inline=True)
-                embedVar.add_field(
-                    name="OpenAI", value="`/rinhelp openai`", inline=True
-                )
+                embedVar.add_field(name="Anime", value="`/rinhelp anime`", inline=True)
+                embedVar.add_field(name="DeviantArt", value="`/rinhelp da`", inline=True)
+                embedVar.add_field(name="Fun", value="`/rinhelp fun`", inline=True)
+                embedVar.add_field(name="Hypixel", value="`/rinhelp hypixel`", inline=True)
+                embedVar.add_field(name="Minecraft", value="`/rinhelp mc`", inline=True)
+                embedVar.add_field(name="Misc",  value="`/rinhelp misc`", inline=True)
+                embedVar.add_field(name="Modrinth", value="`/rinhelp modrinth`", inline=True)
+                embedVar.add_field(name="MyAnimeList", value="`/rinhelp mal`", inline=True)
+                embedVar.add_field(name="OpenAI",  value="`/rinhelp openai`", inline=True)
+                embedVar.add_field(name="Reddit",  value="`/rinhelp reddit`", inline=True)
+                embedVar.add_field(name="Spigot", value="`/rinhelp spigot`", inline=True)
+                embedVar.add_field(name="Tenor", value="`/rinhelp tenor`", inline=True)
+                embedVar.add_field(name="Top.gg", value="`/rinhelp topgg`", inline=True)
+                embedVar.add_field(name="Twitter", value="`/rinhelp twitter`", inline=True)
+                embedVar.add_field(name="YouTube", value="`/rinhelp yt`", inline=True)
                 embedVar.set_author(
                     name="Rin Help",
                     url=discord.Embed.Empty,
@@ -161,12 +143,14 @@ class rinhelp(commands.Cog):
                     value="Obtains bedrock server status",
                     inline=True,
                 )
-                embedVar.add_field(
-                    name="`java`", value="Alias for `javamcsrv`", inline=True
+                embedVar.set_author(
+                    name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
                 )
-                embedVar.add_field(
-                    name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True
-                )
+                await ctx.respond(embed=embedVar)
+                
+            if category in ["spigot", "Spigot", "Spiget", "spiget"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
                     name="`spiget-search`",
                     value="Searches for Minecraft plugins via Spiget and returns information on such plugin",
@@ -183,9 +167,10 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
+                    name="Rin Help - Spigot", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
+                
             if category in ["Hypixel", "hypixel"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -494,7 +479,21 @@ class rinhelp(commands.Cog):
                     name="Rin Help - OpenAI", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
-
+            if category in ["modrinth", "Modrinth"]:
+                bot = self.bot 
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(name="`modrinth-search`", value="Searches for up to 5 mods on Modrinth", inline=True)
+                embedVar.add_field(name="`modrinth-mod`", value="Returns info about the given mod", inline=True)
+                embedVar.add_field(name="`modrinth-mod-versions`", value="Lists out all of the versions for a mod (may cause spam)", inline=True)
+                embedVar.add_field(name="`modrinth-mod-version`", value="Returns info about the mod using the version ID", inline=True)
+                embedVar.add_field(name="`modrinth-user`", value="Returns info on the given user", inline=True)
+                embedVar.add_field(name="`modrinth-user-projects`", value="Returns info on the given user's projects", inline=True)
+                embedVar.add_field(name="`modrinth-project-team-members`", value="Lists out all of the team members for a project", inline=True)
+                embedVar.add_field(name="`modrinth-team-members`", value="Returns the team members within the given user", inline=True)
+                embedVar.set_author(
+                    name="Rin Help - Modrinth", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
