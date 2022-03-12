@@ -161,17 +161,18 @@ class ModrinthV3(commands.Cog):
                             if keys not in versionFilter:
                                 embedVar.add_field(
                                     name=keys, value=value, inline=True)
-                                embedVar.remove_field(-8)
+                                embedVar.remove_field(-14)
                         for fileItems in dictVersions["files"]:
                             for k, v in fileItems.items():
                                 if k not in "hashes":
                                     embedVar.add_field(
                                         name=k, value=v, inline=True)
+                                    embedVar.remove_field(-14)
                             for hashKey, hashValue in fileItems["hashes"].items():
                                 embedVar.add_field(
                                     name=hashKey, value=hashValue, inline=True
                                 )
-                        embedVar.remove_field(-8)
+                                embedVar.remove_field(-14)
                         embedVar.title = dictVersions["name"]
                         embedVar.description = dictVersions["changelog"]
                         await ctx.respond(embed=embedVar)
