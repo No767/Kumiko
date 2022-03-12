@@ -39,7 +39,7 @@ class helper(commands.Cog):
                 "Tenor",
                 "Top.gg",
                 "Twitter",
-                "YouTube"
+                "YouTube",
             ],
             required=False,
         )
@@ -49,21 +49,44 @@ class helper(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
-                embedVar.add_field(name="Anime", value="`/rinhelp anime`", inline=True)
-                embedVar.add_field(name="DeviantArt", value="`/rinhelp da`", inline=True)
-                embedVar.add_field(name="Fun", value="`/rinhelp fun`", inline=True)
-                embedVar.add_field(name="Hypixel", value="`/rinhelp hypixel`", inline=True)
-                embedVar.add_field(name="Minecraft", value="`/rinhelp mc`", inline=True)
-                embedVar.add_field(name="Misc",  value="`/rinhelp misc`", inline=True)
-                embedVar.add_field(name="Modrinth", value="`/rinhelp modrinth`", inline=True)
-                embedVar.add_field(name="MyAnimeList", value="`/rinhelp mal`", inline=True)
-                embedVar.add_field(name="OpenAI",  value="`/rinhelp openai`", inline=True)
-                embedVar.add_field(name="Reddit",  value="`/rinhelp reddit`", inline=True)
-                embedVar.add_field(name="Spigot", value="`/rinhelp spigot`", inline=True)
-                embedVar.add_field(name="Tenor", value="`/rinhelp tenor`", inline=True)
-                embedVar.add_field(name="Top.gg", value="`/rinhelp topgg`", inline=True)
-                embedVar.add_field(name="Twitter", value="`/rinhelp twitter`", inline=True)
-                embedVar.add_field(name="YouTube", value="`/rinhelp yt`", inline=True)
+                embedVar.add_field(
+                    name="Anime", value="`/rinhelp anime`", inline=True)
+                embedVar.add_field(
+                    name="DeviantArt", value="`/rinhelp da`", inline=True
+                )
+                embedVar.add_field(
+                    name="Fun", value="`/rinhelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Hypixel", value="`/rinhelp hypixel`", inline=True
+                )
+                embedVar.add_field(
+                    name="Minecraft", value="`/rinhelp mc`", inline=True)
+                embedVar.add_field(
+                    name="Misc", value="`/rinhelp misc`", inline=True)
+                embedVar.add_field(
+                    name="Modrinth", value="`/rinhelp modrinth`", inline=True
+                )
+                embedVar.add_field(
+                    name="MyAnimeList", value="`/rinhelp mal`", inline=True
+                )
+                embedVar.add_field(
+                    name="OpenAI", value="`/rinhelp openai`", inline=True
+                )
+                embedVar.add_field(
+                    name="Reddit", value="`/rinhelp reddit`", inline=True
+                )
+                embedVar.add_field(
+                    name="Spigot", value="`/rinhelp spigot`", inline=True
+                )
+                embedVar.add_field(
+                    name="Tenor", value="`/rinhelp tenor`", inline=True)
+                embedVar.add_field(
+                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
+                embedVar.add_field(
+                    name="Twitter", value="`/rinhelp twitter`", inline=True
+                )
+                embedVar.add_field(
+                    name="YouTube", value="`/rinhelp yt`", inline=True)
                 embedVar.set_author(
                     name="Rin Help",
                     url=discord.Embed.Empty,
@@ -147,7 +170,7 @@ class helper(commands.Cog):
                     name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
-                
+
             if category in ["spigot", "Spigot", "Spiget", "spiget"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -170,7 +193,7 @@ class helper(commands.Cog):
                     name="Rin Help - Spigot", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
-                
+
             if category in ["Hypixel", "hypixel"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -480,16 +503,48 @@ class helper(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
             if category in ["modrinth", "Modrinth"]:
-                bot = self.bot 
+                bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(name="`modrinth-search`", value="Searches for up to 5 mods on Modrinth", inline=True)
-                embedVar.add_field(name="`modrinth-mod`", value="Returns info about the given mod", inline=True)
-                embedVar.add_field(name="`modrinth-mod-versions`", value="Lists out all of the versions for a mod (may cause spam)", inline=True)
-                embedVar.add_field(name="`modrinth-mod-version`", value="Returns info about the mod using the version ID", inline=True)
-                embedVar.add_field(name="`modrinth-user`", value="Returns info on the given user", inline=True)
-                embedVar.add_field(name="`modrinth-user-projects`", value="Returns info on the given user's projects", inline=True)
-                embedVar.add_field(name="`modrinth-project-team-members`", value="Lists out all of the team members for a project", inline=True)
-                embedVar.add_field(name="`modrinth-team-members`", value="Returns the team members within the given user", inline=True)
+                embedVar.add_field(
+                    name="`modrinth-search`",
+                    value="Searches for up to 5 mods on Modrinth",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-mod`",
+                    value="Returns info about the given mod",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-mod-versions`",
+                    value="Lists out all of the versions for a mod (may cause spam)",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-mod-version`",
+                    value="Returns info about the mod using the version ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-user`",
+                    value="Returns info on the given user",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-user-projects`",
+                    value="Returns info on the given user's projects",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-project-team-members`",
+                    value="Lists out all of the team members for a project",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-team-members`",
+                    value="Returns the team members within the given user",
+                    inline=True,
+                )
                 embedVar.set_author(
                     name="Rin Help - Modrinth", icon_url=bot.user.display_avatar
                 )
@@ -503,6 +558,7 @@ class helper(commands.Cog):
             await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
     bot.add_cog(helper(bot))
