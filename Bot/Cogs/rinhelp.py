@@ -140,12 +140,36 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`reddit`", value="searches on reddit", inline=True
                 )
-                embedVar.add_field(name="`reddit-new`", value="Returns 5 new posts from any subreddit", inline=True)
-                embedVar.add_field(name="`reddit-top`", value="Returns 5 top posts from any subreddit", inline=True)
-                embedVar.add_field(name="`reddit-hot`", value="Returns 5 hot posts from any subreddit", inline=True)
-                embedVar.add_field(name="`reddit-comemnts`", value="Returns up to 10 comemnts from a given post ID", inline=True)
-                embedVar.add_field(name="`reddit-user`", value="Provides info about the given Redditor", inline=True)
-                embedVar.add_field(name="`reddit-user-comments`", value="Returns up to 10 comments from a given Redditor", inline=True)
+                embedVar.add_field(
+                    name="`reddit-new`",
+                    value="Returns 5 new posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-top`",
+                    value="Returns 5 top posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-hot`",
+                    value="Returns 5 hot posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-comemnts`",
+                    value="Returns up to 10 comemnts from a given post ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user`",
+                    value="Provides info about the given Redditor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user-comments`",
+                    value="Returns up to 10 comments from a given Redditor",
+                    inline=True,
+                )
                 embedVar.set_author(
                     name="Rin Help - Reddit", icon_url=bot.user.display_avatar
                 )
