@@ -1,0 +1,264 @@
+From d3f43a36cbb20a8eb04bad888cf609aa2c5be740 Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Mon, 14 Mar 2022 00:14:19 -0700
+Subject: [PATCH] Add More Commands to Reddit Cog
+
+Yep... Now the Reddit cog supports even more commands than ever before...
+---
+ Bot/Cogs/reddit.py | 218 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 163 insertions(+), 55 deletions(-)
+
+diff --git a/Bot/Cogs/reddit.py b/Bot/Cogs/reddit.py
+index 699ec79..4e8882b 100644
+--- a/Bot/Cogs/reddit.py
++++ b/Bot/Cogs/reddit.py
+@@ -6,6 +6,7 @@ import asyncpraw
+ import discord
+ import uvloop
+ from discord.ext import commands
++from discord.commands import slash_command, Option
+ from dotenv import load_dotenv
+ 
+ load_dotenv()
+@@ -20,48 +21,8 @@ class reddit(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    @commands.command(name="meme", help="finds a meme")
+-    async def meme(self, ctx):
+-        searchtopics = [
+-            " ",
+-            "dank",
+-            "anime",
+-            "christian",
+-            "tech ",
+-            "funny ",
+-            "coding ",
+-            "reddit ",
+-            "music ",
+-            "manga ",
+-            "school ",
+-            "relatable ",
+-        ]
+-        searchterm = random.choice(searchtopics) + "memes"
+-        await ctx.invoke(self.bot.get_command("reddit"), search=searchterm)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-    @commands.command(name="transmeme", help="finds a trans related meme")
+-    async def transmeme(self, ctx):
+-        # Tried to watch onetopic in order to figure out the different subs
+-        searchtopics = [
+-            " ",
+-            " trans ",
+-            " egg_irl ",
+-            " traaaaaaannnnnnnnnns ",
+-            " GaySoundsShitposts ",
+-            " Bisexual ",
+-            " Bi_IRL ",
+-            " ActualLesbians ",
+-            " SapphoAndherFriend",
+-        ]
+-        searchterm = random.choice(searchtopics)
+-        await ctx.invoke(self.bot.get_command("reddit"), search=searchterm)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-    @commands.command(name="reddit", help="browses on reddit")
+-    async def reddit(self, ctx, *, search: str):
++    @slash_command(name="reddit", description="Searches on reddit for content", guild_ids=[866199405090308116])
++    async def reddit(self, ctx, *, search: Option(str, "The query you want to search. Also supports searching subreddits as well")):
+         async with asyncpraw.Reddit(
+             client_id=Reddit_ID,
+             client_secret=Reddit_Secret,
+@@ -91,27 +52,174 @@ class reddit(commands.Cog):
+                     color=discord.Color.from_rgb(255, 69, 0))
+                 reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
+                 reddit_embed.set_image(url=submission.url)
+-                await ctx.send(embed=reddit_embed)
++                await ctx.respond(embed=reddit_embed)
+             except Exception as e:
+                 embed = discord.Embed()
+                 embed.description = f"There was an error, this is likely caused by a lack of posts found in the query {original_search}. Please try again."
+                 embed.add_field(name="Reason", value=e, inline=True)
+-                await ctx.send(embed=embed)
++                await ctx.respond(embed=embed)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+-    @reddit.error
+-    async def on_message_error(
+-        self, ctx: commands.Context, error: commands.CommandError
+-    ):
+-        if isinstance(error, commands.MissingRequiredArgument):
+-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
+-            embedVar.description = f"Missing a required argument: {error.param}"
+-            msg = await ctx.send(embed=embedVar, delete_after=10)
+-            await msg.delete(delay=10)
+-
++class RedditV2(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="reddit-new", description="Returns 5 new posts from any subreddit", guild_ids=[866199405090308116])
++    async def redditNew(self, ctx, *, subreddit: Option(str, "The subreddit to search")):
++        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)") as redditapi:
++            if "r/" in subreddit:
++                subParser = subreddit.split("/")
++                sub = subParser[1]
++            else:
++                sub = subreddit
++            mainSub = await redditapi.subreddit(sub)
++            async for submission in mainSub.new(limit=5):
++                await submission.author.load()
++                embedVar = discord.Embed()
++                embedVar.title = submission.title
++                embedVar.description = submission.selftext
++                embedVar.add_field(name="Author", value=submission.author, inline=True)
++                embedVar.add_field(name="Locked", value=submission.locked, inline=True)
++                embedVar.add_field(name="NSFW", value=submission.over_18, inline=True)
++                embedVar.add_field(name="Number of Upvotes", value=submission.score, inline=True)
++                embedVar.add_field(name="Spoiler", value=submission.spoiler, inline=True)
++                embedVar.add_field(name="Number of Comments", value=submission.num_comments, inline=True)
++                embedVar.set_image(url=submission.url)
++                embedVar.set_thumbnail(url=submission.author.icon_img)
++                await ctx.respond(embed=embedVar)
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++    
++class RedditV3(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="reddit-comments", description="Returns up to 10 comments from a given post ID", guild_ids=[866199405090308116])
++    async def redditComments(self, ctx, *, id: Option(str, "ID of post")):
++        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)") as api:
++            post = await api.submission(id=id)
++            comments = await post.comments()
++            listedComments = await comments.list()
++            embedVar = discord.Embed()
++            for item in comments:
++                if len(listedComments) > 10:
++                    return
++                else:
++                    await item.author.load()
++                    embedVar.title = item.author.name
++                    embedVar.description = item.body
++                    embedVar.add_field(name="Upvotes", value=item.score, inline=True)
++                    embedVar.set_thumbnail(url=item.author.icon_img)
++                    embedVar.remove_field(1)
++                    await ctx.respond(embed=embedVar)
++    
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++        
+ 
+-
++class RedditV4(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="reddit-user", description="Provides info about the given Redditor", guild_ids=[866199405090308116])
++    async def redditor(self, ctx, *, redditor: Option(str, "The name of the Redditor")):
++        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)") as redditorApi:
++            user = await redditorApi.redditor(redditor)
++            await user.load()
++            embedVar = discord.Embed()
++            embedVar.title = user.name
++            embedVar.set_thumbnail(url=user.icon_img)
++            embedVar.add_field(name="Comment Karma", value=user.comment_karma, inline=True)
++            embedVar.add_field(name="Created UTC", value=user.created_utc, inline=True)
++            embedVar.add_field(name="Link Karma", value=user.link_karma, inline=True)
++            await ctx.respond(embed=embedVar)
++            
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++    
++class RedditV5(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="reddit-user-comments", description="Returns up to 10 comments from a given Redditor", guild_ids=[866199405090308116])
++    async def redditorComments(self, ctx, *, redditor: Option(str, "The name of the Redditor")):
++        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)") as redditorCommentsAPI:
++            userComment = await redditorCommentsAPI.redditor(redditor)
++            embedVar = discord.Embed()
++            async for comment in userComment.comments.new(limit=10):
++                await comment.author.load()
++                embedVar.title = comment.author.name
++                embedVar.description = comment.body
++                embedVar.add_field(name="Score", value=comment.score, inline=True)
++                embedVar.add_field(name="Created UTC", value=comment.created_utc, inline=True)
++                embedVar.add_field(name="ID", value=comment.id, inline=True)
++                embedVar.set_thumbnail(url=comment.author.icon_img)
++                embedVar.remove_field(-3)
++                await ctx.respond(embed=embedVar)
++                
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++    
++class RedditV6(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="reddit-hot", description="Returns 5 hot posts from any subreddit", guild_ids=[866199405090308116])
++    async def redditNew(self, ctx, *, subreddit: Option(str, "The subreddit to search")):
++        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)") as redditapi:
++            if "r/" in subreddit:
++                subParser = subreddit.split("/")
++                sub = subParser[1]
++            else:
++                sub = subreddit
++            mainSub = await redditapi.subreddit(sub)
++            async for submission in mainSub.hot(limit=5):
++                await submission.author.load()
++                embedVar = discord.Embed()
++                embedVar.title = submission.title
++                embedVar.description = submission.selftext
++                embedVar.add_field(name="Author", value=submission.author, inline=True)
++                embedVar.add_field(name="Locked", value=submission.locked, inline=True)
++                embedVar.add_field(name="NSFW", value=submission.over_18, inline=True)
++                embedVar.add_field(name="Number of Upvotes", value=submission.score, inline=True)
++                embedVar.add_field(name="Spoiler", value=submission.spoiler, inline=True)
++                embedVar.add_field(name="Number of Comments", value=submission.num_comments, inline=True)
++                embedVar.set_image(url=submission.url)
++                embedVar.set_thumbnail(url=submission.author.icon_img)
++                await ctx.respond(embed=embedVar)
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++    
++class RedditV7(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++        
++    @slash_command(name="reddit-top", description="Returns 5 top posts from any subreddit", guild_ids=[866199405090308116])
++    async def redditNew(self, ctx, *, subreddit: Option(str, "The subreddit to search")):
++        async with asyncpraw.Reddit(client_id=Reddit_ID, client_secret=Reddit_Secret, user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)") as redditapi:
++            if "r/" in subreddit:
++                subParser = subreddit.split("/")
++                sub = subParser[1]
++            else:
++                sub = subreddit
++            mainSub = await redditapi.subreddit(sub)
++            async for submission in mainSub.top(limit=5):
++                await submission.author.load()
++                embedVar = discord.Embed()
++                embedVar.title = submission.title
++                embedVar.description = submission.selftext
++                embedVar.add_field(name="Author", value=submission.author, inline=True)
++                embedVar.add_field(name="Locked", value=submission.locked, inline=True)
++                embedVar.add_field(name="NSFW", value=submission.over_18, inline=True)
++                embedVar.add_field(name="Number of Upvotes", value=submission.score, inline=True)
++                embedVar.add_field(name="Spoiler", value=submission.spoiler, inline=True)
++                embedVar.add_field(name="Number of Comments", value=submission.num_comments, inline=True)
++                embedVar.set_image(url=submission.url)
++                embedVar.set_thumbnail(url=submission.author.icon_img)
++                await ctx.respond(embed=embedVar)
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++    
+ def setup(bot):
+     bot.add_cog(reddit(bot))
++    bot.add_cog(RedditV2(bot))
++    bot.add_cog(RedditV3(bot))
++    bot.add_cog(RedditV4(bot))
++    bot.add_cog(RedditV5(bot))
++    bot.add_cog(RedditV6(bot))
++    bot.add_cog(RedditV7(bot))
+-- 
+2.35.1
+
