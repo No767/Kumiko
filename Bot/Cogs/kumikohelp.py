@@ -17,13 +17,13 @@ class kumikoHelp(commands.Cog):
         description="The Help Page for Kumiko",
         guild_ids=[866199405090308116],
     )
-    async def kumikoHelp(
+    async def rinHelp(
         self,
         ctx,
         *,
         category: Option(
             str,
-            "The different categories of services that Rin offers",
+            "The different categories of commands that Kumiko has to offer",
             choices=[
                 "Anime",
                 "DeviantArt",
@@ -48,73 +48,57 @@ class kumikoHelp(commands.Cog):
             if category is None:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.description = """
-                        **[GitHub](https://github.com/No767/Kumiko)** | **[Issue Tracker](https://github.com/No767/Kumiko/issues)** 
-                        """
                 view = discord.ui.View(timeout=None)
                 embedVar.add_field(
-                    name="Anime", value="`/rinhelp anime`", inline=True)
+                    name="Anime", value="`/kumikohelp anime`", inline=True)
                 embedVar.add_field(
-                    name="DeviantArt", value="`/rinhelp da`", inline=True
+                    name="DeviantArt", value="`/kumikohelp da`", inline=True
                 )
                 embedVar.add_field(
-                    name="Fun", value="`/rinhelp fun`", inline=True)
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Hypixel", value="`/rinhelp hypixel`", inline=True
+                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/rinhelp mc`", inline=True)
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
                 embedVar.add_field(
-                    name="Misc", value="`/rinhelp misc`", inline=True)
+                    name="Misc", value="`/kumikohelp misc`", inline=True)
                 embedVar.add_field(
-                    name="Modrinth", value="`/rinhelp modrinth`", inline=True
+                    name="Modrinth", value="`/kumikohelp modrinth`", inline=True
                 )
                 embedVar.add_field(
-                    name="MyAnimeList", value="`/rinhelp mal`", inline=True
+                    name="MyAnimeList", value="`/kumikohelp mal`", inline=True
                 )
                 embedVar.add_field(
-                    name="OpenAI", value="`/rinhelp openai`", inline=True
+                    name="OpenAI", value="`/kumikohelp openai`", inline=True
                 )
+                embedVar.add_field(
+                    name="Reddit", value="`/kumikohelp reddit`", inline=True
+                )
+                embedVar.add_field(
+                    name="Spigot", value="`/kumikohelp spigot`", inline=True
+                )
+                embedVar.add_field(
+                    name="Tenor", value="`/kumikohelp tenor`", inline=True)
+                embedVar.add_field(
+                    name="Top.gg", value="`/kumikohelp topgg`", inline=True)
                 embedVar.add_field(
                     name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True
-                )
-                embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True
-                )
-                embedVar.add_field(
-                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
-                embedVar.add_field(
-                    name="Twitter", value="`/rinhelp twitter`", inline=True
-                )
-                embedVar.add_field(
-                    name="YouTube", value="`/rinhelp yt`", inline=True)
+                    name="YouTube", value="`/kumikohelp yt`", inline=True)
                 embedVar.set_author(
-                    name="Kumiko Help", icon_url=bot.user.display_avatar
+                    name="Kumiko Help",
+                    url=discord.Embed.Empty,
+                    icon_url=bot.user.display_avatar,
                 )
                 embedVar.set_footer(
                     text='Remember, the command prefix for this bot is "/"'
                 )
                 view.add_item(
                     discord.ui.Button(
-                        label="GitHub", url="https://github.com/No767/Rin"
+                        label="GitHub", url="https://github.com/No767/Kumiko"
                     )
-                )
-                view.add_item(
-                    discord.ui.Button(
-                        label="Docs", url="https://docs.rinbot.live")
-                )
-                view.add_item(
-                    discord.ui.Button(
-                        label="Invite",
-                        url="https://top.gg/bot/865883525932253184/invite",
-                    )
-                )
-                view.add_item(
-                    discord.ui.Button(
-                        label="Website", url="https://rinbot.live")
                 )
                 await ctx.respond(embed=embedVar, view=view)
 
@@ -143,13 +127,33 @@ class kumikoHelp(commands.Cog):
                     name="`reddit`", value="searches on reddit", inline=True
                 )
                 embedVar.add_field(
-                    name="`transmeme`",
-                    value="searches on reddit that include trans and other LGBTQ+ subreddits",
+                    name="`reddit-new`",
+                    value="Returns 5 new posts from any subreddit",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`meme`",
-                    value="searches on reddit that include defined search topics regarding memes",
+                    name="`reddit-top`",
+                    value="Returns 5 top posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-hot`",
+                    value="Returns 5 hot posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-comemnts`",
+                    value="Returns up to 10 comemnts from a given post ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user`",
+                    value="Provides info about the given Redditor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user-comments`",
+                    value="Returns up to 10 comments from a given Redditor",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -169,7 +173,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -192,7 +196,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Spigot", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Spigot", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -220,7 +224,7 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Hypixel", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Hypixel", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -259,23 +263,25 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`rinhelp`", value="Rin's Help command", inline=True
-                )
-                embedVar.add_field(
                     name="`kumikohelp`", value="Kumiko's Help command", inline=True
                 )
                 embedVar.add_field(
+                    name="`help`",
+                    value="Kumiko's Help command (the same as /kumikohelp)",
+                    inline=True,
+                )
+                embedVar.add_field(
                     name="`kumikoinvite`",
-                    value="Kumiko's invite links. Also can be reached with `.invite`.",
+                    value="Kumiko's invite links.",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`version`",
-                    value="Checks for current version of Rin",
+                    value="Checks for current version of Kumiko",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`uptime`", value="Checks for Kumiko's Uptime", inline=True
+                    name="`uptime`", value="Checks for Rin's Uptime", inline=True
                 )
                 embedVar.add_field(
                     name="`botinfo`", value="Statistics about this bot", inline=True
@@ -546,12 +552,12 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Modrinth", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Modrinth", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
         except Exception as e:
             bot = self.bot
-            embedVar = discord.Embed(title="Rin Help", color=14414079)
+            embedVar = discord.Embed(title="Kumiko Help", color=14414079)
             embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.display_avatar)

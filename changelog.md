@@ -27,6 +27,7 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 - Literally removed over 4,000 lines of code that were used for statically loading the data
 - Test out Pyjion for faster runtime speeds (Python 3.10 JIT Compiler)
 - Add in Modrinth API Support
+- Added even more commands for Reddit Cog
 
 ## Removals
 

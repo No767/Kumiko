@@ -14,7 +14,7 @@ class helper(commands.Cog):
 
     @slash_command(
         name="help",
-        description="The Help Page for Rin (Same as /rinhelp)",
+        description="The Help Page for Kumiko",
         guild_ids=[866199405090308116],
     )
     async def rinHelp(
@@ -23,7 +23,7 @@ class helper(commands.Cog):
         *,
         category: Option(
             str,
-            "The different categories of services that Rin offers",
+            "The different categories of commands that Kumiko has to offer",
             choices=[
                 "Anime",
                 "DeviantArt",
@@ -50,45 +50,45 @@ class helper(commands.Cog):
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
                 embedVar.add_field(
-                    name="Anime", value="`/rinhelp anime`", inline=True)
+                    name="Anime", value="`/kumikohelp anime`", inline=True)
                 embedVar.add_field(
-                    name="DeviantArt", value="`/rinhelp da`", inline=True
+                    name="DeviantArt", value="`/kumikohelp da`", inline=True
                 )
                 embedVar.add_field(
-                    name="Fun", value="`/rinhelp fun`", inline=True)
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
                 embedVar.add_field(
-                    name="Hypixel", value="`/rinhelp hypixel`", inline=True
+                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/rinhelp mc`", inline=True)
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
                 embedVar.add_field(
-                    name="Misc", value="`/rinhelp misc`", inline=True)
+                    name="Misc", value="`/kumikohelp misc`", inline=True)
                 embedVar.add_field(
-                    name="Modrinth", value="`/rinhelp modrinth`", inline=True
+                    name="Modrinth", value="`/kumikohelp modrinth`", inline=True
                 )
                 embedVar.add_field(
-                    name="MyAnimeList", value="`/rinhelp mal`", inline=True
+                    name="MyAnimeList", value="`/kumikohelp mal`", inline=True
                 )
                 embedVar.add_field(
-                    name="OpenAI", value="`/rinhelp openai`", inline=True
+                    name="OpenAI", value="`/kumikohelp openai`", inline=True
                 )
                 embedVar.add_field(
-                    name="Reddit", value="`/rinhelp reddit`", inline=True
+                    name="Reddit", value="`/kumikohelp reddit`", inline=True
                 )
                 embedVar.add_field(
-                    name="Spigot", value="`/rinhelp spigot`", inline=True
+                    name="Spigot", value="`/kumikohelp spigot`", inline=True
                 )
                 embedVar.add_field(
-                    name="Tenor", value="`/rinhelp tenor`", inline=True)
+                    name="Tenor", value="`/kumikohelp tenor`", inline=True)
                 embedVar.add_field(
-                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
+                    name="Top.gg", value="`/kumikohelp topgg`", inline=True)
                 embedVar.add_field(
-                    name="Twitter", value="`/rinhelp twitter`", inline=True
+                    name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="YouTube", value="`/rinhelp yt`", inline=True)
+                    name="YouTube", value="`/kumikohelp yt`", inline=True)
                 embedVar.set_author(
-                    name="Rin Help",
+                    name="Kumiko Help",
                     url=discord.Embed.Empty,
                     icon_url=bot.user.display_avatar,
                 )
@@ -97,22 +97,8 @@ class helper(commands.Cog):
                 )
                 view.add_item(
                     discord.ui.Button(
-                        label="GitHub", url="https://github.com/No767/Rin"
+                        label="GitHub", url="https://github.com/No767/Kumiko"
                     )
-                )
-                view.add_item(
-                    discord.ui.Button(
-                        label="Docs", url="https://docs.rinbot.live")
-                )
-                view.add_item(
-                    discord.ui.Button(
-                        label="Invite",
-                        url="https://top.gg/bot/865883525932253184/invite",
-                    )
-                )
-                view.add_item(
-                    discord.ui.Button(
-                        label="Website", url="https://rinbot.live")
                 )
                 await ctx.respond(embed=embedVar, view=view)
 
@@ -130,7 +116,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Twitter", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Twitter", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -141,17 +127,37 @@ class helper(commands.Cog):
                     name="`reddit`", value="searches on reddit", inline=True
                 )
                 embedVar.add_field(
-                    name="`transmeme`",
-                    value="searches on reddit that include trans and other LGBTQ+ subreddits",
+                    name="`reddit-new`",
+                    value="Returns 5 new posts from any subreddit",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`meme`",
-                    value="searches on reddit that include defined search topics regarding memes",
+                    name="`reddit-top`",
+                    value="Returns 5 top posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-hot`",
+                    value="Returns 5 hot posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-comemnts`",
+                    value="Returns up to 10 comemnts from a given post ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user`",
+                    value="Provides info about the given Redditor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user-comments`",
+                    value="Returns up to 10 comments from a given Redditor",
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Reddit", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Reddit", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -167,7 +173,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -190,7 +196,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Spigot", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Spigot", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -218,7 +224,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Hypixel", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Hypixel", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -244,7 +250,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Fun", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Fun", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -257,21 +263,21 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`rinhelp`", value="Rin's Help command", inline=True
+                    name="`kumikohelp`", value="Kumiko's Help command", inline=True
                 )
                 embedVar.add_field(
                     name="`help`",
-                    value="Rin's Help command (the same as /rinhelp)",
+                    value="Kumiko's Help command (the same as /kumikohelp)",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`rininvite`",
-                    value="Rin's invite links. Also can be reached with `.invite`.",
+                    name="`kumikoinvite`",
+                    value="Kumiko's invite links.",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`version`",
-                    value="Checks for current version of Rin",
+                    value="Checks for current version of Kumiko",
                     inline=True,
                 )
                 embedVar.add_field(
@@ -284,7 +290,7 @@ class helper(commands.Cog):
                     name="`ping`", value="Checks the ping for the bot", inline=True
                 )
                 embedVar.set_author(
-                    name="Rin Help - Misc", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Misc", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -320,7 +326,7 @@ class helper(commands.Cog):
                     text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - Deviantart", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Deviantart", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -338,7 +344,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Anime", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Anime", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -380,7 +386,7 @@ class helper(commands.Cog):
                     text='Also note that the prefix can be shorten down to "jk"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - MyAnimeList/Jikan",
+                    name="Kumiko Help - MyAnimeList/Jikan",
                     icon_url=bot.user.display_avatar,
                 )
                 await ctx.respond(embed=embedVar)
@@ -399,7 +405,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Topgg", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Topgg", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -435,7 +441,7 @@ class helper(commands.Cog):
                     text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
                 )
                 embedVar.set_author(
-                    name="Rin Help - YouTube", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - YouTube", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -476,7 +482,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Tenor", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Tenor", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -499,7 +505,7 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - OpenAI", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - OpenAI", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
             if category in ["modrinth", "Modrinth"]:
@@ -546,12 +552,12 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Modrinth", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Modrinth", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
         except Exception as e:
             bot = self.bot
-            embedVar = discord.Embed(title="Rin Help", color=14414079)
+            embedVar = discord.Embed(title="Kumiko Help", color=14414079)
             embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.display_avatar)
