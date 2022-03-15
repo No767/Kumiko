@@ -23,21 +23,23 @@ class kumikoHelp(commands.Cog):
         *,
         category: Option(
             str,
+            "The different categories of services that Rin offers",
             choices=[
-                "Twitter",
-                "Reddit",
-                "Minecraft",
-                "Hypixel",
-                "Fun",
-                "Misc",
-                "Instagram",
-                "DeviantArt",
                 "Anime",
-                "Top.gg",
-                "MyAnimeList/Jikan",
-                "YouTube",
-                "Tenor",
+                "DeviantArt",
+                "Fun",
+                "Hypixel",
+                "Minecraft",
+                "Misc",
+                "Modrinth",
+                "MyAnimeList",
                 "OpenAI",
+                "Reddit",
+                "Spigot",
+                "Tenor",
+                "Top.gg",
+                "Twitter",
+                "YouTube",
             ],
             required=False,
         )
@@ -51,7 +53,27 @@ class kumikoHelp(commands.Cog):
                         """
                 view = discord.ui.View(timeout=None)
                 embedVar.add_field(
-                    name="Twitter", value="`/kumikohelp twitter`", inline=True
+                    name="Anime", value="`/rinhelp anime`", inline=True)
+                embedVar.add_field(
+                    name="DeviantArt", value="`/rinhelp da`", inline=True
+                )
+                embedVar.add_field(
+                    name="Fun", value="`/rinhelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Hypixel", value="`/rinhelp hypixel`", inline=True
+                )
+                embedVar.add_field(
+                    name="Minecraft", value="`/rinhelp mc`", inline=True)
+                embedVar.add_field(
+                    name="Misc", value="`/rinhelp misc`", inline=True)
+                embedVar.add_field(
+                    name="Modrinth", value="`/rinhelp modrinth`", inline=True
+                )
+                embedVar.add_field(
+                    name="MyAnimeList", value="`/rinhelp mal`", inline=True
+                )
+                embedVar.add_field(
+                    name="OpenAI", value="`/rinhelp openai`", inline=True
                 )
                 embedVar.add_field(
                     name="Twitter", value="`/kumikohelp twitter`", inline=True
@@ -60,54 +82,14 @@ class kumikoHelp(commands.Cog):
                     name="Minecraft", value="`/kumikohelp mc`", inline=True
                 )
                 embedVar.add_field(
-                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                embedVar.add_field(
+                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
+                embedVar.add_field(
+                    name="Twitter", value="`/rinhelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="Fun", value="`/kumikohelp fun`", inline=True)
-                embedVar.add_field(
-                    name="Instagram", value="`/kumikohelp ig`", inline=True
-                )
-                embedVar.add_field(
-                    name="Misc", value="`/kumikohelp misc`", inline=True)
-                embedVar.add_field(
-                    name="Deviantart", value="`/kumikohelp da`", inline=True
-                )
-                embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True
-                )
-                embedVar.add_field(
-                    name="Fun", value="`/kumikohelp fun`", inline=True)
-                embedVar.add_field(
-                    name="Instagram", value="`/kumikohelp ig`", inline=True
-                )
-                embedVar.add_field(
-                    name="Chat", value="`/kumikohelp chat`", inline=True)
-                embedVar.add_field(
-                    name="Misc", value="`/kumikohelp misc`", inline=True)
-                embedVar.add_field(
-                    name="Deviantart", value="`/kumikohelp da`", inline=True
-                )
-                embedVar.add_field(
-                    name="Anime", value="`/kumikohelp anime`", inline=True
-                )
-                embedVar.add_field(
-                    name="Top.gg", value="`/kumikohelp topgg`", inline=True
-                )
-                embedVar.add_field(
-                    name="Pinterest", value="`/kumikohelp pinterest`", inline=True
-                )
-                embedVar.add_field(
-                    name="MyAnimeList/Jikan", value="`/kumikohelp jikan`", inline=True
-                )
-                embedVar.add_field(
-                    name="YouTube", value="`/kumikohelp youtube`", inline=True
-                )
-                embedVar.add_field(
-                    name="Tenor", value="`/kumikohelp tenor`", inline=True
-                )
-                embedVar.add_field(
-                    name="OpenAI", value="`/kumikohelp openai`", inline=True
-                )
+                    name="YouTube", value="`/rinhelp yt`", inline=True)
                 embedVar.set_author(
                     name="Kumiko Help", icon_url=bot.user.display_avatar
                 )
@@ -185,12 +167,14 @@ class kumikoHelp(commands.Cog):
                     value="Obtains bedrock server status",
                     inline=True,
                 )
-                embedVar.add_field(
-                    name="`java`", value="Alias for `javamcsrv`", inline=True
+                embedVar.set_author(
+                    name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
                 )
-                embedVar.add_field(
-                    name="`bedrock`", value="Alias for `bedrockmcsrv", inline=True
-                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["spigot", "Spigot", "Spiget", "spiget"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
                     name="`spiget-search`",
                     value="Searches for Minecraft plugins via Spiget and returns information on such plugin",
@@ -207,9 +191,10 @@ class kumikoHelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
+                    name="Rin Help - Spigot", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
+
             if category in ["Hypixel", "hypixel"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -516,7 +501,53 @@ class kumikoHelp(commands.Cog):
                     name="Kumiko Help - OpenAI", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
-
+            if category in ["modrinth", "Modrinth"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`modrinth-search`",
+                    value="Searches for up to 5 mods on Modrinth",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-mod`",
+                    value="Returns info about the given mod",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-mod-versions`",
+                    value="Lists out all of the versions for a mod (may cause spam)",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-mod-version`",
+                    value="Returns info about the mod using the version ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-user`",
+                    value="Returns info on the given user",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-user-projects`",
+                    value="Returns info on the given user's projects",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-project-team-members`",
+                    value="Lists out all of the team members for a project",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`modrinth-team-members`",
+                    value="Returns the team members within the given user",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - Modrinth", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
         except Exception as e:
             bot = self.bot
             embedVar = discord.Embed(title="Rin Help", color=14414079)
