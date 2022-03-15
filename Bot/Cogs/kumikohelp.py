@@ -50,7 +50,8 @@ class kumikoHelp(commands.Cog):
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
                 embedVar.add_field(
-                    name="Anime", value="`/kumikohelp anime`", inline=True)
+                    name="Anime", value="`/kumikohelp anime`", inline=True
+                )
                 embedVar.add_field(
                     name="DeviantArt", value="`/kumikohelp da`", inline=True
                 )
@@ -60,7 +61,8 @@ class kumikoHelp(commands.Cog):
                     name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True
+                )
                 embedVar.add_field(
                     name="Misc", value="`/kumikohelp misc`", inline=True)
                 embedVar.add_field(
@@ -79,14 +81,17 @@ class kumikoHelp(commands.Cog):
                     name="Spigot", value="`/kumikohelp spigot`", inline=True
                 )
                 embedVar.add_field(
-                    name="Tenor", value="`/kumikohelp tenor`", inline=True)
+                    name="Tenor", value="`/kumikohelp tenor`", inline=True
+                )
                 embedVar.add_field(
-                    name="Top.gg", value="`/kumikohelp topgg`", inline=True)
+                    name="Top.gg", value="`/kumikohelp topgg`", inline=True
+                )
                 embedVar.add_field(
                     name="Twitter", value="`/kumikohelp twitter`", inline=True
                 )
                 embedVar.add_field(
-                    name="YouTube", value="`/kumikohelp yt`", inline=True)
+                    name="YouTube", value="`/kumikohelp yt`", inline=True
+                )
                 embedVar.set_author(
                     name="Kumiko Help",
                     url=discord.Embed.Empty,
