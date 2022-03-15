@@ -82,7 +82,8 @@ class kumikoHelp(commands.Cog):
                     name="Minecraft", value="`/kumikohelp mc`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True)
+                    name="Minecraft", value="`/kumikohelp mc`", inline=True
+                )
                 embedVar.add_field(
                     name="Top.gg", value="`/rinhelp topgg`", inline=True)
                 embedVar.add_field(
