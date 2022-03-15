@@ -122,18 +122,8 @@ class TwitterV1(commands.Cog):
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @twitter_search.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a requireed argument: {error.param}"
-            msg = await ctx.respond(embed=embedVar, delete_after=10)
             await msg.delete(delay=10)
 
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class TwitterV2(commands.Cog):
@@ -229,18 +219,6 @@ class TwitterV2(commands.Cog):
                     embedError2.description = "Something went wrong. Please try again."
                     embedError2.add_field(name="Error", value=e, inline=True)
                     await ctx.respond(embed=embedError2)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @twitter_user.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a requireed argument: {error.param}"
-            msg = await ctx.respond(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
