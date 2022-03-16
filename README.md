@@ -17,7 +17,7 @@ A Discord bot focused on obtaining data from third-party services
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services (for the more technical, this is done by contacting APIs). For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
-hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. Rin also leverages [Pyjion](https://github.com/tonybaloney/Pyjion) to allow for JIT support via .NET, and for faster speeds as well. For more info, please check out the [Docs](https://docs.rinbot.live/).
+hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
 # Inviting the Bot
 
@@ -193,7 +193,6 @@ See [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.
 ## Bot Discovery Network Links
     
 - [Top.gg](https://top.gg/bot/865883525932253184)
-- [Discord.boats](https://discord.boats/bot/865883525932253184)
 - [Discords.com](https://discords.com/bots/bot/865883525932253184)
 - [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184)
 
@@ -202,7 +201,6 @@ See [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.
 <div align=center>
     
  [![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
- [![Discord.boats](https://discord.boats/api/widget/865883525932253184?type=svg)](https://discord.boats/bot/865883525932253184) 
  [![Top.gg](https://top.gg/api/widget/865883525932253184.svg)](https://top.gg/bot/865883525932253184)
     
 </div>
