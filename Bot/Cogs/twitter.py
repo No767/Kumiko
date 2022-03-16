@@ -122,8 +122,6 @@ class TwitterV1(commands.Cog):
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-            await msg.delete(delay=10)
-
 
 
 class TwitterV2(commands.Cog):
