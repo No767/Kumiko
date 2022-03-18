@@ -3,10 +3,11 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import pyjion
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
-import pyjion
+
 
 class mcsrvstats(commands.Cog):
     def __init__(self, bot):
@@ -93,6 +94,7 @@ class mcsrvstats(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     pyjion.disable()
+
 
 class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):

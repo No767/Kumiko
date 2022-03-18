@@ -3,15 +3,16 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import pyjion
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
-import pyjion
+
 
 class advice_slip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-    
+
     pyjion.enable()
 
     @slash_command(
@@ -41,7 +42,9 @@ class advice_slip(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
+
     pyjion.disable()
+
+
 def setup(bot):
     bot.add_cog(advice_slip(bot))
