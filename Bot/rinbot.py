@@ -4,8 +4,6 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 
-
-
 # Grabs the bot's token from the .env file
 load_dotenv()
 TOKEN = os.getenv("Hanako_Token")

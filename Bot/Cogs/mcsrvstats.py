@@ -6,11 +6,13 @@ import orjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
-
+import pyjion
 
 class mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    pyjion.enable()
 
     @slash_command(
         name="java",
@@ -90,22 +92,13 @@ class mcsrvstats(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @java.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.respond(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
+    pyjion.disable()
 
 class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    pyjion.enable()
 
     @slash_command(
         name="bedrock",
@@ -175,17 +168,7 @@ class bedrock_mcsrvstats(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @bedrock.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.respond(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    pyjion.disable()
 
 
 def setup(bot):
