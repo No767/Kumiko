@@ -164,7 +164,7 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
    sudo zypper install python310
    ```
 
-3. Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
 
    ensurepip: 
 
