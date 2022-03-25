@@ -17,7 +17,6 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 ## Additions
 
 - Modrinth API Support
-- CurseForge API Support
 
 ## Changes
 - Upgrade Rin to Pycord v2.0.0 (Beta as of now)
@@ -25,9 +24,9 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 - Use Recursion looping to load data for Twitter, Jikan, Topgg, and other cogs
 - Readjust RinHelp to align with V2 commands
 - Literally removed over 4,000 lines of code that were used for statically loading the data
-- Test out Pyjion for faster runtime speeds (Python 3.10 JIT Compiler)
 - Add in Modrinth API Support
 - Added even more commands for Reddit Cog
+- Use AIOHTTP's Streams API to obtain data instead of using JSON responses
 
 ## Removals
 
@@ -36,3 +35,4 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 - Pinterest API Support
 - Instagram API Support
 - Spotify API Support
+- DisQuest
