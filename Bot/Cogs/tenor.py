@@ -35,7 +35,8 @@ class TenorV1(commands.Cog):
                 "media_filter": "minimal",
             }
             async with session.get("https://g.tenor.com/v1/search", params=params) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
                 try:
                     embedVar = discord.Embed()
                     filterList = [
@@ -56,7 +57,7 @@ class TenorV1(commands.Cog):
                         "media",
                         "content_description",
                     ]
-                    for dictItem in data["results"]:
+                    for dictItem in dataMain["results"]:
                         for key in dictItem.items():
                             if key not in filterList:
                                 embedVar.title = dictItem["content_description"]
@@ -95,12 +96,13 @@ class TenorV2(commands.Cog):
             async with session.get(
                 "https://g.tenor.com/v1/search", params=params
             ) as re:
-                data2 = await re.json()
+                data2 = await re.content.read()
+                dataMain2 = orjson.loads(data2)
                 try:
                     embedVar1 = discord.Embed()
-                    embedVar1.title = data2["results"][0]["content_description"]
+                    embedVar1.title = dataMain2["results"][0]["content_description"]
                     embedVar1.set_image(
-                        url=data2["results"][0]["media"][0]["gif"]["url"]
+                        url=dataMain2["results"][0]["media"][0]["gif"]["url"]
                     )
                     await ctx.send(embed=embedVar1)
                 except Exception as e:
@@ -132,7 +134,8 @@ class TenorV3(commands.Cog):
             async with session.get(
                 "https://g.tenor.com/v1/trending", params=params
             ) as response:
-                data3 = await response.json()
+                data3 = await response.content.read()
+                dataMain3 = orjson.loads(data3)
                 try:
                     embedVar = discord.Embed()
                     filterList2 = [
@@ -153,7 +156,7 @@ class TenorV3(commands.Cog):
                         "media",
                         "content_description",
                     ]
-                    for dictItem2 in data3["results"]:
+                    for dictItem2 in dataMain3["results"]:
                         for key in dictItem2.items():
                             if key not in filterList2:
                                 embedVar.title = dictItem2["content_description"]
@@ -192,12 +195,13 @@ class TenorV4(commands.Cog):
             async with session.get(
                 "https://g.tenor.com/v1/search_suggestions", params=params
             ) as resp:
-                data5 = await resp.json()
+                data5 = await resp.content.read()
+                dataMain5 = orjson.loads(data5)
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = "Search Suggestions"
                     embedVar.description = str(
-                        [items for items in data5["results"]]
+                        [items for items in dataMain5["results"]]
                     ).replace("'", "")
                     await ctx.send(embed=embedVar)
                 except Exception as e:
@@ -224,12 +228,13 @@ class TenorV5(commands.Cog):
             async with session.get(
                 "https://g.tenor.com/v1/trending_terms", params=params
             ) as rep:
-                data6 = await rep.json()
+                data6 = await rep.content.read()
+                dataMain6 = orjson.loads(data6)
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = "Trending Search Terms"
                     embedVar.description = str(
-                        [items for items in data6["results"]]
+                        [items for items in dataMain6["results"]]
                     ).replace("'", "")
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
@@ -261,7 +266,8 @@ class TenorV6(commands.Cog):
             async with session.get(
                 "https://g.tenor.com/v1/gifs", params=params
             ) as respon:
-                data7 = await respon.json()
+                data7 = await respon.content.read()
+                dataMain7 = orjson.loads(data7)
                 try:
                     embedVar = discord.Embed()
                     filterList2 = [
@@ -281,7 +287,7 @@ class TenorV6(commands.Cog):
                         "content_description",
                         "shares",
                     ]
-                    for dictValues in data7["results"]:
+                    for dictValues in dataMain7["results"]:
                         for k, v in dictValues.items():
                             if k not in filterList2:
                                 embedVar.title = dictValues["content_description"]
@@ -325,10 +331,11 @@ class TenorV7(commands.Cog):
             async with session.get(
                 "https://g.tenor.com/v1/random", params=params
             ) as object3:
-                data8 = await object3.json()
+                data8 = await object3.content.read()
+                dataMain8 = orjson.loads(data8)
                 try:
                     embedVar = discord.Embed()
-                    for dict_items in data8["results"]:
+                    for dict_items in dataMain8["results"]:
                         for _ in dict_items.items():
                             embedVar.title = dict_items["content_description"]
                         for item3 in dict_items.get("media"):

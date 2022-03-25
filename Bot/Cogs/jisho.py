@@ -7,11 +7,11 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 
-
 class jishoDict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    
     @slash_command(
         name="jisho",
         description="Searches for words on Jisho",
@@ -30,7 +30,8 @@ class jishoDict(commands.Cog):
             async with session.get(
                 "https://jisho.org/api/v1/search/words", params=params
             ) as r:
-                jisho = await r.json()
+                jisho = await r.content.read()
+                jishoMain = orjson.loads(jisho)
                 engDefFilter = [
                     "parts_of_speech",
                     "links",
@@ -50,7 +51,7 @@ class jishoDict(commands.Cog):
                 ]
                 try:
                     embedVar = discord.Embed()
-                    for dictItem in jisho["data"]:
+                    for dictItem in jishoMain["data"]:
                         for jpnItem in dictItem["japanese"]:
                             totalJpnItem = [value for keys,
                                             value in jpnItem.items()]
@@ -97,6 +98,8 @@ class jishoDict(commands.Cog):
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    
+    
 
 
 def setup(bot):

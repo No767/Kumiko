@@ -21,16 +21,17 @@ class SpigetV2(commands.Cog):
         self, ctx, *, plugin_name: Option(str, "The name of the plugin")
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0"}
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
             params = {"size": 5}
             async with session.get(
                 f"https://api.spiget.org/v2/search/resources/{plugin_name}",
                 headers=headers,
                 params=params,
             ) as r:
-                resource = await r.json()
+                resource = await r.content.read()
+                resourceMain = orjson.loads(resource)
                 try:
-                    for dictItem in resource:
+                    for dictItem in resourceMain:
                         thumbnail = (
                             "https://www.spigotmc.org/" +
                             dictItem["icon"]["url"]
@@ -133,18 +134,19 @@ class SpigetV3(commands.Cog):
         self, ctx, *, author_name: Option(str, "Name of the plugin author")
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0"}
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
             params = {"size": 5}
             async with session.get(
                 f"https://api.spiget.org/v2/search/authors/{author_name}",
                 headers=headers,
                 params=params,
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
                 authorFilter = ["icon", "name", "identities"]
                 embedVar = discord.Embed()
                 try:
-                    for dictItem in data:
+                    for dictItem in dataMain:
                         embedVar.title = dictItem["name"]
                         embedVar.set_thumbnail(url=dictItem["icon"]["url"])
                         for k, v in dictItem.items():
@@ -172,16 +174,17 @@ class SpigetV4(commands.Cog):
     )
     async def spigetStats(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0"}
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
             async with session.get(
                 "https://api.spiget.org/v2/status", headers=headers
             ) as res:
-                total_stats = await res.json()
+                total_stats = await res.content.read()
+                totalStatsMain = orjson.loads(total_stats)
                 try:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    for key, val in total_stats["stats"].items():
+                    for key, val in totalStatsMain["stats"].items():
                         embedVar.add_field(name=key, value=val, inline=True)
 
                     await ctx.respond(embed=embedVar)
@@ -207,7 +210,7 @@ class SpigetV5(commands.Cog):
     )
     async def spigetStatus(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0"}
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
             async with session.get(
                 "https://api.spiget.org/v2/status", headers=headers
             ) as r:

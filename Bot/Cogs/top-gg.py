@@ -29,21 +29,22 @@ class TopGGV1(commands.Cog):
             async with session.get(
                 f"https://top.gg/api/bots/{bot_id}", headers=headers
             ) as r:
-                getOneBotInfo = await r.json()
+                getOneBotInfo = await r.content.read()
+                getOneBotInfoMain = orjson.loads(getOneBotInfo)
                 try:
                     embedVar = discord.Embed(
-                        title=getOneBotInfo["username"],
+                        title=getOneBotInfoMain["username"],
                         color=discord.Color.from_rgb(191, 242, 255),
                     )
                     embedVar.description = (
-                        str(getOneBotInfo["longdesc"])
+                        str(getOneBotInfoMain["longdesc"])
                         .replace("\r", "")
                         .replace("<div align=center>", "")
                         .replace("<div align=left>", "")
                         .replace("<div align=right>", "")
                     )
                     excludedKeys = {"longdesc", "lib"}
-                    for key, val in getOneBotInfo.items():
+                    for key, val in getOneBotInfoMain.items():
                         if key not in excludedKeys:
                             embedVar.add_field(
                                 name=key, value=str(val).replace("'", ""), inline=True
@@ -75,9 +76,10 @@ class TopGGV2(commands.Cog):
             async with session.get(
                 f"https://top.gg/api/users/{user_id}", headers=headers
             ) as response:
-                user = await response.json()
+                user = await response.content.read()
+                userMain = orjson.loads(user)
                 try:
-                    if "error" in user:
+                    if "error" in userMain:
                         embed = discord.Embed()
                         embed.description = (
                             "Sorry, but the user could not be found. Please try again"
@@ -86,16 +88,16 @@ class TopGGV2(commands.Cog):
                             text="Tip: Try finding a user on the Top.gg Disord Server"
                         )
                         embed.add_field(
-                            name="Reason", value=user["error"], inline=True)
+                            name="Reason", value=userMain["error"], inline=True)
                         await ctx.respond(embed=embed)
                     else:
                         embedVar = discord.Embed(
-                            title=user["username"],
+                            title=userMain["username"],
                             color=discord.Color.from_rgb(191, 242, 255),
                         )
-                        embedVar.description = user["bio"]
+                        embedVar.description = userMain["bio"]
                         excludedKeys = {"bio"}
-                        for key, val in user.items():
+                        for key, val in userMain.items():
                             if key not in excludedKeys:
                                 embedVar.add_field(
                                     name=key, value=val, inline=True)

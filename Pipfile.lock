@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5cf3a6fac99f70023e593625a8690c0c76a851b752f2fae2fd63fb7148a5fefe"
+            "sha256": "646321bdb36a365bc843cf1d029c91cb708d13cc56ba4658c3c7a621163ca8d1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -130,7 +130,7 @@
                 "sha256:01c7bf666359b4967d2cda0000cc2e4af16a0ae098cbffcb8472fb9e8ad6585b",
                 "sha256:6ebb3d106c12920aaae42ccb6f787ef5eefdcdd166ea3d628fa8476abe712144"
             ],
-            "markers": "python_version >= '3.5'",
+            "markers": "python_full_version >= '3.5.0'",
             "version": "==1.10"
         },
         "async-timeout": {
@@ -382,7 +382,7 @@
                 "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597",
                 "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"
             ],
-            "markers": "python_version >= '3.5'",
+            "markers": "python_full_version >= '3.5.0'",
             "version": "==2.0.12"
         },
         "frozenlist": {
@@ -782,17 +782,6 @@
                 "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"
             ],
             "version": "==2.21"
-        },
-        "pyjion": {
-            "hashes": [
-                "sha256:17e4c5b3a6a51117bae0d54baa62eb59dbc7158c5dfc675882a2214f4d51d212",
-                "sha256:6f34835879dd9c7e78c027f9336e058947f3d9d6e77edec43ced0abfb039fee6",
-                "sha256:91af971a7a3a368e8f54145cf0716e7f32a9f7b577612bfd857cf3cb169799b4",
-                "sha256:cb6e4c82fb11508b6fb507488fc658c918d73e7e2722b175ad6e121221dfa96d",
-                "sha256:e80141d480d0e969bde174ecc385f0b7d0f1217b176ed4268eae5b74261611e4"
-            ],
-            "index": "pypi",
-            "version": "==1.2.6"
         },
         "pynacl": {
             "hashes": [

@@ -29,9 +29,10 @@ class hypixel_api(commands.Cog):
             async with session.get(
                 "https://api.hypixel.net/player", params=params
             ) as r:
-                player = await r.json()
+                player = await r.content.read()
+                playerMain = orjson.loads(player)
                 try:
-                    if str(player["success"]) == "True":
+                    if str(playerMain["success"]) == "True":
                         discord_embed = discord.Embed(
                             title="Player Info",
                             color=discord.Color.from_rgb(186, 244, 255),
@@ -57,7 +58,7 @@ class hypixel_api(commands.Cog):
                             "achievementRewardsNew",
                             "adsense_tokens",
                         ]
-                        for key, value in player["player"].items():
+                        for key, value in playerMain["player"].items():
                             if key not in filter:
                                 discord_embed.add_field(
                                     name=key, value=value, inline=True
@@ -67,10 +68,10 @@ class hypixel_api(commands.Cog):
                         embedVar = discord.Embed()
                         embedVar.description = "The query was not successful"
                         embedVar.add_field(
-                            name="Success", value=player["success"], inline=True
+                            name="Success", value=playerMain["success"], inline=True
                         )
                         embedVar.add_field(
-                            name="Cause", value=player["cause"], inline=True
+                            name="Cause", value=playerMain["cause"], inline=True
                         )
                         embedVar.add_field(
                             name="HTTP Response Status", value=r.status, inline=True
@@ -100,17 +101,18 @@ class hypixel_player_count(commands.Cog):
             async with session.get(
                 "https://api.hypixel.net/counts", params=params
             ) as response:
-                status = await response.json()
+                status = await response.content.read()
+                statusMain = orjson.loads(status)
+                print(statusMain)
                 try:
-                    if str(status["success"]) == "True":
-                        embedVar = discord.Embed(
-                            title="Games Player Count",
-                            color=discord.Color.from_rgb(186, 193, 255),
-                        )
-                        for k, v in status["games"].items():
-                            embedVar.add_field(
-                                name=k, value=v["players"], inline=True)
-                        await ctx.respond(embed=embedVar)
+                    embedVar = discord.Embed(
+                        title="Games Player Count",
+                        color=discord.Color.from_rgb(186, 193, 255),
+                    )
+                    for k, v in statusMain["games"].items():
+                        embedVar.add_field(
+                            name=k, value=v["players"], inline=True)
+                    await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The command broke. Please try again."
@@ -136,19 +138,20 @@ class hypixel_status(commands.Cog):
             async with session.get(
                 "https://api.hypixel.net/status", params=params
             ) as rep:
-                player_statusv3 = await rep.json()
+                player_statusv3 = await rep.content.read()
+                playerStatusMain = orjson.loads(player_statusv3)
                 try:
-                    if str(player_statusv3["success"]) == "True":
+                    if str(playerStatusMain["success"]) == "True":
                         filterKeys = ["session"]
                         embedVar = discord.Embed(
                             title="Player Status",
                             color=discord.Color.from_rgb(222, 222, 222),
                         )
-                        for keys, value in player_statusv3.items():
+                        for keys, value in playerStatusMain.items():
                             if keys not in filterKeys:
                                 embedVar.add_field(
                                     name=keys, value=value, inline=True)
-                        for k, v in player_statusv3["session"].items():
+                        for k, v in playerStatusMain["session"].items():
                             embedVar.add_field(name=k, value=v, inline=True)
                         await ctx.respond(embed=embedVar)
                     else:
@@ -156,11 +159,11 @@ class hypixel_status(commands.Cog):
                         embedVar.description = "The query was not successful"
                         embedVar.add_field(
                             name="Success",
-                            value=player_statusv3["success"],
+                            value=playerStatusMain["success"],
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Cause", value=player_statusv3["cause"], inline=True
+                            name="Cause", value=playerStatusMain["cause"], inline=True
                         )
                         embedVar.add_field(
                             name="HTTP Reponse Status", value=rep.status, inline=True
@@ -190,15 +193,16 @@ class networkPunishments(commands.Cog):
             async with session.get(
                 "https://api.hypixel.net/punishmentstats", params=params
             ) as r:
-                stats = await r.json()
+                stats = await r.content.read()
+                statsMain = orjson.loads(stats)
                 try:
                     embedVar = discord.Embed(
                         title="Total Amounts of Punishments Given",
                         color=discord.Color.from_rgb(186, 193, 255),
                     )
-                    if str(stats["success"]) == "True":
+                    if str(statsMain["success"]) == "True":
                         filter = ["success"]
-                        for keys, value in stats.items():
+                        for keys, value in statsMain.items():
                             if keys not in filter:
                                 embedVar.add_field(
                                     name=keys, value=value, inline=True)
@@ -206,13 +210,13 @@ class networkPunishments(commands.Cog):
                     else:
                         embedVar.description = "The results didn't come through..."
                         embedVar.add_field(
-                            name="Success", value=stats["success"], inline=True
+                            name="Success", value=statsMain["success"], inline=True
                         )
                         embedVar.add_field(
-                            name="Cause", value=stats["cause"], inline=True
+                            name="Cause", value=statsMain["cause"], inline=True
                         )
                         embedVar.add_field(
-                            name="HTTP Reponse Status", value=r.status, inline=True
+                            name="HTTP Response Status", value=r.status, inline=True
                         )
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
@@ -221,7 +225,7 @@ class networkPunishments(commands.Cog):
                     embedException.add_field(
                         name="Reason", value=e, inline=True)
                     embedException.add_field(
-                        name="HTTP Reponse Status", value=r.status, inline=True
+                        name="HTTP Response Status", value=r.status, inline=True
                     )
                     await ctx.respond(embed=embedException)
 

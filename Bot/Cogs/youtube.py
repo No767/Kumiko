@@ -37,7 +37,8 @@ class YoutubeV1(commands.Cog):
             async with session.get(
                 "https://www.googleapis.com/youtube/v3/search", params=params
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
                 try:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(212, 255, 223)
@@ -50,7 +51,7 @@ class YoutubeV1(commands.Cog):
                         "description",
                         "publishTime",
                     ]
-                    for dictItem in data["items"]:
+                    for dictItem in dataMain["items"]:
                         for i, values in dictItem["snippet"]["thumbnails"].items():
                             if i not in sizeFilter:
                                 embedVar.set_image(url=values["url"])
@@ -100,8 +101,9 @@ class YoutubeV2(commands.Cog):
             async with session.get(
                 "https://www.googleapis.com/youtube/v3/search", params=search_params
             ) as response:
-                search_data = await response.json()
-                channel_id = search_data["items"][0]["id"]["channelId"]
+                search_data = await response.content.read()
+                searchDataMain = orjson.loads(search_data)
+                channel_id = searchDataMain["items"][0]["id"]["channelId"]
                 params = {
                     "key": YouTube_API_Key,
                     "part": "snippet,statistics",
@@ -110,7 +112,8 @@ class YoutubeV2(commands.Cog):
                 async with session.get(
                     "https://www.googleapis.com/youtube/v3/channels", params=params
                 ) as re:
-                    data = await re.json()
+                    data = await re.content.read()
+                    dataMain3 = orjson.loads(data)
                     try:
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 0, 0)
@@ -123,7 +126,7 @@ class YoutubeV2(commands.Cog):
                             "thumbnails",
                             "localized",
                         ]
-                        for dictItem in data["items"]:
+                        for dictItem in dataMain3["items"]:
                             for key, val in dictItem.items():
                                 if key not in filter:
                                     embedVar.add_field(
@@ -176,8 +179,9 @@ class YoutubeV3(commands.Cog):
             async with session.get(
                 "https://www.googleapis.com/youtube/v3/search", params=search_params
             ) as response2:
-                search_data = await response2.json()
-                channel_id = search_data["items"][0]["id"]["channelId"]
+                search_data = await response2.content.read()
+                searchDataMain = orjson.loads(search_data)
+                channel_id = searchDataMain["items"][0]["id"]["channelId"]
                 main_params = {
                     "key": YouTube_API_Key,
                     "part": "snippet,contentDetails",
@@ -188,7 +192,8 @@ class YoutubeV3(commands.Cog):
                     "https://www.googleapis.com/youtube/v3/playlists",
                     params=main_params,
                 ) as r2:
-                    data = await r2.json()
+                    data = await r2.content.read()
+                    dataMain = orjson.loads(data)
                     try:
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 224, 224)
@@ -208,7 +213,7 @@ class YoutubeV3(commands.Cog):
                             "description",
                         ]
                         videoFilter = ["default", "medium", "high", "standard"]
-                        for dictItems in data["items"]:
+                        for dictItems in dataMain["items"]:
                             for k, v in dictItems.items():
                                 if k not in filterList:
                                     embedVar.add_field(
@@ -264,17 +269,18 @@ class YoutubeV4(commands.Cog):
             async with session.get(
                 "https://www.googleapis.com/youtube/v3/commentThreads", params=params
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain4 = orjson.loads(data)
                 try:
                     if r.status == 403:
                         embedVar = discord.Embed()
                         embedVar.description = "Sadly this video or channel has disabled comments, thus no comments can be show. Please try again..."
                         embedVar.add_field(
-                            name="Error", value=data["error"]["message"], inline=True
+                            name="Error", value=dataMain4["error"]["message"], inline=True
                         )
                         embedVar.add_field(
                             name="Reason",
-                            value=data["error"]["errors"][0]["reason"],
+                            value=dataMain4["error"]["errors"][0]["reason"],
                             inline=True,
                         )
                         await ctx.respond(embed=embedVar)
@@ -310,7 +316,7 @@ class YoutubeV4(commands.Cog):
                             "authorChannelUrl",
                         ]
 
-                        for dictVal in data["items"]:
+                        for dictVal in dataMain4["items"]:
                             embedVar.title = dictVal["snippet"]["topLevelComment"][
                                 "snippet"
                             ]["authorDisplayName"]
@@ -370,14 +376,15 @@ class YoutubeV5(commands.Cog):
             async with session.get(
                 "https://www.googleapis.com/youtube/v3/videos", params=params
             ) as another_response:
-                data = await another_response.json()
+                data = await another_response.content.read()
+                dataMain5 = orjson.loads(data)
                 try:
                     embed = discord.Embed(
                         color=discord.Color.from_rgb(255, 0, 0))
                     snippetFilter = ["title", "description",
                                      "thumbnails", "localized"]
                     picFilter = ["default", "medium", "high", "standard"]
-                    for items in data["items"]:
+                    for items in dataMain5["items"]:
                         for keys, val in items["snippet"].items():
                             if keys not in snippetFilter:
                                 embed.add_field(

@@ -32,17 +32,18 @@ class TwitterV1(commands.Cog):
                 headers=headers,
                 params=params,
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
 
                 try:
-                    if data["statuses"] is None:
+                    if dataMain["statuses"] is None:
                         embedVar = discord.Embed()
                         embedVar.description = (
                             "Sadly there are no tweets from this user."
                         )
                         embedVar.add_field(
                             name="Result Count",
-                            value=data["meta"]["result_count"],
+                            value=dataMain["meta"]["result_count"],
                             inline=True,
                         )
                         await ctx.respond(embed=embedVar)
@@ -75,7 +76,7 @@ class TwitterV1(commands.Cog):
                             "retweeted",
                             "lang",
                         }
-                        for dictItem in data["statuses"]:
+                        for dictItem in dataMain["statuses"]:
                             if "extended_entities" in dictItem:
                                 for keys, val in dictItem.items():
                                     if keys not in excludedKeys:
@@ -142,7 +143,8 @@ class TwitterV2(commands.Cog):
                 headers=headers,
                 params=params,
             ) as resp:
-                data2 = await resp.json()
+                data2 = await resp.content.read()
+                dataMain2 = orjson.loads(data2)
                 itemFilter = {
                     "profile_image_url_https",
                     "id",
@@ -174,7 +176,7 @@ class TwitterV2(commands.Cog):
                 }
                 try:
                     embedVar = discord.Embed()
-                    for userItem in data2:
+                    for userItem in dataMain2:
                         if "profile_banner_url" in userItem:
                             for keys, val in userItem.items():
                                 if keys not in itemFilter:

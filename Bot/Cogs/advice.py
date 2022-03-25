@@ -3,7 +3,6 @@ import asyncio
 import aiohttp
 import discord
 import orjson
-import pyjion
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
@@ -13,8 +12,6 @@ class advice_slip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    pyjion.enable()
-
     @slash_command(
         name="advice",
         description="Gives some advice from Adviceslip",
@@ -23,7 +20,7 @@ class advice_slip(commands.Cog):
     async def adviceSlip(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.adviceslip.com/advice") as r:
-                advice_slip = await r.text()
+                advice_slip = await r.content.read()
                 advice_slip_formatted = orjson.loads(advice_slip)
                 try:
                     embedVar = discord.Embed(
@@ -42,8 +39,6 @@ class advice_slip(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    pyjion.disable()
 
 
 def setup(bot):
