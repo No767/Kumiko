@@ -1,0 +1,2223 @@
+From ce11e35d2b32fa7cafec168df6f7a67e2924823a Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Thu, 24 Mar 2022 21:36:51 -0700
+Subject: [PATCH] Use AIOHTTP Streams API Instead of JSON Response Data
+
+---
+ Bot/Cogs/advice.py      |   7 +-
+ Bot/Cogs/deviantart.py  |  87 ++++----
+ Bot/Cogs/hypixel.py     |  60 +++---
+ Bot/Cogs/jikan.py       |  44 ++--
+ Bot/Cogs/jisho.py       |   9 +-
+ Bot/Cogs/mangadex.py    |  68 +++---
+ Bot/Cogs/mcsrvstats.py  |  40 ++--
+ Bot/Cogs/modrinth.py    |  64 +++---
+ Bot/Cogs/openai-gpt3.py |  16 +-
+ Bot/Cogs/spiget.py      |  23 +-
+ Bot/Cogs/tenor.py       |  37 ++--
+ Bot/Cogs/top-gg.py      |  22 +-
+ Bot/Cogs/twitter.py     | 454 ++++++++++++++++++++--------------------
+ Bot/Cogs/version.py     |   2 +-
+ Bot/Cogs/waifu-pics.py  |   5 +-
+ Bot/Cogs/youtube.py     |  39 ++--
+ Pipfile                 |   1 -
+ Pipfile.lock            |  17 +-
+ 18 files changed, 517 insertions(+), 478 deletions(-)
+
+diff --git a/Bot/Cogs/advice.py b/Bot/Cogs/advice.py
+index f409807..d5757c4 100644
+--- a/Bot/Cogs/advice.py
++++ b/Bot/Cogs/advice.py
+@@ -3,7 +3,6 @@ import asyncio
+ import aiohttp
+ import discord
+ import orjson
+-import pyjion
+ import uvloop
+ from discord.commands import slash_command
+ from discord.ext import commands
+@@ -13,8 +12,6 @@ class advice_slip(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    pyjion.enable()
+-
+     @slash_command(
+         name="advice",
+         description="Gives some advice from Adviceslip",
+@@ -23,7 +20,7 @@ class advice_slip(commands.Cog):
+     async def adviceSlip(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get("https://api.adviceslip.com/advice") as r:
+-                advice_slip = await r.text()
++                advice_slip = await r.content.read()
+                 advice_slip_formatted = orjson.loads(advice_slip)
+                 try:
+                     embedVar = discord.Embed(
+@@ -43,8 +40,6 @@ class advice_slip(commands.Cog):
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+-    pyjion.disable()
+-
+ 
+ def setup(bot):
+     bot.add_cog(advice_slip(bot))
+diff --git a/Bot/Cogs/deviantart.py b/Bot/Cogs/deviantart.py
+index 07b849c..e58f9bc 100644
+--- a/Bot/Cogs/deviantart.py
++++ b/Bot/Cogs/deviantart.py
+@@ -62,7 +62,8 @@ class DeviantArtV1(commands.Cog):
+                 f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}",
+                 params=params,
+             ) as r:
+-                deviation = await r.json()
++                deviation = await r.content.read()
++                deviationMain = orjson.loads(deviation)
+                 embedVar = discord.Embed(
+                     color=discord.Color.from_rgb(255, 214, 214))
+                 try:
+@@ -79,21 +80,21 @@ class DeviantArtV1(commands.Cog):
+                         ]
+                         authorFilterMain = [
+                             "type", "is_subscribed", "usericon"]
+-                        for keys, values in deviation.items():
++                        for keys, values in deviationMain.items():
+                             if keys not in filter:
+                                 embedVar.add_field(
+                                     name=keys, value=values, inline=True)
+-                        for k, v in deviation["author"].items():
++                        for k, v in deviationMain["author"].items():
+                             if k not in authorFilterMain:
+                                 embedVar.add_field(
+                                     name=k, value=v, inline=True)
+-                        for item, res in deviation["stats"].items():
++                        for item, res in deviationMain["stats"].items():
+                             embedVar.add_field(
+                                 name=item, value=res, inline=True)
+-                        embedVar.title = deviation["title"]
+-                        embedVar.set_image(url=deviation["content"]["src"])
++                        embedVar.title = deviationMain["title"]
++                        embedVar.set_image(url=deviationMain["content"]["src"])
+                         embedVar.set_thumbnail(
+-                            url=deviation["author"]["usericon"])
++                            url=deviationMain["author"]["usericon"])
+                         await ctx.respond(embed=embedVar)
+                     else:
+                         embedVar = discord.Embed(
+@@ -101,15 +102,15 @@ class DeviantArtV1(commands.Cog):
+                         )
+                         embedVar.description = "The query failed. Please try again"
+                         embedVar.add_field(
+-                            name="Error", value=deviation["error"], inline=True
++                            name="Error", value=deviationMain["error"], inline=True
+                         )
+                         embedVar.add_field(
+                             name="Error Description",
+-                            value=deviation["error_description"],
++                            value=deviationMain["error_description"],
+                             inline=True,
+                         )
+                         embedVar.add_field(
+-                            name="Status", value=deviation["status"], inline=True
++                            name="Status", value=deviationMain["status"], inline=True
+                         )
+                         await ctx.respond(embed=embedVar)
+                 except Exception as e:
+@@ -119,15 +120,15 @@ class DeviantArtV1(commands.Cog):
+                     embedVar.description = "The query failed. Please try again"
+                     embedVar.add_field(name="Reason", value=e, inline=False)
+                     embedVar.add_field(
+-                        name="Error", value=deviation["error"], inline=True
++                        name="Error", value=deviationMain["error"], inline=True
+                     )
+                     embedVar.add_field(
+                         name="Error Description",
+-                        value=deviation["error_description"],
++                        value=deviationMain["error_description"],
+                         inline=True,
+                     )
+                     embedVar.add_field(
+-                        name="Status", value=deviation["status"], inline=True
++                        name="Status", value=deviationMain["status"], inline=True
+                     )
+                     await ctx.respond(embed=embedVar)
+ 
+@@ -165,7 +166,8 @@ class DeviantArtV2(commands.Cog):
+             async with session.get(
+                 "https://www.deviantart.com/api/v1/oauth2/browse/newest", params=params
+             ) as resp:
+-                art = await resp.json()
++                art = await resp.content.read()
++                artMain = orjson.loads(art)
+                 embedVar = discord.Embed(
+                     color=discord.Color.from_rgb(255, 156, 192))
+                 try:
+@@ -183,7 +185,7 @@ class DeviantArtV2(commands.Cog):
+                         "category_path",
+                     ]
+                     authorFilter = ["type", "is_subscribed", "usericon"]
+-                    for dictItem in art["results"]:
++                    for dictItem in artMain["results"]:
+                         for k, v in dictItem["author"].items():
+                             if k not in authorFilter:
+                                 embedVar.add_field(
+@@ -206,14 +208,14 @@ class DeviantArtV2(commands.Cog):
+                     embedVar.description = "The query failed. Please try again"
+                     embedVar.add_field(name="Reason", value=e, inline=False)
+                     embedVar.add_field(
+-                        name="Error", value=art["error"], inline=True)
++                        name="Error", value=artMain["error"], inline=True)
+                     embedVar.add_field(
+                         name="Error Description",
+-                        value=art["error_description"],
++                        value=artMain["error_description"],
+                         inline=True,
+                     )
+                     embedVar.add_field(
+-                        name="Status", value=art["status"], inline=True)
++                        name="Status", value=artMain["status"], inline=True)
+                     await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+@@ -250,7 +252,8 @@ class DeviantArtV3(commands.Cog):
+             async with session.get(
+                 "https://www.deviantart.com/api/v1/oauth2/browse/popular", params=params
+             ) as response:
+-                pop = await response.json()
++                pop = await response.content.read()
++                popMain = orjson.loads(pop)
+                 embedVar = discord.Embed(
+                     color=discord.Color.from_rgb(255, 250, 181))
+                 try:
+@@ -267,7 +270,7 @@ class DeviantArtV3(commands.Cog):
+                         "category_path",
+                     ]
+                     authorFilter = ["type", "is_subscribed", "usericon"]
+-                    for dictItem2 in pop["results"]:
++                    for dictItem2 in popMain["results"]:
+                         for k, v in dictItem2["author"].items():
+                             if k not in authorFilter:
+                                 embedVar.add_field(
+@@ -294,14 +297,14 @@ class DeviantArtV3(commands.Cog):
+                     embedVar.description = "The query failed. Please try again"
+                     embedVar.add_field(name="Reason", value=e, inline=False)
+                     embedVar.add_field(
+-                        name="Error", value=pop["error"], inline=True)
++                        name="Error", value=popMain["error"], inline=True)
+                     embedVar.add_field(
+                         name="Error Description",
+-                        value=pop["error_description"],
++                        value=popMain["error_description"],
+                         inline=True,
+                     )
+                     embedVar.add_field(
+-                        name="Status", value=pop["status"], inline=True)
++                        name="Status", value=popMain["status"], inline=True)
+                     await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+@@ -336,7 +339,8 @@ class DeviantArtV4(commands.Cog):
+             async with session.get(
+                 "https://www.deviantart.com/api/v1/oauth2/browse/tags", params=params
+             ) as rep:
+-                tags = await rep.json()
++                tags = await rep.content.read()
++                tagsMain = orjson.loads(tags)
+                 embedVar = discord.Embed(
+                     color=discord.Color.from_rgb(235, 186, 255))
+                 try:
+@@ -353,7 +357,7 @@ class DeviantArtV4(commands.Cog):
+                         "category_path",
+                     ]
+                     authorFilter3 = ["type", "is_subscribed", "usericon"]
+-                    for dictItem3 in tags["results"]:
++                    for dictItem3 in tagsMain["results"]:
+                         for k, v in dictItem3["author"].items():
+                             if k not in authorFilter3:
+                                 embedVar.add_field(
+@@ -380,14 +384,14 @@ class DeviantArtV4(commands.Cog):
+                     embedVar.description = "The query failed. Please try again"
+                     embedVar.add_field(name="Reason", value=e, inline=False)
+                     embedVar.add_field(
+-                        name="Error", value=tags["error"], inline=True)
++                        name="Error", value=tagsMain["error"], inline=True)
+                     embedVar.add_field(
+                         name="Error Description",
+-                        value=tags["error_description"],
++                        value=tagsMain["error_description"],
+                         inline=True,
+                     )
+                     embedVar.add_field(
+-                        name="Status", value=tags["status"], inline=True)
++                        name="Status", value=tagsMain["status"], inline=True)
+                     await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+@@ -419,7 +423,8 @@ class DeviantArtV5(commands.Cog):
+                 f"https://www.deviantart.com/api/v1/oauth2/user/profile/{user}",
+                 params=params,
+             ) as respon:
+-                users = await respon.json()
++                users = await respon.content.read()
++                usersMain = orjson.loads(users)
+                 usersFilter = [
+                     "bio",
+                     "tagline",
+@@ -431,36 +436,36 @@ class DeviantArtV5(commands.Cog):
+                 ]
+                 embedVar = discord.Embed()
+                 try:
+-                    if "cover_deviation" in users:
+-                        for keys, value in users.items():
++                    if "cover_deviation" in usersMain:
++                        for keys, value in usersMain.items():
+                             if keys not in usersFilter:
+                                 embedVar.add_field(
+                                     name=keys, value=f"[{value}]", inline=True
+                                 )
+-                        for k, v in users["stats"].items():
++                        for k, v in usersMain["stats"].items():
+                             embedVar.add_field(
+                                 name=k, value=f"[{v}]", inline=True)
+-                        embedVar.title = users["user"]["username"]
+-                        embedVar.description = f"{users['tagline']}\n\n{users['bio']}"
+-                        embedVar.set_thumbnail(url=users["user"]["usericon"])
++                        embedVar.title = usersMain["user"]["username"]
++                        embedVar.description = f"{usersMain['tagline']}\n\n{usersMain['bio']}"
++                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
+                         embedVar.set_image(
+-                            url=users["cover_deviation"]["cover_deviation"]["content"][
++                            url=usersMain["cover_deviation"]["cover_deviation"]["content"][
+                                 "src"
+                             ]
+                         )
+                         await ctx.respond(embed=embedVar)
+                     else:
+-                        for keys1, value1 in users.items():
++                        for keys1, value1 in usersMain.items():
+                             if keys1 not in usersFilter:
+                                 embedVar.add_field(
+                                     name=keys1, value=f"[{value1}]", inline=True
+                                 )
+-                        for k1, v1 in users["stats"].items():
++                        for k1, v1 in usersMain["stats"].items():
+                             embedVar.add_field(
+                                 name=k1, value=f"[{v1}]", inline=True)
+-                        embedVar.title = users["user"]["username"]
+-                        embedVar.description = f"{users['tagline']}\n\n{users['bio']}"
+-                        embedVar.set_thumbnail(url=users["user"]["usericon"])
++                        embedVar.title = usersMain["user"]["username"]
++                        embedVar.description = f"{usersMain['tagline']}\n\n{usersMain['bio']}"
++                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
+                         await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed(
+diff --git a/Bot/Cogs/hypixel.py b/Bot/Cogs/hypixel.py
+index 619cfb2..453c758 100644
+--- a/Bot/Cogs/hypixel.py
++++ b/Bot/Cogs/hypixel.py
+@@ -29,9 +29,10 @@ class hypixel_api(commands.Cog):
+             async with session.get(
+                 "https://api.hypixel.net/player", params=params
+             ) as r:
+-                player = await r.json()
++                player = await r.content.read()
++                playerMain = orjson.loads(player)
+                 try:
+-                    if str(player["success"]) == "True":
++                    if str(playerMain["success"]) == "True":
+                         discord_embed = discord.Embed(
+                             title="Player Info",
+                             color=discord.Color.from_rgb(186, 244, 255),
+@@ -57,7 +58,7 @@ class hypixel_api(commands.Cog):
+                             "achievementRewardsNew",
+                             "adsense_tokens",
+                         ]
+-                        for key, value in player["player"].items():
++                        for key, value in playerMain["player"].items():
+                             if key not in filter:
+                                 discord_embed.add_field(
+                                     name=key, value=value, inline=True
+@@ -67,10 +68,10 @@ class hypixel_api(commands.Cog):
+                         embedVar = discord.Embed()
+                         embedVar.description = "The query was not successful"
+                         embedVar.add_field(
+-                            name="Success", value=player["success"], inline=True
++                            name="Success", value=playerMain["success"], inline=True
+                         )
+                         embedVar.add_field(
+-                            name="Cause", value=player["cause"], inline=True
++                            name="Cause", value=playerMain["cause"], inline=True
+                         )
+                         embedVar.add_field(
+                             name="HTTP Response Status", value=r.status, inline=True
+@@ -100,17 +101,18 @@ class hypixel_player_count(commands.Cog):
+             async with session.get(
+                 "https://api.hypixel.net/counts", params=params
+             ) as response:
+-                status = await response.json()
++                status = await response.content.read()
++                statusMain = orjson.loads(status)
++                print(statusMain)
+                 try:
+-                    if str(status["success"]) == "True":
+-                        embedVar = discord.Embed(
+-                            title="Games Player Count",
+-                            color=discord.Color.from_rgb(186, 193, 255),
+-                        )
+-                        for k, v in status["games"].items():
+-                            embedVar.add_field(
+-                                name=k, value=v["players"], inline=True)
+-                        await ctx.respond(embed=embedVar)
++                    embedVar = discord.Embed(
++                        title="Games Player Count",
++                        color=discord.Color.from_rgb(186, 193, 255),
++                    )
++                    for k, v in statusMain["games"].items():
++                        embedVar.add_field(
++                            name=k, value=v["players"], inline=True)
++                    await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = "The command broke. Please try again."
+@@ -136,19 +138,20 @@ class hypixel_status(commands.Cog):
+             async with session.get(
+                 "https://api.hypixel.net/status", params=params
+             ) as rep:
+-                player_statusv3 = await rep.json()
++                player_statusv3 = await rep.content.read()
++                playerStatusMain = orjson.loads(player_statusv3)
+                 try:
+-                    if str(player_statusv3["success"]) == "True":
++                    if str(playerStatusMain["success"]) == "True":
+                         filterKeys = ["session"]
+                         embedVar = discord.Embed(
+                             title="Player Status",
+                             color=discord.Color.from_rgb(222, 222, 222),
+                         )
+-                        for keys, value in player_statusv3.items():
++                        for keys, value in playerStatusMain.items():
+                             if keys not in filterKeys:
+                                 embedVar.add_field(
+                                     name=keys, value=value, inline=True)
+-                        for k, v in player_statusv3["session"].items():
++                        for k, v in playerStatusMain["session"].items():
+                             embedVar.add_field(name=k, value=v, inline=True)
+                         await ctx.respond(embed=embedVar)
+                     else:
+@@ -156,11 +159,11 @@ class hypixel_status(commands.Cog):
+                         embedVar.description = "The query was not successful"
+                         embedVar.add_field(
+                             name="Success",
+-                            value=player_statusv3["success"],
++                            value=playerStatusMain["success"],
+                             inline=True,
+                         )
+                         embedVar.add_field(
+-                            name="Cause", value=player_statusv3["cause"], inline=True
++                            name="Cause", value=playerStatusMain["cause"], inline=True
+                         )
+                         embedVar.add_field(
+                             name="HTTP Reponse Status", value=rep.status, inline=True
+@@ -190,15 +193,16 @@ class networkPunishments(commands.Cog):
+             async with session.get(
+                 "https://api.hypixel.net/punishmentstats", params=params
+             ) as r:
+-                stats = await r.json()
++                stats = await r.content.read()
++                statsMain = orjson.loads(stats)
+                 try:
+                     embedVar = discord.Embed(
+                         title="Total Amounts of Punishments Given",
+                         color=discord.Color.from_rgb(186, 193, 255),
+                     )
+-                    if str(stats["success"]) == "True":
++                    if str(statsMain["success"]) == "True":
+                         filter = ["success"]
+-                        for keys, value in stats.items():
++                        for keys, value in statsMain.items():
+                             if keys not in filter:
+                                 embedVar.add_field(
+                                     name=keys, value=value, inline=True)
+@@ -206,13 +210,13 @@ class networkPunishments(commands.Cog):
+                     else:
+                         embedVar.description = "The results didn't come through..."
+                         embedVar.add_field(
+-                            name="Success", value=stats["success"], inline=True
++                            name="Success", value=statsMain["success"], inline=True
+                         )
+                         embedVar.add_field(
+-                            name="Cause", value=stats["cause"], inline=True
++                            name="Cause", value=statsMain["cause"], inline=True
+                         )
+                         embedVar.add_field(
+-                            name="HTTP Reponse Status", value=r.status, inline=True
++                            name="HTTP Response Status", value=r.status, inline=True
+                         )
+                         await ctx.respond(embed=embedVar)
+                 except Exception as e:
+@@ -221,7 +225,7 @@ class networkPunishments(commands.Cog):
+                     embedException.add_field(
+                         name="Reason", value=e, inline=True)
+                     embedException.add_field(
+-                        name="HTTP Reponse Status", value=r.status, inline=True
++                        name="HTTP Response Status", value=r.status, inline=True
+                     )
+                     await ctx.respond(embed=embedException)
+ 
+diff --git a/Bot/Cogs/jikan.py b/Bot/Cogs/jikan.py
+index f443b7f..c5b0574 100644
+--- a/Bot/Cogs/jikan.py
++++ b/Bot/Cogs/jikan.py
+@@ -24,7 +24,8 @@ class JikanV1(commands.Cog):
+             async with session.get(
+                 "https://api.jikan.moe/v4/anime/", params=params
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
+                 filterList = [
+                     "images",
+                     "title",
+@@ -42,7 +43,7 @@ class JikanV1(commands.Cog):
+                     "trailer",
+                 ]
+                 try:
+-                    for dictItem in data["data"]:
++                    for dictItem in dataMain["data"]:
+                         embedVar = discord.Embed()
+                         embedVar.title = dictItem["title"]
+                         embedVar.description = dictItem["synopsis"]
+@@ -102,7 +103,8 @@ class JikanV2(commands.Cog):
+             async with session.get(
+                 "https://api.jikan.moe/v4/manga", params=params
+             ) as response:
+-                data = await response.json()
++                data = await response.content.read()
++                dataMain2 = orjson.loads(data)
+                 filterList = [
+                     "title",
+                     "images",
+@@ -117,7 +119,7 @@ class JikanV2(commands.Cog):
+                     "synopsis",
+                 ]
+                 try:
+-                    for dataItem in data["data"]:
++                    for dataItem in dataMain2["data"]:
+                         embedVar = discord.Embed()
+                         embedVar.title = dataItem["title"]
+                         embedVar.description = dataItem["synopsis"]
+@@ -238,7 +240,8 @@ class JikanV4(commands.Cog):
+     async def mangaRandom(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get("https://api.jikan.moe/v4/random/manga") as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain3 = orjson.loads(data)
+                 mangaFilter = [
+                     "title",
+                     "published",
+@@ -255,9 +258,9 @@ class JikanV4(commands.Cog):
+                 ]
+                 embedVar = discord.Embed()
+                 try:
+-                    embedVar.title = data["data"]["title"]
+-                    embedVar.description = data["data"]["synopsis"]
+-                    for key, value in data["data"].items():
++                    embedVar.title = dataMain3["data"]["title"]
++                    embedVar.description = dataMain3["data"]["synopsis"]
++                    for key, value in dataMain3["data"].items():
+                         if key not in mangaFilter:
+                             embedVar.add_field(
+                                 name=str(key).replace("_", " ").capitalize(),
+@@ -265,7 +268,7 @@ class JikanV4(commands.Cog):
+                                 inline=True,
+                             )
+                     embedVar.set_image(
+-                        url=data["data"]["images"]["jpg"]["large_image_url"]
++                        url=dataMain3["data"]["images"]["jpg"]["large_image_url"]
+                     )
+                     await ctx.respond(embed=embedVar)
+                 except Exception as e:
+@@ -297,7 +300,8 @@ class JikanV5(commands.Cog):
+                 async with session.get(
+                     f"https://api.jikan.moe/v4/seasons/{year}/{season}"
+                 ) as response:
+-                    seasons = await response.json()
++                    seasons = await response.content.read()
++                    seasonsMain = orjson.loads(seasons)
+                     mainSeasonsFilter = [
+                         "images",
+                         "trailer",
+@@ -315,7 +319,7 @@ class JikanV5(commands.Cog):
+                         "broadcast",
+                     ]
+                     embedVar = discord.Embed()
+-                    for dictItem in seasons["data"]:
++                    for dictItem in seasonsMain["data"]:
+                         embedVar.title = dictItem["title"]
+                         embedVar.description = dictItem["synopsis"]
+                         for k, v in dictItem.items():
+@@ -357,7 +361,8 @@ class JikanV6(commands.Cog):
+             async with session.get(
+                 "https://api.jikan.moe/v4/seasons/upcoming"
+             ) as full_response:
+-                data = await full_response.json()
++                data = await full_response.content.read()
++                dataMain5 = orjson.loads(data)
+                 mainFilter = [
+                     "broadcast",
+                     "title",
+@@ -374,7 +379,7 @@ class JikanV6(commands.Cog):
+                     "broadcast",
+                     "aired",
+                 ]
+-                for dictItem in data["data"]:
++                for dictItem in dataMain5["data"]:
+                     embedVar = discord.Embed()
+                     embedVar.title = dictItem["title"]
+                     embedVar.description = dictItem["synopsis"]
+@@ -405,15 +410,16 @@ class JikanV7(commands.Cog):
+     async def userLookup(self, ctx, *, username: Option(str, "Username of the user")):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain6 = orjson.loads(data)
+                 userFilter = ["username", "images"]
+                 try:
+                     embedVar = discord.Embed()
+-                    embedVar.title = data["data"]["username"]
++                    embedVar.title = dataMain6["data"]["username"]
+                     embedVar.set_thumbnail(
+-                        url=data["data"]["images"]["jpg"]["image_url"]
++                        url=dataMain6["data"]["images"]["jpg"]["image_url"]
+                     )
+-                    for key, value in data["data"].items():
++                    for key, value in dataMain6["data"].items():
+                         if key not in userFilter:
+                             embedVar.add_field(
+                                 name=key, value=value, inline=True)
+@@ -432,6 +438,6 @@ def setup(bot):
+     bot.add_cog(JikanV2(bot))
+     bot.add_cog(JikanV3(bot))
+     bot.add_cog(JikanV4(bot))
+-    bot.add_cog(JikanV5(bot))
+-    bot.add_cog(JikanV6(bot))
++    # bot.add_cog(JikanV5(bot)) # Disabled due to spam issues...
++    # bot.add_cog(JikanV6(bot))
+     bot.add_cog(JikanV7(bot))
+diff --git a/Bot/Cogs/jisho.py b/Bot/Cogs/jisho.py
+index 6d036b0..e68bdd8 100644
+--- a/Bot/Cogs/jisho.py
++++ b/Bot/Cogs/jisho.py
+@@ -7,11 +7,11 @@ import uvloop
+ from discord.commands import Option, slash_command
+ from discord.ext import commands
+ 
+-
+ class jishoDict(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
++    
+     @slash_command(
+         name="jisho",
+         description="Searches for words on Jisho",
+@@ -30,7 +30,8 @@ class jishoDict(commands.Cog):
+             async with session.get(
+                 "https://jisho.org/api/v1/search/words", params=params
+             ) as r:
+-                jisho = await r.json()
++                jisho = await r.content.read()
++                jishoMain = orjson.loads(jisho)
+                 engDefFilter = [
+                     "parts_of_speech",
+                     "links",
+@@ -50,7 +51,7 @@ class jishoDict(commands.Cog):
+                 ]
+                 try:
+                     embedVar = discord.Embed()
+-                    for dictItem in jisho["data"]:
++                    for dictItem in jishoMain["data"]:
+                         for jpnItem in dictItem["japanese"]:
+                             totalJpnItem = [value for keys,
+                                             value in jpnItem.items()]
+@@ -97,6 +98,8 @@ class jishoDict(commands.Cog):
+                     await ctx.respond(embed=embedError)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++    
++    
+ 
+ 
+ def setup(bot):
+diff --git a/Bot/Cogs/mangadex.py b/Bot/Cogs/mangadex.py
+index 0f767f4..29c9b28 100644
+--- a/Bot/Cogs/mangadex.py
++++ b/Bot/Cogs/mangadex.py
+@@ -30,7 +30,8 @@ class MangaDexV1(commands.Cog):
+                 async with session.get(
+                     f"https://api.mangadex.org/manga/", params=params
+                 ) as r:
+-                    data = await r.json()
++                    data = await r.content.read()
++                    dataMain = orjson.loads(data)
+                     embedVar = discord.Embed()
+                     mangaFilter = [
+                         "tags",
+@@ -41,7 +42,7 @@ class MangaDexV1(commands.Cog):
+                         "background",
+                     ]
+                     try:
+-                        for dictItem in data["data"]:
++                        for dictItem in dataMain["data"]:
+                             mangaID = dictItem["id"]
+                             mangaTitle = [
+                                 val6
+@@ -136,7 +137,8 @@ class MangaDexV2(commands.Cog):
+     async def manga_random(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get("https://api.mangadex.org/manga/random") as r:
+-                data = await r.json()
++                data2 = await r.content.read()
++                dataMain2 = orjson.loads(data2)
+                 mangaFilter2 = [
+                     "tags",
+                     "title",
+@@ -158,34 +160,34 @@ class MangaDexV2(commands.Cog):
+                     else:
+                         mangaTitle2 = [
+                             val8
+-                            for keys8, val8 in data["data"]["attributes"][
++                            for keys8, val8 in dataMain2["data"]["attributes"][
+                                 "title"
+                             ].items()
+                         ]
+                         mainDesc2 = [
+                             val9
+-                            for keys9, val9 in data["data"]["attributes"][
++                            for keys9, val9 in dataMain2["data"]["attributes"][
+                                 "description"
+                             ].items()
+                         ]
+-                        for titles in data["data"]["attributes"]["altTitles"]:
++                        for titles in dataMain2["data"]["attributes"]["altTitles"]:
+                             allAltTitles = [value for keys,
+                                             value in titles.items()]
+-                        for k, v in data["data"]["attributes"].items():
++                        for k, v in dataMain2["data"]["attributes"].items():
+                             if k not in mangaFilter2:
+                                 embedVar.add_field(
+                                     name=k, value=v, inline=True)
+-                        for keys, value in data["data"]["attributes"]["links"].items():
++                        for keys, value in dataMain2["data"]["attributes"]["links"].items():
+                             embedVar.add_field(
+                                 name=keys, value=value, inline=True)
+-                        for tagItem in data["data"]["attributes"]["tags"]:
++                        for tagItem in dataMain2["data"]["attributes"]["tags"]:
+                             mainTags = [
+                                 v["name"]["en"]
+                                 for k, v in tagItem.items()
+                                 if k not in tagFilter
+                             ]
+-                        for item in data["data"]["relationships"]:
+-                            mangaID2 = data["data"]["id"]
++                        for item in dataMain2["data"]["relationships"]:
++                            mangaID2 = dataMain2["data"]["id"]
+                             if item["type"] not in ["manga", "author", "artist"]:
+                                 coverArtID2 = item["id"]
+                                 async with session.get(
+@@ -257,17 +259,18 @@ class MangaDexV3(commands.Cog):
+             async with session.get(
+                 "https://api.mangadex.org/group", params=params
+             ) as totally_another_response:
+-                md_data2 = await totally_another_response.json()
++                md_data2 = await totally_another_response.content.read()
++                mdDataMain = orjson.loads(md_data2)
+                 embed2 = discord.Embed()
+                 mdFilter = ["altNames", "description", "name"]
+                 try:
+-                    if md_data2["data"] is None:
++                    if mdDataMain["data"] is None:
+                         embed1 = discord.Embed()
+                         embed1.description = (
+                             "Sorry, but no results were found... Please try again."
+                         )
+                         embed1.add_field(
+-                            name="Total", value=md_data2["total"], inline=True
++                            name="Total", value=mdDataMain["total"], inline=True
+                         )
+                         embed1.add_field(
+                             name="HTTP Status",
+@@ -276,7 +279,7 @@ class MangaDexV3(commands.Cog):
+                         )
+                         await ctx.respond(embed=embed1)
+                     else:
+-                        for dictItem in md_data2["data"]:
++                        for dictItem in mdDataMain["data"]:
+                             embed2.title = dictItem["attributes"]["name"]
+                             embed2.description = dictItem["attributes"]["description"]
+                             for k, v in dictItem["attributes"].items():
+@@ -287,7 +290,7 @@ class MangaDexV3(commands.Cog):
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = (
+-                        f"The query could not be performed. Please try again."
++                        "The query could not be performed. Please try again."
+                     )
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+                     await ctx.respond(embed=embedVar)
+@@ -311,15 +314,16 @@ class MangaDexV4(commands.Cog):
+             async with session.get(
+                 f"https://api.mangadex.org/group/{scanlation_id}"
+             ) as another_response:
+-                payload = await another_response.json()
++                payload = await another_response.content.read()
++                payloadMain = orjson.loads(payload)
+                 try:
+-                    if payload["data"] is None:
++                    if payloadMain["data"] is None:
+                         embed3 = discord.Embed()
+                         embed3.description = (
+                             "Sorry, but no results were found... Please try again."
+                         )
+                         embed3.add_field(
+-                            name="Total", value=payload["total"], inline=True
++                            name="Total", value=payloadMain["total"], inline=True
+                         )
+                         embed3.add_field(
+                             name="HTTP Status",
+@@ -330,18 +334,18 @@ class MangaDexV4(commands.Cog):
+                     else:
+                         embed4 = discord.Embed()
+                         mdFilter2 = ["altNames", "description", "name"]
+-                        embed4.title = payload["data"]["attributes"]["name"]
+-                        embed4.description = payload["data"]["attributes"][
++                        embed4.title = payloadMain["data"]["attributes"]["name"]
++                        embed4.description = payloadMain["data"]["attributes"][
+                             "description"
+                         ]
+-                        for k, v in payload["data"]["attributes"].items():
++                        for k, v in payloadMain["data"]["attributes"].items():
+                             if k not in mdFilter2:
+                                 embed4.add_field(name=k, value=v, inline=True)
+                         await ctx.respond(embed=embed4)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = (
+-                        f"The query could not be performed. Please try again."
++                        "The query could not be performed. Please try again."
+                     )
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+                     await ctx.respond(embed=embedVar)
+@@ -361,24 +365,25 @@ class MangaDexV5(commands.Cog):
+     async def user(self, ctx, *, user_id: Option(str, "The ID of the user")):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get(f"https://api.mangadex.org/user/{user_id}") as rep:
+-                payload = await rep.json()
++                payload = await rep.content.read()
++                payloadMain2 = orjson.loads(payload)
+                 try:
+                     embed = discord.Embed()
+                     mainFilter = ["attributes", "relationships"]
+-                    embed.title = payload["data"]["attributes"]["username"]
+-                    for payloadKeys, payloadValues in payload["data"].items():
++                    embed.title = payloadMain2["data"]["attributes"]["username"]
++                    for payloadKeys, payloadValues in payloadMain2["data"].items():
+                         if payloadKeys not in mainFilter:
+                             embed.add_field(
+                                 name=payloadKeys, value=payloadValues, inline=True
+                             )
+-                    for k, v in payload["data"]["attributes"].items():
++                    for k, v in payloadMain2["data"]["attributes"].items():
+                         if k not in "username":
+                             embed.add_field(name=k, value=v, inline=True)
+                     await ctx.respond(embed=embed)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = (
+-                        f"The query could not be performed. Please try again."
++                        "The query could not be performed. Please try again."
+                     )
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+                     await ctx.respond(embed=embedVar)
+@@ -401,12 +406,13 @@ class MangaDexV6(commands.Cog):
+             async with session.get(
+                 "https://api.mangadex.org/author", params=params
+             ) as author_response:
+-                author_payload = await author_response.json()
++                author_payload = await author_response.content.read()
++                authorPayloadMain = orjson.loads(author_payload)
+                 embedVar = discord.Embed()
+                 try:
+                     authorFilter = ["imageUrl", "name", "biography"]
+                     mainFilterV3 = ["attributes", "relationships", "type"]
+-                    for authorDictItem in author_payload["data"]:
++                    for authorDictItem in authorPayloadMain["data"]:
+                         embedVar.title = authorDictItem["attributes"]["name"]
+                         embedVar.description = authorDictItem["attributes"]["biography"]
+                         for keys, value in authorDictItem.items():
+@@ -424,7 +430,7 @@ class MangaDexV6(commands.Cog):
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = (
+-                        f"The query could not be performed. Please try again."
++                        "The query could not be performed. Please try again."
+                     )
+                     embedVar.add_field(name="Reason", value=e, inline=True)
+                     await ctx.respond(embed=embedVar)
+diff --git a/Bot/Cogs/mcsrvstats.py b/Bot/Cogs/mcsrvstats.py
+index 09afa90..5f893bf 100644
+--- a/Bot/Cogs/mcsrvstats.py
++++ b/Bot/Cogs/mcsrvstats.py
+@@ -3,7 +3,6 @@ import asyncio
+ import aiohttp
+ import discord
+ import orjson
+-import pyjion
+ import uvloop
+ from discord.commands import slash_command
+ from discord.ext import commands
+@@ -13,7 +12,6 @@ class mcsrvstats(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    pyjion.enable()
+ 
+     @slash_command(
+         name="java",
+@@ -23,33 +21,34 @@ class mcsrvstats(commands.Cog):
+     async def java(self, ctx, server: str):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get(f"https://api.mcsrvstat.us/2/{server}") as r:
+-                mcsrv = await r.json()
++                mcsrv = await r.content.read()
++                mcsrvMain = orjson.loads(mcsrv)
+                 image_link = f"https://api.mcsrvstat.us/icon/{server}"
+                 try:
+-                    if str(mcsrv["online"]) == "True":
++                    if str(mcsrvMain["online"]) == "True":
+                         embedVar = discord.Embed(
+                             title="Infomation (Java Edition)", color=0xC27C0E
+                         )
+                         embedVar.description = (
+-                            str(mcsrv["motd"]["clean"])
++                            str(mcsrvMain["motd"]["clean"])
+                             .replace("[", "")
+                             .replace("]", "")
+                             .replace("'", "")
+                         )
+                         excludedKeys = {"debug", "players", "motd", "icon"}
+ 
+-                        for k, v in mcsrv.get("players").items():
++                        for k, v in mcsrvMain.get("players").items():
+                             embedVar.add_field(
+                                 name=str(k).capitalize(), value=v, inline=True
+                             )
+ 
+-                        for key, val in mcsrv.items():
++                        for key, val in mcsrvMain.items():
+                             if key not in excludedKeys:
+                                 embedVar.add_field(
+                                     name=str(key).capitalize(), value=val, inline=True
+                                 )
+ 
+-                        for key1, value in mcsrv.get("debug").items():
++                        for key1, value in mcsrvMain.get("debug").items():
+                             embedVar.add_field(
+                                 name=str(key1).capitalize(), value=value, inline=True
+                             )
+@@ -64,13 +63,13 @@ class mcsrvstats(commands.Cog):
+                             title="Infomation (Java Edition)", color=0xC27C0E
+                         )
+                         excludedKeys = {"debug"}
+-                        for key, val in mcsrv.items():
++                        for key, val in mcsrvMain.items():
+                             if key not in excludedKeys:
+                                 embedVar.add_field(
+                                     name=str(key).capitalize(), value=val, inline=True
+                                 )
+ 
+-                        for keyDict, valueDict in mcsrv.get("debug").items():
++                        for keyDict, valueDict in mcsrvMain.get("debug").items():
+                             embedVar.add_field(
+                                 name=str(keyDict).capitalize(),
+                                 value=valueDict,
+@@ -93,14 +92,13 @@ class mcsrvstats(commands.Cog):
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+-    pyjion.disable()
+ 
+ 
+ class bedrock_mcsrvstats(commands.Cog):
+     def __init__(self, bot):
+         self.bot = bot
+ 
+-    pyjion.enable()
++    ()
+ 
+     @slash_command(
+         name="bedrock",
+@@ -110,31 +108,32 @@ class bedrock_mcsrvstats(commands.Cog):
+     async def bedrock(self, ctx, server: str):
+         async with aiohttp.ClientSession(json_serialize=orjson.loads) as session:
+             async with session.get(f"https://api.mcsrvstat.us/bedrock/2/{server}") as r:
+-                bedmcsrv = await r.json()
++                bedmcsrv = await r.content.read()
++                bedmcsrvMain = orjson.loads(bedmcsrv)
+                 bedimage_link = f"https://api.mcsrvstat.us/icon/{server}"
+                 try:
+-                    if str(bedmcsrv["online"]) == "True":
++                    if str(bedmcsrvMain["online"]) == "True":
+                         embedVar = discord.Embed(
+                             title="Information (Bedrock Edition)", color=0x607D8B
+                         )
+                         embedVar.description = (
+-                            str(bedmcsrv["motd"]["clean"])
++                            str(bedmcsrvMain["motd"]["clean"])
+                             .replace("[", "")
+                             .replace("]", "")
+                             .replace("'", "")
+                         )
+                         excludedKeys = {"debug", "players", "motd"}
+-                        for keys, value in bedmcsrv.get("players").items():
++                        for keys, value in bedmcsrvMain.get("players").items():
+                             embedVar.add_field(
+                                 name=str(keys).capitalize(), value=value, inline=True
+                             )
+-                        for key, val in bedmcsrv.items():
++                        for key, val in bedmcsrvMain.items():
+                             if key not in excludedKeys:
+                                 embedVar.add_field(
+                                     name=str(key).capitalize(), value=val, inline=True
+                                 )
+ 
+-                        for k, v in bedmcsrv.get("debug").items():
++                        for k, v in bedmcsrvMain.get("debug").items():
+                             embedVar.add_field(
+                                 name=str(k).capitalize(), value=v, inline=True
+                             )
+@@ -149,13 +148,13 @@ class bedrock_mcsrvstats(commands.Cog):
+                             title="Information (Bedrock Edition)", color=0x607D8B
+                         )
+                         excludedKeys2 = {"debug"}
+-                        for key2, val2 in bedmcsrv.items():
++                        for key2, val2 in bedmcsrvMain.items():
+                             if key2 not in excludedKeys2:
+                                 embedVar.add_field(
+                                     name=str(key2).capitalize(), value=val2, inline=True
+                                 )
+ 
+-                        for key3, value3 in bedmcsrv.get("debug").items():
++                        for key3, value3 in bedmcsrvMain.get("debug").items():
+                             embedVar.add_field(
+                                 name=str(key3).capitalize(), value=value3, inline=True
+                             )
+@@ -170,7 +169,6 @@ class bedrock_mcsrvstats(commands.Cog):
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+ 
+-    pyjion.disable()
+ 
+ 
+ def setup(bot):
+diff --git a/Bot/Cogs/modrinth.py b/Bot/Cogs/modrinth.py
+index 4649c39..36eba2a 100644
+--- a/Bot/Cogs/modrinth.py
++++ b/Bot/Cogs/modrinth.py
+@@ -34,11 +34,12 @@ class ModrinthV1(commands.Cog):
+             async with session.get(
+                 "https://api.modrinth.com/v2/search", params=params
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
+                 modFilter = ["title", "gallery", "icon_url", "description"]
+                 embedVar = discord.Embed()
+                 try:
+-                    for dictItem in data["hits"]:
++                    for dictItem in dataMain["hits"]:
+                         for k, v in dictItem.items():
+                             if k not in modFilter:
+                                 embedVar.add_field(
+@@ -75,7 +76,8 @@ class ModrinthV2(commands.Cog):
+                 f"https://api.modrinth.com/v2/project/{mod_slug}"
+             ) as res:
+                 try:
+-                    modData = await res.json()
++                    modData = await res.content.read()
++                    modDataMain = orjson.loads(modData)
+                     modDataFilter = [
+                         "versions",
+                         "license",
+@@ -89,19 +91,19 @@ class ModrinthV2(commands.Cog):
+                         "body_url",
+                     ]
+                     embedVar = discord.Embed()
+-                    for keys, value in modData.items():
++                    for keys, value in modDataMain.items():
+                         if keys not in modDataFilter:
+                             embedVar.add_field(
+                                 name=keys, value=value, inline=True)
+-                    for item in modData["gallery"]:
++                    for item in modDataMain["gallery"]:
+                         embedVar.set_image(url=item["url"])
+-                    for k, v in modData["license"].items():
++                    for k, v in modDataMain["license"].items():
+                         embedVar.add_field(
+                             name=f"License {k}", value=v, inline=True)
+-                    embedVar.set_thumbnail(url=modData["icon_url"])
+-                    embedVar.title = modData["title"]
++                    embedVar.set_thumbnail(url=modDataMain["icon_url"])
++                    embedVar.title = modDataMain["title"]
+                     embedVar.description = (
+-                        f"{modData['description']}\n\n{modData['body']}"
++                        f"{modDataMain['description']}\n\n{modDataMain['body']}"
+                     )
+                     await ctx.respond(embed=embedVar)
+                 except Exception as e:
+@@ -144,7 +146,8 @@ class ModrinthV3(commands.Cog):
+             async with session.get(
+                 f"https://api.modrinth.com/v2/project/{mod_name}/version", params=params
+             ) as res:
+-                versionData = await res.json()
++                versionData = await res.content.read()
++                versionDataMain = orjson.loads(versionData)
+                 versionFilter = [
+                     "changelog",
+                     "name",
+@@ -156,7 +159,7 @@ class ModrinthV3(commands.Cog):
+                 ]
+                 embedVar = discord.Embed()
+                 try:
+-                    for dictVersions in versionData:
++                    for dictVersions in versionDataMain:
+                         for keys, value in dictVersions.items():
+                             if keys not in versionFilter:
+                                 embedVar.add_field(
+@@ -202,15 +205,16 @@ class ModrinthV4(commands.Cog):
+             async with session.get(
+                 f"https://api.modrinth.com/v2/version/{mod_version_id}"
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain3 = orjson.loads(data)
+                 versionFilter = ["changelog", "name", "dependencies", "files"]
+                 embedVar = discord.Embed()
+                 try:
+-                    for keys, value in data.items():
++                    for keys, value in dataMain3.items():
+                         if keys not in versionFilter:
+                             embedVar.add_field(
+                                 name=keys, value=value, inline=True)
+-                    for fileItems in data["files"]:
++                    for fileItems in dataMain3["files"]:
+                         for k, v in fileItems.items():
+                             if k not in "hashes":
+                                 embedVar.add_field(
+@@ -219,8 +223,8 @@ class ModrinthV4(commands.Cog):
+                             embedVar.add_field(
+                                 name=hashKey, value=hashValue, inline=True
+                             )
+-                    embedVar.title = data["name"]
+-                    embedVar.description = data["changelog"]
++                    embedVar.title = dataMain3["name"]
++                    embedVar.description = dataMain3["changelog"]
+                     await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar.description = (
+@@ -248,18 +252,19 @@ class ModrinthV5(commands.Cog):
+             async with session.get(
+                 f"https://api.modrinth.com/v2/user/{username}"
+             ) as response:
+-                userData = await response.json()
++                userData = await response.content.read()
++                userDataMain = orjson.loads(userData)
+                 embedVar = discord.Embed()
+                 userFilter = ["bio", "username", "avatar_url"]
+                 try:
+-                    for userKeys, userValue in userData.items():
++                    for userKeys, userValue in userDataMain.items():
+                         if userKeys not in userFilter:
+                             embedVar.add_field(
+                                 name=userKeys, value=userValue, inline=True
+                             )
+-                    embedVar.title = userData["username"]
+-                    embedVar.description = userData["bio"]
+-                    embedVar.set_thumbnail(url=userData["avatar_url"])
++                    embedVar.title = userDataMain["username"]
++                    embedVar.description = userDataMain["bio"]
++                    embedVar.set_thumbnail(url=userDataMain["avatar_url"])
+                     await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar.description = (
+@@ -287,7 +292,8 @@ class ModrinthV6(commands.Cog):
+             async with session.get(
+                 f"https://api.modrinth.com/v2/user/{username}/projects"
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain6 = orjson.loads(data)
+                 userProjectsFilter = [
+                     "body",
+                     "license",
+@@ -300,7 +306,7 @@ class ModrinthV6(commands.Cog):
+                 ]
+                 embedVar = discord.Embed()
+                 try:
+-                    for dictProjects in data:
++                    for dictProjects in dataMain6:
+                         for keys, value in dictProjects.items():
+                             if keys not in userProjectsFilter:
+                                 embedVar.add_field(
+@@ -350,11 +356,12 @@ class ModrinthV7(commands.Cog):
+             async with session.get(
+                 f"https://api.modrinth.com/v2/project/{project}/members"
+             ) as r:
+-                projectData = await r.json()
++                projectData = await r.content.read()
++                projectDataMain = orjson.loads(projectData)
+                 projectTeamFilter = ["bio", "avatar_url", "username"]
+                 embedVar = discord.Embed()
+                 try:
+-                    for dictTeam in projectData:
++                    for dictTeam in projectDataMain:
+                         for keys, value in dictTeam.items():
+                             if keys not in "user":
+                                 embedVar.add_field(
+@@ -394,11 +401,12 @@ class ModrinthV8(commands.Cog):
+             async with session.get(
+                 f"https://api.modrinth.com/v2/team/{team_id}/members"
+             ) as r:
+-                teamData = await r.json()
++                teamData = await r.content.read()
++                teamDataMain = orjson.loads(teamData)
+                 teamFilter = ["bio", "avatar_url", "username"]
+                 embedVar = discord.Embed()
+                 try:
+-                    for dictTeam2 in teamData:
++                    for dictTeam2 in teamDataMain:
+                         for keys, value in dictTeam2.items():
+                             if keys not in "user":
+                                 embedVar.add_field(
+@@ -425,7 +433,7 @@ class ModrinthV8(commands.Cog):
+ def setup(bot):
+     bot.add_cog(ModrinthV1(bot))
+     bot.add_cog(ModrinthV2(bot))
+-    bot.add_cog(ModrinthV3(bot))
++    # bot.add_cog(ModrinthV3(bot)) # Disabled due to spam issues
+     bot.add_cog(ModrinthV4(bot))
+     bot.add_cog(ModrinthV5(bot))
+     bot.add_cog(ModrinthV6(bot))
+diff --git a/Bot/Cogs/openai-gpt3.py b/Bot/Cogs/openai-gpt3.py
+index 16958cc..b1ca2e0 100644
+--- a/Bot/Cogs/openai-gpt3.py
++++ b/Bot/Cogs/openai-gpt3.py
+@@ -4,6 +4,7 @@ import os
+ import aiohttp
+ import discord
+ import ujson
++import orjson
+ import uvloop
+ from discord.commands import Option, slash_command
+ from discord.ext import commands
+@@ -47,10 +48,11 @@ class OpenAI1(commands.Cog):
+                 headers=headers,
+                 json=payload,
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
+                 try:
+                     embedVar = discord.Embed()
+-                    embedVar.description = data["choices"][0]["text"]
++                    embedVar.description = dataMain["choices"][0]["text"]
+                     await ctx.respond(embed=embedVar)
+                 except Exception as e:
+                     embedVar = discord.Embed()
+@@ -107,10 +109,11 @@ class OpenAI2(commands.Cog):
+                 headers=headers,
+                 json=payload,
+             ) as poster:
+-                data = await poster.json()
++                data = await poster.content.read()
++                dataMain2 = orjson.loads(data)
+                 try:
+                     embedVar = discord.Embed()
+-                    for dictItem in data["selected_examples"]:
++                    for dictItem in dataMain2["selected_examples"]:
+                         for keys, value in dictItem.items():
+                             embedVar.add_field(
+                                 name=keys, value=value, inline=True)
+@@ -157,11 +160,12 @@ class OpenAI3(commands.Cog):
+             async with session.post(
+                 "https://api.openai.com/v1/answers", headers=headers, json=payload
+             ) as response:
+-                data = await response.json()
++                data = await response.content.read()
++                dataMain3 = orjson.loads(data)
+                 try:
+                     embedVar = discord.Embed()
+                     embedVar.description = (
+-                        str(data["answers"])
++                        str(dataMain3["answers"])
+                         .replace("[", "")
+                         .replace("]", "")
+                         .replace("'", "")
+diff --git a/Bot/Cogs/spiget.py b/Bot/Cogs/spiget.py
+index 41d6007..0f2305c 100644
+--- a/Bot/Cogs/spiget.py
++++ b/Bot/Cogs/spiget.py
+@@ -21,16 +21,17 @@ class SpigetV2(commands.Cog):
+         self, ctx, *, plugin_name: Option(str, "The name of the plugin")
+     ):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"User-Agent": "Mozilla/5.0"}
++            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+             params = {"size": 5}
+             async with session.get(
+                 f"https://api.spiget.org/v2/search/resources/{plugin_name}",
+                 headers=headers,
+                 params=params,
+             ) as r:
+-                resource = await r.json()
++                resource = await r.content.read()
++                resourceMain = orjson.loads(resource)
+                 try:
+-                    for dictItem in resource:
++                    for dictItem in resourceMain:
+                         thumbnail = (
+                             "https://www.spigotmc.org/" +
+                             dictItem["icon"]["url"]
+@@ -133,18 +134,19 @@ class SpigetV3(commands.Cog):
+         self, ctx, *, author_name: Option(str, "Name of the plugin author")
+     ):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"User-Agent": "Mozilla/5.0"}
++            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+             params = {"size": 5}
+             async with session.get(
+                 f"https://api.spiget.org/v2/search/authors/{author_name}",
+                 headers=headers,
+                 params=params,
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
+                 authorFilter = ["icon", "name", "identities"]
+                 embedVar = discord.Embed()
+                 try:
+-                    for dictItem in data:
++                    for dictItem in dataMain:
+                         embedVar.title = dictItem["name"]
+                         embedVar.set_thumbnail(url=dictItem["icon"]["url"])
+                         for k, v in dictItem.items():
+@@ -172,16 +174,17 @@ class SpigetV4(commands.Cog):
+     )
+     async def spigetStats(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"User-Agent": "Mozilla/5.0"}
++            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+             async with session.get(
+                 "https://api.spiget.org/v2/status", headers=headers
+             ) as res:
+-                total_stats = await res.json()
++                total_stats = await res.content.read()
++                totalStatsMain = orjson.loads(total_stats)
+                 try:
+                     embedVar = discord.Embed(
+                         color=discord.Color.from_rgb(173, 156, 255)
+                     )
+-                    for key, val in total_stats["stats"].items():
++                    for key, val in totalStatsMain["stats"].items():
+                         embedVar.add_field(name=key, value=val, inline=True)
+ 
+                     await ctx.respond(embed=embedVar)
+@@ -207,7 +210,7 @@ class SpigetV5(commands.Cog):
+     )
+     async def spigetStatus(self, ctx):
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"User-Agent": "Mozilla/5.0"}
++            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+             async with session.get(
+                 "https://api.spiget.org/v2/status", headers=headers
+             ) as r:
+diff --git a/Bot/Cogs/tenor.py b/Bot/Cogs/tenor.py
+index d6dfcdc..9d263ee 100644
+--- a/Bot/Cogs/tenor.py
++++ b/Bot/Cogs/tenor.py
+@@ -35,7 +35,8 @@ class TenorV1(commands.Cog):
+                 "media_filter": "minimal",
+             }
+             async with session.get("https://g.tenor.com/v1/search", params=params) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
+                 try:
+                     embedVar = discord.Embed()
+                     filterList = [
+@@ -56,7 +57,7 @@ class TenorV1(commands.Cog):
+                         "media",
+                         "content_description",
+                     ]
+-                    for dictItem in data["results"]:
++                    for dictItem in dataMain["results"]:
+                         for key in dictItem.items():
+                             if key not in filterList:
+                                 embedVar.title = dictItem["content_description"]
+@@ -95,12 +96,13 @@ class TenorV2(commands.Cog):
+             async with session.get(
+                 "https://g.tenor.com/v1/search", params=params
+             ) as re:
+-                data2 = await re.json()
++                data2 = await re.content.read()
++                dataMain2 = orjson.loads(data2)
+                 try:
+                     embedVar1 = discord.Embed()
+-                    embedVar1.title = data2["results"][0]["content_description"]
++                    embedVar1.title = dataMain2["results"][0]["content_description"]
+                     embedVar1.set_image(
+-                        url=data2["results"][0]["media"][0]["gif"]["url"]
++                        url=dataMain2["results"][0]["media"][0]["gif"]["url"]
+                     )
+                     await ctx.send(embed=embedVar1)
+                 except Exception as e:
+@@ -132,7 +134,8 @@ class TenorV3(commands.Cog):
+             async with session.get(
+                 "https://g.tenor.com/v1/trending", params=params
+             ) as response:
+-                data3 = await response.json()
++                data3 = await response.content.read()
++                dataMain3 = orjson.loads(data3)
+                 try:
+                     embedVar = discord.Embed()
+                     filterList2 = [
+@@ -153,7 +156,7 @@ class TenorV3(commands.Cog):
+                         "media",
+                         "content_description",
+                     ]
+-                    for dictItem2 in data3["results"]:
++                    for dictItem2 in dataMain3["results"]:
+                         for key in dictItem2.items():
+                             if key not in filterList2:
+                                 embedVar.title = dictItem2["content_description"]
+@@ -192,12 +195,13 @@ class TenorV4(commands.Cog):
+             async with session.get(
+                 "https://g.tenor.com/v1/search_suggestions", params=params
+             ) as resp:
+-                data5 = await resp.json()
++                data5 = await resp.content.read()
++                dataMain5 = orjson.loads(data5)
+                 try:
+                     embedVar = discord.Embed()
+                     embedVar.title = "Search Suggestions"
+                     embedVar.description = str(
+-                        [items for items in data5["results"]]
++                        [items for items in dataMain5["results"]]
+                     ).replace("'", "")
+                     await ctx.send(embed=embedVar)
+                 except Exception as e:
+@@ -224,12 +228,13 @@ class TenorV5(commands.Cog):
+             async with session.get(
+                 "https://g.tenor.com/v1/trending_terms", params=params
+             ) as rep:
+-                data6 = await rep.json()
++                data6 = await rep.content.read()
++                dataMain6 = orjson.loads(data6)
+                 try:
+                     embedVar = discord.Embed()
+                     embedVar.title = "Trending Search Terms"
+                     embedVar.description = str(
+-                        [items for items in data6["results"]]
++                        [items for items in dataMain6["results"]]
+                     ).replace("'", "")
+                     await ctx.respond(embed=embedVar)
+                 except Exception as e:
+@@ -261,7 +266,8 @@ class TenorV6(commands.Cog):
+             async with session.get(
+                 "https://g.tenor.com/v1/gifs", params=params
+             ) as respon:
+-                data7 = await respon.json()
++                data7 = await respon.content.read()
++                dataMain7 = orjson.loads(data7)
+                 try:
+                     embedVar = discord.Embed()
+                     filterList2 = [
+@@ -281,7 +287,7 @@ class TenorV6(commands.Cog):
+                         "content_description",
+                         "shares",
+                     ]
+-                    for dictValues in data7["results"]:
++                    for dictValues in dataMain7["results"]:
+                         for k, v in dictValues.items():
+                             if k not in filterList2:
+                                 embedVar.title = dictValues["content_description"]
+@@ -325,10 +331,11 @@ class TenorV7(commands.Cog):
+             async with session.get(
+                 "https://g.tenor.com/v1/random", params=params
+             ) as object3:
+-                data8 = await object3.json()
++                data8 = await object3.content.read()
++                dataMain8 = orjson.loads(data8)
+                 try:
+                     embedVar = discord.Embed()
+-                    for dict_items in data8["results"]:
++                    for dict_items in dataMain8["results"]:
+                         for _ in dict_items.items():
+                             embedVar.title = dict_items["content_description"]
+                         for item3 in dict_items.get("media"):
+diff --git a/Bot/Cogs/top-gg.py b/Bot/Cogs/top-gg.py
+index ab73a3c..1a247a2 100644
+--- a/Bot/Cogs/top-gg.py
++++ b/Bot/Cogs/top-gg.py
+@@ -29,21 +29,22 @@ class TopGGV1(commands.Cog):
+             async with session.get(
+                 f"https://top.gg/api/bots/{bot_id}", headers=headers
+             ) as r:
+-                getOneBotInfo = await r.json()
++                getOneBotInfo = await r.content.read()
++                getOneBotInfoMain = orjson.loads(getOneBotInfo)
+                 try:
+                     embedVar = discord.Embed(
+-                        title=getOneBotInfo["username"],
++                        title=getOneBotInfoMain["username"],
+                         color=discord.Color.from_rgb(191, 242, 255),
+                     )
+                     embedVar.description = (
+-                        str(getOneBotInfo["longdesc"])
++                        str(getOneBotInfoMain["longdesc"])
+                         .replace("\r", "")
+                         .replace("<div align=center>", "")
+                         .replace("<div align=left>", "")
+                         .replace("<div align=right>", "")
+                     )
+                     excludedKeys = {"longdesc", "lib"}
+-                    for key, val in getOneBotInfo.items():
++                    for key, val in getOneBotInfoMain.items():
+                         if key not in excludedKeys:
+                             embedVar.add_field(
+                                 name=key, value=str(val).replace("'", ""), inline=True
+@@ -75,9 +76,10 @@ class TopGGV2(commands.Cog):
+             async with session.get(
+                 f"https://top.gg/api/users/{user_id}", headers=headers
+             ) as response:
+-                user = await response.json()
++                user = await response.content.read()
++                userMain = orjson.loads(user)
+                 try:
+-                    if "error" in user:
++                    if "error" in userMain:
+                         embed = discord.Embed()
+                         embed.description = (
+                             "Sorry, but the user could not be found. Please try again"
+@@ -86,16 +88,16 @@ class TopGGV2(commands.Cog):
+                             text="Tip: Try finding a user on the Top.gg Disord Server"
+                         )
+                         embed.add_field(
+-                            name="Reason", value=user["error"], inline=True)
++                            name="Reason", value=userMain["error"], inline=True)
+                         await ctx.respond(embed=embed)
+                     else:
+                         embedVar = discord.Embed(
+-                            title=user["username"],
++                            title=userMain["username"],
+                             color=discord.Color.from_rgb(191, 242, 255),
+                         )
+-                        embedVar.description = user["bio"]
++                        embedVar.description = userMain["bio"]
+                         excludedKeys = {"bio"}
+-                        for key, val in user.items():
++                        for key, val in userMain.items():
+                             if key not in excludedKeys:
+                                 embedVar.add_field(
+                                     name=key, value=val, inline=True)
+diff --git a/Bot/Cogs/twitter.py b/Bot/Cogs/twitter.py
+index da91918..2ea8976 100644
+--- a/Bot/Cogs/twitter.py
++++ b/Bot/Cogs/twitter.py
+@@ -1,226 +1,228 @@
+-import asyncio
+-import os
+-
+-import aiohttp
+-import discord
+-import orjson
+-import uvloop
+-from discord.commands import slash_command
+-from discord.ext import commands
+-from dotenv import load_dotenv
+-
+-load_dotenv()
+-
+-Bearer_Token = os.getenv("Twitter_Bearer_Token")
+-
+-
+-class TwitterV1(commands.Cog):
+-    def __init__(self, bot):
+-        self.bot = bot
+-
+-    @slash_command(
+-        name="twitter-search",
+-        description="Returns up to 5 recent tweets given the Twitter user",
+-        guild_ids=[866199405090308116],
+-    )
+-    async def twitter_search(self, ctx, *, user: str):
+-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"Authorization": f"Bearer {Bearer_Token}"}
+-            params = {"q": f"from:{user}", "count": 5}
+-            async with session.get(
+-                "https://api.twitter.com/1.1/search/tweets.json",
+-                headers=headers,
+-                params=params,
+-            ) as r:
+-                data = await r.json()
+-
+-                try:
+-                    if data["statuses"] is None:
+-                        embedVar = discord.Embed()
+-                        embedVar.description = (
+-                            "Sadly there are no tweets from this user."
+-                        )
+-                        embedVar.add_field(
+-                            name="Result Count",
+-                            value=data["meta"]["result_count"],
+-                            inline=True,
+-                        )
+-                        await ctx.respond(embed=embedVar)
+-                    else:
+-                        embed = discord.Embed()
+-                        excludedKeys = {
+-                            "entities",
+-                            "retweeted_status",
+-                            "quoted_status",
+-                            "metadata",
+-                            "id",
+-                            "id_str",
+-                            "source",
+-                            "in_reply_to_status_id",
+-                            "in_reply_to_status_id_str",
+-                            "in_reply_to_user_id",
+-                            "in_reply_to_user_id_str",
+-                            "text",
+-                            "source",
+-                            "is_quote_status",
+-                            "quoted_status_id",
+-                            "quoted_status_id_str",
+-                            "possibly_sensitive",
+-                            "contributors",
+-                            "in_reply_to_screen_name",
+-                            "truncated",
+-                            "extended_entities",
+-                            "user",
+-                            "favorited",
+-                            "retweeted",
+-                            "lang",
+-                        }
+-                        for dictItem in data["statuses"]:
+-                            if "extended_entities" in dictItem:
+-                                for keys, val in dictItem.items():
+-                                    if keys not in excludedKeys:
+-                                        embed.add_field(
+-                                            name=str(keys)
+-                                            .replace("_", " ")
+-                                            .capitalize(),
+-                                            value=val,
+-                                            inline=True,
+-                                        )
+-                                        embed.remove_field(6)
+-                                for v in dictItem["extended_entities"].items():
+-                                    embed.set_image(
+-                                        url=v[1][0]["media_url_https"])
+-                                embed.description = dictItem["text"]
+-                                embed.set_thumbnail(
+-                                    url=str(
+-                                        dictItem["user"]["profile_image_url_https"]
+-                                    ).replace("_normal", "_bigger")
+-                                )
+-                                await ctx.respond(embed=embed)
+-                            else:
+-                                for keys2, val2 in dictItem.items():
+-                                    if keys2 not in excludedKeys:
+-                                        embed.add_field(
+-                                            name=str(keys2)
+-                                            .replace("_", " ")
+-                                            .capitalize(),
+-                                            value=val2,
+-                                            inline=True,
+-                                        )
+-                                        embed.remove_field(6)
+-                                embed.description = dictItem["text"]
+-                                embed.set_thumbnail(
+-                                    url=str(
+-                                        dictItem["user"]["profile_image_url_https"]
+-                                    ).replace("_normal", "_bigger")
+-                                )
+-                                await ctx.respond(embed=embed)
+-                except Exception as e:
+-                    embedError = discord.Embed()
+-                    embedError.description = "Something went wrong. Please try again."
+-                    embedError.add_field(name="Error", value=e, inline=True)
+-                    await ctx.respond(embed=embedError)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-
+-class TwitterV2(commands.Cog):
+-    def __init__(self, bot):
+-        self.bot = bot
+-
+-    @slash_command(
+-        name="twitter-user",
+-        description="Returns Info about the given Twitter user",
+-        guild_ids=[866199405090308116],
+-    )
+-    async def twitter_user(self, ctx, *, user: str):
+-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+-            headers = {"Authorization": f"Bearer {Bearer_Token}"}
+-            params = {"q": user, "count": 1}
+-            async with session.get(
+-                "https://api.twitter.com/1.1/users/search.json",
+-                headers=headers,
+-                params=params,
+-            ) as resp:
+-                data2 = await resp.json()
+-                itemFilter = {
+-                    "profile_image_url_https",
+-                    "id",
+-                    "id_str",
+-                    "name",
+-                    "description",
+-                    "entities",
+-                    "status",
+-                    "profile_background_color",
+-                    "profile_background_image_url",
+-                    "profile_background_image_url_https",
+-                    "profile_background_tile",
+-                    "profile_image_url",
+-                    "profile_link_color",
+-                    "profile_sidebar_border_color",
+-                    "profile_sidebar_fill_color",
+-                    "profile_text_color",
+-                    "profile_use_background_image",
+-                    "has_extended_profile",
+-                    "default_profile",
+-                    "default_profile_image",
+-                    "follow_request_sent",
+-                    "following",
+-                    "notifications",
+-                    "translator_type",
+-                    "url",
+-                    "profile_banner_url",
+-                    "withheld_in_countries",
+-                }
+-                try:
+-                    embedVar = discord.Embed()
+-                    for userItem in data2:
+-                        if "profile_banner_url" in userItem:
+-                            for keys, val in userItem.items():
+-                                if keys not in itemFilter:
+-                                    embedVar.add_field(
+-                                        name=str(keys).replace(
+-                                            "_", " ").capitalize(),
+-                                        value=f"[{val}]",
+-                                        inline=True,
+-                                    )
+-                            embedVar.title = userItem["name"]
+-                            embedVar.description = userItem["description"]
+-                            embedVar.set_image(
+-                                url=str(userItem["profile_banner_url"]))
+-                            embedVar.set_thumbnail(
+-                                url=str(userItem["profile_image_url_https"]).replace(
+-                                    "_normal", "_bigger"
+-                                )
+-                            )
+-                            await ctx.respond(embed=embedVar)
+-                        else:
+-                            for keys2, val2 in userItem.items():
+-                                if keys2 not in itemFilter:
+-                                    embedVar.add_field(
+-                                        name=str(keys2).replace(
+-                                            "_", " ").capitalize(),
+-                                        value=f"[{val2}]",
+-                                        inline=True,
+-                                    )
+-                            embedVar.title = userItem["name"]
+-                            embedVar.description = userItem["description"]
+-                            embedVar.set_thumbnail(
+-                                url=str(userItem["profile_image_url_https"]).replace(
+-                                    "_normal", "_bigger"
+-                                )
+-                            )
+-                            await ctx.respond(embed=embedVar)
+-
+-                except Exception as e:
+-                    embedError2 = discord.Embed()
+-                    embedError2.description = "Something went wrong. Please try again."
+-                    embedError2.add_field(name="Error", value=e, inline=True)
+-                    await ctx.respond(embed=embedError2)
+-
+-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+-
+-
+-def setup(bot):
+-    bot.add_cog(TwitterV1(bot))
+-    bot.add_cog(TwitterV2(bot))
++import asyncio
++import os
++
++import aiohttp
++import discord
++import orjson
++import uvloop
++from discord.commands import slash_command
++from discord.ext import commands
++from dotenv import load_dotenv
++
++load_dotenv()
++
++Bearer_Token = os.getenv("Twitter_Bearer_Token")
++
++
++class TwitterV1(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++
++    @slash_command(
++        name="twitter-search",
++        description="Returns up to 5 recent tweets given the Twitter user",
++        guild_ids=[866199405090308116],
++    )
++    async def twitter_search(self, ctx, *, user: str):
++        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
++            headers = {"Authorization": f"Bearer {Bearer_Token}"}
++            params = {"q": f"from:{user}", "count": 5}
++            async with session.get(
++                "https://api.twitter.com/1.1/search/tweets.json",
++                headers=headers,
++                params=params,
++            ) as r:
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
++
++                try:
++                    if dataMain["statuses"] is None:
++                        embedVar = discord.Embed()
++                        embedVar.description = (
++                            "Sadly there are no tweets from this user."
++                        )
++                        embedVar.add_field(
++                            name="Result Count",
++                            value=dataMain["meta"]["result_count"],
++                            inline=True,
++                        )
++                        await ctx.respond(embed=embedVar)
++                    else:
++                        embed = discord.Embed()
++                        excludedKeys = {
++                            "entities",
++                            "retweeted_status",
++                            "quoted_status",
++                            "metadata",
++                            "id",
++                            "id_str",
++                            "source",
++                            "in_reply_to_status_id",
++                            "in_reply_to_status_id_str",
++                            "in_reply_to_user_id",
++                            "in_reply_to_user_id_str",
++                            "text",
++                            "source",
++                            "is_quote_status",
++                            "quoted_status_id",
++                            "quoted_status_id_str",
++                            "possibly_sensitive",
++                            "contributors",
++                            "in_reply_to_screen_name",
++                            "truncated",
++                            "extended_entities",
++                            "user",
++                            "favorited",
++                            "retweeted",
++                            "lang",
++                        }
++                        for dictItem in dataMain["statuses"]:
++                            if "extended_entities" in dictItem:
++                                for keys, val in dictItem.items():
++                                    if keys not in excludedKeys:
++                                        embed.add_field(
++                                            name=str(keys)
++                                            .replace("_", " ")
++                                            .capitalize(),
++                                            value=val,
++                                            inline=True,
++                                        )
++                                        embed.remove_field(6)
++                                for v in dictItem["extended_entities"].items():
++                                    embed.set_image(
++                                        url=v[1][0]["media_url_https"])
++                                embed.description = dictItem["text"]
++                                embed.set_thumbnail(
++                                    url=str(
++                                        dictItem["user"]["profile_image_url_https"]
++                                    ).replace("_normal", "_bigger")
++                                )
++                                await ctx.respond(embed=embed)
++                            else:
++                                for keys2, val2 in dictItem.items():
++                                    if keys2 not in excludedKeys:
++                                        embed.add_field(
++                                            name=str(keys2)
++                                            .replace("_", " ")
++                                            .capitalize(),
++                                            value=val2,
++                                            inline=True,
++                                        )
++                                        embed.remove_field(6)
++                                embed.description = dictItem["text"]
++                                embed.set_thumbnail(
++                                    url=str(
++                                        dictItem["user"]["profile_image_url_https"]
++                                    ).replace("_normal", "_bigger")
++                                )
++                                await ctx.respond(embed=embed)
++                except Exception as e:
++                    embedError = discord.Embed()
++                    embedError.description = "Something went wrong. Please try again."
++                    embedError.add_field(name="Error", value=e, inline=True)
++                    await ctx.respond(embed=embedError)
++
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++
++
++class TwitterV2(commands.Cog):
++    def __init__(self, bot):
++        self.bot = bot
++
++    @slash_command(
++        name="twitter-user",
++        description="Returns Info about the given Twitter user",
++        guild_ids=[866199405090308116],
++    )
++    async def twitter_user(self, ctx, *, user: str):
++        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
++            headers = {"Authorization": f"Bearer {Bearer_Token}"}
++            params = {"q": user, "count": 1}
++            async with session.get(
++                "https://api.twitter.com/1.1/users/search.json",
++                headers=headers,
++                params=params,
++            ) as resp:
++                data2 = await resp.content.read()
++                dataMain2 = orjson.loads(data2)
++                itemFilter = {
++                    "profile_image_url_https",
++                    "id",
++                    "id_str",
++                    "name",
++                    "description",
++                    "entities",
++                    "status",
++                    "profile_background_color",
++                    "profile_background_image_url",
++                    "profile_background_image_url_https",
++                    "profile_background_tile",
++                    "profile_image_url",
++                    "profile_link_color",
++                    "profile_sidebar_border_color",
++                    "profile_sidebar_fill_color",
++                    "profile_text_color",
++                    "profile_use_background_image",
++                    "has_extended_profile",
++                    "default_profile",
++                    "default_profile_image",
++                    "follow_request_sent",
++                    "following",
++                    "notifications",
++                    "translator_type",
++                    "url",
++                    "profile_banner_url",
++                    "withheld_in_countries",
++                }
++                try:
++                    embedVar = discord.Embed()
++                    for userItem in dataMain2:
++                        if "profile_banner_url" in userItem:
++                            for keys, val in userItem.items():
++                                if keys not in itemFilter:
++                                    embedVar.add_field(
++                                        name=str(keys).replace(
++                                            "_", " ").capitalize(),
++                                        value=f"[{val}]",
++                                        inline=True,
++                                    )
++                            embedVar.title = userItem["name"]
++                            embedVar.description = userItem["description"]
++                            embedVar.set_image(
++                                url=str(userItem["profile_banner_url"]))
++                            embedVar.set_thumbnail(
++                                url=str(userItem["profile_image_url_https"]).replace(
++                                    "_normal", "_bigger"
++                                )
++                            )
++                            await ctx.respond(embed=embedVar)
++                        else:
++                            for keys2, val2 in userItem.items():
++                                if keys2 not in itemFilter:
++                                    embedVar.add_field(
++                                        name=str(keys2).replace(
++                                            "_", " ").capitalize(),
++                                        value=f"[{val2}]",
++                                        inline=True,
++                                    )
++                            embedVar.title = userItem["name"]
++                            embedVar.description = userItem["description"]
++                            embedVar.set_thumbnail(
++                                url=str(userItem["profile_image_url_https"]).replace(
++                                    "_normal", "_bigger"
++                                )
++                            )
++                            await ctx.respond(embed=embedVar)
++
++                except Exception as e:
++                    embedError2 = discord.Embed()
++                    embedError2.description = "Something went wrong. Please try again."
++                    embedError2.add_field(name="Error", value=e, inline=True)
++                    await ctx.respond(embed=embedError2)
++
++    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
++
++
++def setup(bot):
++    bot.add_cog(TwitterV1(bot))
++    bot.add_cog(TwitterV2(bot))
+diff --git a/Bot/Cogs/version.py b/Bot/Cogs/version.py
+index bf31a00..2120e4a 100644
+--- a/Bot/Cogs/version.py
++++ b/Bot/Cogs/version.py
+@@ -17,7 +17,7 @@ class VersionV1(commands.Cog):
+     )
+     async def version(self, ctx):
+         embedVar = discord.Embed()
+-        embedVar.description = "Build Version: v2.0.0-b2"
++        embedVar.description = "Build Version: v2.0.0-b3"
+         await ctx.respond(embed=embedVar)
+ 
+     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+diff --git a/Bot/Cogs/waifu-pics.py b/Bot/Cogs/waifu-pics.py
+index cb9b276..14c7955 100644
+--- a/Bot/Cogs/waifu-pics.py
++++ b/Bot/Cogs/waifu-pics.py
+@@ -55,9 +55,10 @@ class waifuPics(commands.Cog):
+         searchterm = random.choice(waifu_list)
+         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
+-                waifu_pics = await r.json()
++                waifu_pics = await r.content.read()
++                waifuPicsMain = orjson.loads(waifu_pics)
+                 try:
+-                    await ctx.respond(waifu_pics["url"])
++                    await ctx.respond(waifu_picsMain["url"])
+                 except Exception as e:
+                     embedVar = discord.Embed()
+                     embedVar.description = "The query was not successful"
+diff --git a/Bot/Cogs/youtube.py b/Bot/Cogs/youtube.py
+index cf98c6f..168d5d1 100644
+--- a/Bot/Cogs/youtube.py
++++ b/Bot/Cogs/youtube.py
+@@ -37,7 +37,8 @@ class YoutubeV1(commands.Cog):
+             async with session.get(
+                 "https://www.googleapis.com/youtube/v3/search", params=params
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain = orjson.loads(data)
+                 try:
+                     embedVar = discord.Embed(
+                         color=discord.Color.from_rgb(212, 255, 223)
+@@ -50,7 +51,7 @@ class YoutubeV1(commands.Cog):
+                         "description",
+                         "publishTime",
+                     ]
+-                    for dictItem in data["items"]:
++                    for dictItem in dataMain["items"]:
+                         for i, values in dictItem["snippet"]["thumbnails"].items():
+                             if i not in sizeFilter:
+                                 embedVar.set_image(url=values["url"])
+@@ -100,8 +101,9 @@ class YoutubeV2(commands.Cog):
+             async with session.get(
+                 "https://www.googleapis.com/youtube/v3/search", params=search_params
+             ) as response:
+-                search_data = await response.json()
+-                channel_id = search_data["items"][0]["id"]["channelId"]
++                search_data = await response.content.read()
++                searchDataMain = orjson.loads(search_data)
++                channel_id = searchDataMain["items"][0]["id"]["channelId"]
+                 params = {
+                     "key": YouTube_API_Key,
+                     "part": "snippet,statistics",
+@@ -110,7 +112,8 @@ class YoutubeV2(commands.Cog):
+                 async with session.get(
+                     "https://www.googleapis.com/youtube/v3/channels", params=params
+                 ) as re:
+-                    data = await re.json()
++                    data = await re.content.read()
++                    dataMain3 = orjson.loads(data)
+                     try:
+                         embedVar = discord.Embed(
+                             color=discord.Color.from_rgb(255, 0, 0)
+@@ -123,7 +126,7 @@ class YoutubeV2(commands.Cog):
+                             "thumbnails",
+                             "localized",
+                         ]
+-                        for dictItem in data["items"]:
++                        for dictItem in dataMain3["items"]:
+                             for key, val in dictItem.items():
+                                 if key not in filter:
+                                     embedVar.add_field(
+@@ -176,8 +179,9 @@ class YoutubeV3(commands.Cog):
+             async with session.get(
+                 "https://www.googleapis.com/youtube/v3/search", params=search_params
+             ) as response2:
+-                search_data = await response2.json()
+-                channel_id = search_data["items"][0]["id"]["channelId"]
++                search_data = await response2.content.read()
++                searchDataMain = orjson.loads(search_data)
++                channel_id = searchDataMain["items"][0]["id"]["channelId"]
+                 main_params = {
+                     "key": YouTube_API_Key,
+                     "part": "snippet,contentDetails",
+@@ -188,7 +192,8 @@ class YoutubeV3(commands.Cog):
+                     "https://www.googleapis.com/youtube/v3/playlists",
+                     params=main_params,
+                 ) as r2:
+-                    data = await r2.json()
++                    data = await r2.content.read()
++                    dataMain = orjson.loads(data)
+                     try:
+                         embedVar = discord.Embed(
+                             color=discord.Color.from_rgb(255, 224, 224)
+@@ -208,7 +213,7 @@ class YoutubeV3(commands.Cog):
+                             "description",
+                         ]
+                         videoFilter = ["default", "medium", "high", "standard"]
+-                        for dictItems in data["items"]:
++                        for dictItems in dataMain["items"]:
+                             for k, v in dictItems.items():
+                                 if k not in filterList:
+                                     embedVar.add_field(
+@@ -264,17 +269,18 @@ class YoutubeV4(commands.Cog):
+             async with session.get(
+                 "https://www.googleapis.com/youtube/v3/commentThreads", params=params
+             ) as r:
+-                data = await r.json()
++                data = await r.content.read()
++                dataMain4 = orjson.loads(data)
+                 try:
+                     if r.status == 403:
+                         embedVar = discord.Embed()
+                         embedVar.description = "Sadly this video or channel has disabled comments, thus no comments can be show. Please try again..."
+                         embedVar.add_field(
+-                            name="Error", value=data["error"]["message"], inline=True
++                            name="Error", value=dataMain4["error"]["message"], inline=True
+                         )
+                         embedVar.add_field(
+                             name="Reason",
+-                            value=data["error"]["errors"][0]["reason"],
++                            value=dataMain4["error"]["errors"][0]["reason"],
+                             inline=True,
+                         )
+                         await ctx.respond(embed=embedVar)
+@@ -310,7 +316,7 @@ class YoutubeV4(commands.Cog):
+                             "authorChannelUrl",
+                         ]
+ 
+-                        for dictVal in data["items"]:
++                        for dictVal in dataMain4["items"]:
+                             embedVar.title = dictVal["snippet"]["topLevelComment"][
+                                 "snippet"
+                             ]["authorDisplayName"]
+@@ -370,14 +376,15 @@ class YoutubeV5(commands.Cog):
+             async with session.get(
+                 "https://www.googleapis.com/youtube/v3/videos", params=params
+             ) as another_response:
+-                data = await another_response.json()
++                data = await another_response.content.read()
++                dataMain5 = orjson.loads(data)
+                 try:
+                     embed = discord.Embed(
+                         color=discord.Color.from_rgb(255, 0, 0))
+                     snippetFilter = ["title", "description",
+                                      "thumbnails", "localized"]
+                     picFilter = ["default", "medium", "high", "standard"]
+-                    for items in data["items"]:
++                    for items in dataMain5["items"]:
+                         for keys, val in items["snippet"].items():
+                             if keys not in snippetFilter:
+                                 embed.add_field(
+diff --git a/Pipfile b/Pipfile
+index 78d2a42..7d53d3a 100644
+--- a/Pipfile
++++ b/Pipfile
+@@ -19,7 +19,6 @@ qrcode = {extras = ["pil"], version = "*"}
+ cchardet = "*"
+ beautifulsoup4 = "*"
+ py-cord = {version = "==2.0.0b5", extras = ["voice"]}
+-pyjion = "*"
+ 
+ [dev-packages]
+ black = "*"
+diff --git a/Pipfile.lock b/Pipfile.lock
+index 17e9f3e..1d4cdc7 100644
+--- a/Pipfile.lock
++++ b/Pipfile.lock
+@@ -1,7 +1,7 @@
+ {
+     "_meta": {
+         "hash": {
+-            "sha256": "5cf3a6fac99f70023e593625a8690c0c76a851b752f2fae2fd63fb7148a5fefe"
++            "sha256": "646321bdb36a365bc843cf1d029c91cb708d13cc56ba4658c3c7a621163ca8d1"
+         },
+         "pipfile-spec": 6,
+         "requires": {
+@@ -130,7 +130,7 @@
+                 "sha256:01c7bf666359b4967d2cda0000cc2e4af16a0ae098cbffcb8472fb9e8ad6585b",
+                 "sha256:6ebb3d106c12920aaae42ccb6f787ef5eefdcdd166ea3d628fa8476abe712144"
+             ],
+-            "markers": "python_version >= '3.5'",
++            "markers": "python_full_version >= '3.5.0'",
+             "version": "==1.10"
+         },
+         "async-timeout": {
+@@ -382,7 +382,7 @@
+                 "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597",
+                 "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"
+             ],
+-            "markers": "python_version >= '3.5'",
++            "markers": "python_full_version >= '3.5.0'",
+             "version": "==2.0.12"
+         },
+         "frozenlist": {
+@@ -783,17 +783,6 @@
+             ],
+             "version": "==2.21"
+         },
+-        "pyjion": {
+-            "hashes": [
+-                "sha256:17e4c5b3a6a51117bae0d54baa62eb59dbc7158c5dfc675882a2214f4d51d212",
+-                "sha256:6f34835879dd9c7e78c027f9336e058947f3d9d6e77edec43ced0abfb039fee6",
+-                "sha256:91af971a7a3a368e8f54145cf0716e7f32a9f7b577612bfd857cf3cb169799b4",
+-                "sha256:cb6e4c82fb11508b6fb507488fc658c918d73e7e2722b175ad6e121221dfa96d",
+-                "sha256:e80141d480d0e969bde174ecc385f0b7d0f1217b176ed4268eae5b74261611e4"
+-            ],
+-            "index": "pypi",
+-            "version": "==1.2.6"
+-        },
+         "pynacl": {
+             "hashes": [
+                 "sha256:06b8f6fa7f5de8d5d2f7573fe8c863c051225a27b61e6860fd047b1775807858",
+-- 
+2.35.1
+
