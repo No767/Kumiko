@@ -208,14 +208,16 @@ class DeviantArtV2(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=artMain["error"], inline=True)
+                        name="Error", value=artMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
                         value=artMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=artMain["status"], inline=True)
+                        name="Status", value=artMain["status"], inline=True
+                    )
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -297,14 +299,16 @@ class DeviantArtV3(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=popMain["error"], inline=True)
+                        name="Error", value=popMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
                         value=popMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=popMain["status"], inline=True)
+                        name="Status", value=popMain["status"], inline=True
+                    )
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -384,14 +388,16 @@ class DeviantArtV4(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=tagsMain["error"], inline=True)
+                        name="Error", value=tagsMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
                         value=tagsMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=tagsMain["status"], inline=True)
+                        name="Status", value=tagsMain["status"], inline=True
+                    )
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -446,12 +452,15 @@ class DeviantArtV5(commands.Cog):
                             embedVar.add_field(
                                 name=k, value=f"[{v}]", inline=True)
                         embedVar.title = usersMain["user"]["username"]
-                        embedVar.description = f"{usersMain['tagline']}\n\n{usersMain['bio']}"
-                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
+                        embedVar.description = (
+                            f"{usersMain['tagline']}\n\n{usersMain['bio']}"
+                        )
+                        embedVar.set_thumbnail(
+                            url=usersMain["user"]["usericon"])
                         embedVar.set_image(
-                            url=usersMain["cover_deviation"]["cover_deviation"]["content"][
-                                "src"
-                            ]
+                            url=usersMain["cover_deviation"]["cover_deviation"][
+                                "content"
+                            ]["src"]
                         )
                         await ctx.respond(embed=embedVar)
                     else:
@@ -464,8 +473,11 @@ class DeviantArtV5(commands.Cog):
                             embedVar.add_field(
                                 name=k1, value=f"[{v1}]", inline=True)
                         embedVar.title = usersMain["user"]["username"]
-                        embedVar.description = f"{usersMain['tagline']}\n\n{usersMain['bio']}"
-                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
+                        embedVar.description = (
+                            f"{usersMain['tagline']}\n\n{usersMain['bio']}"
+                        )
+                        embedVar.set_thumbnail(
+                            url=usersMain["user"]["usericon"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(

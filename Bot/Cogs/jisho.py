@@ -7,11 +7,11 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 
+
 class jishoDict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    
     @slash_command(
         name="jisho",
         description="Searches for words on Jisho",
@@ -98,8 +98,6 @@ class jishoDict(commands.Cog):
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
-    
 
 
 def setup(bot):

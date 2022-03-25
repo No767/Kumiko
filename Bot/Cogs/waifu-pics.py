@@ -56,7 +56,7 @@ class waifuPics(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
                 waifu_pics = await r.content.read()
-                waifuPicsMain = orjson.loads(waifu_pics)
+                orjson.loads(waifu_pics)
                 try:
                     await ctx.respond(waifu_picsMain["url"])
                 except Exception as e:

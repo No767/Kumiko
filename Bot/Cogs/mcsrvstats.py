@@ -12,7 +12,6 @@ class mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @slash_command(
         name="java",
         description="Returns info about the given Minecraft Java server",
@@ -93,7 +92,6 @@ class mcsrvstats(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-
 class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -168,7 +166,6 @@ class bedrock_mcsrvstats(commands.Cog):
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 def setup(bot):

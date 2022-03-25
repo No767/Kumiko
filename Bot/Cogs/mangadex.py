@@ -177,7 +177,9 @@ class MangaDexV2(commands.Cog):
                             if k not in mangaFilter2:
                                 embedVar.add_field(
                                     name=k, value=v, inline=True)
-                        for keys, value in dataMain2["data"]["attributes"]["links"].items():
+                        for keys, value in dataMain2["data"]["attributes"][
+                            "links"
+                        ].items():
                             embedVar.add_field(
                                 name=keys, value=value, inline=True)
                         for tagItem in dataMain2["data"]["attributes"]["tags"]:

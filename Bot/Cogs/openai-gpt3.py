@@ -3,8 +3,8 @@ import os
 
 import aiohttp
 import discord
-import ujson
 import orjson
+import ujson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands

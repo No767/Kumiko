@@ -21,7 +21,9 @@ class SpigetV2(commands.Cog):
         self, ctx, *, plugin_name: Option(str, "The name of the plugin")
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"
+            }
             params = {"size": 5}
             async with session.get(
                 f"https://api.spiget.org/v2/search/resources/{plugin_name}",
@@ -134,7 +136,9 @@ class SpigetV3(commands.Cog):
         self, ctx, *, author_name: Option(str, "Name of the plugin author")
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"
+            }
             params = {"size": 5}
             async with session.get(
                 f"https://api.spiget.org/v2/search/authors/{author_name}",
@@ -174,7 +178,9 @@ class SpigetV4(commands.Cog):
     )
     async def spigetStats(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"
+            }
             async with session.get(
                 "https://api.spiget.org/v2/status", headers=headers
             ) as res:
@@ -210,7 +216,9 @@ class SpigetV5(commands.Cog):
     )
     async def spigetStatus(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"}
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36"
+            }
             async with session.get(
                 "https://api.spiget.org/v2/status", headers=headers
             ) as r:

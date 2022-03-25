@@ -88,7 +88,8 @@ class TopGGV2(commands.Cog):
                             text="Tip: Try finding a user on the Top.gg Disord Server"
                         )
                         embed.add_field(
-                            name="Reason", value=userMain["error"], inline=True)
+                            name="Reason", value=userMain["error"], inline=True
+                        )
                         await ctx.respond(embed=embed)
                     else:
                         embedVar = discord.Embed(

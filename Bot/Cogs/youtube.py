@@ -276,7 +276,9 @@ class YoutubeV4(commands.Cog):
                         embedVar = discord.Embed()
                         embedVar.description = "Sadly this video or channel has disabled comments, thus no comments can be show. Please try again..."
                         embedVar.add_field(
-                            name="Error", value=dataMain4["error"]["message"], inline=True
+                            name="Error",
+                            value=dataMain4["error"]["message"],
+                            inline=True,
                         )
                         embedVar.add_field(
                             name="Reason",
