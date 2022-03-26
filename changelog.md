@@ -17,6 +17,7 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 ## Additions
 
 - Modrinth API Support
+- Discord.bots.gg API Support
 
 ## Changes
 - Upgrade Rin to Pycord v2.0.0 (Beta as of now)
@@ -27,6 +28,8 @@ Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will o
 - Add in Modrinth API Support
 - Added even more commands for Reddit Cog
 - Use AIOHTTP's Streams API to obtain data instead of using JSON responses
+- Add Discord.bots.gg API Support
+- Bump Docker Image to Python 3.10.4 instead
 
 ## Removals
 
