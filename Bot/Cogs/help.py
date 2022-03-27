@@ -14,7 +14,7 @@ class helper(commands.Cog):
 
     @slash_command(
         name="help",
-        description="The Help Page for Rin (Same as /rinhelp)",
+        description="The Help Page for Rin",
         guild_ids=[866199405090308116],
     )
     async def rinHelp(
@@ -27,6 +27,8 @@ class helper(commands.Cog):
             choices=[
                 "Anime",
                 "DeviantArt",
+                "Discord.bots.gg",
+                "First-FRC",
                 "Fun",
                 "Hypixel",
                 "Minecraft",
@@ -54,6 +56,8 @@ class helper(commands.Cog):
                 embedVar.add_field(
                     name="DeviantArt", value="`/rinhelp da`", inline=True
                 )
+                embedVar.add_field(name="Discord.bots.gg", value="`/rinhelp dbg`", inline=True)
+                embedVar.add_field(name="First-FRC", value="`/rinhelp first-frc`", inline=True)
                 embedVar.add_field(
                     name="Fun", value="`/rinhelp fun`", inline=True)
                 embedVar.add_field(
@@ -116,6 +120,42 @@ class helper(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar, view=view)
 
+            if category in ["Discord.bots.gg", "dbg", "discord.bots.gg"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(name="`discord-bots-search`",
+                                   value="Searches for any Discord Bots listed on discord.bots.gg", inline=True)
+                embedVar.add_field(name="`discord-bots-id`",
+                                   value="Searches for any Discord Bots listed on discord.bots.gg by ID", inline=True)
+                embedVar.set_author(
+                    name="Rin Help - Discord.bots.gg", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["First-FRC", "ffrc", "first-frc"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(name="`frc-season`", value="Returns a season summary for the current FRC season",
+                                   inline=True)
+                embedVar.add_field(name="`frc-events`", value="Lists out the events for the current FRC season",
+                                   inline=True)
+                embedVar.add_field(name="`frc-team-awards`", value="Returns the awards that a FRC team has won",
+                                   inline=True)
+                embedVar.add_field(name="`frc-score`", value="Returns the FRC team's score details for a given event",
+                                   inline=True)
+                embedVar.add_field(name="`frc-results`", value="Returns the FRC team's results for a given event",
+                                   inline=True)
+                embedVar.add_field(name="`frc-event-rankings-top`",
+                                   value="Returns the top 10 FRC teams for a given event", inline=True)
+                embedVar.add_field(name="`frc-event-schedule`", value="Returns the schedule for a given event",
+                                   inline=True)
+                embedVar.add_field(name="`frc-event-alliances`", value="Returns the alliances for a given event",
+                                   inline=True)
+                embedVar.set_author(
+                    name="Rin Help - First FRC", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
             if category in ["twitter", "Twitter"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -141,13 +181,33 @@ class helper(commands.Cog):
                     name="`reddit`", value="searches on reddit", inline=True
                 )
                 embedVar.add_field(
-                    name="`transmeme`",
-                    value="searches on reddit that include trans and other LGBTQ+ subreddits",
+                    name="`reddit-new`",
+                    value="Returns 5 new posts from any subreddit",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`meme`",
-                    value="searches on reddit that include defined search topics regarding memes",
+                    name="`reddit-top`",
+                    value="Returns 5 top posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-hot`",
+                    value="Returns 5 hot posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-comemnts`",
+                    value="Returns up to 10 comemnts from a given post ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user`",
+                    value="Provides info about the given Redditor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reddit-user-comments`",
+                    value="Returns up to 10 comments from a given Redditor",
                     inline=True,
                 )
                 embedVar.set_author(
