@@ -39,6 +39,7 @@ initial_extensions = [
     "Cogs.help",
     "Cogs.modrinth",
     "Cogs.discord-bots",
+    "Cogs.first-frc-events",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
