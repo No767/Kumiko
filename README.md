@@ -21,11 +21,11 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 
 # Prefix
 
-Rin's prefix is `/`
+Rin's prefix is `/`.
 
 # Inviting the Bot
 
-Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.com/No767/Rin#bot-discovery-network-links) section. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite). Rin's prefix is `/`. Note that previously (before v2.0.0), the prefix was `.`. Versions beyond v2.0.0 will only support the slash (`/`) prefix.
+Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.com/No767/Rin#bot-discovery-network-links) section. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite). Note that previously (before v2.0.0), the prefix was `.`. Versions beyond v2.0.0 will only support the slash (`/`) prefix.
 
 # Installing Dependencies
 Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. Note that soon Rin will be using RustPython instead. If you want to get set up, here are the instructions to do so:
