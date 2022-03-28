@@ -136,7 +136,6 @@ class FirstFRCV3(commands.Cog):
     @slash_command(
         name="frc-team-awards",
         description="Returns the awards that a FRC team has won",
-        guild_ids=[866199405090308116],
     )
     async def frcTeamAwards(
         self,
@@ -182,7 +181,6 @@ class FirstFRCV4(commands.Cog):
     @slash_command(
         name="frc-score",
         description="Returns the FRC team's score details for a given event",
-        guild_ids=[866199405090308116],
     )
     async def frcScoreDetails(
         self,
@@ -239,7 +237,6 @@ class FirstFRCV5(commands.Cog):
     @slash_command(
         name="frc-results",
         description="Returns the FRC team's results for a given event (the results of each matches that the team is in)",
-        guild_ids=[866199405090308116],
     )
     async def frcResults(
         self,
@@ -304,7 +301,6 @@ class FirstFRCV6(commands.Cog):
     @slash_command(
         name="frc-event-rankings-top",
         description="Returns the top 10 FRC teams within a given event",
-        guild_ids=[866199405090308116],
     )
     async def frcEventRanking(
         self,
@@ -351,7 +347,6 @@ class FirstFRCV7(commands.Cog):
     @slash_command(
         name="frc-event-schedule",
         description="Returns the schedule for a given FRC event",
-        guild_ids=[866199405090308116],
     )
     async def frcEventSchedule(
         self,
@@ -409,7 +404,6 @@ class FirstFRCV8(commands.Cog):
     @slash_command(
         name="frc-event-alliances",
         description="Returns the alliances for a given FRC event",
-        guild_ids=[866199405090308116],
     )
     async def frcEventAlliances(
         self,

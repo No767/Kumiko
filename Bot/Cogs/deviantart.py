@@ -141,7 +141,6 @@ class DeviantArtV2(commands.Cog):
     @slash_command(
         name="deviantart-newest",
         description="Returns up to 5 newest art from DeviantArt based on the given search result",
-        guild_ids=[866199405090308116],
     )
     async def da_query(
         self,
@@ -229,7 +228,6 @@ class DeviantArtV3(commands.Cog):
     @slash_command(
         name="deviantart-popular",
         description="Returns up to 5 popular art from DeviantArt based on the given search result",
-        guild_ids=[866199405090308116],
     )
     async def deviantart_popular(
         self,
@@ -320,7 +318,6 @@ class DeviantArtV4(commands.Cog):
     @slash_command(
         name="deviantart-tag-search",
         description="Returns up to 5 search results from DeviantArt based on the given tag",
-        guild_ids=[866199405090308116],
     )
     async def tags(
         self,
@@ -409,7 +406,6 @@ class DeviantArtV5(commands.Cog):
     @slash_command(
         name="deviantart-user",
         description="Returns the user's profile information",
-        guild_ids=[866199405090308116],
     )
     async def userv1(
         self, ctx, *, user: Option(str, "The username you want to search for")

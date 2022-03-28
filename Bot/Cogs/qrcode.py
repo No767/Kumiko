@@ -16,7 +16,6 @@ class qrcode_maker(commands.Cog):
     @slash_command(
         name="qrcode",
         description="Creates a QR Code based on given input",
-        guild_ids=[866199405090308116],
     )
     async def code(self, ctx, *, link: str):
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
