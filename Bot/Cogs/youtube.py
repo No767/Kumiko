@@ -118,7 +118,7 @@ class YoutubeV2(commands.Cog):
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 0, 0)
                         )
-                        filter = {"kind", "etag", "snippet",
+                        filterMain5 = {"kind", "etag", "snippet",
                                   "statistics", "localized"}
                         snippetFilter = [
                             "title",
@@ -128,7 +128,7 @@ class YoutubeV2(commands.Cog):
                         ]
                         for dictItem in dataMain3["items"]:
                             for key, val in dictItem.items():
-                                if key not in filter:
+                                if key not in filterMain5:
                                     embedVar.add_field(
                                         name=key, value=val, inline=True)
                             for k, v in dictItem["snippet"].items():
@@ -302,7 +302,7 @@ class YoutubeV4(commands.Cog):
                             "canRate",
                             "id",
                             "authorChannelUrl",
-                            "videoId",
+                            "videoId"
                         ]
                         pfpFilter = [
                             "videoId",

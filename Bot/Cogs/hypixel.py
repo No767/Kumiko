@@ -37,7 +37,7 @@ class hypixel_api(commands.Cog):
                             title="Player Info",
                             color=discord.Color.from_rgb(186, 244, 255),
                         )
-                        filter = [
+                        filterMainV3 = [
                             "achievements",
                             "achievementsOneTime",
                             "stats",
@@ -59,7 +59,7 @@ class hypixel_api(commands.Cog):
                             "adsense_tokens",
                         ]
                         for key, value in playerMain["player"].items():
-                            if key not in filter:
+                            if key not in filterMainV3:
                                 discord_embed.add_field(
                                     name=key, value=value, inline=True
                                 )
@@ -103,7 +103,6 @@ class hypixel_player_count(commands.Cog):
             ) as response:
                 status = await response.content.read()
                 statusMain = orjson.loads(status)
-                print(statusMain)
                 try:
                     embedVar = discord.Embed(
                         title="Games Player Count",
@@ -201,9 +200,9 @@ class networkPunishments(commands.Cog):
                         color=discord.Color.from_rgb(186, 193, 255),
                     )
                     if str(statsMain["success"]) == "True":
-                        filter = ["success"]
+                        filterMain4 = ["success"]
                         for keys, value in statsMain.items():
-                            if keys not in filter:
+                            if keys not in filterMain4:
                                 embedVar.add_field(
                                     name=keys, value=value, inline=True)
                         await ctx.respond(embed=embedVar)

@@ -41,7 +41,7 @@ class SpigetV2(commands.Cog):
                         download_url_external_false = "https://spigotmc.org/" + str(
                             dictItem["file"]["url"]
                         )
-                        filter = [
+                        filterMain6 = [
                             "icon",
                             "links",
                             "releaseDate",
@@ -65,7 +65,7 @@ class SpigetV2(commands.Cog):
                             )
                             embedVar.description = dictItem["tag"]
                             for key, value in dictItem.items():
-                                if key not in filter:
+                                if key not in filterMain6:
                                     embedVar.add_field(
                                         name=key, value=value, inline=True
                                     )

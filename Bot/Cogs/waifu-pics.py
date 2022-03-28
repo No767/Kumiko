@@ -56,9 +56,9 @@ class waifuPics(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
                 waifu_pics = await r.content.read()
-                orjson.loads(waifu_pics)
+                waifu_pics_main = orjson.loads(waifu_pics)
                 try:
-                    await ctx.respond(waifu_picsMain["url"])
+                    await ctx.respond(waifu_pics_main["url"])
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The query was not successful"

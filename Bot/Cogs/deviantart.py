@@ -68,7 +68,7 @@ class DeviantArtV1(commands.Cog):
                     color=discord.Color.from_rgb(255, 214, 214))
                 try:
                     if r.status == 200:
-                        filter = [
+                        filterItem = [
                             "author",
                             "stats",
                             "preview",
@@ -81,7 +81,7 @@ class DeviantArtV1(commands.Cog):
                         authorFilterMain = [
                             "type", "is_subscribed", "usericon"]
                         for keys, values in deviationMain.items():
-                            if keys not in filter:
+                            if keys not in filterItem:
                                 embedVar.add_field(
                                     name=keys, value=values, inline=True)
                         for k, v in deviationMain["author"].items():

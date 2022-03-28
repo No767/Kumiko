@@ -29,7 +29,7 @@ class qrcode_maker(commands.Cog):
         file = discord.File("./qrcode/qrcode.png")
         embedVar = discord.Embed()
         embedVar.set_image(url="attachment://qrcode.png")
-        await ctx.send(embed=embedVar, file=file)
+        await ctx.respond(embed=embedVar, file=file)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

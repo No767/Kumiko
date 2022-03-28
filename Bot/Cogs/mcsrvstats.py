@@ -85,8 +85,9 @@ class mcsrvstats(commands.Cog):
                 except Exception as e:
                     embedVar = discord.Embed(color=0xC27C0E)
                     embedVar.description = (
-                        f"Your search for has failed. Please try again.\nReason: {e}"
+                        f"Your search for has failed. Please try again."
                     )
+                    embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -95,8 +96,6 @@ class mcsrvstats(commands.Cog):
 class bedrock_mcsrvstats(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    ()
 
     @slash_command(
         name="bedrock",
@@ -161,8 +160,9 @@ class bedrock_mcsrvstats(commands.Cog):
                 except Exception as e:
                     embedVar = discord.Embed(color=0x607D8B)
                     embedVar.description = (
-                        f"Your search has failed. Please try again.\nReason: {e}"
+                        f"Your search has failed. Please try again."
                     )
+                    embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

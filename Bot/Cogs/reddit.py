@@ -11,13 +11,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Replaced the old user input based auth with a more secure env var based auth
-# Make sure you have this stored at the same directory as the rinbot file within a .env file
 Reddit_ID = os.getenv("Reddit_ID")
 Reddit_Secret = os.getenv("Reddit_Secret")
 
 
-class reddit(commands.Cog):
+class RedditV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -38,7 +36,7 @@ class reddit(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as api:
             original_search = search
             try:
@@ -89,7 +87,7 @@ class RedditV2(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as redditapi:
             if "r/" in subreddit:
                 subParser = subreddit.split("/")
@@ -135,13 +133,13 @@ class RedditV3(commands.Cog):
         description="Returns up to 10 comments from a given post ID",
         guild_ids=[866199405090308116],
     )
-    async def redditComments(self, ctx, *, id: Option(str, "ID of post")):
+    async def redditComments(self, ctx, *, post_id: Option(str, "ID of post")):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as api:
-            post = await api.submission(id=id)
+            post = await api.submission(id=post_id)
             comments = await post.comments()
             listedComments = await comments.list()
             embedVar = discord.Embed()
@@ -174,7 +172,7 @@ class RedditV4(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as redditorApi:
             user = await redditorApi.redditor(redditor)
             await user.load()
@@ -208,7 +206,7 @@ class RedditV5(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as redditorCommentsAPI:
             userComment = await redditorCommentsAPI.redditor(redditor)
             embedVar = discord.Embed()
@@ -244,7 +242,7 @@ class RedditV6(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as redditapi:
             if "r/" in subreddit:
                 subParser = subreddit.split("/")
@@ -296,7 +294,7 @@ class RedditV7(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v1.4.0-dev (by /u/No767)",
+            user_agent="ubuntu:rin:v2.0.0 (by /u/No767)",
         ) as redditapi:
             if "r/" in subreddit:
                 subParser = subreddit.split("/")
@@ -334,7 +332,7 @@ class RedditV7(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(reddit(bot))
+    bot.add_cog(RedditV1(bot))
     bot.add_cog(RedditV2(bot))
     bot.add_cog(RedditV3(bot))
     bot.add_cog(RedditV4(bot))

@@ -34,12 +34,12 @@ class FirstFRCV1(commands.Cog):
             ) as r:
                 data = await r.content.read()
                 dataMain = orjson.loads(data)
-                filter = ["frcChampionships", "gameName"]
+                filterSeason = ["frcChampionships", "gameName"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
                 try:
                     for k, v in dataMain.items():
-                        if k not in filter:
+                        if k not in filterSeason:
                             embedVar.add_field(name=k, value=v, inline=True)
                     for dictItem in dataMain["frcChampionships"]:
                         for keys, value in dictItem.items():
@@ -381,13 +381,13 @@ class FirstFRCV7(commands.Cog):
             ) as r:
                 data = await r.content.read()
                 dataMain = orjson.loads(data)
-                filter = ["teams", "description"]
+                filterEventSchedule = ["teams", "description"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
                 try:
                     for dictItem in dataMain["Schedule"]:
                         for key, value in dictItem.items():
-                            if key not in filter:
+                            if key not in filterEventSchedule:
                                 embedVar.add_field(
                                     name=key, value=value, inline=True)
                                 embedVar.remove_field(-4)
@@ -430,13 +430,13 @@ class FirstFRCV8(commands.Cog):
             ) as r:
                 data = await r.content.read()
                 dataMain = orjson.loads(data)
-                filter = ["number", "name", "captain", "round1", "round2"]
+                filterEventAlliances = ["number", "name", "captain", "round1", "round2"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
                 try:
                     for dictItem in dataMain["Alliances"]:
                         for key, value in dictItem.items():
-                            if key not in filter:
+                            if key not in filterEventAlliances:
                                 embedVar.add_field(
                                     name=key, value=value, inline=True)
                                 embedVar.remove_field(-4)
