@@ -32,7 +32,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
 ## Windows
 
-1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
+1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it. (These instructions use Ubuntu as the main distro. If you want to build and develop Rin on a different distro, look ahead into the Linux section)
 2. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
 
     ```sh
@@ -217,6 +217,70 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
    pipenv shell
    ```
 
+### Fedora/CentOS
+
+1. Make sure you installed the required libs (if you are using CentOS, you may have to use `yum` instead of `dnf`). To do so, run this cmd:
+
+    ```sh
+    sudo dnf -y groupinstall "Development Tools"
+    ```
+   
+    ```sh
+    sudo dnf install python310-devel libffi-devel openssl-devel xz-devel gcc bzip2-devel git
+    ```
+2. Install Python 3.10. You also have the choice of compiling it, but make sure you also have OpenSSL installed and all other required modules before compiling
+
+   ```sh
+   sudo dnf install python3.10
+   ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python3.10 -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all dependencies. More than likely you will face an error installing cChardet. So just run `pipenv install cchardet` to reinstall it and it should do the trick
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
 ## MacOS
 
 **Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**
