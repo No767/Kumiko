@@ -25,7 +25,7 @@ class tokenFetcher:
     async def get(self):
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin_deviantart_tokens_v2"
         )
         tokens = Table(
             "DA_Tokens",
