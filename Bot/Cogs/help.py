@@ -12,10 +12,7 @@ class helper(commands.Cog):
         self.bot = bot
         self.last_member = None
 
-    @slash_command(
-        name="help",
-        description="The Help Page for Rin"
-    )
+    @slash_command(name="help", description="The Help Page for Rin")
     async def rinHelp(
         self,
         ctx,

@@ -2,9 +2,8 @@ import asyncio
 
 import discord
 import uvloop
-from discord.ext import commands
 from discord.commands import slash_command
-from lxml.html._diffcommand import description
+from discord.ext import commands
 
 
 class InviteV1(commands.Cog):

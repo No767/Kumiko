@@ -46,7 +46,7 @@ class DeviantArtV1(commands.Cog):
 
     @slash_command(
         name="deviantart-item",
-        description="Returns info about a deviation on DeviantArt"
+        description="Returns info about a deviation on DeviantArt",
     )
     async def da(self, ctx, *, deviation_id: Option(str, "The ID for the Deviation")):
         token = tokenFetcher()

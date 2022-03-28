@@ -12,10 +12,7 @@ class advice_slip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="advice",
-        description="Gives some advice from Adviceslip"
-    )
+    @slash_command(name="advice", description="Gives some advice from Adviceslip")
     async def adviceSlip(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.adviceslip.com/advice") as r:

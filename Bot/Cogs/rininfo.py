@@ -10,9 +10,7 @@ class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="rininfo", description="Info about Rin"
-    )
+    @slash_command(name="rininfo", description="Info about Rin")
     async def rinInfo(self, ctx):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)

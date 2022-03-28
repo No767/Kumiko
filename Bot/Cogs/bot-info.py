@@ -20,10 +20,7 @@ class botInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="botinfo",
-        description="Returns Stats for Rin"
-    )
+    @slash_command(name="botinfo", description="Returns Stats for Rin")
     async def botinfo(self, ctx):
         bot = self.bot
         name = bot.user.name
