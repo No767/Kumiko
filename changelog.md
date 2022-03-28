@@ -10,7 +10,6 @@ This is just a very small patch update that activates all of the slash commands 
 
 ## TD;LR
 - Activated all of the slash commands (this time for real)
-- 
 
 ## Changes
 
