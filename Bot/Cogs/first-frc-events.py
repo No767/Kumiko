@@ -278,7 +278,7 @@ class FirstFRCV5(commands.Cog):
                             if key not in filterResults:
                                 embedVar.add_field(
                                     name=key, value=value, inline=True)
-                                embedVar.remove_field(4)
+                                embedVar.remove_field(-15)
                         embedVar.add_field(
                             name="Teams",
                             value=str(
@@ -289,9 +289,8 @@ class FirstFRCV5(commands.Cog):
                             ).replace("'", ""),
                             inline=True,
                         )
+                        embedVar.remove_field(0)
                         embedVar.title = dictItemMain["description"]
-                        embedVar.description = dictItemMain["matchVideoLink"]
-                        embedVar.remove_field(-20)
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedError.description = "Something went wrong. Please try again..."
