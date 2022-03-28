@@ -15,7 +15,6 @@ class mcsrvstats(commands.Cog):
     @slash_command(
         name="java",
         description="Returns info about the given Minecraft Java server",
-        guild_ids=[866199405090308116],
     )
     async def java(self, ctx, server: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -100,7 +99,6 @@ class bedrock_mcsrvstats(commands.Cog):
     @slash_command(
         name="bedrock",
         description="Returns info about the given Minecraft Bedrock server",
-        guild_ids=[866199405090308116],
     )
     async def bedrock(self, ctx, server: str):
         async with aiohttp.ClientSession(json_serialize=orjson.loads) as session:

@@ -22,7 +22,6 @@ class RedditV1(commands.Cog):
     @slash_command(
         name="reddit",
         description="Searches on reddit for content",
-        guild_ids=[866199405090308116],
     )
     async def reddit(
         self,
@@ -79,7 +78,6 @@ class RedditV2(commands.Cog):
     @slash_command(
         name="reddit-new",
         description="Returns 5 new posts from any subreddit",
-        guild_ids=[866199405090308116],
     )
     async def redditNew(
         self, ctx, *, subreddit: Option(str, "The subreddit to search")
@@ -131,7 +129,6 @@ class RedditV3(commands.Cog):
     @slash_command(
         name="reddit-comments",
         description="Returns up to 10 comments from a given post ID",
-        guild_ids=[866199405090308116],
     )
     async def redditComments(self, ctx, *, post_id: Option(str, "ID of post")):
         async with asyncpraw.Reddit(
@@ -166,7 +163,6 @@ class RedditV4(commands.Cog):
     @slash_command(
         name="reddit-user",
         description="Provides info about the given Redditor",
-        guild_ids=[866199405090308116],
     )
     async def redditor(self, ctx, *, redditor: Option(str, "The name of the Redditor")):
         async with asyncpraw.Reddit(
@@ -198,7 +194,6 @@ class RedditV5(commands.Cog):
     @slash_command(
         name="reddit-user-comments",
         description="Returns up to 10 comments from a given Redditor",
-        guild_ids=[866199405090308116],
     )
     async def redditorComments(
         self, ctx, *, redditor: Option(str, "The name of the Redditor")
@@ -234,7 +229,6 @@ class RedditV6(commands.Cog):
     @slash_command(
         name="reddit-hot",
         description="Returns 5 hot posts from any subreddit",
-        guild_ids=[866199405090308116],
     )
     async def redditNew(
         self, ctx, *, subreddit: Option(str, "The subreddit to search")
@@ -286,7 +280,6 @@ class RedditV7(commands.Cog):
     @slash_command(
         name="reddit-top",
         description="Returns 5 top posts from any subreddit",
-        guild_ids=[866199405090308116],
     )
     async def redditNew(
         self, ctx, *, subreddit: Option(str, "The subreddit to search")

@@ -21,7 +21,6 @@ class YoutubeV1(commands.Cog):
     @slash_command(
         name="youtube-search",
         description="Finds up to 5 videos on YouTube based on the given search term",
-        guild_ids=[866199405090308116],
     )
     async def youtube_search(self, ctx, *, search: Option(str, "Video Search Term")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -84,7 +83,6 @@ class YoutubeV2(commands.Cog):
     @slash_command(
         name="youtube-channel",
         description="Returns Given YouTube Channel Info",
-        guild_ids=[866199405090308116],
     )
     async def youtube_channel(self, ctx, *, channel: Option(str, "Channel Name")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -168,7 +166,6 @@ class YoutubeV3(commands.Cog):
     @slash_command(
         name="youtube-playlists",
         description="Returns up to 5 YouTube playlists based on the given YT channel",
-        guild_ids=[866199405090308116],
     )
     async def youtube_playlists(
         self, ctx, *, channel_name: Option(str, "Channel Name")
@@ -260,7 +257,6 @@ class YoutubeV4(commands.Cog):
     @slash_command(
         name="youtube-comments",
         description="Returns up to 5 comments within a given video",
-        guild_ids=[866199405090308116],
     )
     async def youtube_comments(self, ctx, *, vid_id: Option(str, "YT Video ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -370,7 +366,6 @@ class YoutubeV5(commands.Cog):
     @slash_command(
         name="youtube-video",
         description="Provides info about the given video",
-        guild_ids=[866199405090308116],
     )
     async def youtube_video(self, ctx, *, video_id: Option(str, "YT Video ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:

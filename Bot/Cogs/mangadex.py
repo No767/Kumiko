@@ -15,7 +15,6 @@ class MangaDexV1(commands.Cog):
     @slash_command(
         name="mangadex-search",
         description="Searches for up to 5 manga on MangaDex",
-        guild_ids=[866199405090308116],
     )
     async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -132,7 +131,6 @@ class MangaDexV2(commands.Cog):
     @slash_command(
         name="mangadex-random",
         description="Returns a random manga from MangaDex",
-        guild_ids=[866199405090308116],
     )
     async def manga_random(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -246,7 +244,6 @@ class MangaDexV3(commands.Cog):
     @slash_command(
         name="mangadex-scanlation-search",
         description="Returns info about a scanlation group on MangaDex",
-        guild_ids=[866199405090308116],
     )
     async def scanlation_search(
         self, ctx, *, name: Option(str, "The name of the scanlation group")
@@ -307,7 +304,6 @@ class MangaDexV4(commands.Cog):
     @slash_command(
         name="mangadex-scanlation-id",
         description="Returns info about a scanlation group on MangaDex (Done via ID)",
-        guild_ids=[866199405090308116],
     )
     async def scanlation_id(
         self, ctx, *, scanlation_id: Option(str, "The ID of the scanlation group")
@@ -362,7 +358,6 @@ class MangaDexV5(commands.Cog):
     @slash_command(
         name="mangadex-user",
         description="Returns info about a user on MangaDex",
-        guild_ids=[866199405090308116],
     )
     async def user(self, ctx, *, user_id: Option(str, "The ID of the user")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -400,7 +395,6 @@ class MangaDexV6(commands.Cog):
     @slash_command(
         name="mangadex-author",
         description="Returns info about an author on MangaDex",
-        guild_ids=[866199405090308116],
     )
     async def author(self, ctx, *, author_name: Option(str, "The name of the author")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:

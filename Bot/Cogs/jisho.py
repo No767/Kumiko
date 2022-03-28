@@ -15,7 +15,6 @@ class jishoDict(commands.Cog):
     @slash_command(
         name="jisho",
         description="Searches for words on Jisho",
-        guild_ids=[866199405090308116],
     )
     async def jishoSearcher(
         self,

@@ -15,7 +15,6 @@ class JikanV1(commands.Cog):
     @slash_command(
         name="jikan-anime",
         description="Fetches up to 5 anime from MAL",
-        guild_ids=[866199405090308116],
     )
     async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -94,7 +93,6 @@ class JikanV2(commands.Cog):
     @slash_command(
         name="jikan-manga",
         description="Fetches up to 5 mangas from MAL",
-        guild_ids=[866199405090308116],
     )
     async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -182,7 +180,6 @@ class JikanV3(commands.Cog):
     @slash_command(
         name="jikan-random-anime",
         description="Fetches a random anime from MAL",
-        guild_ids=[866199405090308116],
     )
     async def animeRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -235,7 +232,6 @@ class JikanV4(commands.Cog):
     @slash_command(
         name="jikan-random-manga",
         description="Fetches a random manga from MAL",
-        guild_ids=[866199405090308116],
     )
     async def mangaRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -286,7 +282,6 @@ class JikanV5(commands.Cog):
     @slash_command(
         name="jikan-seasons",
         description="Returns animes for the given season and year",
-        guild_ids=[866199405090308116],
     )
     async def season(
         self,
@@ -354,7 +349,6 @@ class JikanV6(commands.Cog):
     @slash_command(
         name="jikan-season-upcoming",
         description="Returns anime for the upcoming season (will return ALL of it)",
-        guild_ids=[866199405090308116],
     )
     async def seasonsUpcoming(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -405,7 +399,6 @@ class JikanV7(commands.Cog):
     @slash_command(
         name="jikan-user-profile",
         description="Returns info about given user on MAL",
-        guild_ids=[866199405090308116],
     )
     async def userLookup(self, ctx, *, username: Option(str, "Username of the user")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:

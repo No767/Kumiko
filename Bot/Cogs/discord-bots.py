@@ -19,8 +19,7 @@ class DiscordBotsV1(commands.Cog):
 
     @slash_command(
         name="discord-bots-search",
-        description="Searches for any Discord Bots listed on discord.bots.gg",
-        guild_ids=[866199405090308116],
+        description="Searches for any Discord Bots listed on discord.bots.gg"
     )
     async def discordBotsSearch(
         self,
@@ -80,8 +79,7 @@ class DiscordBotsV2(commands.Cog):
 
     @slash_command(
         name="discord-bots-id",
-        description="Searches for any Discord Bots listed on discord.bots.gg via the Discord Bot's ID",
-        guild_ids=[866199405090308116],
+        description="Searches for any Discord Bots listed on discord.bots.gg via the Discord Bot's ID"
     )
     async def discordBotsID(
         self, ctx, *, bot_id: Option(str, "The ID of the Discord Bot")

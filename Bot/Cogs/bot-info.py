@@ -22,8 +22,7 @@ class botInfo(commands.Cog):
 
     @slash_command(
         name="botinfo",
-        description="Returns Stats for Rin",
-        guild_ids=[866199405090308116],
+        description="Returns Stats for Rin"
     )
     async def botinfo(self, ctx):
         bot = self.bot

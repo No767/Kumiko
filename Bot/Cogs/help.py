@@ -14,8 +14,7 @@ class helper(commands.Cog):
 
     @slash_command(
         name="help",
-        description="The Help Page for Rin",
-        guild_ids=[866199405090308116],
+        description="The Help Page for Rin"
     )
     async def rinHelp(
         self,

@@ -15,7 +15,6 @@ class SpigetV2(commands.Cog):
     @slash_command(
         name="spiget-search",
         description="Finds up to 5 plugins matching the name of the given plugin",
-        guild_ids=[866199405090308116],
     )
     async def spigetSearch(
         self, ctx, *, plugin_name: Option(str, "The name of the plugin")
@@ -130,7 +129,6 @@ class SpigetV3(commands.Cog):
     @slash_command(
         name="spiget-author",
         description="Returns some info about a plugin author",
-        guild_ids=[866199405090308116],
     )
     async def spigetAuthor(
         self, ctx, *, author_name: Option(str, "Name of the plugin author")
@@ -174,7 +172,6 @@ class SpigetV4(commands.Cog):
     @slash_command(
         name="spiget-stats",
         description="Returns stats for SpigotMC",
-        guild_ids=[866199405090308116],
     )
     async def spigetStats(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -212,7 +209,6 @@ class SpigetV5(commands.Cog):
     @slash_command(
         name="spiget-status",
         description="Returns the status of Spiget (HTTP Status)",
-        guild_ids=[866199405090308116],
     )
     async def spigetStatus(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:

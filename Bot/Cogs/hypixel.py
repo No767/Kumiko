@@ -21,7 +21,6 @@ class hypixel_api(commands.Cog):
     @slash_command(
         name="hypixel-user",
         description="Returns Info About A Minecraft User on Hypixel",
-        guild_ids=[866199405090308116],
     )
     async def hypixel_user(self, ctx, *, uuid: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -93,7 +92,6 @@ class hypixel_player_count(commands.Cog):
     @slash_command(
         name="hypixel-count",
         description="Returns the Amount of Players in each game server",
-        guild_ids=[866199405090308116],
     )
     async def player_count(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -129,7 +127,6 @@ class hypixel_status(commands.Cog):
     @slash_command(
         name="hypixel-player-status",
         description="Returns the given player's online status",
-        guild_ids=[866199405090308116],
     )
     async def player_status(self, ctx, *, uuid: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -184,7 +181,6 @@ class networkPunishments(commands.Cog):
     @slash_command(
         name="hypixel-punishment-stats",
         description="Shows the stats for the amount of punishments given on Hypixel (All Users)",
-        guild_ids=[866199405090308116],
     )
     async def punishment_stats(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:

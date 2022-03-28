@@ -15,7 +15,6 @@ class ModrinthV1(commands.Cog):
     @slash_command(
         name="modrinth-search",
         description="Searches for up to 5 mods on Modrinth",
-        guild_ids=[866199405090308116],
     )
     async def modrinthSearch(
         self,
@@ -66,7 +65,6 @@ class ModrinthV2(commands.Cog):
     @slash_command(
         name="modrinth-mod",
         description="Gets info about the mod requested",
-        guild_ids=[866199405090308116],
     )
     async def modrinthProject(
         self, ctx, *, mod_slug: Option(str, "The ID or slug of the project")
@@ -123,7 +121,6 @@ class ModrinthV3(commands.Cog):
     @slash_command(
         name="modrinth-mod-versions",
         description="Lists out all of the versions for a mod (may cause spam)",
-        guild_ids=[866199405090308116],
     )
     async def modrinthProjectVersion(
         self,
@@ -196,7 +193,6 @@ class ModrinthV4(commands.Cog):
     @slash_command(
         name="modrinth-mod-version",
         description="Returns info on the given mod version ID",
-        guild_ids=[866199405090308116],
     )
     async def modrinthModVersion(
         self, ctx, *, mod_version_id: Option(str, "The ID of the mod version")
@@ -243,7 +239,6 @@ class ModrinthV5(commands.Cog):
     @slash_command(
         name="modrinth-user",
         description="Returns info on the given user",
-        guild_ids=[866199405090308116],
     )
     async def modrinthUser(
         self, ctx, *, username: Option(str, "The username or ID of the user")
@@ -283,7 +278,6 @@ class ModrinthV6(commands.Cog):
     @slash_command(
         name="modrinth-user-projects",
         description="Returns info on the given user's projects",
-        guild_ids=[866199405090308116],
     )
     async def modrinthUserProjects(
         self, ctx, *, username: Option(str, "The username or ID of the user")
@@ -347,7 +341,6 @@ class ModrinthV7(commands.Cog):
     @slash_command(
         name="modrinth-project-team-members",
         description="Returns the team memebers of a project",
-        guild_ids=[866199405090308116],
     )
     async def modrinthProjectTeamMembers(
         self, ctx, *, project: Option(str, "The slug or ID of the project")
@@ -392,7 +385,6 @@ class ModrinthV8(commands.Cog):
     @slash_command(
         name="modrinth-team-members",
         description="Returns the members within the given team",
-        guild_ids=[866199405090308116],
     )
     async def modrinthTeamMembers(
         self, ctx, *, team_id: Option(str, "The ID of the team")

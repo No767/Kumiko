@@ -22,7 +22,6 @@ class OpenAI1(commands.Cog):
     @slash_command(
         name="openai-complete",
         description="Completes a sentence using OpenAI's GPT-3 AI",
-        guild_ids=[866199405090308116],
     )
     async def openaiComplete(
         self,
@@ -70,7 +69,6 @@ class OpenAI2(commands.Cog):
     @slash_command(
         name="openai-classify",
         description="Classifies a sentence using OpenAI's GPT-3 AI",
-        guild_ids=[866199405090308116],
     )
     async def openaiClassify(
         self,
@@ -134,7 +132,6 @@ class OpenAI3(commands.Cog):
     @slash_command(
         name="openai-answers",
         description="Forms an answer based on your question",
-        guild_ids=[866199405090308116],
     )
     async def openaiAnswers(
         self,

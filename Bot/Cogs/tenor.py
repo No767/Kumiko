@@ -21,7 +21,6 @@ class TenorV1(commands.Cog):
     @slash_command(
         name="tenor-search-multiple",
         description="Searches for up to 5 gifs on Tenor",
-        guild_ids=[866199405090308116],
     )
     async def tenor_search(
         self, ctx, *, search_term: Option(str, "Search Term for GIFs")
@@ -80,7 +79,6 @@ class TenorV2(commands.Cog):
     @slash_command(
         name="tenor-search-one",
         description="Searches for a single gif on Tenor",
-        guild_ids=[866199405090308116],
     )
     async def tenor_search_one(
         self, ctx, *, search_one_term: Option(str, "Search Term for GIF")
@@ -121,7 +119,6 @@ class TenorV3(commands.Cog):
     @slash_command(
         name="tenor-trending",
         description="Returns up to 5 trending gifs from Tenor",
-        guild_ids=[866199405090308116],
     )
     async def tenor_trending(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -181,7 +178,6 @@ class TenorV4(commands.Cog):
     @slash_command(
         name="tenor-search-suggestions",
         description="Gives a list of suggested search terms based on given topic",
-        guild_ids=[866199405090308116],
     )
     async def tenor_search_suggestions(
         self,
@@ -220,7 +216,6 @@ class TenorV5(commands.Cog):
     @slash_command(
         name="tenor-trending-terms",
         description="Gives a list of trending search terms on Tenor",
-        guild_ids=[866199405090308116],
     )
     async def tenor_trending_terms(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -253,7 +248,6 @@ class TenorV6(commands.Cog):
     @slash_command(
         name="tenor-gif",
         description="Gives a gif based on the given GIF ID",
-        guild_ids=[866199405090308116],
     )
     async def tenor_gif(self, ctx, *, search_gif: Option(int, "Tenor GIF ID")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -315,7 +309,6 @@ class TenorV7(commands.Cog):
     @slash_command(
         name="tenor-random",
         description="Gives a random gif from Tenor based on given search term",
-        guild_ids=[866199405090308116],
     )
     async def tenor_random(
         self, ctx, *, search_random_term: Option(str, "Search Term")

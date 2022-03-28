@@ -16,7 +16,6 @@ class waifuPics(commands.Cog):
     @slash_command(
         name="waifupics",
         description="Returns a random image of a waifu from waifu.pics",
-        guild_ids=[866199405090308116],
     )
     async def on_messsage(self, ctx):
         waifu_list = [

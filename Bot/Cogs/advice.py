@@ -14,8 +14,7 @@ class advice_slip(commands.Cog):
 
     @slash_command(
         name="advice",
-        description="Gives some advice from Adviceslip",
-        guild_ids=[866199405090308116],
+        description="Gives some advice from Adviceslip"
     )
     async def adviceSlip(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:

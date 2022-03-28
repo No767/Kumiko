@@ -20,8 +20,7 @@ class FirstFRCV1(commands.Cog):
 
     @slash_command(
         name="frc-season",
-        description="Returns the season summary for the current FRC season (may cause spam)",
-        guild_ids=[866199405090308116],
+        description="Returns the season summary for the current FRC season (may cause spam)"
     )
     async def frcSeason(
         self, ctx, *, season: Option(int, "The year of the event (eg 2020, 2021, etc)")
@@ -63,8 +62,7 @@ class FirstFRCV2(commands.Cog):
 
     @slash_command(
         name="frc-events",
-        description="Returns events for the current FRC season",
-        guild_ids=[866199405090308116],
+        description="Returns events for the current FRC season"
     )
     async def frcEvents(
         self,

@@ -11,7 +11,7 @@ class info(commands.Cog):
         self.bot = bot
 
     @slash_command(
-        name="rininfo", description="Info about Rin", guild_ids=[866199405090308116]
+        name="rininfo", description="Info about Rin"
     )
     async def rinInfo(self, ctx):
         bot = self.bot
