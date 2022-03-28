@@ -118,8 +118,13 @@ class YoutubeV2(commands.Cog):
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 0, 0)
                         )
-                        filterMain5 = {"kind", "etag", "snippet",
-                                  "statistics", "localized"}
+                        filterMain5 = {
+                            "kind",
+                            "etag",
+                            "snippet",
+                            "statistics",
+                            "localized",
+                        }
                         snippetFilter = [
                             "title",
                             "description",
@@ -302,7 +307,7 @@ class YoutubeV4(commands.Cog):
                             "canRate",
                             "id",
                             "authorChannelUrl",
-                            "videoId"
+                            "videoId",
                         ]
                         pfpFilter = [
                             "videoId",

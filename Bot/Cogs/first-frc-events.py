@@ -430,7 +430,8 @@ class FirstFRCV8(commands.Cog):
             ) as r:
                 data = await r.content.read()
                 dataMain = orjson.loads(data)
-                filterEventAlliances = ["number", "name", "captain", "round1", "round2"]
+                filterEventAlliances = [
+                    "number", "name", "captain", "round1", "round2"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
                 try:

@@ -83,7 +83,9 @@ class DiscordBotsV2(commands.Cog):
         description="Searches for any Discord Bots listed on discord.bots.gg via the Discord Bot's ID",
         guild_ids=[866199405090308116],
     )
-    async def discordBotsID(self, ctx, *, bot_id: Option(str, "The ID of the Discord Bot")):
+    async def discordBotsID(
+        self, ctx, *, bot_id: Option(str, "The ID of the Discord Bot")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
             async with session.get(

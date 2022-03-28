@@ -159,9 +159,7 @@ class bedrock_mcsrvstats(commands.Cog):
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(color=0x607D8B)
-                    embedVar.description = (
-                        f"Your search has failed. Please try again."
-                    )
+                    embedVar.description = f"Your search has failed. Please try again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 

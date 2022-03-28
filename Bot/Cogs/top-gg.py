@@ -53,9 +53,7 @@ class TopGGV1(commands.Cog):
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(231, 74, 255))
-                    embedVar.description = (
-                        f"The query failed. Please try again."
-                    )
+                    embedVar.description = f"The query failed. Please try again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
@@ -108,9 +106,7 @@ class TopGGV2(commands.Cog):
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(231, 74, 255))
-                    embedVar.description = (
-                        f"The query failed. Please try again."
-                    )
+                    embedVar.description = f"The query failed. Please try again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
