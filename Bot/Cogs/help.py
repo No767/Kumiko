@@ -131,7 +131,8 @@ class helper(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Discord.bots.gg", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Discord.bots.gg",
+                    icon_url=bot.user.display_avatar,
                 )
                 await ctx.respond(embed=embedVar)
 
