@@ -9,11 +9,7 @@
 ![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white)
 [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Format](https://github.com/No767/Kumiko/actions/workflows/format.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/format.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
 
-<<<<<<< HEAD
 The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moderation, Economy, and much much more
-=======
-A Discord bot focused on obtaining data from third-party services with lighting performance in mind
->>>>>>> 7e6f7e3e2888521868b3cfc481c14e88b2e8af05
 
 <div align=left>
 
@@ -38,11 +34,7 @@ Rin's prefix is `/`.
 
 # Inviting the Bot
 
-<<<<<<< HEAD
 Still in early production. Not ready for release yet
-=======
-Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.com/No767/Rin#bot-discovery-network-links) section. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite). Note that previously (before v2.0.0), the prefix was `.`. Versions beyond v2.0.0 will only support the slash (`/`) prefix.
->>>>>>> 7e6f7e3e2888521868b3cfc481c14e88b2e8af05
 
 # Getting Started (For Developers)
 
