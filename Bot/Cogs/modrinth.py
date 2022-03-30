@@ -15,7 +15,6 @@ class ModrinthV1(commands.Cog):
     @slash_command(
         name="modrinth-search",
         description="Searches for up to 5 mods on Modrinth",
-        guild_ids=[866199405090308116],
     )
     async def modrinthSearch(
         self,
@@ -34,11 +33,12 @@ class ModrinthV1(commands.Cog):
             async with session.get(
                 "https://api.modrinth.com/v2/search", params=params
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
                 modFilter = ["title", "gallery", "icon_url", "description"]
                 embedVar = discord.Embed()
                 try:
-                    for dictItem in data["hits"]:
+                    for dictItem in dataMain["hits"]:
                         for k, v in dictItem.items():
                             if k not in modFilter:
                                 embedVar.add_field(
@@ -65,7 +65,6 @@ class ModrinthV2(commands.Cog):
     @slash_command(
         name="modrinth-mod",
         description="Gets info about the mod requested",
-        guild_ids=[866199405090308116],
     )
     async def modrinthProject(
         self, ctx, *, mod_slug: Option(str, "The ID or slug of the project")
@@ -75,7 +74,8 @@ class ModrinthV2(commands.Cog):
                 f"https://api.modrinth.com/v2/project/{mod_slug}"
             ) as res:
                 try:
-                    modData = await res.json()
+                    modData = await res.content.read()
+                    modDataMain = orjson.loads(modData)
                     modDataFilter = [
                         "versions",
                         "license",
@@ -89,19 +89,19 @@ class ModrinthV2(commands.Cog):
                         "body_url",
                     ]
                     embedVar = discord.Embed()
-                    for keys, value in modData.items():
+                    for keys, value in modDataMain.items():
                         if keys not in modDataFilter:
                             embedVar.add_field(
                                 name=keys, value=value, inline=True)
-                    for item in modData["gallery"]:
+                    for item in modDataMain["gallery"]:
                         embedVar.set_image(url=item["url"])
-                    for k, v in modData["license"].items():
+                    for k, v in modDataMain["license"].items():
                         embedVar.add_field(
                             name=f"License {k}", value=v, inline=True)
-                    embedVar.set_thumbnail(url=modData["icon_url"])
-                    embedVar.title = modData["title"]
+                    embedVar.set_thumbnail(url=modDataMain["icon_url"])
+                    embedVar.title = modDataMain["title"]
                     embedVar.description = (
-                        f"{modData['description']}\n\n{modData['body']}"
+                        f"{modDataMain['description']}\n\n{modDataMain['body']}"
                     )
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
@@ -121,7 +121,6 @@ class ModrinthV3(commands.Cog):
     @slash_command(
         name="modrinth-mod-versions",
         description="Lists out all of the versions for a mod (may cause spam)",
-        guild_ids=[866199405090308116],
     )
     async def modrinthProjectVersion(
         self,
@@ -144,7 +143,8 @@ class ModrinthV3(commands.Cog):
             async with session.get(
                 f"https://api.modrinth.com/v2/project/{mod_name}/version", params=params
             ) as res:
-                versionData = await res.json()
+                versionData = await res.content.read()
+                versionDataMain = orjson.loads(versionData)
                 versionFilter = [
                     "changelog",
                     "name",
@@ -156,7 +156,7 @@ class ModrinthV3(commands.Cog):
                 ]
                 embedVar = discord.Embed()
                 try:
-                    for dictVersions in versionData:
+                    for dictVersions in versionDataMain:
                         for keys, value in dictVersions.items():
                             if keys not in versionFilter:
                                 embedVar.add_field(
@@ -193,7 +193,6 @@ class ModrinthV4(commands.Cog):
     @slash_command(
         name="modrinth-mod-version",
         description="Returns info on the given mod version ID",
-        guild_ids=[866199405090308116],
     )
     async def modrinthModVersion(
         self, ctx, *, mod_version_id: Option(str, "The ID of the mod version")
@@ -202,15 +201,16 @@ class ModrinthV4(commands.Cog):
             async with session.get(
                 f"https://api.modrinth.com/v2/version/{mod_version_id}"
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain3 = orjson.loads(data)
                 versionFilter = ["changelog", "name", "dependencies", "files"]
                 embedVar = discord.Embed()
                 try:
-                    for keys, value in data.items():
+                    for keys, value in dataMain3.items():
                         if keys not in versionFilter:
                             embedVar.add_field(
                                 name=keys, value=value, inline=True)
-                    for fileItems in data["files"]:
+                    for fileItems in dataMain3["files"]:
                         for k, v in fileItems.items():
                             if k not in "hashes":
                                 embedVar.add_field(
@@ -219,8 +219,8 @@ class ModrinthV4(commands.Cog):
                             embedVar.add_field(
                                 name=hashKey, value=hashValue, inline=True
                             )
-                    embedVar.title = data["name"]
-                    embedVar.description = data["changelog"]
+                    embedVar.title = dataMain3["name"]
+                    embedVar.description = dataMain3["changelog"]
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = (
@@ -239,7 +239,6 @@ class ModrinthV5(commands.Cog):
     @slash_command(
         name="modrinth-user",
         description="Returns info on the given user",
-        guild_ids=[866199405090308116],
     )
     async def modrinthUser(
         self, ctx, *, username: Option(str, "The username or ID of the user")
@@ -248,18 +247,19 @@ class ModrinthV5(commands.Cog):
             async with session.get(
                 f"https://api.modrinth.com/v2/user/{username}"
             ) as response:
-                userData = await response.json()
+                userData = await response.content.read()
+                userDataMain = orjson.loads(userData)
                 embedVar = discord.Embed()
                 userFilter = ["bio", "username", "avatar_url"]
                 try:
-                    for userKeys, userValue in userData.items():
+                    for userKeys, userValue in userDataMain.items():
                         if userKeys not in userFilter:
                             embedVar.add_field(
                                 name=userKeys, value=userValue, inline=True
                             )
-                    embedVar.title = userData["username"]
-                    embedVar.description = userData["bio"]
-                    embedVar.set_thumbnail(url=userData["avatar_url"])
+                    embedVar.title = userDataMain["username"]
+                    embedVar.description = userDataMain["bio"]
+                    embedVar.set_thumbnail(url=userDataMain["avatar_url"])
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = (
@@ -278,7 +278,6 @@ class ModrinthV6(commands.Cog):
     @slash_command(
         name="modrinth-user-projects",
         description="Returns info on the given user's projects",
-        guild_ids=[866199405090308116],
     )
     async def modrinthUserProjects(
         self, ctx, *, username: Option(str, "The username or ID of the user")
@@ -287,7 +286,8 @@ class ModrinthV6(commands.Cog):
             async with session.get(
                 f"https://api.modrinth.com/v2/user/{username}/projects"
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain6 = orjson.loads(data)
                 userProjectsFilter = [
                     "body",
                     "license",
@@ -300,7 +300,7 @@ class ModrinthV6(commands.Cog):
                 ]
                 embedVar = discord.Embed()
                 try:
-                    for dictProjects in data:
+                    for dictProjects in dataMain6:
                         for keys, value in dictProjects.items():
                             if keys not in userProjectsFilter:
                                 embedVar.add_field(
@@ -341,7 +341,6 @@ class ModrinthV7(commands.Cog):
     @slash_command(
         name="modrinth-project-team-members",
         description="Returns the team memebers of a project",
-        guild_ids=[866199405090308116],
     )
     async def modrinthProjectTeamMembers(
         self, ctx, *, project: Option(str, "The slug or ID of the project")
@@ -350,11 +349,12 @@ class ModrinthV7(commands.Cog):
             async with session.get(
                 f"https://api.modrinth.com/v2/project/{project}/members"
             ) as r:
-                projectData = await r.json()
+                projectData = await r.content.read()
+                projectDataMain = orjson.loads(projectData)
                 projectTeamFilter = ["bio", "avatar_url", "username"]
                 embedVar = discord.Embed()
                 try:
-                    for dictTeam in projectData:
+                    for dictTeam in projectDataMain:
                         for keys, value in dictTeam.items():
                             if keys not in "user":
                                 embedVar.add_field(
@@ -385,7 +385,6 @@ class ModrinthV8(commands.Cog):
     @slash_command(
         name="modrinth-team-members",
         description="Returns the members within the given team",
-        guild_ids=[866199405090308116],
     )
     async def modrinthTeamMembers(
         self, ctx, *, team_id: Option(str, "The ID of the team")
@@ -394,11 +393,12 @@ class ModrinthV8(commands.Cog):
             async with session.get(
                 f"https://api.modrinth.com/v2/team/{team_id}/members"
             ) as r:
-                teamData = await r.json()
+                teamData = await r.content.read()
+                teamDataMain = orjson.loads(teamData)
                 teamFilter = ["bio", "avatar_url", "username"]
                 embedVar = discord.Embed()
                 try:
-                    for dictTeam2 in teamData:
+                    for dictTeam2 in teamDataMain:
                         for keys, value in dictTeam2.items():
                             if keys not in "user":
                                 embedVar.add_field(
@@ -425,7 +425,7 @@ class ModrinthV8(commands.Cog):
 def setup(bot):
     bot.add_cog(ModrinthV1(bot))
     bot.add_cog(ModrinthV2(bot))
-    bot.add_cog(ModrinthV3(bot))
+    # bot.add_cog(ModrinthV3(bot)) # Disabled due to spam issues
     bot.add_cog(ModrinthV4(bot))
     bot.add_cog(ModrinthV5(bot))
     bot.add_cog(ModrinthV6(bot))

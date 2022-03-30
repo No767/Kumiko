@@ -21,7 +21,6 @@ class TwitterV1(commands.Cog):
     @slash_command(
         name="twitter-search",
         description="Returns up to 5 recent tweets given the Twitter user",
-        guild_ids=[866199405090308116],
     )
     async def twitter_search(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -32,17 +31,18 @@ class TwitterV1(commands.Cog):
                 headers=headers,
                 params=params,
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
 
                 try:
-                    if data["statuses"] is None:
+                    if dataMain["statuses"] is None:
                         embedVar = discord.Embed()
                         embedVar.description = (
                             "Sadly there are no tweets from this user."
                         )
                         embedVar.add_field(
                             name="Result Count",
-                            value=data["meta"]["result_count"],
+                            value=dataMain["meta"]["result_count"],
                             inline=True,
                         )
                         await ctx.respond(embed=embedVar)
@@ -75,7 +75,7 @@ class TwitterV1(commands.Cog):
                             "retweeted",
                             "lang",
                         }
-                        for dictItem in data["statuses"]:
+                        for dictItem in dataMain["statuses"]:
                             if "extended_entities" in dictItem:
                                 for keys, val in dictItem.items():
                                     if keys not in excludedKeys:
@@ -123,18 +123,6 @@ class TwitterV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @twitter_search.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a requireed argument: {error.param}"
-            msg = await ctx.respond(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 class TwitterV2(commands.Cog):
     def __init__(self, bot):
@@ -143,7 +131,6 @@ class TwitterV2(commands.Cog):
     @slash_command(
         name="twitter-user",
         description="Returns Info about the given Twitter user",
-        guild_ids=[866199405090308116],
     )
     async def twitter_user(self, ctx, *, user: str):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -154,7 +141,8 @@ class TwitterV2(commands.Cog):
                 headers=headers,
                 params=params,
             ) as resp:
-                data2 = await resp.json()
+                data2 = await resp.content.read()
+                dataMain2 = orjson.loads(data2)
                 itemFilter = {
                     "profile_image_url_https",
                     "id",
@@ -186,7 +174,7 @@ class TwitterV2(commands.Cog):
                 }
                 try:
                     embedVar = discord.Embed()
-                    for userItem in data2:
+                    for userItem in dataMain2:
                         if "profile_banner_url" in userItem:
                             for keys, val in userItem.items():
                                 if keys not in itemFilter:
@@ -229,18 +217,6 @@ class TwitterV2(commands.Cog):
                     embedError2.description = "Something went wrong. Please try again."
                     embedError2.add_field(name="Error", value=e, inline=True)
                     await ctx.respond(embed=embedError2)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @twitter_user.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a requireed argument: {error.param}"
-            msg = await ctx.respond(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

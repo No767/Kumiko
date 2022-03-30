@@ -3,6 +3,7 @@ import os
 
 import aiohttp
 import discord
+import orjson
 import ujson
 import uvloop
 from discord.commands import Option, slash_command
@@ -21,7 +22,6 @@ class OpenAI1(commands.Cog):
     @slash_command(
         name="openai-complete",
         description="Completes a sentence using OpenAI's GPT-3 AI",
-        guild_ids=[866199405090308116],
     )
     async def openaiComplete(
         self,
@@ -47,10 +47,11 @@ class OpenAI1(commands.Cog):
                 headers=headers,
                 json=payload,
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
                 try:
                     embedVar = discord.Embed()
-                    embedVar.description = data["choices"][0]["text"]
+                    embedVar.description = dataMain["choices"][0]["text"]
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
@@ -68,7 +69,6 @@ class OpenAI2(commands.Cog):
     @slash_command(
         name="openai-classify",
         description="Classifies a sentence using OpenAI's GPT-3 AI",
-        guild_ids=[866199405090308116],
     )
     async def openaiClassify(
         self,
@@ -107,10 +107,11 @@ class OpenAI2(commands.Cog):
                 headers=headers,
                 json=payload,
             ) as poster:
-                data = await poster.json()
+                data = await poster.content.read()
+                dataMain2 = orjson.loads(data)
                 try:
                     embedVar = discord.Embed()
-                    for dictItem in data["selected_examples"]:
+                    for dictItem in dataMain2["selected_examples"]:
                         for keys, value in dictItem.items():
                             embedVar.add_field(
                                 name=keys, value=value, inline=True)
@@ -131,7 +132,6 @@ class OpenAI3(commands.Cog):
     @slash_command(
         name="openai-answers",
         description="Forms an answer based on your question",
-        guild_ids=[866199405090308116],
     )
     async def openaiAnswers(
         self,
@@ -157,11 +157,12 @@ class OpenAI3(commands.Cog):
             async with session.post(
                 "https://api.openai.com/v1/answers", headers=headers, json=payload
             ) as response:
-                data = await response.json()
+                data = await response.content.read()
+                dataMain3 = orjson.loads(data)
                 try:
                     embedVar = discord.Embed()
                     embedVar.description = (
-                        str(data["answers"])
+                        str(dataMain3["answers"])
                         .replace("[", "")
                         .replace("]", "")
                         .replace("'", "")

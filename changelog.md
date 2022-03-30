@@ -1,38 +1,17 @@
-# Rin V2
+# ✨ Rin V2.0.1 ✨
 
-Rin V2 comes with a ton of improvements, and new features as well. Rin V2 will only support slash (`/`) commands from now on out, since the legacy prefix commands are going to be deprecated. Below this is all of the changes made so far
+This is just a very small patch update that activates all of the slash commands (some were not globally activated).
 
 # Major Changes
 
-- Migrate to use slash commands. All legacy prefixes used by Rin and Kumiko won't be supported past v2.0.0
-- Fully rewrite nearly all of the cogs to use recursive and loops instead - Much faster than v1.4.4
+- Activated all of the slash commands (this time for real)
 
 # Changes
 
 ## TD;LR
-- Upgrade Rin to Pycord v2.0.0 (Beta as of now)
-- Dynamically load data compared to statically loading data 
-- Use Slash Commands instead of old legacy commands
-
-## Additions
-
-- Modrinth API Support
-- CurseForge API Support
+- Activated all of the slash commands (this time for real)
 
 ## Changes
-- Upgrade Rin to Pycord v2.0.0 (Beta as of now)
-- Dynamically load data compared to statically loading data
-- Use Recursion looping to load data for Twitter, Jikan, Topgg, and other cogs
-- Readjust RinHelp to align with V2 commands
-- Literally removed over 4,000 lines of code that were used for statically loading the data
-- Test out Pyjion for faster runtime speeds (Python 3.10 JIT Compiler)
-- Add in Modrinth API Support
-- Added even more commands for Reddit Cog
 
-## Removals
+- Activated all of the slash commands (this time for real)
 
-- Translate, Chat, Global, Pinger, Clear, Server-Info, NB-Pride, and Vaild Cogs have been removed
-- Support for legacy prefix
-- Pinterest API Support
-- Instagram API Support
-- Spotify API Support

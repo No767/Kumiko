@@ -15,7 +15,6 @@ class JikanV1(commands.Cog):
     @slash_command(
         name="jikan-anime",
         description="Fetches up to 5 anime from MAL",
-        guild_ids=[866199405090308116],
     )
     async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -24,7 +23,8 @@ class JikanV1(commands.Cog):
             async with session.get(
                 "https://api.jikan.moe/v4/anime/", params=params
             ) as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain = orjson.loads(data)
                 filterList = [
                     "images",
                     "title",
@@ -42,7 +42,7 @@ class JikanV1(commands.Cog):
                     "trailer",
                 ]
                 try:
-                    for dictItem in data["data"]:
+                    for dictItem in dataMain["data"]:
                         embedVar = discord.Embed()
                         embedVar.title = dictItem["title"]
                         embedVar.description = dictItem["synopsis"]
@@ -93,7 +93,6 @@ class JikanV2(commands.Cog):
     @slash_command(
         name="jikan-manga",
         description="Fetches up to 5 mangas from MAL",
-        guild_ids=[866199405090308116],
     )
     async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -102,7 +101,8 @@ class JikanV2(commands.Cog):
             async with session.get(
                 "https://api.jikan.moe/v4/manga", params=params
             ) as response:
-                data = await response.json()
+                data = await response.content.read()
+                dataMain2 = orjson.loads(data)
                 filterList = [
                     "title",
                     "images",
@@ -117,7 +117,7 @@ class JikanV2(commands.Cog):
                     "synopsis",
                 ]
                 try:
-                    for dataItem in data["data"]:
+                    for dataItem in dataMain2["data"]:
                         embedVar = discord.Embed()
                         embedVar.title = dataItem["title"]
                         embedVar.description = dataItem["synopsis"]
@@ -180,7 +180,6 @@ class JikanV3(commands.Cog):
     @slash_command(
         name="jikan-random-anime",
         description="Fetches a random anime from MAL",
-        guild_ids=[866199405090308116],
     )
     async def animeRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -233,12 +232,12 @@ class JikanV4(commands.Cog):
     @slash_command(
         name="jikan-random-manga",
         description="Fetches a random manga from MAL",
-        guild_ids=[866199405090308116],
     )
     async def mangaRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/manga") as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain3 = orjson.loads(data)
                 mangaFilter = [
                     "title",
                     "published",
@@ -255,9 +254,9 @@ class JikanV4(commands.Cog):
                 ]
                 embedVar = discord.Embed()
                 try:
-                    embedVar.title = data["data"]["title"]
-                    embedVar.description = data["data"]["synopsis"]
-                    for key, value in data["data"].items():
+                    embedVar.title = dataMain3["data"]["title"]
+                    embedVar.description = dataMain3["data"]["synopsis"]
+                    for key, value in dataMain3["data"].items():
                         if key not in mangaFilter:
                             embedVar.add_field(
                                 name=str(key).replace("_", " ").capitalize(),
@@ -265,7 +264,7 @@ class JikanV4(commands.Cog):
                                 inline=True,
                             )
                     embedVar.set_image(
-                        url=data["data"]["images"]["jpg"]["large_image_url"]
+                        url=dataMain3["data"]["images"]["jpg"]["large_image_url"]
                     )
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
@@ -283,7 +282,6 @@ class JikanV5(commands.Cog):
     @slash_command(
         name="jikan-seasons",
         description="Returns animes for the given season and year",
-        guild_ids=[866199405090308116],
     )
     async def season(
         self,
@@ -297,7 +295,8 @@ class JikanV5(commands.Cog):
                 async with session.get(
                     f"https://api.jikan.moe/v4/seasons/{year}/{season}"
                 ) as response:
-                    seasons = await response.json()
+                    seasons = await response.content.read()
+                    seasonsMain = orjson.loads(seasons)
                     mainSeasonsFilter = [
                         "images",
                         "trailer",
@@ -315,7 +314,7 @@ class JikanV5(commands.Cog):
                         "broadcast",
                     ]
                     embedVar = discord.Embed()
-                    for dictItem in seasons["data"]:
+                    for dictItem in seasonsMain["data"]:
                         embedVar.title = dictItem["title"]
                         embedVar.description = dictItem["synopsis"]
                         for k, v in dictItem.items():
@@ -350,14 +349,14 @@ class JikanV6(commands.Cog):
     @slash_command(
         name="jikan-season-upcoming",
         description="Returns anime for the upcoming season (will return ALL of it)",
-        guild_ids=[866199405090308116],
     )
     async def seasonsUpcoming(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 "https://api.jikan.moe/v4/seasons/upcoming"
             ) as full_response:
-                data = await full_response.json()
+                data = await full_response.content.read()
+                dataMain5 = orjson.loads(data)
                 mainFilter = [
                     "broadcast",
                     "title",
@@ -374,7 +373,7 @@ class JikanV6(commands.Cog):
                     "broadcast",
                     "aired",
                 ]
-                for dictItem in data["data"]:
+                for dictItem in dataMain5["data"]:
                     embedVar = discord.Embed()
                     embedVar.title = dictItem["title"]
                     embedVar.description = dictItem["synopsis"]
@@ -400,20 +399,20 @@ class JikanV7(commands.Cog):
     @slash_command(
         name="jikan-user-profile",
         description="Returns info about given user on MAL",
-        guild_ids=[866199405090308116],
     )
     async def userLookup(self, ctx, *, username: Option(str, "Username of the user")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
-                data = await r.json()
+                data = await r.content.read()
+                dataMain6 = orjson.loads(data)
                 userFilter = ["username", "images"]
                 try:
                     embedVar = discord.Embed()
-                    embedVar.title = data["data"]["username"]
+                    embedVar.title = dataMain6["data"]["username"]
                     embedVar.set_thumbnail(
-                        url=data["data"]["images"]["jpg"]["image_url"]
+                        url=dataMain6["data"]["images"]["jpg"]["image_url"]
                     )
-                    for key, value in data["data"].items():
+                    for key, value in dataMain6["data"].items():
                         if key not in userFilter:
                             embedVar.add_field(
                                 name=key, value=value, inline=True)
@@ -432,6 +431,6 @@ def setup(bot):
     bot.add_cog(JikanV2(bot))
     bot.add_cog(JikanV3(bot))
     bot.add_cog(JikanV4(bot))
-    bot.add_cog(JikanV5(bot))
-    bot.add_cog(JikanV6(bot))
+    # bot.add_cog(JikanV5(bot)) # Disabled due to spam issues...
+    # bot.add_cog(JikanV6(bot))
     bot.add_cog(JikanV7(bot))

@@ -9,7 +9,11 @@
 ![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white)
 [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Format](https://github.com/No767/Kumiko/actions/workflows/format.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/format.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
 
+<<<<<<< HEAD
 The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moderation, Economy, and much much more
+=======
+A Discord bot focused on obtaining data from third-party services with lighting performance in mind
+>>>>>>> 7e6f7e3e2888521868b3cfc481c14e88b2e8af05
 
 <div align=left>
 
@@ -24,27 +28,35 @@ Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of
 
 ## Rin
 
-Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services (for the more technical, this is done by contacting APIs). For example, you could look up some memes with the Reddit service, 
+Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
-hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. Rin also leverages [Pyjion](https://github.com/tonybaloney/Pyjion) to allow for JIT support via .NET, and for faster speeds as well. For more info, please check out the [Docs](https://docs.rinbot.live/).
+hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. For more info, please check out the [Docs](https://docs.rinbot.live/).
+
+# Prefix
+
+Rin's prefix is `/`.
 
 # Inviting the Bot
 
+<<<<<<< HEAD
 Still in early production. Not ready for release yet
+=======
+Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.com/No767/Rin#bot-discovery-network-links) section. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite). Note that previously (before v2.0.0), the prefix was `.`. Versions beyond v2.0.0 will only support the slash (`/`) prefix.
+>>>>>>> 7e6f7e3e2888521868b3cfc481c14e88b2e8af05
 
 # Getting Started (For Developers)
 
 Getting the environment set up for Kumiko is a kinda complex process. Kumiko now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
 ## Windows
 
-1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
+1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it. (These instructions use Ubuntu as the main distro. If you want to build and develop Rin on a different distro, look ahead into the Linux section)
 2. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
 
     ```sh
     sudo apt-get install software-properties-common
     ```
     
-3. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+3. Make sure to install the needed packages. To do so, run this command:
 
     ```sh
     sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
@@ -74,10 +86,10 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     sudo python3.10 -m pip install --upgrade pipenv
     ```
 
-7. Clone this repo. If you need the cmd to do so, run this cmd:
+7. Create a fork of this repo, and then clone your fork of the repo. If you need the cmd to do so, run this cmd:
 
     ```sh
-    git clone https://github.com/No767/Rin.git
+    git clone https://github.com/[your github username]/Rin.git
     ```
 
 8. `cd` into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
@@ -99,7 +111,10 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```
 
 Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-6. Then connect to WSL. 
+
 ## Linux
+
+### Ubuntu
     
 1. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
 
@@ -107,17 +122,12 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     sudo apt-get install software-properties-common
     ```
     
-2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+2. Install all of the needed packages. To do so, run this command:
 
     ```sh
     sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
     ```
 
-    If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
-
-    ```sh
-    yum install -y xz-devel
-    ```
 
 4. Install Python 3.10. Chances are the `python3.10-dev` package requires Python 3.10 as a dependency, so make sure Python 3.10 is installed. If you did it this way, you will more than likely need to get pip, and you will need to use the get-pip.py method to do so. 
 
@@ -161,6 +171,133 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     pipenv install
     ```
 
+### OpenSUSE
+
+1. Make sure to install the required packages for voice support. 
+
+   ```sh
+   sudo zypper install python310-devel libffi-devel xz-level libopenssl-devel libopenssl-1_1-devel git 
+   ```
+
+2. Install Python 3.10. You also have the choice of compiling it, but make sure you also have OpenSSL installed and all other required modules
+
+   ```sh
+   sudo zypper install python310
+   ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+    ```
+
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python3.10 -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all dependencies. More than likely you will face an error installing cChardet. So just run `pipenv install cchardet` to reinstall it and it should do the trick
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
+
+### Fedora/CentOS
+
+1. Make sure you installed the required libs (if you are using CentOS, you may have to use `yum` instead of `dnf`). To do so, run this cmd:
+
+    ```sh
+    sudo dnf -y groupinstall "Development Tools"
+    ```
+   
+    ```sh
+    sudo dnf install python310-devel libffi-devel openssl-devel xz-devel gcc bzip2-devel git
+    ```
+2. Install Python 3.10. You also have the choice of compiling it, but make sure you also have OpenSSL installed and all other required modules before compiling
+
+   ```sh
+   sudo dnf install python3.10
+   ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python3.10 -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all dependencies. More than likely you will face an error installing cChardet. So just run `pipenv install cchardet` to reinstall it and it should do the trick
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
 ## MacOS
 
 **Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**
@@ -172,7 +309,8 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     python -m pip install --upgrade pipenv
     ```
 
-3. Clone this repo. 
+3. Create a fork of this repo and clone it.
+
 4. `cd` into the cloned repo and create the Pipenv. To do so, run this command: 
 
     ```sh

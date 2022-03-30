@@ -13,7 +13,6 @@ class VersionV1(commands.Cog):
     @slash_command(
         name="version",
         description="Returns Current Version of Rin",
-        guild_ids=[866199405090308116],
     )
     async def version(self, ctx):
         embedVar = discord.Embed()

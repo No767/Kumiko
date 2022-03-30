@@ -13,73 +13,11 @@ To get started, you'll need these things installed:
 
 ## Installing Dependencies
 
-Getting the environment set up for the bot is a kinda complex process. Kumiko now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is 2 times faster than Node.js. If you want to get set up, here are the instructions to do so:
-### Windows
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
 
-1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Uvloop does not have Windows support nor does the owner want to add it.
-2. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
+## Linux
 
-    ```sh
-    sudo apt-get install software-properties-common
-    ```
-    
-3. Make sure to install LZMA (If on Debian/Ubuntu) and all other needed libs. The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
-
-    ```sh
-    sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
-    ```
-
-4. Install Python 3.10. Chances are the `python3.10-dev` package requires Python 3.10 as a dependency, so make sure Python 3.10 is installed. If you did it this way, you will more than likely need to get pip, and you will need to use the get-pip.py method to do so. 
-
-5. **Skip this step if you already have pip configured and installed for Python 3.10. Run `pip3.10 --version` to check if it is installed for Python 3.10**. Chances are that you don't have pip installed for Python 3.10. So you can use either cURL or wget in order to download it. In order to do so, run this cmd:
-
-    cURL:
-
-    ```sh
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
-    ```
-
-    wget: 
-
-    ```sh
-    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
-    ```
-
-    After doing so, make sure to run `pip3.10 --version` to double check if it is installed correctly.
-
-6. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
-
-    ```sh
-    sudo python3.10 -m pip install --upgrade pipenv
-    ```
-
-7. Clone this repo. If you need the cmd to do so, run this cmd:
-
-    ```sh
-    git clone https://github.com/No767/Rin.git
-    ```
-
-8. `cd` into the cloned repo and set up the pipenv enviroment. To do so, run this cmd:
-
-    ```sh
-    cd Rin && pipenv --python 3.10
-    ```
-
-9. And now finally install all the dependencies by running this command:
-
-    ```sh
-    pipenv install
-    ```
-
-10. (Optional) If you are using PyCharm, make sure to set the Python Interpreter to WSL and specify the Python interpreter to use. For this, the file path will be usually here:
-
-    ```sh
-    $HOME/.local/share/virtualenvs/[Project Name]/bin/python3.10
-    ```
-
-Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) Extension for VS Code, and follow steps 1-7. Then connect to WSL, and select the repo as a folder to open. 
-
-### Linux
+### Ubuntu
     
 1. Add the `software-properties-common` package first. This is required for getting `python3.10-dev` (which is the Python C Header files, required by Pycord for voice support). To do this, run this cmd:
 
@@ -87,17 +25,12 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     sudo apt-get install software-properties-common
     ```
     
-2. Make sure to install LZMA (If on Debian/Ubuntu). The `Jamdict-Data` package requires it to unpack the SQLite3 DB. To do so, run this command:
+2. Install all of the needed packages. To do so, run this command:
 
     ```sh
     sudo apt-get install liblzma-dev lzma libffi-dev python3.10-dev
     ```
 
-    If you are on a different distro that doesn't use `apt` like CentOS, install LZMA like so: 
-
-    ```sh
-    yum install -y xz-devel
-    ```
 
 4. Install Python 3.10. Chances are the `python3.10-dev` package requires Python 3.10 as a dependency, so make sure Python 3.10 is installed. If you did it this way, you will more than likely need to get pip, and you will need to use the get-pip.py method to do so. 
 
@@ -141,7 +74,134 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     pipenv install
     ```
 
-### MacOS
+### OpenSUSE
+
+1. Make sure to install the required packages for voice support. 
+
+   ```sh
+   sudo zypper install python310-devel libffi-devel xz-level libopenssl-devel libopenssl-1_1-devel git 
+   ```
+
+2. Install Python 3.10. You also have the choice of compiling it, but make sure you also have OpenSSL installed and all other required modules
+
+   ```sh
+   sudo zypper install python310
+   ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+    ```
+
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python3.10 -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all dependencies. More than likely you will face an error installing cChardet. So just run `pipenv install cchardet` to reinstall it and it should do the trick
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
+
+### Fedora/CentOS
+
+1. Make sure you installed the required libs (if you are using CentOS, you may have to use `yum` instead of `dnf`). To do so, run this cmd:
+
+    ```sh
+    sudo dnf -y groupinstall "Development Tools"
+    ```
+   
+    ```sh
+    sudo dnf install python310-devel libffi-devel openssl-devel xz-devel gcc bzip2-devel git
+    ```
+2. Install Python 3.10. You also have the choice of compiling it, but make sure you also have OpenSSL installed and all other required modules before compiling
+
+   ```sh
+   sudo dnf install python3.10
+   ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python3.10 -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all dependencies. More than likely you will face an error installing cChardet. So just run `pipenv install cchardet` to reinstall it and it should do the trick
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
+## MacOS
 
 **Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**
 
@@ -152,7 +212,8 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
     python -m pip install --upgrade pipenv
     ```
 
-3. Clone this repo. 
+3. Create a fork of this repo and clone it.
+
 4. `cd` into the cloned repo and create the Pipenv. To do so, run this command: 
 
     ```sh
@@ -178,7 +239,7 @@ This projects uses a ton of linters and formatters. The main formatters are Blac
 In order to prevent merge conflicts for the upstream project [Kumiko](https://github.com/No767/Kumiko), all major changes for Rin needs to be added as a patch file (make sure that you make the commit first). To create one, run this cmd:
 
 ```sh
-git format-patch [commit-hash] -o ./Patches/[commit-name]
+git format-patch [commit-hash] -1 --start-number=[insert-number-here] -o ./Patches/[commit-name]
 ```
 
 Make sure that it is either outputting it to the `Patches` directory, or that you are in the `Patches` directory. This will create a patch file, and you can use that to push to the main repo. From downstream, this cmd can be run:

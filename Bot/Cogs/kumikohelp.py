@@ -27,6 +27,8 @@ class kumikoHelp(commands.Cog):
             choices=[
                 "Anime",
                 "DeviantArt",
+                "Discord.bots.gg",
+                "First-FRC",
                 "Fun",
                 "Hypixel",
                 "Minecraft",
@@ -53,7 +55,15 @@ class kumikoHelp(commands.Cog):
                     name="Anime", value="`/kumikohelp anime`", inline=True
                 )
                 embedVar.add_field(
-                    name="DeviantArt", value="`/kumikohelp da`", inline=True
+                    name="Discord.bots.gg", value="`/kumikohelp dbg`", inline=True
+                )
+                embedVar.add_field(
+                    name="First-FRC", value="`/kumikohelp first-frc`", inline=True
+                )
+                embedVar.add_field(
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
                 embedVar.add_field(
                     name="Fun", value="`/kumikohelp fun`", inline=True)
@@ -106,6 +116,72 @@ class kumikoHelp(commands.Cog):
                     )
                 )
                 await ctx.respond(embed=embedVar, view=view)
+
+            if category in ["Discord.bots.gg", "dbg", "discord.bots.gg"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`discord-bots-search`",
+                    value="Searches for any Discord Bots listed on discord.bots.gg",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`discord-bots-id`",
+                    value="Searches for any Discord Bots listed on discord.bots.gg by ID",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Discord.bots.gg", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["First-FRC", "ffrc", "first-frc"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`frc-season`",
+                    value="Returns a season summary for the current FRC season",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-events`",
+                    value="Lists out the events for the current FRC season",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-team-awards`",
+                    value="Returns the awards that a FRC team has won",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-score`",
+                    value="Returns the FRC team's score details for a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-results`",
+                    value="Returns the FRC team's results for a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-event-rankings-top`",
+                    value="Returns the top 10 FRC teams for a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-event-schedule`",
+                    value="Returns the schedule for a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`frc-event-alliances`",
+                    value="Returns the alliances for a given event",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - First FRC", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
 
             if category in ["twitter", "Twitter"]:
                 bot = self.bot

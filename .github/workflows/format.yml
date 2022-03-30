@@ -20,7 +20,7 @@ jobs:
         pip install --upgrade pip pipenv
     - name: Cache Pipenv
       id: cache-pipenv
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3
       with:
         path: ~/.local/share/virtualenvs
         key: ${{ runner.os }}-pipenv-v4-${{ hashFiles('**/Pipfile.lock') }}

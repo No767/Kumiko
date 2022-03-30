@@ -25,7 +25,7 @@ class tokenFetcher:
     async def get(self):
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin-deviantart-tokens"
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/rin_deviantart_tokens_v2"
         )
         tokens = Table(
             "DA_Tokens",
@@ -47,7 +47,6 @@ class DeviantArtV1(commands.Cog):
     @slash_command(
         name="deviantart-item",
         description="Returns info about a deviation on DeviantArt",
-        guild_ids=[866199405090308116],
     )
     async def da(self, ctx, *, deviation_id: Option(str, "The ID for the Deviation")):
         token = tokenFetcher()
@@ -62,12 +61,13 @@ class DeviantArtV1(commands.Cog):
                 f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}",
                 params=params,
             ) as r:
-                deviation = await r.json()
+                deviation = await r.content.read()
+                deviationMain = orjson.loads(deviation)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 214, 214))
                 try:
                     if r.status == 200:
-                        filter = [
+                        filterItem = [
                             "author",
                             "stats",
                             "preview",
@@ -79,21 +79,21 @@ class DeviantArtV1(commands.Cog):
                         ]
                         authorFilterMain = [
                             "type", "is_subscribed", "usericon"]
-                        for keys, values in deviation.items():
-                            if keys not in filter:
+                        for keys, values in deviationMain.items():
+                            if keys not in filterItem:
                                 embedVar.add_field(
                                     name=keys, value=values, inline=True)
-                        for k, v in deviation["author"].items():
+                        for k, v in deviationMain["author"].items():
                             if k not in authorFilterMain:
                                 embedVar.add_field(
                                     name=k, value=v, inline=True)
-                        for item, res in deviation["stats"].items():
+                        for item, res in deviationMain["stats"].items():
                             embedVar.add_field(
                                 name=item, value=res, inline=True)
-                        embedVar.title = deviation["title"]
-                        embedVar.set_image(url=deviation["content"]["src"])
+                        embedVar.title = deviationMain["title"]
+                        embedVar.set_image(url=deviationMain["content"]["src"])
                         embedVar.set_thumbnail(
-                            url=deviation["author"]["usericon"])
+                            url=deviationMain["author"]["usericon"])
                         await ctx.respond(embed=embedVar)
                     else:
                         embedVar = discord.Embed(
@@ -101,15 +101,15 @@ class DeviantArtV1(commands.Cog):
                         )
                         embedVar.description = "The query failed. Please try again"
                         embedVar.add_field(
-                            name="Error", value=deviation["error"], inline=True
+                            name="Error", value=deviationMain["error"], inline=True
                         )
                         embedVar.add_field(
                             name="Error Description",
-                            value=deviation["error_description"],
+                            value=deviationMain["error_description"],
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Status", value=deviation["status"], inline=True
+                            name="Status", value=deviationMain["status"], inline=True
                         )
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
@@ -119,15 +119,15 @@ class DeviantArtV1(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=deviation["error"], inline=True
+                        name="Error", value=deviationMain["error"], inline=True
                     )
                     embedVar.add_field(
                         name="Error Description",
-                        value=deviation["error_description"],
+                        value=deviationMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=deviation["status"], inline=True
+                        name="Status", value=deviationMain["status"], inline=True
                     )
                     await ctx.respond(embed=embedVar)
 
@@ -141,7 +141,6 @@ class DeviantArtV2(commands.Cog):
     @slash_command(
         name="deviantart-newest",
         description="Returns up to 5 newest art from DeviantArt based on the given search result",
-        guild_ids=[866199405090308116],
     )
     async def da_query(
         self,
@@ -165,7 +164,8 @@ class DeviantArtV2(commands.Cog):
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/newest", params=params
             ) as resp:
-                art = await resp.json()
+                art = await resp.content.read()
+                artMain = orjson.loads(art)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 156, 192))
                 try:
@@ -183,7 +183,7 @@ class DeviantArtV2(commands.Cog):
                         "category_path",
                     ]
                     authorFilter = ["type", "is_subscribed", "usericon"]
-                    for dictItem in art["results"]:
+                    for dictItem in artMain["results"]:
                         for k, v in dictItem["author"].items():
                             if k not in authorFilter:
                                 embedVar.add_field(
@@ -206,14 +206,16 @@ class DeviantArtV2(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=art["error"], inline=True)
+                        name="Error", value=artMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
-                        value=art["error_description"],
+                        value=artMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=art["status"], inline=True)
+                        name="Status", value=artMain["status"], inline=True
+                    )
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -226,7 +228,6 @@ class DeviantArtV3(commands.Cog):
     @slash_command(
         name="deviantart-popular",
         description="Returns up to 5 popular art from DeviantArt based on the given search result",
-        guild_ids=[866199405090308116],
     )
     async def deviantart_popular(
         self,
@@ -250,7 +251,8 @@ class DeviantArtV3(commands.Cog):
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/popular", params=params
             ) as response:
-                pop = await response.json()
+                pop = await response.content.read()
+                popMain = orjson.loads(pop)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 250, 181))
                 try:
@@ -267,7 +269,7 @@ class DeviantArtV3(commands.Cog):
                         "category_path",
                     ]
                     authorFilter = ["type", "is_subscribed", "usericon"]
-                    for dictItem2 in pop["results"]:
+                    for dictItem2 in popMain["results"]:
                         for k, v in dictItem2["author"].items():
                             if k not in authorFilter:
                                 embedVar.add_field(
@@ -294,14 +296,16 @@ class DeviantArtV3(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=pop["error"], inline=True)
+                        name="Error", value=popMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
-                        value=pop["error_description"],
+                        value=popMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=pop["status"], inline=True)
+                        name="Status", value=popMain["status"], inline=True
+                    )
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -314,7 +318,6 @@ class DeviantArtV4(commands.Cog):
     @slash_command(
         name="deviantart-tag-search",
         description="Returns up to 5 search results from DeviantArt based on the given tag",
-        guild_ids=[866199405090308116],
     )
     async def tags(
         self,
@@ -336,7 +339,8 @@ class DeviantArtV4(commands.Cog):
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/tags", params=params
             ) as rep:
-                tags = await rep.json()
+                tags = await rep.content.read()
+                tagsMain = orjson.loads(tags)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(235, 186, 255))
                 try:
@@ -353,7 +357,7 @@ class DeviantArtV4(commands.Cog):
                         "category_path",
                     ]
                     authorFilter3 = ["type", "is_subscribed", "usericon"]
-                    for dictItem3 in tags["results"]:
+                    for dictItem3 in tagsMain["results"]:
                         for k, v in dictItem3["author"].items():
                             if k not in authorFilter3:
                                 embedVar.add_field(
@@ -380,14 +384,16 @@ class DeviantArtV4(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=tags["error"], inline=True)
+                        name="Error", value=tagsMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
-                        value=tags["error_description"],
+                        value=tagsMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=tags["status"], inline=True)
+                        name="Status", value=tagsMain["status"], inline=True
+                    )
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -400,7 +406,6 @@ class DeviantArtV5(commands.Cog):
     @slash_command(
         name="deviantart-user",
         description="Returns the user's profile information",
-        guild_ids=[866199405090308116],
     )
     async def userv1(
         self, ctx, *, user: Option(str, "The username you want to search for")
@@ -419,7 +424,8 @@ class DeviantArtV5(commands.Cog):
                 f"https://www.deviantart.com/api/v1/oauth2/user/profile/{user}",
                 params=params,
             ) as respon:
-                users = await respon.json()
+                users = await respon.content.read()
+                usersMain = orjson.loads(users)
                 usersFilter = [
                     "bio",
                     "tagline",
@@ -431,36 +437,42 @@ class DeviantArtV5(commands.Cog):
                 ]
                 embedVar = discord.Embed()
                 try:
-                    if "cover_deviation" in users:
-                        for keys, value in users.items():
+                    if "cover_deviation" in usersMain:
+                        for keys, value in usersMain.items():
                             if keys not in usersFilter:
                                 embedVar.add_field(
                                     name=keys, value=f"[{value}]", inline=True
                                 )
-                        for k, v in users["stats"].items():
+                        for k, v in usersMain["stats"].items():
                             embedVar.add_field(
                                 name=k, value=f"[{v}]", inline=True)
-                        embedVar.title = users["user"]["username"]
-                        embedVar.description = f"{users['tagline']}\n\n{users['bio']}"
-                        embedVar.set_thumbnail(url=users["user"]["usericon"])
+                        embedVar.title = usersMain["user"]["username"]
+                        embedVar.description = (
+                            f"{usersMain['tagline']}\n\n{usersMain['bio']}"
+                        )
+                        embedVar.set_thumbnail(
+                            url=usersMain["user"]["usericon"])
                         embedVar.set_image(
-                            url=users["cover_deviation"]["cover_deviation"]["content"][
-                                "src"
-                            ]
+                            url=usersMain["cover_deviation"]["cover_deviation"][
+                                "content"
+                            ]["src"]
                         )
                         await ctx.respond(embed=embedVar)
                     else:
-                        for keys1, value1 in users.items():
+                        for keys1, value1 in usersMain.items():
                             if keys1 not in usersFilter:
                                 embedVar.add_field(
                                     name=keys1, value=f"[{value1}]", inline=True
                                 )
-                        for k1, v1 in users["stats"].items():
+                        for k1, v1 in usersMain["stats"].items():
                             embedVar.add_field(
                                 name=k1, value=f"[{v1}]", inline=True)
-                        embedVar.title = users["user"]["username"]
-                        embedVar.description = f"{users['tagline']}\n\n{users['bio']}"
-                        embedVar.set_thumbnail(url=users["user"]["usericon"])
+                        embedVar.title = usersMain["user"]["username"]
+                        embedVar.description = (
+                            f"{usersMain['tagline']}\n\n{usersMain['bio']}"
+                        )
+                        embedVar.set_thumbnail(
+                            url=usersMain["user"]["usericon"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(

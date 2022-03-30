@@ -1,5 +1,4 @@
-FROM python:3.10.2-bullseye
-LABEL org.opencontainers.image.source="https://github.com/No767/Kumiko-Hub"
+FROM python:3.10.4-bullseye
 WORKDIR /Bot
 COPY Pipfile ./ /Bot/
 COPY Pipfile.lock ./ /Bot/

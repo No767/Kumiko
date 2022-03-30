@@ -2,6 +2,7 @@ import asyncio
 
 import discord
 import uvloop
+from discord.commands import slash_command
 from discord.ext import commands
 
 
@@ -9,9 +10,7 @@ class ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        name="ping",
-    )
+    @slash_command(name="ping", description="Measures the ping of Rin")
     async def on_message(self, ctx):
         try:
             ping_embed = discord.Embed()
@@ -21,7 +20,7 @@ class ping(commands.Cog):
             ping_embed = discord.Embed()
             ping_embed.description = "The command was not successful"
             ping_embed.add_field(name="Reason", value=e, inline=True)
-            await ctx.send(embed=ping_embed)
+            await ctx.respond(embed=ping_embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

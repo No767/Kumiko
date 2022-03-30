@@ -16,7 +16,6 @@ class waifuPics(commands.Cog):
     @slash_command(
         name="waifupics",
         description="Returns a random image of a waifu from waifu.pics",
-        guild_ids=[866199405090308116],
     )
     async def on_messsage(self, ctx):
         waifu_list = [
@@ -55,9 +54,10 @@ class waifuPics(commands.Cog):
         searchterm = random.choice(waifu_list)
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
-                waifu_pics = await r.json()
+                waifu_pics = await r.content.read()
+                waifu_pics_main = orjson.loads(waifu_pics)
                 try:
-                    await ctx.respond(waifu_pics["url"])
+                    await ctx.respond(waifu_pics_main["url"])
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The query was not successful"

@@ -4,23 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-python-dotenv = "==0.19.2"
+python-dotenv = "*"
 aiodns = "*"
 brotli = "*"
 sqlalchemy = "*"
 orjson = "*"
-motor = "*"
 lxml = "*"
 asyncpraw = "*"
 asyncpg = "*"
 uvloop = "*"
-odmantic = "*"
 ujson = "*"
 aiohttp = "==3.8.1"
 qrcode = {extras = ["pil"], version = "*"}
 cchardet = "*"
 beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0b5", extras = ["voice"]}
+motor = "*"
+odmantic = "*"
 
 [dev-packages]
 black = "*"
