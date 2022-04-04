@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.utils import get
 
 
 # Disabled for now. needs more testing
@@ -11,7 +10,7 @@ class check_pronouns(commands.Cog):
     @commands.Cog.listener()
     @commands.is_owner()
     async def on_message(self, ctx):
-        bot = self.bot
+        self.bot
         embedVar = discord.Embed(title="What are your pronouns?")
         embedVar.description = """
             :orange_heart: - he/him
