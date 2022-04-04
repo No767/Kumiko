@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("Kumiko")
+TOKEN = os.getenv("Petal")
 intents = Intents.all()
 bot = commands.Bot(command_prefix=".", help_command=None)
 
@@ -14,7 +14,6 @@ bot = commands.Bot(command_prefix=".", help_command=None)
 initial_extensions = [
     "Cogs.kumikoinfo",
     "Cogs.kumikoping",
-    "Cogs.valid",
     "Cogs.kumikohelp",
     "Cogs.reddit",
     "Cogs.mcsrvstats",
@@ -27,8 +26,6 @@ initial_extensions = [
     "Cogs.jikan",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
-    "Cogs.spotify",
-    "Cogs.pinterest",
     "Cogs.kumikoinvite",
     "Cogs.mangadex",
     "Cogs.version",
@@ -36,17 +33,15 @@ initial_extensions = [
     "Cogs.youtube",
     "Cogs.bonk",
     "Cogs.tenor",
-    "Cogs.economy-base",
+    "Cogs.economy.economy-base",
     "Cogs.uptime",
     "Cogs.jisho",
-    "Cogs.mangadex",
     "Cogs.bot-info",
     "Cogs.openai-gpt3",
     "Cogs.help",
     "Cogs.modrinth",
     "Cogs.discord-bots",
     "Cogs.first-frc-events",
-    "Cogs.deviantart",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
