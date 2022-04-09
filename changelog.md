@@ -1,17 +1,9 @@
-# ✨ Rin V2.0.1 ✨
+# ✨ Rin V2.0.2 ✨
 
-This is just a very small patch update that activates all of the slash commands (some were not globally activated).
-
-# Major Changes
-
-- Activated all of the slash commands (this time for real)
-
-# Changes
-
-## TD;LR
-- Activated all of the slash commands (this time for real)
+This is a quick patch update that fixes some of the frc events commands.
 
 ## Changes
 
-- Activated all of the slash commands (this time for real)
-
+- Fix FRC Events commands being broken
+- (Uncompleted) Add preliminary support for Blue Alliance
+- Clean up some code
