@@ -44,9 +44,7 @@ class MangaDexV1(commands.Cog):
                         mangaID = dictItem["id"]
                         mangaTitle = [
                             val6
-                            for keys6, val6 in dictItem["attributes"][
-                                "title"
-                            ].items()
+                            for keys6, val6 in dictItem["attributes"]["title"].items()
                         ]
                         mainDesc = [
                             val7
@@ -57,8 +55,7 @@ class MangaDexV1(commands.Cog):
                         for k, v in dictItem["attributes"].items():
                             if k not in mangaFilter:
                                 embedVar.add_field(
-                                    name=k, value=f"[{v}]", inline=True
-                                )
+                                    name=k, value=f"[{v}]", inline=True)
                         for item in dictItem["attributes"]["tags"]:
                             embedVar.add_field(
                                 name="Tags",
@@ -81,9 +78,9 @@ class MangaDexV1(commands.Cog):
                                     f"https://api.mangadex.org/cover/{coverArtID}"
                                 ) as rp:
                                     cover_art_data = await rp.json()
-                                    cover_art = cover_art_data["data"][
-                                        "attributes"
-                                    ]["fileName"]
+                                    cover_art = cover_art_data["data"]["attributes"][
+                                        "fileName"
+                                    ]
                                     embedVar.set_image(
                                         url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}"
                                     )
@@ -111,7 +108,7 @@ class MangaDexV1(commands.Cog):
                         name="HTTP Response Code", value=r.status, inline=True
                     )
                     await ctx.respond(embed=embedErrorAlt)
-                    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
@@ -224,7 +221,6 @@ class MangaDexV2(commands.Cog):
                         name="HTTP Response Code", value=r.status, inline=True
                     )
                     await ctx.respond(embed=embedError)
-                
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
