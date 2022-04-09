@@ -191,7 +191,7 @@ class FirstFRCV4(commands.Cog):
         tournament_level: Option(
             str,
             "The FRC tournament level",
-            choices=["Practice", "Qualification", "Playoff"],
+            choices=["qual", "playoff"],
         ),
         match_number: Option(str, "The FRC match number"),
     ):
@@ -247,7 +247,7 @@ class FirstFRCV5(commands.Cog):
         tournament_level: Option(
             str,
             "The FRC tournament level",
-            choices=["Practice", "Qualification", "Playoff"],
+            choices=["qual", "playoff"],
         ),
         team_number: Option(str, "The FRC team number"),
     ):
@@ -357,7 +357,7 @@ class FirstFRCV7(commands.Cog):
         tournament_level: Option(
             str,
             "The FRC tournament level",
-            choices=["Practice", "Qualification", "Playoff"],
+            choices=["qual", "playoff"],
         ),
         team_number: Option(int, "The FRC team number"),
     ):
