@@ -18,7 +18,7 @@ aiohttp = "==3.8.1"
 qrcode = {extras = ["pil"], version = "*"}
 cchardet = "*"
 beautifulsoup4 = "*"
-py-cord = {version = "==2.0.0b5", extras = ["voice"]}
+py-cord = {version = "==2.0.0b7", extras = ["voice"]}
 motor = "*"
 odmantic = "*"
 
