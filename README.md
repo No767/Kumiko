@@ -281,6 +281,74 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
    ```sh
    pipenv shell
    ```
+
+### Arch Linux
+
+1. Update and install any dependencies. Arch bundles all C header files by default. 
+
+    ```sh
+    sudo pacman -Syu 
+    ``` 
+
+    ```sh
+    sudo pacman -S libffi git curl wget
+    ``` 
+
+2. Install Python. Rin uses Python 3.10. You can install it by running this command:
+
+    ```sh
+    sudo pacman -S python
+    ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+    ```
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all project dependencies
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
+
 ## MacOS
 
 **Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**
