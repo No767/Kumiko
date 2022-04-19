@@ -6,7 +6,9 @@ import orjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+import simdjson
 
+parser = simdjson.Parser()
 
 class jishoDict(commands.Cog):
     def __init__(self, bot):
@@ -30,7 +32,7 @@ class jishoDict(commands.Cog):
                 "https://jisho.org/api/v1/search/words", params=params
             ) as r:
                 jisho = await r.content.read()
-                jishoMain = orjson.loads(jisho)
+                jishoMain = parser.parse(jisho, recursive=True)
                 engDefFilter = [
                     "parts_of_speech",
                     "links",

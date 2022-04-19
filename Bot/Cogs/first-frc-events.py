@@ -8,11 +8,12 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+import simdjson
 
 load_dotenv()
 
 api_key = os.getenv("FIRST_Events_Final_Key")
-
+parser = simdjson.Parser()
 
 class FirstFRCV1(commands.Cog):
     def __init__(self, bot):
@@ -32,7 +33,7 @@ class FirstFRCV1(commands.Cog):
                 f"https://frc-api.firstinspires.org/v3.0/{season}", headers=headers
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterSeason = ["frcChampionships", "gameName"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
@@ -108,7 +109,7 @@ class FirstFRCV2(commands.Cog):
                 params=params,
             ) as res:
                 data = await res.content.read()
-                dataMain2 = orjson.loads(data)
+                dataMain2 = parser.parse(data, recursive=True)
                 filterEvents = ["name"]
                 embed = discord.Embed()
                 try:
@@ -152,7 +153,7 @@ class FirstFRCV3(commands.Cog):
                 headers=headers,
             ) as response:
                 data = await response.content.read()
-                dataMain3 = orjson.loads(data)
+                dataMain3 = parser.parse(data, recursive=True)
                 filterAwards = ["fullTeamName", "name"]
                 embedMain = discord.Embed()
                 embedError = discord.Embed()
@@ -205,7 +206,7 @@ class FirstFRCV4(commands.Cog):
                 params=params,
             ) as re:
                 data = await re.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterMain2 = ["matchLevel", "matchNumber"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
@@ -262,7 +263,7 @@ class FirstFRCV5(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterResults = ["teams", "description"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
@@ -319,7 +320,7 @@ class FirstFRCV6(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterResults = ["rank", "teamNumber"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
@@ -372,7 +373,7 @@ class FirstFRCV7(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterEventSchedule = ["teams", "description"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
@@ -420,7 +421,7 @@ class FirstFRCV8(commands.Cog):
                 headers=headers,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterEventAlliances = [
                     "number", "name", "captain", "round1", "round2"]
                 embedVar = discord.Embed()

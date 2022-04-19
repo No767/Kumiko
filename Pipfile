@@ -19,6 +19,7 @@ qrcode = {extras = ["pil"], version = "*"}
 cchardet = "*"
 beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0b7", extras = ["voice"]}
+pysimdjson = "*"
 
 [dev-packages]
 black = "*"
