@@ -4,6 +4,7 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
@@ -12,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
+parser = simdjson.Parser()
 
 
 class TwitterV1(commands.Cog):
@@ -32,7 +34,7 @@ class TwitterV1(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
 
                 try:
                     if dataMain["statuses"] is None:
@@ -142,7 +144,7 @@ class TwitterV2(commands.Cog):
                 params=params,
             ) as resp:
                 data2 = await resp.content.read()
-                dataMain2 = orjson.loads(data2)
+                dataMain2 = parser.parse(data2, recursive=True)
                 itemFilter = {
                     "profile_image_url_https",
                     "id",

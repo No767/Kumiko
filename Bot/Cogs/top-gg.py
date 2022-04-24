@@ -4,6 +4,7 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
@@ -12,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 apiKey = os.getenv("Top_GG_API_Key")
+parser = simdjson.Parser()
 
 
 class TopGGV1(commands.Cog):
@@ -29,7 +31,7 @@ class TopGGV1(commands.Cog):
                 f"https://top.gg/api/bots/{bot_id}", headers=headers
             ) as r:
                 getOneBotInfo = await r.content.read()
-                getOneBotInfoMain = orjson.loads(getOneBotInfo)
+                getOneBotInfoMain = parser.parse(getOneBotInfo, recursive=True)
                 try:
                     embedVar = discord.Embed(
                         title=getOneBotInfoMain["username"],
@@ -74,7 +76,7 @@ class TopGGV2(commands.Cog):
                 f"https://top.gg/api/users/{user_id}", headers=headers
             ) as response:
                 user = await response.content.read()
-                userMain = orjson.loads(user)
+                userMain = parser.parse(user, recursive=True)
                 try:
                     if "error" in userMain:
                         embed = discord.Embed()

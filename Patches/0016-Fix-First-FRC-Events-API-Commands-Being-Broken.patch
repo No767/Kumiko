@@ -1,0 +1,66 @@
+From 08302566c5dfc7fc357a42f9ebe6d4dff4e6ba48 Mon Sep 17 00:00:00 2001
+From: No767 <73260931+No767@users.noreply.github.com>
+Date: Fri, 8 Apr 2022 21:13:54 -0700
+Subject: [PATCH] Fix First FRC Events API Commands Being Broken
+
+Found this out while in SVR
+---
+ Bot/Cogs/first-frc-events.py | 6 +++---
+ Bot/rinbot.py                | 3 +--
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/Bot/Cogs/first-frc-events.py b/Bot/Cogs/first-frc-events.py
+index 40997d8..d81f742 100644
+--- a/Bot/Cogs/first-frc-events.py
++++ b/Bot/Cogs/first-frc-events.py
+@@ -191,7 +191,7 @@ class FirstFRCV4(commands.Cog):
+         tournament_level: Option(
+             str,
+             "The FRC tournament level",
+-            choices=["Practice", "Qualification", "Playoff"],
++            choices=["qual", "playoff"],
+         ),
+         match_number: Option(str, "The FRC match number"),
+     ):
+@@ -247,7 +247,7 @@ class FirstFRCV5(commands.Cog):
+         tournament_level: Option(
+             str,
+             "The FRC tournament level",
+-            choices=["Practice", "Qualification", "Playoff"],
++            choices=["qual", "playoff"],
+         ),
+         team_number: Option(str, "The FRC team number"),
+     ):
+@@ -357,7 +357,7 @@ class FirstFRCV7(commands.Cog):
+         tournament_level: Option(
+             str,
+             "The FRC tournament level",
+-            choices=["Practice", "Qualification", "Playoff"],
++            choices=["qual", "playoff"],
+         ),
+         team_number: Option(int, "The FRC team number"),
+     ):
+diff --git a/Bot/rinbot.py b/Bot/rinbot.py
+index 94f1e85..8b83ccb 100644
+--- a/Bot/rinbot.py
++++ b/Bot/rinbot.py
+@@ -6,7 +6,7 @@ from dotenv import load_dotenv
+ 
+ # Grabs the bot's token from the .env file
+ load_dotenv()
+-TOKEN = os.getenv("TOKEN")
++TOKEN = os.getenv("Hanako_Token")
+ intents = Intents.all()
+ bot = commands.Bot(command_prefix=".", help_command=None)
+ 
+@@ -40,7 +40,6 @@ initial_extensions = [
+     "Cogs.modrinth",
+     "Cogs.discord-bots",
+     "Cogs.first-frc-events",
+-    "Cogs.deviantart",
+ ]
+ for extension in initial_extensions:
+     bot.load_extension(extension)
+-- 
+2.35.1
+

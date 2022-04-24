@@ -4,6 +4,7 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
@@ -12,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 Tenor_API_Key = os.getenv("Tenor_API_Key")
+parser = simdjson.Parser()
 
 
 class TenorV1(commands.Cog):
@@ -35,7 +37,7 @@ class TenorV1(commands.Cog):
             }
             async with session.get("https://g.tenor.com/v1/search", params=params) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     filterList = [
@@ -95,7 +97,7 @@ class TenorV2(commands.Cog):
                 "https://g.tenor.com/v1/search", params=params
             ) as re:
                 data2 = await re.content.read()
-                dataMain2 = orjson.loads(data2)
+                dataMain2 = parser.parse(data2, recursive=True)
                 try:
                     embedVar1 = discord.Embed()
                     embedVar1.title = dataMain2["results"][0]["content_description"]
@@ -132,7 +134,7 @@ class TenorV3(commands.Cog):
                 "https://g.tenor.com/v1/trending", params=params
             ) as response:
                 data3 = await response.content.read()
-                dataMain3 = orjson.loads(data3)
+                dataMain3 = parser.parse(data3, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     filterList2 = [
@@ -192,7 +194,7 @@ class TenorV4(commands.Cog):
                 "https://g.tenor.com/v1/search_suggestions", params=params
             ) as resp:
                 data5 = await resp.content.read()
-                dataMain5 = orjson.loads(data5)
+                dataMain5 = parser.parse(data5, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = "Search Suggestions"
@@ -224,7 +226,7 @@ class TenorV5(commands.Cog):
                 "https://g.tenor.com/v1/trending_terms", params=params
             ) as rep:
                 data6 = await rep.content.read()
-                dataMain6 = orjson.loads(data6)
+                dataMain6 = parser.parse(data6, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     embedVar.title = "Trending Search Terms"
@@ -261,7 +263,7 @@ class TenorV6(commands.Cog):
                 "https://g.tenor.com/v1/gifs", params=params
             ) as respon:
                 data7 = await respon.content.read()
-                dataMain7 = orjson.loads(data7)
+                dataMain7 = parser.parse(data7, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     filterList2 = [
@@ -325,7 +327,7 @@ class TenorV7(commands.Cog):
                 "https://g.tenor.com/v1/random", params=params
             ) as object3:
                 data8 = await object3.content.read()
-                dataMain8 = orjson.loads(data8)
+                dataMain8 = parser.parse(data8, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     for dict_items in dataMain8["results"]:

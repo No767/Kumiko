@@ -3,9 +3,12 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
+
+parser = simdjson.Parser()
 
 
 class advice_slip(commands.Cog):
@@ -17,12 +20,12 @@ class advice_slip(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.adviceslip.com/advice") as r:
                 advice_slip = await r.content.read()
-                advice_slip_formatted = orjson.loads(advice_slip)
+                adviceSlipParsed = parser.parse(advice_slip, recursive=True)
                 try:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(251, 204, 255)
                     )
-                    embedVar.description = f"{advice_slip_formatted['slip']['advice']}"
+                    embedVar.description = f"{adviceSlipParsed['slip']['advice']}"
                     embedVar.set_footer(
                         text=f"Requested by {ctx.user.name}",
                         icon_url=ctx.user.display_avatar,

@@ -26,7 +26,7 @@ Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
-hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. For more info, please check out the [Docs](https://docs.rinbot.live/).
+hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. On top on that, Rin is powered by the fatest JSON parser in the world, SIMDJSON. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
 # Prefix
 
@@ -290,6 +290,74 @@ Or if you using VS Code, install the [WSL](https://marketplace.visualstudio.com/
    ```sh
    pipenv shell
    ```
+
+### Arch Linux
+
+1. Update and install any dependencies. Arch bundles all C header files by default. 
+
+    ```sh
+    sudo pacman -Syu 
+    ``` 
+
+    ```sh
+    sudo pacman -S libffi git curl wget
+    ``` 
+
+2. Install Python. Rin uses Python 3.10. You can install it by running this command:
+
+    ```sh
+    sudo pacman -S python
+    ```
+
+3. **Skip this step if you already have `pip3.10` installed. To check, run `pip3.10 --version`** Install Pip via either the `ensurepip` module or via the `get-pip.py` method
+
+   ensurepip: 
+
+   ```sh
+   python3.10 -m ensurepip
+   ```
+
+    cURL (for `get-pip.py`):
+
+    ```sh
+    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3.10 get-pip.py
+    ```
+
+    wget (for `get-pip.py`): 
+
+    ```sh
+    wget https://bootstrap.pypa.io/get-pip.py && python3.10 get-pip.py
+    ```
+4. Install [Pipenv](https://pipenv.readthedocs.io/en/latest/). To do so, run this command:
+
+   ```sh
+   sudo python -m pip install --upgrade pipenv 
+   ```
+
+5. Go to GitHub and Fork the main repo. Then clone your fork of the repo:
+
+   ```sh
+   git clone https://github.com/[your github username]/Rin
+   ```
+
+6. `cd` into your newly created fork and create the env that you will be using
+
+   ```sh
+   pipenv --python 3.10
+   ```
+
+7. Install all project dependencies
+
+   ```sh
+   pipenv install
+   ```
+
+8. (Optional) Create a shell by running the cmd below:
+
+   ```sh
+   pipenv shell
+   ```
+
 ## MacOS
 
 **Note that I have not tested MacOS yet. If you find any errors, please let me know by submitting a GitHub Issue Report.**

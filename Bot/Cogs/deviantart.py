@@ -4,6 +4,7 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
@@ -16,6 +17,8 @@ load_dotenv()
 Password = os.getenv("Postgres_Password")
 Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
+
+parser = simdjson.Parser()
 
 
 class tokenFetcher:
@@ -62,7 +65,7 @@ class DeviantArtV1(commands.Cog):
                 params=params,
             ) as r:
                 deviation = await r.content.read()
-                deviationMain = orjson.loads(deviation)
+                deviationMain = parser.parse(deviation, recursive=True)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 214, 214))
                 try:
@@ -165,7 +168,7 @@ class DeviantArtV2(commands.Cog):
                 "https://www.deviantart.com/api/v1/oauth2/browse/newest", params=params
             ) as resp:
                 art = await resp.content.read()
-                artMain = orjson.loads(art)
+                artMain = parser.parse(art, recursive=True)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 156, 192))
                 try:
@@ -252,7 +255,7 @@ class DeviantArtV3(commands.Cog):
                 "https://www.deviantart.com/api/v1/oauth2/browse/popular", params=params
             ) as response:
                 pop = await response.content.read()
-                popMain = orjson.loads(pop)
+                popMain = parser.parse(pop, recursive=True)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(255, 250, 181))
                 try:
@@ -340,7 +343,7 @@ class DeviantArtV4(commands.Cog):
                 "https://www.deviantart.com/api/v1/oauth2/browse/tags", params=params
             ) as rep:
                 tags = await rep.content.read()
-                tagsMain = orjson.loads(tags)
+                tagsMain = parser.parse(tags, recursive=True)
                 embedVar = discord.Embed(
                     color=discord.Color.from_rgb(235, 186, 255))
                 try:
@@ -425,7 +428,7 @@ class DeviantArtV5(commands.Cog):
                 params=params,
             ) as respon:
                 users = await respon.content.read()
-                usersMain = orjson.loads(users)
+                usersMain = parser.parse(users, recursive=True)
                 usersFilter = [
                     "bio",
                     "tagline",

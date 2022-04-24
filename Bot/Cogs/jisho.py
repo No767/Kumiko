@@ -3,9 +3,12 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+
+parser = simdjson.Parser()
 
 
 class jishoDict(commands.Cog):
@@ -30,7 +33,7 @@ class jishoDict(commands.Cog):
                 "https://jisho.org/api/v1/search/words", params=params
             ) as r:
                 jisho = await r.content.read()
-                jishoMain = orjson.loads(jisho)
+                jishoMain = parser.parse(jisho, recursive=True)
                 engDefFilter = [
                     "parts_of_speech",
                     "links",
@@ -52,7 +55,7 @@ class jishoDict(commands.Cog):
                     embedVar = discord.Embed()
                     for dictItem in jishoMain["data"]:
                         for jpnItem in dictItem["japanese"]:
-                            totalJpnItem = [value for keys,
+                            totalJpnItem = [value for _,
                                             value in jpnItem.items()]
                         for itemVal in dictItem["senses"]:
                             for keys, value in itemVal.items():

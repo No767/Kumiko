@@ -3,9 +3,12 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+
+parser = simdjson.Parser()
 
 
 class JikanV1(commands.Cog):
@@ -24,7 +27,7 @@ class JikanV1(commands.Cog):
                 "https://api.jikan.moe/v4/anime/", params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterList = [
                     "images",
                     "title",
@@ -102,7 +105,7 @@ class JikanV2(commands.Cog):
                 "https://api.jikan.moe/v4/manga", params=params
             ) as response:
                 data = await response.content.read()
-                dataMain2 = orjson.loads(data)
+                dataMain2 = parser.parse(data, recursive=True)
                 filterList = [
                     "title",
                     "images",
@@ -184,7 +187,8 @@ class JikanV3(commands.Cog):
     async def animeRandom(self, ctx):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/anime") as response:
-                data = await response.json()
+                data = await response.content.read()
+                dataMain = parser.parse(data, recursive=True)
                 mainFilter = [
                     "images",
                     "trailer",
@@ -203,9 +207,9 @@ class JikanV3(commands.Cog):
                 ]
                 try:
                     embedVar = discord.Embed()
-                    embedVar.title = data["data"]["title"]
-                    embedVar.description = data["data"]["synopsis"]
-                    for key, value in data["data"].items():
+                    embedVar.title = dataMain["data"]["title"]
+                    embedVar.description = dataMain["data"]["synopsis"]
+                    for key, value in dataMain["data"].items():
                         if key not in mainFilter:
                             embedVar.add_field(
                                 name=str(key).replace("_", " ").capitalize(),
@@ -213,7 +217,7 @@ class JikanV3(commands.Cog):
                                 inline=True,
                             )
                     embedVar.set_image(
-                        url=data["data"]["images"]["jpg"]["large_image_url"]
+                        url=dataMain["data"]["images"]["jpg"]["large_image_url"]
                     )
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
@@ -237,7 +241,7 @@ class JikanV4(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/manga") as r:
                 data = await r.content.read()
-                dataMain3 = orjson.loads(data)
+                dataMain3 = parser.parse(data, recursive=True)
                 mangaFilter = [
                     "title",
                     "published",
@@ -296,7 +300,7 @@ class JikanV5(commands.Cog):
                     f"https://api.jikan.moe/v4/seasons/{year}/{season}"
                 ) as response:
                     seasons = await response.content.read()
-                    seasonsMain = orjson.loads(seasons)
+                    seasonsMain = parser.parse(seasons, recursive=True)
                     mainSeasonsFilter = [
                         "images",
                         "trailer",
@@ -356,7 +360,7 @@ class JikanV6(commands.Cog):
                 "https://api.jikan.moe/v4/seasons/upcoming"
             ) as full_response:
                 data = await full_response.content.read()
-                dataMain5 = orjson.loads(data)
+                dataMain5 = parser.parse(data, recursive=True)
                 mainFilter = [
                     "broadcast",
                     "title",
@@ -404,7 +408,7 @@ class JikanV7(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
                 data = await r.content.read()
-                dataMain6 = orjson.loads(data)
+                dataMain6 = parser.parse(data, recursive=True)
                 userFilter = ["username", "images"]
                 try:
                     embedVar = discord.Embed()

@@ -4,6 +4,7 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
@@ -12,6 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 hypixel_api_key = os.getenv("Hypixel_API_Key")
+parser = simdjson.Parser()
 
 
 class hypixel_api(commands.Cog):
@@ -29,7 +31,7 @@ class hypixel_api(commands.Cog):
                 "https://api.hypixel.net/player", params=params
             ) as r:
                 player = await r.content.read()
-                playerMain = orjson.loads(player)
+                playerMain = parser.parse(player, recursive=True)
                 try:
                     if str(playerMain["success"]) == "True":
                         discord_embed = discord.Embed(
@@ -100,7 +102,7 @@ class hypixel_player_count(commands.Cog):
                 "https://api.hypixel.net/counts", params=params
             ) as response:
                 status = await response.content.read()
-                statusMain = orjson.loads(status)
+                statusMain = parser.parse(status, recursive=True)
                 try:
                     embedVar = discord.Embed(
                         title="Games Player Count",
@@ -135,7 +137,8 @@ class hypixel_status(commands.Cog):
                 "https://api.hypixel.net/status", params=params
             ) as rep:
                 player_statusv3 = await rep.content.read()
-                playerStatusMain = orjson.loads(player_statusv3)
+                playerStatusMain = parser.parse(
+                    player_statusv3, recursive=True)
                 try:
                     if str(playerStatusMain["success"]) == "True":
                         filterKeys = ["session"]
@@ -189,7 +192,7 @@ class networkPunishments(commands.Cog):
                 "https://api.hypixel.net/punishmentstats", params=params
             ) as r:
                 stats = await r.content.read()
-                statsMain = orjson.loads(stats)
+                statsMain = parser.parse(stats, recursive=True)
                 try:
                     embedVar = discord.Embed(
                         title="Total Amounts of Punishments Given",
