@@ -3,12 +3,13 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
-import simdjson
 
 parser = simdjson.Parser()
+
 
 class ModrinthV1(commands.Cog):
     def __init__(self, bot):

@@ -4,16 +4,17 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-import simdjson
 
 load_dotenv()
 
 apiKey = os.getenv("Top_GG_API_Key")
 parser = simdjson.Parser()
+
 
 class TopGGV1(commands.Cog):
     def __init__(self, bot):

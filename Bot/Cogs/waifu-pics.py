@@ -4,12 +4,13 @@ import random
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
-import simdjson
 
 parser = simdjson.Parser()
+
 
 class waifuPics(commands.Cog):
     def __init__(self, bot):

@@ -3,12 +3,13 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
-import simdjson
 
 parser = simdjson.Parser()
+
 
 class MangaDexV1(commands.Cog):
     def __init__(self, bot):
@@ -393,7 +394,8 @@ class MangaDexV6(commands.Cog):
                 "https://api.mangadex.org/author", params=params
             ) as author_response:
                 author_payload = await author_response.content.read()
-                authorPayloadMain = parser.parse(author_payload, recursive=True)
+                authorPayloadMain = parser.parse(
+                    author_payload, recursive=True)
                 embedVar = discord.Embed()
                 try:
                     authorFilter = ["imageUrl", "name", "biography"]

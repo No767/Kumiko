@@ -4,15 +4,17 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-import simdjson
+
 load_dotenv()
 
 Tenor_API_Key = os.getenv("Tenor_API_Key")
 parser = simdjson.Parser()
+
 
 class TenorV1(commands.Cog):
     def __init__(self, bot):

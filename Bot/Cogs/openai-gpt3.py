@@ -3,18 +3,18 @@ import os
 
 import aiohttp
 import discord
-import orjson
+import simdjson
 import ujson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-import simdjson
 
 load_dotenv()
 
 OpenAI_API_KEY = os.getenv("OpenAI_API_Key")
 parser = simdjson.Parser()
+
 
 class OpenAI1(commands.Cog):
     def __init__(self, bot):

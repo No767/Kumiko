@@ -4,13 +4,13 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
 from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
-import simdjson
 
 load_dotenv()
 
@@ -19,6 +19,7 @@ Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
 
 parser = simdjson.Parser()
+
 
 class tokenFetcher:
     def __init__(self):

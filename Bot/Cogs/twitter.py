@@ -4,16 +4,17 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-import simdjson
 
 load_dotenv()
 
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
 parser = simdjson.Parser()
+
 
 class TwitterV1(commands.Cog):
     def __init__(self, bot):

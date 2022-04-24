@@ -4,11 +4,11 @@ import os
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-import simdjson
 
 load_dotenv()
 
@@ -137,7 +137,8 @@ class hypixel_status(commands.Cog):
                 "https://api.hypixel.net/status", params=params
             ) as rep:
                 player_statusv3 = await rep.content.read()
-                playerStatusMain = parser.parse(player_statusv3, recursive=True)
+                playerStatusMain = parser.parse(
+                    player_statusv3, recursive=True)
                 try:
                     if str(playerStatusMain["success"]) == "True":
                         filterKeys = ["session"]
