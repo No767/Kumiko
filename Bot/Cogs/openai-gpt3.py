@@ -9,11 +9,12 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+import simdjson
 
 load_dotenv()
 
 OpenAI_API_KEY = os.getenv("OpenAI_API_Key")
-
+parser = simdjson.Parser()
 
 class OpenAI1(commands.Cog):
     def __init__(self, bot):
@@ -48,7 +49,7 @@ class OpenAI1(commands.Cog):
                 json=payload,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     embedVar.description = dataMain["choices"][0]["text"]
@@ -108,7 +109,7 @@ class OpenAI2(commands.Cog):
                 json=payload,
             ) as poster:
                 data = await poster.content.read()
-                dataMain2 = orjson.loads(data)
+                dataMain2 = parser.parse(data, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     for dictItem in dataMain2["selected_examples"]:
@@ -158,7 +159,7 @@ class OpenAI3(commands.Cog):
                 "https://api.openai.com/v1/answers", headers=headers, json=payload
             ) as response:
                 data = await response.content.read()
-                dataMain3 = orjson.loads(data)
+                dataMain3 = parser.parse(data, recursive=True)
                 try:
                     embedVar = discord.Embed()
                     embedVar.description = (

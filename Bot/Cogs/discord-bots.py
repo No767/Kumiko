@@ -8,9 +8,11 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+import simdjson
 
 load_dotenv()
 apiKey = os.getenv("Discord_Bots_API_Key")
+parser = simdjson.Parser()
 
 
 class DiscordBotsV1(commands.Cog):
@@ -39,7 +41,7 @@ class DiscordBotsV1(commands.Cog):
                 "https://discord.bots.gg/api/v1/bots", headers=headers, params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 filterMain = [
                     "avatarURL",
                     "coOwners",
@@ -90,7 +92,7 @@ class DiscordBotsV2(commands.Cog):
                 f"https://discord.bots.gg/api/v1/bots/{bot_id}", headers=headers
             ) as response:
                 data2 = await response.content.read()
-                dataMain2 = orjson.loads(data2)
+                dataMain2 = parser.parse(data2, recursive=True)
                 embedVar = discord.Embed()
                 filterMain2 = [
                     "coOwners",

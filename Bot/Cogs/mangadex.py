@@ -6,7 +6,9 @@ import orjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+import simdjson
 
+parser = simdjson.Parser()
 
 class MangaDexV1(commands.Cog):
     def __init__(self, bot):
@@ -29,7 +31,7 @@ class MangaDexV1(commands.Cog):
                 f"https://api.mangadex.org/manga/", params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 embedVar = discord.Embed()
                 mangaFilter = [
                     "tags",
@@ -77,7 +79,7 @@ class MangaDexV1(commands.Cog):
                                 async with session.get(
                                     f"https://api.mangadex.org/cover/{coverArtID}"
                                 ) as rp:
-                                    cover_art_data = await rp.json()
+                                    cover_art_data = await rp.json(loads=orjson.loads)
                                     cover_art = cover_art_data["data"]["attributes"][
                                         "fileName"
                                     ]
@@ -124,7 +126,7 @@ class MangaDexV2(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.mangadex.org/manga/random") as r:
                 data2 = await r.content.read()
-                dataMain2 = orjson.loads(data2)
+                dataMain2 = parser.parse(data2, recursive=True)
                 mangaFilter2 = [
                     "tags",
                     "title",
@@ -181,7 +183,7 @@ class MangaDexV2(commands.Cog):
                                 async with session.get(
                                     f"https://api.mangadex.org/cover/{coverArtID2}"
                                 ) as rp:
-                                    cover_art_data2 = await rp.json()
+                                    cover_art_data2 = await rp.json(loads=orjson.loads)
                                     cover_art2 = cover_art_data2["data"]["attributes"][
                                         "fileName"
                                     ]
@@ -247,7 +249,7 @@ class MangaDexV3(commands.Cog):
                 "https://api.mangadex.org/group", params=params
             ) as totally_another_response:
                 md_data2 = await totally_another_response.content.read()
-                mdDataMain = orjson.loads(md_data2)
+                mdDataMain = parser.parse(md_data2, recursive=True)
                 embed2 = discord.Embed()
                 mdFilter = ["altNames", "description", "name"]
                 try:
@@ -301,7 +303,7 @@ class MangaDexV4(commands.Cog):
                 f"https://api.mangadex.org/group/{scanlation_id}"
             ) as another_response:
                 payload = await another_response.content.read()
-                payloadMain = orjson.loads(payload)
+                payloadMain = parser.parse(payload, recursive=True)
                 try:
                     if payloadMain["data"] is None:
                         embed3 = discord.Embed()
@@ -391,7 +393,7 @@ class MangaDexV6(commands.Cog):
                 "https://api.mangadex.org/author", params=params
             ) as author_response:
                 author_payload = await author_response.content.read()
-                authorPayloadMain = orjson.loads(author_payload)
+                authorPayloadMain = parser.parse(author_payload, recursive=True)
                 embedVar = discord.Embed()
                 try:
                     authorFilter = ["imageUrl", "name", "biography"]

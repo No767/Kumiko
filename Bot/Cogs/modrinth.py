@@ -6,7 +6,9 @@ import orjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+import simdjson
 
+parser = simdjson.Parser()
 
 class ModrinthV1(commands.Cog):
     def __init__(self, bot):
@@ -34,7 +36,7 @@ class ModrinthV1(commands.Cog):
                 "https://api.modrinth.com/v2/search", params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data)
                 modFilter = ["title", "gallery", "icon_url", "description"]
                 embedVar = discord.Embed()
                 try:
@@ -75,7 +77,7 @@ class ModrinthV2(commands.Cog):
             ) as res:
                 try:
                     modData = await res.content.read()
-                    modDataMain = orjson.loads(modData)
+                    modDataMain = parser.parse(modData, recursive=True)
                     modDataFilter = [
                         "versions",
                         "license",
@@ -144,7 +146,7 @@ class ModrinthV3(commands.Cog):
                 f"https://api.modrinth.com/v2/project/{mod_name}/version", params=params
             ) as res:
                 versionData = await res.content.read()
-                versionDataMain = orjson.loads(versionData)
+                versionDataMain = parser.parse(versionData, recursive=True)
                 versionFilter = [
                     "changelog",
                     "name",
@@ -202,7 +204,7 @@ class ModrinthV4(commands.Cog):
                 f"https://api.modrinth.com/v2/version/{mod_version_id}"
             ) as r:
                 data = await r.content.read()
-                dataMain3 = orjson.loads(data)
+                dataMain3 = parser.parse(data, recursive=True)
                 versionFilter = ["changelog", "name", "dependencies", "files"]
                 embedVar = discord.Embed()
                 try:
@@ -248,7 +250,7 @@ class ModrinthV5(commands.Cog):
                 f"https://api.modrinth.com/v2/user/{username}"
             ) as response:
                 userData = await response.content.read()
-                userDataMain = orjson.loads(userData)
+                userDataMain = parser.parse(userData, recursive=True)
                 embedVar = discord.Embed()
                 userFilter = ["bio", "username", "avatar_url"]
                 try:
@@ -287,7 +289,7 @@ class ModrinthV6(commands.Cog):
                 f"https://api.modrinth.com/v2/user/{username}/projects"
             ) as r:
                 data = await r.content.read()
-                dataMain6 = orjson.loads(data)
+                dataMain6 = parser.parse(data, recursive=True)
                 userProjectsFilter = [
                     "body",
                     "license",
@@ -350,7 +352,7 @@ class ModrinthV7(commands.Cog):
                 f"https://api.modrinth.com/v2/project/{project}/members"
             ) as r:
                 projectData = await r.content.read()
-                projectDataMain = orjson.loads(projectData)
+                projectDataMain = parser.parse(projectData, recursive=True)
                 projectTeamFilter = ["bio", "avatar_url", "username"]
                 embedVar = discord.Embed()
                 try:
@@ -394,7 +396,7 @@ class ModrinthV8(commands.Cog):
                 f"https://api.modrinth.com/v2/team/{team_id}/members"
             ) as r:
                 teamData = await r.content.read()
-                teamDataMain = orjson.loads(teamData)
+                teamDataMain = parser.parse(teamData, recursive=True)
                 teamFilter = ["bio", "avatar_url", "username"]
                 embedVar = discord.Embed()
                 try:

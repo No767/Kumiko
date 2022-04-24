@@ -8,11 +8,13 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+import simdjson
 
 load_dotenv()
 
 YouTube_API_Key = os.getenv("YouTube_API_Key")
 
+parser = simdjson.Parser()
 
 class YoutubeV1(commands.Cog):
     def __init__(self, bot):
@@ -37,7 +39,7 @@ class YoutubeV1(commands.Cog):
                 "https://www.googleapis.com/youtube/v3/search", params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 try:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(212, 255, 223)
@@ -100,7 +102,7 @@ class YoutubeV2(commands.Cog):
                 "https://www.googleapis.com/youtube/v3/search", params=search_params
             ) as response:
                 search_data = await response.content.read()
-                searchDataMain = orjson.loads(search_data)
+                searchDataMain = parser.parse(search_data, recursive=True)
                 channel_id = searchDataMain["items"][0]["id"]["channelId"]
                 params = {
                     "key": YouTube_API_Key,
@@ -111,7 +113,7 @@ class YoutubeV2(commands.Cog):
                     "https://www.googleapis.com/youtube/v3/channels", params=params
                 ) as re:
                     data = await re.content.read()
-                    dataMain3 = orjson.loads(data)
+                    dataMain3 = parser.parse(data, recursive=True)
                     try:
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 0, 0)
@@ -182,7 +184,7 @@ class YoutubeV3(commands.Cog):
                 "https://www.googleapis.com/youtube/v3/search", params=search_params
             ) as response2:
                 search_data = await response2.content.read()
-                searchDataMain = orjson.loads(search_data)
+                searchDataMain = parser.parse(search_data, recursive=True)
                 channel_id = searchDataMain["items"][0]["id"]["channelId"]
                 main_params = {
                     "key": YouTube_API_Key,
@@ -195,7 +197,7 @@ class YoutubeV3(commands.Cog):
                     params=main_params,
                 ) as r2:
                     data = await r2.content.read()
-                    dataMain = orjson.loads(data)
+                    dataMain = parser.parse(data, recursive=True)
                     try:
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 224, 224)
@@ -271,7 +273,7 @@ class YoutubeV4(commands.Cog):
                 "https://www.googleapis.com/youtube/v3/commentThreads", params=params
             ) as r:
                 data = await r.content.read()
-                dataMain4 = orjson.loads(data)
+                dataMain4 = parser.parse(data, recursive=True)
                 try:
                     if r.status == 403:
                         embedVar = discord.Embed()
@@ -379,7 +381,7 @@ class YoutubeV5(commands.Cog):
                 "https://www.googleapis.com/youtube/v3/videos", params=params
             ) as another_response:
                 data = await another_response.content.read()
-                dataMain5 = orjson.loads(data)
+                dataMain5 = parser.parse(data, recursive=True)
                 try:
                     embed = discord.Embed(
                         color=discord.Color.from_rgb(255, 0, 0))

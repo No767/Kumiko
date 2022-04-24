@@ -7,7 +7,9 @@ import orjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
+import simdjson
 
+parser = simdjson.Parser()
 
 class waifuPics(commands.Cog):
     def __init__(self, bot):
@@ -55,7 +57,7 @@ class waifuPics(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
                 waifu_pics = await r.content.read()
-                waifu_pics_main = orjson.loads(waifu_pics)
+                waifu_pics_main = parser.parse(waifu_pics, recursive=True)
                 try:
                     await ctx.respond(waifu_pics_main["url"])
                 except Exception as e:

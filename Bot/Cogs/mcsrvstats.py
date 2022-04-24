@@ -6,7 +6,9 @@ import orjson
 import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
+import simdjson
 
+parser = simdjson.Parser()
 
 class mcsrvstats(commands.Cog):
     def __init__(self, bot):
@@ -20,7 +22,7 @@ class mcsrvstats(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.mcsrvstat.us/2/{server}") as r:
                 mcsrv = await r.content.read()
-                mcsrvMain = orjson.loads(mcsrv)
+                mcsrvMain = parser.parse(mcsrv, recursive=True)
                 image_link = f"https://api.mcsrvstat.us/icon/{server}"
                 try:
                     if str(mcsrvMain["online"]) == "True":
@@ -104,7 +106,7 @@ class bedrock_mcsrvstats(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.loads) as session:
             async with session.get(f"https://api.mcsrvstat.us/bedrock/2/{server}") as r:
                 bedmcsrv = await r.content.read()
-                bedmcsrvMain = orjson.loads(bedmcsrv)
+                bedmcsrvMain = parser.parse(bedmcsrv, recursive=True)
                 bedimage_link = f"https://api.mcsrvstat.us/icon/{server}"
                 try:
                     if str(bedmcsrvMain["online"]) == "True":

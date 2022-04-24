@@ -6,7 +6,9 @@ import orjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+import simdjson
 
+parser = simdjson.Parser()
 
 class SpigetV2(commands.Cog):
     def __init__(self, bot):
@@ -30,7 +32,7 @@ class SpigetV2(commands.Cog):
                 params=params,
             ) as r:
                 resource = await r.content.read()
-                resourceMain = orjson.loads(resource)
+                resourceMain = parser.parse(resource, recursive=True)
                 try:
                     for dictItem in resourceMain:
                         thumbnail = (
@@ -144,7 +146,7 @@ class SpigetV3(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = orjson.loads(data)
+                dataMain = parser.parse(data, recursive=True)
                 authorFilter = ["icon", "name", "identities"]
                 embedVar = discord.Embed()
                 try:
@@ -182,7 +184,7 @@ class SpigetV4(commands.Cog):
                 "https://api.spiget.org/v2/status", headers=headers
             ) as res:
                 total_stats = await res.content.read()
-                totalStatsMain = orjson.loads(total_stats)
+                totalStatsMain = parser.parse(total_stats, recursive=True)
                 try:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
