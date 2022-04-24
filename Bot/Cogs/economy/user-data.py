@@ -1,4 +1,3 @@
-
 from discord.commands import slash_command
 from discord.ext import commands
 from eco_base_sql import kumikoEcoUtils
