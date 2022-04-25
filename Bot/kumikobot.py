@@ -33,7 +33,6 @@ initial_extensions = [
     "Cogs.youtube",
     "Cogs.bonk",
     "Cogs.tenor",
-    "Cogs.economy.economy-base",
     "Cogs.uptime",
     "Cogs.jisho",
     "Cogs.bot-info",
@@ -42,7 +41,7 @@ initial_extensions = [
     "Cogs.modrinth",
     "Cogs.discord-bots",
     "Cogs.first-frc-events",
-    "Cogs.blue-alliance"
+    "Cogs.economy.marketplace"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

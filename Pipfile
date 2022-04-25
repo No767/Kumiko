@@ -22,6 +22,7 @@ py-cord = {version = "==2.0.0b7", extras = ["voice"]}
 pysimdjson = "*"
 motor = "*"
 odmantic = "*"
+beanie = "*"
 
 [dev-packages]
 black = "*"
@@ -32,4 +33,3 @@ pyflakes = "*"
 
 [requires]
 python_version = "3.10"
-
