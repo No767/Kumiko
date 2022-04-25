@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "11d927d3592ff2c348a055721f661328c4e90e638e6e03e52eb85db65c682fd9"
+            "sha256": "11d1c93f7415a750685c0cc8e7d32330ea584fbeb034b31ddd50c029bd90091b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -384,6 +384,18 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==2.0.12"
+        },
+        "cysimdjson": {
+            "hashes": [
+                "sha256:452fb96cc3a7f60ab8130ae53309a9369d8389c42d847731638552cd39537e76",
+                "sha256:6790955528dc6177165ef977b938c82c3b148b9f01486430613da8770888c7e8",
+                "sha256:7c7ffea88d5e833e6e20b52821747632a3604d3f04f72266da0f817abf46ddf5",
+                "sha256:c5bbaa0544454c19dcb145397c55990dcb3b8bfdea54b9648dfcf3e6f9f45589",
+                "sha256:d04e64389371550339a4bc2bdd69579fe5393cba930c429ce42c56f57733baed",
+                "sha256:d571af7d6fca8cb77d1192970f1322c0e5346b957f94ed03d5414ec57d611d03"
+            ],
+            "index": "pypi",
+            "version": "==21.11"
         },
         "frozenlist": {
             "hashes": [
