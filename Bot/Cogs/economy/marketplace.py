@@ -1,4 +1,4 @@
-from utils import KumikoEcoUtils
+
 
 from typing import Optional
 from beanie import Document,  init_beanie
@@ -10,7 +10,7 @@ from discord.commands import Option, slash_command
 from discord.ext import commands
 
 load_dotenv()
-utils = KumikoEcoUtils()
+# utils = KumikoEcoUtils()
 MongoDB_Password = os.getenv("MongoDB_Password")
 Username = os.getenv("MongoDB_Username")
 Server_IP = os.getenv("MongoDB_Server_IP")
@@ -49,7 +49,7 @@ class ecoAdd(commands.Cog):
         
     @slash_command(name="eco-add-item", description="Add an item to the marketplace", guild_ids=[866199405090308116])
     async def ecoAddItem(self, ctx, *, name: Option(str, "The name of the item you wish to add"), description: Option(str, "The description of the item you wish to add"), amount: Option(int, "The amount of the item you wish to add")):
-        await utils.ins(name, description, amount)
+        # await utils.ins(name, description, amount)
         await ctx.respond("Item added to the marketplace")
     
 def setup(bot):
