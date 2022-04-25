@@ -16,11 +16,11 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v3
         with:
-          python-version: 3.10.2
-      - name: Set up Node.js 17
+          python-version: 3.10.4
+      - name: Set up Node.js 18
         uses: actions/setup-node@v3.1.1
         with:
-          node-version: '17'
+          node-version: '18'
       - name: Install Snyk CLI
         run: |
           npm install snyk@latest -g
@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v3
         with:
             path: ~/.local/share/virtualenvs
-            key: ${{ runner.os }}-pipenv-${{ hashFiles('**/Pipfile.lock') }}
+            key: ${{ runner.os }}-pipenv-v2-${{ hashFiles('**/Pipfile.lock') }}
       - name: Install Pipenv Dependencies
         if: steps.cache-pipenv.outputs.cache-hit != 'true'
         run: |
