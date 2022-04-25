@@ -1,2 +1,2 @@
-from .core import KumikoEcoUtils
+from .eco_core import KumikoEcoUtils
 __all__ = ["KumikoEcoUtils"]
