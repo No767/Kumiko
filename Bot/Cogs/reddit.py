@@ -209,14 +209,7 @@ class RedditV5(commands.Cog):
                 await comment.author.load()
                 embedVar.title = comment.author.name
                 embedVar.description = comment.body
-                embedVar.add_field(
-                    name="Score", value=comment.score, inline=True)
-                embedVar.add_field(
-                    name="Created UTC", value=comment.created_utc, inline=True
-                )
-                embedVar.add_field(name="ID", value=comment.id, inline=True)
                 embedVar.set_thumbnail(url=comment.author.icon_img)
-                embedVar.remove_field(1)
                 await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
