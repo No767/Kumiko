@@ -1,7 +1,8 @@
-
+from utils import KumikoEcoUtils
 
 from typing import Optional
-from beanie import Document,  init_beanie
+from beanie import Document
+from beanie import init_beanie
 from dotenv import load_dotenv
 import os
 import motor.motor_asyncio
@@ -10,7 +11,7 @@ from discord.commands import Option, slash_command
 from discord.ext import commands
 
 load_dotenv()
-# utils = KumikoEcoUtils()
+utils = KumikoEcoUtils()
 MongoDB_Password = os.getenv("MongoDB_Password")
 Username = os.getenv("MongoDB_Username")
 Server_IP = os.getenv("MongoDB_Server_IP")
