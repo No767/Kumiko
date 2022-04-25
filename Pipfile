@@ -30,6 +30,7 @@ autopep8 = "*"
 isort = "*"
 autoflake = "*"
 pyflakes = "*"
+click = "*"
 
 [requires]
 python_version = "3.10"
