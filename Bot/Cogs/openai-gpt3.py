@@ -114,8 +114,7 @@ class OpenAI2(commands.Cog):
                     embedVar = discord.Embed()
                     for dictItem in dataMain2["selected_examples"]:
                         for keys, value in dictItem.items():
-                            embedVar.add_field(
-                                name=keys, value=value, inline=True)
+                            embedVar.add_field(name=keys, value=value, inline=True)
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()

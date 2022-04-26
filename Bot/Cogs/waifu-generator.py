@@ -35,8 +35,7 @@ class waifu(commands.Cog):
                 ]
                 description = soup.find("p", id="description").get_text()
                 embedVar = discord.Embed(
-                    title=waifu_title, color=discord.Color.from_rgb(
-                        208, 189, 255)
+                    title=waifu_title, color=discord.Color.from_rgb(208, 189, 255)
                 )
                 embedVar.description = f"{description}"
                 embedVar.set_image(url=image_url)

@@ -90,8 +90,7 @@ class TwitterV1(commands.Cog):
                                         )
                                         embed.remove_field(6)
                                 for v in dictItem["extended_entities"].items():
-                                    embed.set_image(
-                                        url=v[1][0]["media_url_https"])
+                                    embed.set_image(url=v[1][0]["media_url_https"])
                                 embed.description = dictItem["text"]
                                 embed.set_thumbnail(
                                     url=str(
@@ -181,15 +180,13 @@ class TwitterV2(commands.Cog):
                             for keys, val in userItem.items():
                                 if keys not in itemFilter:
                                     embedVar.add_field(
-                                        name=str(keys).replace(
-                                            "_", " ").capitalize(),
+                                        name=str(keys).replace("_", " ").capitalize(),
                                         value=f"[{val}]",
                                         inline=True,
                                     )
                             embedVar.title = userItem["name"]
                             embedVar.description = userItem["description"]
-                            embedVar.set_image(
-                                url=str(userItem["profile_banner_url"]))
+                            embedVar.set_image(url=str(userItem["profile_banner_url"]))
                             embedVar.set_thumbnail(
                                 url=str(userItem["profile_image_url_https"]).replace(
                                     "_normal", "_bigger"
@@ -200,8 +197,7 @@ class TwitterV2(commands.Cog):
                             for keys2, val2 in userItem.items():
                                 if keys2 not in itemFilter:
                                     embedVar.add_field(
-                                        name=str(keys2).replace(
-                                            "_", " ").capitalize(),
+                                        name=str(keys2).replace("_", " ").capitalize(),
                                         value=f"[{val2}]",
                                         inline=True,
                                     )

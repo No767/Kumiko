@@ -37,8 +37,7 @@ class SpigetV2(commands.Cog):
                 try:
                     for dictItem in resourceMain:
                         thumbnail = (
-                            "https://www.spigotmc.org/" +
-                            dictItem["icon"]["url"]
+                            "https://www.spigotmc.org/" + dictItem["icon"]["url"]
                         )
                         download_url_external_false = "https://spigotmc.org/" + str(
                             dictItem["file"]["url"]
@@ -93,8 +92,7 @@ class SpigetV2(commands.Cog):
                             embedVar.description = dictItem["tag"]
                             for k, v in dictItem.items():
                                 if k not in filter:
-                                    embedVar.add_field(
-                                        name=k, value=v, inline=True)
+                                    embedVar.add_field(name=k, value=v, inline=True)
                             for item, res in dictItem["file"].items():
                                 if item not in itemFilter:
                                     embedVar.add_field(
@@ -156,11 +154,9 @@ class SpigetV3(commands.Cog):
                         embedVar.set_thumbnail(url=dictItem["icon"]["url"])
                         for k, v in dictItem.items():
                             if k not in authorFilter:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                         for keys, value in dictItem["identities"].items():
-                            embedVar.add_field(
-                                name=keys, value=value, inline=True)
+                            embedVar.add_field(name=keys, value=value, inline=True)
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = "The query failed. Please Try Again...."
@@ -225,8 +221,7 @@ class SpigetV5(commands.Cog):
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.add_field(
-                        name="Status", value=r.status, inline=True)
+                    embedVar.add_field(name="Status", value=r.status, inline=True)
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(

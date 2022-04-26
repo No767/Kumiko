@@ -54,11 +54,9 @@ class DiscordBotsV1(commands.Cog):
                     for dictItem in dataMain["bots"]:
                         for k, v in dictItem.items():
                             if k not in filterMain:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                         for keys, value in dictItem["owner"].items():
-                            embedVar.add_field(
-                                name=keys, value=value, inline=True)
+                            embedVar.add_field(name=keys, value=value, inline=True)
                         embedVar.title = dictItem["username"]
                         embedVar.description = dictItem["shortDescription"]
                         embedVar.set_thumbnail(url=dictItem["avatarURL"])
@@ -104,11 +102,9 @@ class DiscordBotsV2(commands.Cog):
                 ]
                 for dictKey, dictVal in dataMain2.items():
                     if dictKey not in filterMain2:
-                        embedVar.add_field(
-                            name=dictKey, value=dictVal, inline=True)
+                        embedVar.add_field(name=dictKey, value=dictVal, inline=True)
                 for dictKey1, dictVal1 in dataMain2["owner"].items():
-                    embedVar.add_field(
-                        name=dictKey1, value=dictVal1, inline=True)
+                    embedVar.add_field(name=dictKey1, value=dictVal1, inline=True)
                 embedVar.title = dataMain2["username"]
                 embedVar.description = (
                     f"{dataMain2['shortDescription']}\n\n{dataMain2['longDescription']}"
