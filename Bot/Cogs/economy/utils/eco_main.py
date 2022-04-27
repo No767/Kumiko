@@ -1,8 +1,9 @@
+import os
 from typing import Optional
+
+import motor.motor_asyncio
 from beanie import Document, init_beanie
 from dotenv import load_dotenv
-import os
-import motor.motor_asyncio
 
 load_dotenv()
 MongoDB_Password = os.getenv("MongoDB_Password")
@@ -45,7 +46,9 @@ class KumikoEcoUtils:
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
         await init_beanie(
-            database=clientUpdate.kumiko_marketplace, document_models=[Marketplace]
+            database=clientUpdate.kumiko_marketplace, document_models=[
+                Marketplace]
         )
-        entryUpdate = Marketplace(name=name, description=description, amount=amount)
+        entryUpdate = Marketplace(
+            name=name, description=description, amount=amount)
         await entryUpdate.save()

@@ -1,14 +1,12 @@
-from utils import KumikoEcoUtils
-
-from typing import Optional
-from beanie import Document
-from beanie import init_beanie
-from dotenv import load_dotenv
 import os
-import motor.motor_asyncio
+from typing import Optional
+
 import discord
+from beanie import Document
 from discord.commands import Option, slash_command
 from discord.ext import commands
+from dotenv import load_dotenv
+from utils import KumikoEcoUtils
 
 load_dotenv()
 utils = KumikoEcoUtils()

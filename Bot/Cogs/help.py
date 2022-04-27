@@ -60,18 +60,21 @@ class helper(commands.Cog):
                 embedVar.add_field(
                     name="First-FRC", value="`/kumikohelp first-frc`", inline=True
                 )
-                embedVar.add_field(name="Fun", value="`/kumikohelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
                 embedVar.add_field(
                     name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
-                embedVar.add_field(name="Fun", value="`/kumikohelp fun`", inline=True)
+                embedVar.add_field(
+                    name="Fun", value="`/kumikohelp fun`", inline=True)
                 embedVar.add_field(
                     name="Hypixel", value="`/kumikohelp hypixel`", inline=True
                 )
                 embedVar.add_field(
                     name="Minecraft", value="`/kumikohelp mc`", inline=True
                 )
-                embedVar.add_field(name="Misc", value="`/kumikohelp misc`", inline=True)
+                embedVar.add_field(
+                    name="Misc", value="`/kumikohelp misc`", inline=True)
                 embedVar.add_field(
                     name="Modrinth", value="`/kumikohelp modrinth`", inline=True
                 )

@@ -44,7 +44,8 @@ class ModrinthV1(commands.Cog):
                     for dictItem in dataMain["hits"]:
                         for k, v in dictItem.items():
                             if k not in modFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                                 embedVar.remove_field(-13)
                         embedVar.title = dictItem["title"]
                         embedVar.description = dictItem["description"]
@@ -93,11 +94,13 @@ class ModrinthV2(commands.Cog):
                     embedVar = discord.Embed()
                     for keys, value in modDataMain.items():
                         if keys not in modDataFilter:
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                     for item in modDataMain["gallery"]:
                         embedVar.set_image(url=item["url"])
                     for k, v in modDataMain["license"].items():
-                        embedVar.add_field(name=f"License {k}", value=v, inline=True)
+                        embedVar.add_field(
+                            name=f"License {k}", value=v, inline=True)
                     embedVar.set_thumbnail(url=modDataMain["icon_url"])
                     embedVar.title = modDataMain["title"]
                     embedVar.description = (
@@ -159,12 +162,14 @@ class ModrinthV3(commands.Cog):
                     for dictVersions in versionDataMain:
                         for keys, value in dictVersions.items():
                             if keys not in versionFilter:
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                                 embedVar.remove_field(-14)
                         for fileItems in dictVersions["files"]:
                             for k, v in fileItems.items():
                                 if k not in "hashes":
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                                     embedVar.remove_field(-14)
                             for hashKey, hashValue in fileItems["hashes"].items():
                                 embedVar.add_field(
@@ -206,11 +211,13 @@ class ModrinthV4(commands.Cog):
                 try:
                     for keys, value in dataMain3.items():
                         if keys not in versionFilter:
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                     for fileItems in dataMain3["files"]:
                         for k, v in fileItems.items():
                             if k not in "hashes":
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                         for hashKey, hashValue in fileItems["hashes"].items():
                             embedVar.add_field(
                                 name=hashKey, value=hashValue, inline=True
@@ -299,7 +306,8 @@ class ModrinthV6(commands.Cog):
                     for dictProjects in dataMain6:
                         for keys, value in dictProjects.items():
                             if keys not in userProjectsFilter:
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                         for licenseItem, licenseRes in dictProjects["license"].items():
                             embedVar.add_field(
                                 name=f"License {licenseItem}",
@@ -352,13 +360,16 @@ class ModrinthV7(commands.Cog):
                     for dictTeam in projectDataMain:
                         for keys, value in dictTeam.items():
                             if keys not in "user":
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                         for k, v in dictTeam["user"].items():
                             if k not in projectTeamFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                         embedVar.title = dictTeam["user"]["username"]
                         embedVar.description = dictTeam["user"]["bio"]
-                        embedVar.set_thumbnail(url=dictTeam["user"]["avatar_url"])
+                        embedVar.set_thumbnail(
+                            url=dictTeam["user"]["avatar_url"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = (
@@ -393,13 +404,16 @@ class ModrinthV8(commands.Cog):
                     for dictTeam2 in teamDataMain:
                         for keys, value in dictTeam2.items():
                             if keys not in "user":
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                         for k, v in dictTeam2["user"].items():
                             if k not in teamFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                         embedVar.title = dictTeam2["user"]["username"]
                         embedVar.description = dictTeam2["user"]["bio"]
-                        embedVar.set_thumbnail(url=dictTeam2["user"]["avatar_url"])
+                        embedVar.set_thumbnail(
+                            url=dictTeam2["user"]["avatar_url"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = (

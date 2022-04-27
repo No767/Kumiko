@@ -57,7 +57,8 @@ class MangaDexV1(commands.Cog):
                         ]
                         for k, v in dictItem["attributes"].items():
                             if k not in mangaFilter:
-                                embedVar.add_field(name=k, value=f"[{v}]", inline=True)
+                                embedVar.add_field(
+                                    name=k, value=f"[{v}]", inline=True)
                         for item in dictItem["attributes"]["tags"]:
                             embedVar.add_field(
                                 name="Tags",
@@ -104,7 +105,8 @@ class MangaDexV1(commands.Cog):
                     embedErrorAlt.description = (
                         "Sorry, but there was an error. Please try again."
                     )
-                    embedErrorAlt.add_field(name="Reason", value=e, inline=True)
+                    embedErrorAlt.add_field(
+                        name="Reason", value=e, inline=True)
                     embedErrorAlt.add_field(
                         name="HTTP Response Code", value=r.status, inline=True
                     )
@@ -158,14 +160,17 @@ class MangaDexV2(commands.Cog):
                             ].items()
                         ]
                         for titles in dataMain2["data"]["attributes"]["altTitles"]:
-                            allAltTitles = [value for _, value in titles.items()]
+                            allAltTitles = [value for _,
+                                            value in titles.items()]
                         for k, v in dataMain2["data"]["attributes"].items():
                             if k not in mangaFilter2:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                         for keys, value in dataMain2["data"]["attributes"][
                             "links"
                         ].items():
-                            embedVar.add_field(name=keys, value=value, inline=True)
+                            embedVar.add_field(
+                                name=keys, value=value, inline=True)
                         for tagItem in dataMain2["data"]["attributes"]["tags"]:
                             mainTags = [
                                 v["name"]["en"]
@@ -269,7 +274,8 @@ class MangaDexV3(commands.Cog):
                             embed2.description = dictItem["attributes"]["description"]
                             for k, v in dictItem["attributes"].items():
                                 if k not in mdFilter:
-                                    embed2.add_field(name=k, value=v, inline=True)
+                                    embed2.add_field(
+                                        name=k, value=v, inline=True)
                             await ctx.respond(embed=embed2)
                 except Exception as e:
                     embedVar = discord.Embed()
@@ -388,7 +394,8 @@ class MangaDexV6(commands.Cog):
                 "https://api.mangadex.org/author", params=params
             ) as author_response:
                 author_payload = await author_response.content.read()
-                authorPayloadMain = parser.parse(author_payload, recursive=True)
+                authorPayloadMain = parser.parse(
+                    author_payload, recursive=True)
                 embedVar = discord.Embed()
                 try:
                     authorFilter = ["imageUrl", "name", "biography"]
@@ -398,11 +405,13 @@ class MangaDexV6(commands.Cog):
                         embedVar.description = authorDictItem["attributes"]["biography"]
                         for keys, value in authorDictItem.items():
                             if keys not in mainFilterV3:
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                                 embedVar.remove_field(17)
                         for k, v in authorDictItem["attributes"].items():
                             if k not in authorFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
+                                embedVar.add_field(
+                                    name=k, value=v, inline=True)
                                 embedVar.remove_field(17)
 
                         await ctx.respond(embed=embedVar)

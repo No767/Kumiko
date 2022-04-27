@@ -135,12 +135,15 @@ class YoutubeV2(commands.Cog):
                         for dictItem in dataMain3["items"]:
                             for key, val in dictItem.items():
                                 if key not in filterMain5:
-                                    embedVar.add_field(name=key, value=val, inline=True)
+                                    embedVar.add_field(
+                                        name=key, value=val, inline=True)
                             for k, v in dictItem["snippet"].items():
                                 if k not in snippetFilter:
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                             for keys, value in dictItem["statistics"].items():
-                                embedVar.add_field(name=keys, value=value, inline=True)
+                                embedVar.add_field(
+                                    name=keys, value=value, inline=True)
                             embedVar.title = dictItem["snippet"]["title"]
                             embedVar.description = dictItem["snippet"]["description"]
                             embedVar.set_thumbnail(
@@ -152,7 +155,8 @@ class YoutubeV2(commands.Cog):
                         embedError.description = (
                             f"No results found for {channel}. Please try again..."
                         )
-                        embedError.add_field(name="Error", value=e, inline=True)
+                        embedError.add_field(
+                            name="Error", value=e, inline=True)
                         await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -217,7 +221,8 @@ class YoutubeV3(commands.Cog):
                         for dictItems in dataMain["items"]:
                             for k, v in dictItems.items():
                                 if k not in filterList:
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                                     embedVar.remove_field(3)
 
                             for keys, val in dictItems["snippet"].items():
@@ -241,7 +246,8 @@ class YoutubeV3(commands.Cog):
                         embedError.description = (
                             f"No results found for {channel_name}. Please try again..."
                         )
-                        embedError.add_field(name="Error", value=e, inline=True)
+                        embedError.add_field(
+                            name="Error", value=e, inline=True)
                         await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -326,14 +332,16 @@ class YoutubeV4(commands.Cog):
 
                             for k, v in dictVal["snippet"].items():
                                 if k not in snippetFilter:
-                                    embedVar.add_field(name=k, value=v, inline=True)
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
                                     embedVar.remove_field(6)
 
                             for key, res in dictVal["snippet"]["topLevelComment"][
                                 "snippet"
                             ].items():
                                 if key not in topLevelCommentFilter:
-                                    embedVar.add_field(name=key, value=res, inline=True)
+                                    embedVar.add_field(
+                                        name=key, value=res, inline=True)
                                     embedVar.remove_field(6)
 
                             for item, img in dictVal["snippet"]["topLevelComment"][
@@ -376,13 +384,16 @@ class YoutubeV5(commands.Cog):
                 data = await another_response.content.read()
                 dataMain5 = parser.parse(data, recursive=True)
                 try:
-                    embed = discord.Embed(color=discord.Color.from_rgb(255, 0, 0))
-                    snippetFilter = ["title", "description", "thumbnails", "localized"]
+                    embed = discord.Embed(
+                        color=discord.Color.from_rgb(255, 0, 0))
+                    snippetFilter = ["title", "description",
+                                     "thumbnails", "localized"]
                     picFilter = ["default", "medium", "high", "standard"]
                     for items in dataMain5["items"]:
                         for keys, val in items["snippet"].items():
                             if keys not in snippetFilter:
-                                embed.add_field(name=keys, value=val, inline=True)
+                                embed.add_field(
+                                    name=keys, value=val, inline=True)
                         embed.title = items["snippet"]["title"]
                         embed.description = items["snippet"]["description"]
                         for key, value in items["statistics"].items():

@@ -27,7 +27,8 @@ class ecoBase:
             f"mongodb://{Username}:{Password}@{Server_IP}:27017"
         )
         db = client.kumiko_economy
-        user_data = {"user.discord_id": {"$eq": self.id}, "user.gid": {"$eq": self.gid}}
+        user_data = {"user.discord_id": {"$eq": self.id},
+                     "user.gid": {"$eq": self.gid}}
         eco = db["kumiko_eco"]
         finder = await eco.find_one(user_data)
         if finder is None:
