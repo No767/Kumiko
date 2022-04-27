@@ -23,13 +23,13 @@ pysimdjson = "*"
 motor = "*"
 odmantic = "*"
 beanie = "*"
+click = "==8.1.2"
 
 [dev-packages]
 autopep8 = "*"
 isort = "*"
 autoflake = "*"
 pyflakes = "*"
-black = "==22.1.0"
 
 [requires]
 python_version = "3.10"
