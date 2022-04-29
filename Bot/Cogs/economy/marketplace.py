@@ -1,14 +1,15 @@
+import asyncio
 import os
 from typing import Optional
 
 import discord
+import uvloop
 from beanie import Document
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+
 from .utils import KumikoEcoUtils
-import uvloop
-import asyncio
 
 load_dotenv()
 utilsMain = KumikoEcoUtils()
@@ -71,13 +72,19 @@ class ecoAdd(commands.Cog):
     ):
         await utilsMain.ins(name, description, amount)
         await ctx.respond("Item added to the marketplace")
-    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
 class ecoView(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="eco-marketplace-view", description="View the marketplace", guild_ids=[866199405090308116])
+
+    @slash_command(
+        name="eco-marketplace-view",
+        description="View the marketplace",
+        guild_ids=[866199405090308116],
+    )
     async def ecoMarketplaceView(self, ctx):
         mainObtain = await utilsMain.obtain()
         filter = ["revision_id", "id", "description", "name"]
@@ -90,30 +97,42 @@ class ecoView(commands.Cog):
                     embed.remove_field(-2)
                 embed.title = mainDict["name"]
                 embed.description = mainDict["description"]
-                
+
             await ctx.respond(embed=embed)
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 class ecoSearch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        
-    @slash_command(name="eco-marketplace-search", description="Search the marketplace", guild_ids=[866199405090308116])
-    async def ecoMarketplaceSearch(self, ctx, *, name: Option(str, "The name of the item you wish to search")):
+
+    @slash_command(
+        name="eco-marketplace-search",
+        description="Search the marketplace",
+        guild_ids=[866199405090308116],
+    )
+    async def ecoMarketplaceSearch(
+        self, ctx, *, name: Option(str, "The name of the item you wish to search")
+    ):
         mainGetItem = await utilsMain.getItem(name)
         filterTheThird = ["revision_id", "id", "description", "name"]
         embed = discord.Embed()
         print(mainGetItem)
-        for k, v, in dict(mainGetItem).items():
+        for (
+            k,
+            v,
+        ) in dict(mainGetItem).items():
             if k not in filterTheThird:
                 embed.add_field(name=k, value=v, inline=True)
                 embed.remove_field(-2)
             embed.title = dict(mainGetItem)["name"]
             embed.description = dict(mainGetItem)["description"]
-            
+
         await ctx.respond(embed=embed)
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())        
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
     bot.add_cog(ecoMarketplace(bot))

@@ -52,21 +52,22 @@ class KumikoEcoUtils:
         entryUpdate = Marketplace(
             name=name, description=description, amount=amount)
         await entryUpdate.save()
-        
-        
+
     async def obtain(self):
-        clientObtain = motor.motor_asyncio.AsyncIOMotorClient(f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017")
+        clientObtain = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
         await init_beanie(
             database=clientObtain.kumiko_marketplace, document_models=[
                 Marketplace]
         )
         resMain = await Marketplace.find_all().to_list()
         return resMain
-        
-        
-    
+
     async def getItem(self, name: str):
-        clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017")
+        clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
         await init_beanie(
             database=clientGetItem.kumiko_marketplace, document_models=[
                 Marketplace]
