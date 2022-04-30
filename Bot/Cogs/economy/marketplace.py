@@ -1,16 +1,12 @@
 import asyncio
 import os
-from typing import Optional
 
 import discord
 import uvloop
-from beanie import Document
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
-
-from economy_utils import KumikoEcoUtils, KumikoEcoUserUtils
-
+from economy_utils import KumikoEcoUserUtils, KumikoEcoUtils
 
 load_dotenv()
 
@@ -22,16 +18,21 @@ Username = os.getenv("MongoDB_Username")
 Server_IP = os.getenv("MongoDB_Server_IP")
 
 
-
-class View(discord.ui.View): 
-    @discord.ui.button(label="Yes", row=0, style=discord.ButtonStyle.primary, emoji="✔️")
+class View(discord.ui.View):
+    @discord.ui.button(
+        label="Yes", row=0, style=discord.ButtonStyle.primary, emoji="✔️"
+    )
     async def button_callback(self, button, interaction):
         await utilsUser.insUserFirstTime(interaction.user.id)
-        await interaction.response.send_message("Confirmed. Now you have access to the marketplace!")
-        
+        await interaction.response.send_message(
+            "Confirmed. Now you have access to the marketplace!"
+        )
+
     @discord.ui.button(label="No", row=0, style=discord.ButtonStyle.primary, emoji="❌")
     async def second_button_callback(self, button, interaction):
         await interaction.response.send_message("Welp, you choose not to ig...")
+
+
 class ecoMarketplace(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -128,11 +129,16 @@ class ecoSearch(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+
 class ecoUserBal(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot 
-        
-    @slash_command(name="eco-balance", description="Check the user's balance", guild_ids=[866199405090308116])
+        self.bot = bot
+
+    @slash_command(
+        name="eco-balance",
+        description="Check the user's balance",
+        guild_ids=[866199405090308116],
+    )
     async def ecoBal(self, ctx):
         mainBal = await utilsUser.getUser(ctx.user.id)
         print(mainBal)
@@ -140,6 +146,7 @@ class ecoUserBal(commands.Cog):
         embedVar.title = mainBal[0]
         embedVar.add_field(name="Coins", value=mainBal[1], inline=True)
         await ctx.respond(embed=embedVar)
+
 
 def setup(bot):
     bot.add_cog(ecoMarketplace(bot))
