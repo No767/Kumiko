@@ -41,7 +41,8 @@ initial_extensions = [
     "Cogs.modrinth",
     "Cogs.discord-bots",
     "Cogs.first-frc-events",
-    "Cogs.economy.marketplace"
+    "Cogs.economy.marketplace", 
+    "Cogs.platform"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

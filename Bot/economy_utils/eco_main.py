@@ -15,6 +15,7 @@ class Marketplace(Document):
     name: str
     description: Optional[str] = None
     amount: int
+    price: int
 
 
 class KumikoEcoUtils:
@@ -26,6 +27,7 @@ class KumikoEcoUtils:
         name: Optional[str] = None,
         description: Optional[str] = None,
         amount: Optional[int] = None,
+        price: Optional[int] = None,
     ):
         client = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
@@ -33,7 +35,7 @@ class KumikoEcoUtils:
         await init_beanie(
             database=client.kumiko_marketplace, document_models=[Marketplace]
         )
-        entry = Marketplace(name=name, description=description, amount=amount)
+        entry = Marketplace(name=name, description=description, amount=amount, price=price)
         await entry.insert()
 
     async def update(
@@ -41,6 +43,7 @@ class KumikoEcoUtils:
         name: Optional[str] = None,
         description: Optional[str] = None,
         amount: Optional[int] = None,
+        price: Optional[int] = None,
     ):
         clientUpdate = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
@@ -50,7 +53,7 @@ class KumikoEcoUtils:
                 Marketplace]
         )
         entryUpdate = Marketplace(
-            name=name, description=description, amount=amount)
+            name=name, description=description, amount=amount, price=price)
         await entryUpdate.save()
 
     async def obtain(self):
