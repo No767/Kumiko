@@ -75,6 +75,8 @@ class KumikoEcoUserUtils:
         async with engine4.begin() as conn4:
             await conn4.run_sync(meta4.create_all)
             
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+            
     async def getUser(self, user_id: int):
         meta = MetaData()
         engine = create_async_engine(
@@ -92,3 +94,26 @@ class KumikoEcoUserUtils:
             async for row in result_select:
                 return row
             
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    
+    async def userTransaction(self, sender_id: int, receiver_id: int, sender_amount: int, receiver_amount: int):
+        meta = MetaData()
+        engineMain = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
+        )
+        users = Table(
+            "users",
+            meta,
+            Column("user_id", BigInteger),
+            Column("coins", Integer),
+        )
+        async with engineMain.connect as mainConn:
+            update_values = (
+                users.update()
+                .values(coins=sender_amount)
+                .filter(users.c.id == sender_id)
+            )
+            update_values2 = users.update().values(coins=receiver_amount).filter(users.c.id == receiver_id)
+            await mainConn.execute(update_values, update_values2)
+            
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

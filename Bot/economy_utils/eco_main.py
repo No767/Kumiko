@@ -4,6 +4,8 @@ from typing import Optional
 import motor.motor_asyncio
 from beanie import Document, init_beanie
 from dotenv import load_dotenv
+import asyncio
+import uvloop
 
 load_dotenv()
 MongoDB_Password = os.getenv("MongoDB_Password")
@@ -37,6 +39,8 @@ class KumikoEcoUtils:
         )
         entry = Marketplace(name=name, description=description, amount=amount, price=price)
         await entry.insert()
+        
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def update(
         self,
@@ -55,6 +59,8 @@ class KumikoEcoUtils:
         entryUpdate = Marketplace(
             name=name, description=description, amount=amount, price=price)
         await entryUpdate.save()
+        
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def obtain(self):
         clientObtain = motor.motor_asyncio.AsyncIOMotorClient(
@@ -66,6 +72,8 @@ class KumikoEcoUtils:
         )
         resMain = await Marketplace.find_all().to_list()
         return resMain
+    
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def getItem(self, name: str):
         clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(
@@ -75,6 +83,7 @@ class KumikoEcoUtils:
             database=clientGetItem.kumiko_marketplace, document_models=[
                 Marketplace]
         )
-        resMain2 = Marketplace.find(Marketplace.name == name)
-        async for item in resMain2:
-            return item
+        resMain2 = await Marketplace.find(Marketplace.name == name).to_list()
+        return resMain2
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

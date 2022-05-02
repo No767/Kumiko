@@ -1,14 +1,12 @@
 import discord
-from discord import Intents
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("Petal")
-intents = Intents.all()
-bot = commands.Bot(command_prefix=".", help_command=None)
+Discord_Bot_Token = os.getenv("Petal")
+bot = commands.Bot(help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
@@ -31,7 +29,7 @@ initial_extensions = [
     "Cogs.version",
     "Cogs.twitter",
     "Cogs.youtube",
-    "Cogs.bonk",
+    # "Cogs.bonk",
     "Cogs.tenor",
     "Cogs.uptime",
     "Cogs.jisho",
@@ -42,6 +40,7 @@ initial_extensions = [
     "Cogs.discord-bots",
     "Cogs.first-frc-events",
     "Cogs.economy.marketplace", 
+    "Cogs.economy.users",
     "Cogs.platform"
 ]
 for extension in initial_extensions:
@@ -54,4 +53,4 @@ async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="/kumikohelp"))
 
 # Run the bot
-bot.run(TOKEN)
+bot.run(Discord_Bot_Token)
