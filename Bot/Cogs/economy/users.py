@@ -2,12 +2,12 @@ import asyncio
 
 import discord
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import slash_command
 from discord.ext import commands
 from economy_utils import KumikoEcoUserUtils
 
-
 utilsUser = KumikoEcoUserUtils()
+
 
 class View(discord.ui.View):
     @discord.ui.button(
@@ -37,7 +37,8 @@ class ecoInit(commands.Cog):
         embed = discord.Embed()
         embed.description = "Do you wish to initialize your economy account? This is completely optional. Click on the buttons to confirm"
         await ctx.respond(embed=embed, view=View())
-        
+
+
 class ecoUserBal(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -54,10 +55,10 @@ class ecoUserBal(commands.Cog):
         embedVar.add_field(name="Coins", value=mainBal[1], inline=True)
         embedVar.set_thumbnail(url=ctx.user.display_avatar)
         await ctx.respond(embed=embedVar)
-        
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
-    
+
+
 def setup(bot):
     bot.add_cog(ecoInit(bot))
     bot.add_cog(ecoUserBal(bot))

@@ -6,8 +6,8 @@ from discord.commands import Option, slash_command
 from discord.ext import commands
 from economy_utils import KumikoEcoUtils
 
-
 utilsMain = KumikoEcoUtils()
+
 
 class ecoAdd(commands.Cog):
     def __init__(self, bot):
@@ -37,10 +37,7 @@ class ecoView(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="eco-marketplace-view",
-        description="View the marketplace"
-    )
+    @slash_command(name="eco-marketplace-view", description="View the marketplace")
     async def ecoMarketplaceView(self, ctx):
         mainObtain = await utilsMain.obtain()
         filter = ["revision_id", "id", "description", "name"]
@@ -88,7 +85,6 @@ class ecoSearch(commands.Cog):
         await ctx.respond(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 
 
 def setup(bot):
