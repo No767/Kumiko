@@ -1,6 +1,6 @@
 default_language_version:
     python: python3.10
-files: 'Bot/Cogs/*'
+files: 'Bot/Cogs/.py'
 exclude: ".env,.yml,.gitignore,.git,.md,.txt"
 default_stages: [commit]
 repos:
