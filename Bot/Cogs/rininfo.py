@@ -16,11 +16,9 @@ class info(commands.Cog):
         embedVar = discord.Embed(color=14414079)
         view = discord.ui.View(timeout=None)
         view.add_item(
-            discord.ui.Button(
-                label="GitHub", url="https://github.com/No767/Rin")
+            discord.ui.Button(label="GitHub", url="https://github.com/No767/Rin")
         )
-        view.add_item(discord.ui.Button(
-            label="Docs", url="https://docs.rinbot.live"))
+        view.add_item(discord.ui.Button(label="Docs", url="https://docs.rinbot.live"))
         view.add_item(
             discord.ui.Button(
                 label="Invite", url="https://top.gg/bot/865883525932253184/invite"

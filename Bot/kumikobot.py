@@ -1,6 +1,7 @@
+import os
+
 import discord
 from discord.ext import commands
-import os
 from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
@@ -19,8 +20,8 @@ initial_extensions = [
     "Cogs.hypixel",
     "Cogs.waifu-pics",
     "Cogs.advice",
-    "Cogs.qrcode",
-    # "Cogs.spiget",
+    "Cogs.qrcode-maker",
+    "Cogs.spiget",
     "Cogs.jikan",
     "Cogs.top-gg",
     "Cogs.global-error-handling",

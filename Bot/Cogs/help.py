@@ -101,7 +101,7 @@ class helper(commands.Cog):
                 )
                 embedVar.add_field(
                     name="YouTube", value="`/kumikohelp yt`", inline=True
-                )
+                ) 
                 embedVar.set_author(
                     name="Kumiko Help",
                     url=discord.Embed.Empty,

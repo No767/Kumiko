@@ -52,52 +52,49 @@ class jishoDict(commands.Cog):
                     "links",
                 ]
                 try:
-                    embedVar = discord.Embed()
-                    for dictItem in jishoMain["data"]:
-                        for jpnItem in dictItem["japanese"]:
-                            totalJpnItem = [value for _,
-                                            value in jpnItem.items()]
-                        for itemVal in dictItem["senses"]:
-                            for keys, value in itemVal.items():
-                                if keys not in engDefFilter:
-                                    valueItem = value
-                        for valOfItem in dictItem["senses"]:
-                            for (
-                                item3,
-                                res3,
-                            ) in valOfItem.items():
-                                if item3 not in sensesFilter:
-                                    embedVar.insert_field_at(
-                                        index=1,
-                                        name=item3,
-                                        value=str(res3).replace("'", ""),
-                                        inline=True,
-                                    )
-                                    embedVar.remove_field(6)
+                    if len(jishoMain["data"]) == 0:
+                        raise ValueError
+                    else:
 
-                        embedVar.title = (
-                            str(totalJpnItem)
-                            .replace("'", "")
-                            .replace("[", "")
-                            .replace("]", "")
-                        )
-                        embedVar.description = (
-                            str(valueItem)
-                            .replace("'", "")
-                            .replace("[", "")
-                            .replace("]", "")
-                        )
-                        await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedError = discord.Embed()
-                    embedError.description = (
-                        "There was an error with your search. Please try again"
-                    )
-                    embedError.add_field(name="Error", value=e, inline=True)
-                    embedError.add_field(
-                        name="HTTP Status Code", value=jisho.status, inline=True
-                    )
-                    await ctx.respond(embed=embedError)
+                        embedVar = discord.Embed()
+                        for dictItem in jishoMain["data"]:
+                            for jpnItem in dictItem["japanese"]:
+                                totalJpnItem = [value for _, value in jpnItem.items()]
+                            for itemVal in dictItem["senses"]:
+                                for keys, value in itemVal.items():
+                                    if keys not in engDefFilter:
+                                        valueItem = value
+                            for valOfItem in dictItem["senses"]:
+                                for (
+                                    item3,
+                                    res3,
+                                ) in valOfItem.items():
+                                    if item3 not in sensesFilter:
+                                        embedVar.insert_field_at(
+                                            index=1,
+                                            name=item3,
+                                            value=str(res3).replace("'", ""),
+                                            inline=True,
+                                        )
+                                        embedVar.remove_field(6)
+
+                            embedVar.title = (
+                                str(totalJpnItem)
+                                .replace("'", "")
+                                .replace("[", "")
+                                .replace("]", "")
+                            )
+                            embedVar.description = (
+                                str(valueItem)
+                                .replace("'", "")
+                                .replace("[", "")
+                                .replace("]", "")
+                            )
+                            await ctx.respond(embed=embedVar)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = f"It seems like the word `{search}` is not in the dictionary. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

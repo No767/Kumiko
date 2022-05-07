@@ -28,8 +28,7 @@ class FirstFRCV1(commands.Cog):
         self, ctx, *, season: Option(int, "The year of the event (eg 2020, 2021, etc)")
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}", headers=headers
             ) as r:
@@ -97,8 +96,7 @@ class FirstFRCV2(commands.Cog):
         ),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
             params = {
                 "tournamentType": f"{tournament_type}",
                 "weekNumber": f"{week_number}",
@@ -117,8 +115,7 @@ class FirstFRCV2(commands.Cog):
                     for dictItem in dataMain2["Events"]:
                         for keys, value in dictItem.items():
                             if keys not in filterEvents:
-                                embed.add_field(
-                                    name=keys, value=value, inline=True)
+                                embed.add_field(name=keys, value=value, inline=True)
                                 embed.remove_field(-18)
                         embed.title = dictItem["name"]
                         await ctx.respond(embed=embed)
@@ -147,8 +144,7 @@ class FirstFRCV3(commands.Cog):
         team_number: Option(str, "The FRC team number (eg 5507)"),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}/awards/team/{team_number}",
                 headers=headers,
@@ -198,8 +194,7 @@ class FirstFRCV4(commands.Cog):
         match_number: Option(str, "The FRC match number"),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
             params = {"matchNumber": match_number}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}/scores/{event_code}/{tournament_level}",
@@ -254,10 +249,8 @@ class FirstFRCV5(commands.Cog):
         team_number: Option(str, "The FRC team number"),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
-            params = {"tournamentLevel": tournament_level,
-                      "teamNumber": team_number}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
+            params = {"tournamentLevel": tournament_level, "teamNumber": team_number}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}/matches/{event_code}",
                 headers=headers,
@@ -272,8 +265,7 @@ class FirstFRCV5(commands.Cog):
                     for dictItemMain in dataMain["Matches"]:
                         for key, value in dictItemMain.items():
                             if key not in filterResults:
-                                embedVar.add_field(
-                                    name=key, value=value, inline=True)
+                                embedVar.add_field(name=key, value=value, inline=True)
                                 embedVar.remove_field(-15)
                         embedVar.add_field(
                             name="Teams",
@@ -312,8 +304,7 @@ class FirstFRCV6(commands.Cog):
         event_code: Option(str, "The FRC event code "),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
             params = {"top": 10}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}/rankings/{event_code}",
@@ -329,8 +320,7 @@ class FirstFRCV6(commands.Cog):
                     for dictItemMain in dataMain["Rankings"]:
                         for k, v in dictItemMain.items():
                             if k not in filterResults:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                                 embedVar.remove_field(-11)
                         embedVar.title = f"Rank {dictItemMain['rank']} - {dictItemMain['teamNumber']}"
                         await ctx.respond(embed=embedVar)
@@ -364,10 +354,8 @@ class FirstFRCV7(commands.Cog):
         team_number: Option(int, "The FRC team number"),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
-            params = {"tournamentLevel": tournament_level,
-                      "teamNumber": team_number}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
+            params = {"tournamentLevel": tournament_level, "teamNumber": team_number}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}/schedule/{event_code}",
                 headers=headers,
@@ -382,8 +370,7 @@ class FirstFRCV7(commands.Cog):
                     for dictItem in dataMain["Schedule"]:
                         for key, value in dictItem.items():
                             if key not in filterEventSchedule:
-                                embedVar.add_field(
-                                    name=key, value=value, inline=True)
+                                embedVar.add_field(name=key, value=value, inline=True)
                                 embedVar.remove_field(-4)
                         embedVar.title = dictItem["description"]
                         embedVar.description = str(
@@ -415,24 +402,21 @@ class FirstFRCV8(commands.Cog):
         event_code: Option(str, "The FRC event code "),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"Authorization": f"Basic {api_key}",
-                       "If-Modified-Since": ""}
+            headers = {"Authorization": f"Basic {api_key}", "If-Modified-Since": ""}
             async with session.get(
                 f"https://frc-api.firstinspires.org/v3.0/{season}/alliances/{event_code}",
                 headers=headers,
             ) as r:
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
-                filterEventAlliances = [
-                    "number", "name", "captain", "round1", "round2"]
+                filterEventAlliances = ["number", "name", "captain", "round1", "round2"]
                 embedVar = discord.Embed()
                 embedError = discord.Embed()
                 try:
                     for dictItem in dataMain["Alliances"]:
                         for key, value in dictItem.items():
                             if key not in filterEventAlliances:
-                                embedVar.add_field(
-                                    name=key, value=value, inline=True)
+                                embedVar.add_field(name=key, value=value, inline=True)
                                 embedVar.remove_field(-4)
                         embedVar.title = dictItem["name"]
                         embedVar.description = f"{dictItem['captain']} - {dictItem['round1']} - {dictItem['round2']}"

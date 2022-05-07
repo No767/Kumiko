@@ -16,6 +16,14 @@ hypixel_api_key = os.getenv("Hypixel_API_Key")
 parser = simdjson.Parser()
 
 
+class Error(Exception):
+    pass
+
+
+class UnknownPlayer(Error):
+    pass
+
+
 class hypixel_api(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -35,8 +43,7 @@ class hypixel_api(commands.Cog):
                 try:
                     if str(playerMain["success"]) == "True":
                         discord_embed = discord.Embed(
-                            title="Player Info",
-                            color=discord.Color.from_rgb(186, 244, 255),
+                            color=discord.Color.from_rgb(186, 244, 255)
                         )
                         filterMainV3 = [
                             "achievements",
@@ -58,13 +65,18 @@ class hypixel_api(commands.Cog):
                             "adventRewards2020",
                             "achievementRewardsNew",
                             "adsense_tokens",
+                            "displayname",
                         ]
-                        for key, value in playerMain["player"].items():
-                            if key not in filterMainV3:
-                                discord_embed.add_field(
-                                    name=key, value=value, inline=True
-                                )
-                        await ctx.respond(embed=discord_embed)
+                        if "None" in playerMain["player"]:
+                            raise UnknownPlayer
+                        else:
+                            for key, value in playerMain["player"].items():
+                                if key not in filterMainV3:
+                                    discord_embed.add_field(
+                                        name=key, value=value, inline=True
+                                    )
+                            discord_embed.title = playerMain["player"]["displayname"]
+                            await ctx.respond(embed=discord_embed)
                     else:
                         embedVar = discord.Embed()
                         embedVar.description = "The query was not successful"
@@ -78,11 +90,10 @@ class hypixel_api(commands.Cog):
                             name="HTTP Response Status", value=r.status, inline=True
                         )
                         await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedVar = discord.Embed()
-                    embedVar.description = "The query was not successful."
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
+                except UnknownPlayer:
+                    embedValError = discord.Embed()
+                    embedValError.description = "It seems like that the player wasn't online.... Please try again"
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -109,14 +120,12 @@ class hypixel_player_count(commands.Cog):
                         color=discord.Color.from_rgb(186, 193, 255),
                     )
                     for k, v in statusMain["games"].items():
-                        embedVar.add_field(
-                            name=k, value=v["players"], inline=True)
+                        embedVar.add_field(name=k, value=v["players"], inline=True)
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "The command broke. Please try again."
-                    embedVar.add_field(
-                        name="Reason", value=str(e), inline=False)
+                    embedVar.add_field(name="Reason", value=str(e), inline=False)
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -137,8 +146,7 @@ class hypixel_status(commands.Cog):
                 "https://api.hypixel.net/status", params=params
             ) as rep:
                 player_statusv3 = await rep.content.read()
-                playerStatusMain = parser.parse(
-                    player_statusv3, recursive=True)
+                playerStatusMain = parser.parse(player_statusv3, recursive=True)
                 try:
                     if str(playerStatusMain["success"]) == "True":
                         filterKeys = ["session"]
@@ -148,8 +156,7 @@ class hypixel_status(commands.Cog):
                         )
                         for keys, value in playerStatusMain.items():
                             if keys not in filterKeys:
-                                embedVar.add_field(
-                                    name=keys, value=value, inline=True)
+                                embedVar.add_field(name=keys, value=value, inline=True)
                         for k, v in playerStatusMain["session"].items():
                             embedVar.add_field(name=k, value=v, inline=True)
                         await ctx.respond(embed=embedVar)
@@ -202,8 +209,7 @@ class networkPunishments(commands.Cog):
                         filterMain4 = ["success"]
                         for keys, value in statsMain.items():
                             if keys not in filterMain4:
-                                embedVar.add_field(
-                                    name=keys, value=value, inline=True)
+                                embedVar.add_field(name=keys, value=value, inline=True)
                         await ctx.respond(embed=embedVar)
                     else:
                         embedVar.description = "The results didn't come through..."
@@ -220,8 +226,7 @@ class networkPunishments(commands.Cog):
                 except Exception as e:
                     embedException = discord.Embed()
                     embedException.description = "The query failed..."
-                    embedException.add_field(
-                        name="Reason", value=e, inline=True)
+                    embedException.add_field(name="Reason", value=e, inline=True)
                     embedException.add_field(
                         name="HTTP Response Status", value=r.status, inline=True
                     )
