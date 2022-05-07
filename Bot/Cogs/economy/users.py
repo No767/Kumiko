@@ -13,7 +13,7 @@ class View(discord.ui.View):
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
-            
+
     @discord.ui.button(
         label="Yes", row=0, style=discord.ButtonStyle.primary, emoji="✔️"
     )
