@@ -1,0 +1,10 @@
+default_language_version:
+    python: python3.10
+files: 'Bot/Cogs/*'
+exclude: ".env,.yml,.gitignore,.git,.md,.txt"
+default_stages: [commit]
+repos:
+-   repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+    -   id: black
