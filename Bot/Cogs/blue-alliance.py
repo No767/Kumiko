@@ -123,12 +123,14 @@ class BlueAllianceV3(commands.Cog):
                 dataMain = parser.parse(data, recursive=True)
                 embed = discord.Embed()
                 embedError = discord.Embed()
-                filter = ["score_breakdown", "alliances", "videos", "match_number"]
+                filter = ["score_breakdown", "alliances",
+                          "videos", "match_number"]
                 try:
                     for dictItem in dataMain:
                         for key, value in dictItem.items():
                             if key not in filter:
-                                embed.add_field(name=key, value=value, inline=True)
+                                embed.add_field(
+                                    name=key, value=value, inline=True)
                         for k, v in dictItem["alliances"]["blue"].items():
                             embed.add_field(name=k, value=v, inline=True)
                         for item, res in dictItem["alliances"]["red"].items():
@@ -202,7 +204,8 @@ class BlueAllianceV5(commands.Cog):
                 for dictItem in dataMain["rankings"]:
                     for keys, values in dictItem.items():
                         if keys not in filter:
-                            embed.add_field(name=keys, value=values, inline=True)
+                            embed.add_field(
+                                name=keys, value=values, inline=True)
                     for k, v in dictItem["record"].items():
                         embed.add_field(name=k, value=v, inline=True)
                     embed.title = f"Rank {dictItem['rank']}"

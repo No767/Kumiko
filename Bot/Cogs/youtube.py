@@ -264,7 +264,8 @@ class YoutubeV3(commands.Cog):
                                     "title",
                                     "description",
                                 ]
-                                videoFilter = ["default", "medium", "high", "standard"]
+                                videoFilter = ["default",
+                                               "medium", "high", "standard"]
                                 if len(dataMain["items"]) == 0:
                                     raise ValueError
                                 else:
@@ -287,7 +288,8 @@ class YoutubeV3(commands.Cog):
                                             "thumbnails"
                                         ].items():
                                             if item not in videoFilter:
-                                                embedVar.set_image(url=res["url"])
+                                                embedVar.set_image(
+                                                    url=res["url"])
 
                                         embedVar.title = dictItems["snippet"]["title"]
                                         embedVar.description = dictItems["snippet"][
@@ -454,8 +456,10 @@ class YoutubeV5(commands.Cog):
                 dataMain5 = parser.parse(data, recursive=True)
                 try:
 
-                    embed = discord.Embed(color=discord.Color.from_rgb(255, 0, 0))
-                    snippetFilter = ["title", "description", "thumbnails", "localized"]
+                    embed = discord.Embed(
+                        color=discord.Color.from_rgb(255, 0, 0))
+                    snippetFilter = ["title", "description",
+                                     "thumbnails", "localized"]
                     picFilter = ["default", "medium", "high", "standard"]
                     if len(dataMain5["items"]) == 0:
                         raise ValueError
@@ -463,11 +467,13 @@ class YoutubeV5(commands.Cog):
                         for items in dataMain5["items"]:
                             for keys, val in items["snippet"].items():
                                 if keys not in snippetFilter:
-                                    embed.add_field(name=keys, value=val, inline=True)
+                                    embed.add_field(
+                                        name=keys, value=val, inline=True)
                             embed.title = items["snippet"]["title"]
                             embed.description = items["snippet"]["description"]
                             for key, value in items["statistics"].items():
-                                embed.add_field(name=key, value=value, inline=True)
+                                embed.add_field(
+                                    name=key, value=value, inline=True)
                             for k, v in items["snippet"]["thumbnails"].items():
                                 if k not in picFilter:
                                     embed.set_image(url=v["url"])

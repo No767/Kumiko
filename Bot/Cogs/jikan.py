@@ -21,7 +21,8 @@ class JikanV1(commands.Cog):
     )
     async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"limit": 5, "q": anime_name, "sfw": "true", "order_by": "title"}
+            params = {"limit": 5, "q": anime_name,
+                      "sfw": "true", "order_by": "title"}
             async with session.get(
                 "https://api.jikan.moe/v4/anime/", params=params
             ) as r:
@@ -54,7 +55,8 @@ class JikanV1(commands.Cog):
                             for key, value in dictItem.items():
                                 if key not in filterList:
                                     embedVar.add_field(
-                                        name=str(key).replace("_", " ").capitalize(),
+                                        name=str(key).replace(
+                                            "_", " ").capitalize(),
                                         value=value,
                                         inline=True,
                                     )
@@ -103,7 +105,8 @@ class JikanV2(commands.Cog):
     )
     async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"limit": 5, "q": manga_name, "sfw": "true", "order_by": "title"}
+            params = {"limit": 5, "q": manga_name,
+                      "sfw": "true", "order_by": "title"}
             async with session.get(
                 "https://api.jikan.moe/v4/manga", params=params
             ) as response:
@@ -136,7 +139,8 @@ class JikanV2(commands.Cog):
                             for key, value in dataItem.items():
                                 if key not in filterList:
                                     embedVar.add_field(
-                                        name=str(key).replace("_", " ").capitalize(),
+                                        name=str(key).replace(
+                                            "_", " ").capitalize(),
                                         value=value,
                                         inline=True,
                                     )
@@ -224,7 +228,8 @@ class JikanV3(commands.Cog):
                         for key, value in dataMain["data"].items():
                             if key not in mainFilter:
                                 embedVar.add_field(
-                                    name=str(key).replace("_", " ").capitalize(),
+                                    name=str(key).replace(
+                                        "_", " ").capitalize(),
                                     value=value,
                                     inline=True,
                                 )
@@ -280,7 +285,8 @@ class JikanV4(commands.Cog):
                         for key, value in dataMain3["data"].items():
                             if key not in mangaFilter:
                                 embedVar.add_field(
-                                    name=str(key).replace("_", " ").capitalize(),
+                                    name=str(key).replace(
+                                        "_", " ").capitalize(),
                                     value=value,
                                     inline=True,
                                 )
@@ -403,7 +409,8 @@ class JikanV6(commands.Cog):
                     embedVar = discord.Embed()
                     embedVar.title = dictItem["title"]
                     embedVar.description = dictItem["synopsis"]
-                    embedVar.set_image(url=dictItem["images"]["jpg"]["large_image_url"])
+                    embedVar.set_image(
+                        url=dictItem["images"]["jpg"]["large_image_url"])
                     embedVar.add_field(
                         name="Aired", value=dictItem["aired"]["string"], inline=True
                     )
@@ -439,7 +446,8 @@ class JikanV7(commands.Cog):
                     )
                     for key, value in dataMain6["data"].items():
                         if key not in userFilter:
-                            embedVar.add_field(name=key, value=value, inline=True)
+                            embedVar.add_field(
+                                name=key, value=value, inline=True)
 
                     await ctx.respond(embed=embedVar)
                 except Exception as e:

@@ -59,7 +59,8 @@ class jishoDict(commands.Cog):
                         embedVar = discord.Embed()
                         for dictItem in jishoMain["data"]:
                             for jpnItem in dictItem["japanese"]:
-                                totalJpnItem = [value for _, value in jpnItem.items()]
+                                totalJpnItem = [value for _,
+                                                value in jpnItem.items()]
                             for itemVal in dictItem["senses"]:
                                 for keys, value in itemVal.items():
                                     if keys not in engDefFilter:
