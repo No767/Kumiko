@@ -10,6 +10,12 @@ from discord.ext import commands
 
 parser = simdjson.Parser()
 
+class Error(Exception):
+    pass
+
+
+class NoItemsError(Error):
+    pass
 
 class ModrinthV1(commands.Cog):
     def __init__(self, bot):
@@ -41,6 +47,8 @@ class ModrinthV1(commands.Cog):
                 modFilter = ["title", "gallery", "icon_url", "description"]
                 embedVar = discord.Embed()
                 try:
+                    if len(dataMain["hits"]) == 0:
+                        raise ValueError
                     for dictItem in dataMain["hits"]:
                         for k, v in dictItem.items():
                             if k not in modFilter:
@@ -51,12 +59,12 @@ class ModrinthV1(commands.Cog):
                         embedVar.description = dictItem["description"]
                         embedVar.set_thumbnail(url=dictItem["icon_url"])
                         await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedVar.description = (
-                        "Sorry, but the query could not be made. Please try again..."
+                except ValueError:
+                    embedErrorMain = discord.Embed()
+                    embedErrorMain.description = (
+                        f"Sorry, but there are no mods named {mod}. Please try again"
                     )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
+                    await ctx.respond(embed=embedErrorMain)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -108,11 +116,12 @@ class ModrinthV2(commands.Cog):
                     )
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
-                    embedVar.description = (
+                    embedError = discord.Embed()
+                    embedError.description = (
                         "Sorry, but the query could not be made. Please try again..."
                     )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
+                    embedError.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -147,44 +156,53 @@ class ModrinthV3(commands.Cog):
                 f"https://api.modrinth.com/v2/project/{mod_name}/version", params=params
             ) as res:
                 versionData = await res.content.read()
-                versionDataMain = parser.parse(versionData, recursive=True)
-                versionFilter = [
-                    "changelog",
-                    "name",
-                    "dependencies",
-                    "files",
-                    "id",
-                    "project_id",
-                    "author_id",
-                ]
-                embedVar = discord.Embed()
                 try:
-                    for dictVersions in versionDataMain:
-                        for keys, value in dictVersions.items():
-                            if keys not in versionFilter:
-                                embedVar.add_field(
-                                    name=keys, value=value, inline=True)
-                                embedVar.remove_field(-14)
-                        for fileItems in dictVersions["files"]:
-                            for k, v in fileItems.items():
-                                if k not in "hashes":
-                                    embedVar.add_field(
-                                        name=k, value=v, inline=True)
-                                    embedVar.remove_field(-14)
-                            for hashKey, hashValue in fileItems["hashes"].items():
-                                embedVar.add_field(
-                                    name=hashKey, value=hashValue, inline=True
-                                )
-                                embedVar.remove_field(-14)
-                        embedVar.title = dictVersions["name"]
-                        embedVar.description = dictVersions["changelog"]
-                        await ctx.respond(embed=embedVar)
+                    versionDataMain = parser.parse(versionData, recursive=True)
+                    versionFilter = [
+                        "changelog",
+                        "name",
+                        "dependencies",
+                        "files",
+                        "id",
+                        "project_id",
+                        "author_id",
+                    ]
+                    embedVar = discord.Embed()
+                    try:
+                        if len(versionDataMain) == 0:
+                            raise NoItemsError
+                        else:
+                            for dictVersions in versionDataMain:
+                                for keys, value in dictVersions.items():
+                                    if keys not in versionFilter:
+                                        embedVar.add_field(
+                                            name=keys, value=value, inline=True)
+                                        embedVar.remove_field(-14)
+                                for fileItems in dictVersions["files"]:
+                                    for k, v in fileItems.items():
+                                        if k not in "hashes":
+                                            embedVar.add_field(
+                                                name=k, value=v, inline=True)
+                                            embedVar.remove_field(-14)
+                                    for hashKey, hashValue in fileItems["hashes"].items():
+                                        embedVar.add_field(
+                                            name=hashKey, value=hashValue, inline=True
+                                        )
+                                        embedVar.remove_field(-14)
+                                embedVar.title = dictVersions["name"]
+                                embedVar.description = dictVersions["changelog"]
+                                await ctx.respond(embed=embedVar)
+                    except NoItemsError:
+                        embedErrorMain = discord.Embed()
+                        embedErrorMain.description = "Sorry, but it seems like there are no releases for the mod. Please try again"
+                        await ctx.respond(embed=embedErrorMain) 
                 except Exception as e:
-                    embedVar.description = (
+                    embedVarError = discord.Embed()
+                    embedVarError.description = (
                         "Sorry, but the query could not be made. Please try again..."
                     )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
+                    embedVarError.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVarError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -205,10 +223,10 @@ class ModrinthV4(commands.Cog):
                 f"https://api.modrinth.com/v2/version/{mod_version_id}"
             ) as r:
                 data = await r.content.read()
-                dataMain3 = parser.parse(data, recursive=True)
                 versionFilter = ["changelog", "name", "dependencies", "files"]
                 embedVar = discord.Embed()
                 try:
+                    dataMain3 = parser.parse(data, recursive=True)
                     for keys, value in dataMain3.items():
                         if keys not in versionFilter:
                             embedVar.add_field(
@@ -251,10 +269,10 @@ class ModrinthV5(commands.Cog):
                 f"https://api.modrinth.com/v2/user/{username}"
             ) as response:
                 userData = await response.content.read()
-                userDataMain = parser.parse(userData, recursive=True)
-                embedVar = discord.Embed()
-                userFilter = ["bio", "username", "avatar_url"]
                 try:
+                    userDataMain = parser.parse(userData, recursive=True)
+                    embedVar = discord.Embed()
+                    userFilter = ["bio", "username", "avatar_url"]
                     for userKeys, userValue in userDataMain.items():
                         if userKeys not in userFilter:
                             embedVar.add_field(
@@ -265,11 +283,12 @@ class ModrinthV5(commands.Cog):
                     embedVar.set_thumbnail(url=userDataMain["avatar_url"])
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
-                    embedVar.description = (
+                    embedErrorMain = discord.Embed()
+                    embedErrorMain.description = (
                         "Sorry, but the query could not be made. Please try again..."
                     )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
+                    embedErrorMain.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedErrorMain)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -290,7 +309,7 @@ class ModrinthV6(commands.Cog):
                 f"https://api.modrinth.com/v2/user/{username}/projects"
             ) as r:
                 data = await r.content.read()
-                dataMain6 = parser.parse(data, recursive=True)
+                
                 userProjectsFilter = [
                     "body",
                     "license",
@@ -303,30 +322,30 @@ class ModrinthV6(commands.Cog):
                 ]
                 embedVar = discord.Embed()
                 try:
-                    for dictProjects in dataMain6:
-                        for keys, value in dictProjects.items():
-                            if keys not in userProjectsFilter:
-                                embedVar.add_field(
-                                    name=keys, value=value, inline=True)
-                        for licenseItem, licenseRes in dictProjects["license"].items():
-                            embedVar.add_field(
-                                name=f"License {licenseItem}",
-                                value=licenseRes,
-                                inline=True,
-                            )
-                        for donationKeys, donationValues in dictProjects[
-                            "donation_urls"
-                        ].items():
-                            embedVar.add_field(
-                                name=f"Donation {donationKeys}",
-                                value=donationValues,
-                                inline=True,
-                            )
-                        embedVar.title = dictProjects["title"]
-                        embedVar.description = dictProjects["description"]
-                        embedVar.set_thumbnail(url=dictProjects["icon_url"])
-                        await ctx.respond(embed=embedVar)
-
+                    dataMain6 = parser.parse(data, recursive=True)
+                    try:
+                        if len(dataMain6) == 0:
+                            raise ValueError
+                        else:
+                            for dictProjects in dataMain6:
+                                for keys, value in dictProjects.items():
+                                    if keys not in userProjectsFilter:
+                                        embedVar.add_field(
+                                            name=keys, value=value, inline=True)
+                                for licenseItem, licenseRes in dictProjects["license"].items():
+                                    embedVar.add_field(
+                                        name=f"License {licenseItem}",
+                                        value=licenseRes,
+                                        inline=True,
+                                    )
+                                embedVar.title = dictProjects["title"]
+                                embedVar.description = dictProjects["description"]
+                                embedVar.set_thumbnail(url=dictProjects["icon_url"])
+                                await ctx.respond(embed=embedVar)
+                    except ValueError:
+                        embedErrorMain = discord.Embed()
+                        embedErrorMain.description = "Sorry, but apparently the user has no projects. Please try again..."
+                        await ctx.respond(embed=embedErrorMain)
                 except Exception as e:
                     embedVar.description = (
                         "Sorry, but the query could not be made. Please try again..."
@@ -428,7 +447,7 @@ class ModrinthV8(commands.Cog):
 def setup(bot):
     bot.add_cog(ModrinthV1(bot))
     bot.add_cog(ModrinthV2(bot))
-    # bot.add_cog(ModrinthV3(bot)) # Disabled due to spam issues
+    bot.add_cog(ModrinthV3(bot)) # Disabled due to spam issues
     bot.add_cog(ModrinthV4(bot))
     bot.add_cog(ModrinthV5(bot))
     bot.add_cog(ModrinthV6(bot))

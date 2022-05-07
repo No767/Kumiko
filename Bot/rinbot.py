@@ -21,7 +21,7 @@ initial_extensions = [
     "Cogs.hypixel",
     "Cogs.waifu-pics",
     "Cogs.advice",
-    "Cogs.qrcode",
+    "Cogs.qrcode-maker",
     "Cogs.spiget",
     "Cogs.jikan",
     "Cogs.top-gg",
@@ -40,7 +40,6 @@ initial_extensions = [
     "Cogs.modrinth",
     "Cogs.discord-bots",
     "Cogs.first-frc-events",
-    "Cogs.blue-alliance"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

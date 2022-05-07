@@ -37,6 +37,7 @@ class TwitterV1(commands.Cog):
                 dataMain = parser.parse(data, recursive=True)
 
                 try:
+                    print(dataMain)
                     if dataMain["statuses"] is None:
                         embedVar = discord.Embed()
                         embedVar.description = (

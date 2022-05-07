@@ -15,6 +15,13 @@ load_dotenv()
 apiKey = os.getenv("Top_GG_API_Key")
 parser = simdjson.Parser()
 
+class Error(Exception):
+    pass
+
+
+class NoItemsError(Error):
+    pass
+
 
 class TopGGV1(commands.Cog):
     def __init__(self, bot):
@@ -33,24 +40,33 @@ class TopGGV1(commands.Cog):
                 getOneBotInfo = await r.content.read()
                 getOneBotInfoMain = parser.parse(getOneBotInfo, recursive=True)
                 try:
-                    embedVar = discord.Embed(
-                        title=getOneBotInfoMain["username"],
-                        color=discord.Color.from_rgb(191, 242, 255),
-                    )
-                    embedVar.description = (
-                        str(getOneBotInfoMain["longdesc"])
-                        .replace("\r", "")
-                        .replace("<div align=center>", "")
-                        .replace("<div align=left>", "")
-                        .replace("<div align=right>", "")
-                    )
-                    excludedKeys = {"longdesc", "lib"}
-                    for key, val in getOneBotInfoMain.items():
-                        if key not in excludedKeys:
-                            embedVar.add_field(
-                                name=key, value=str(val).replace("'", ""), inline=True
+                    try:
+                        if "error" in getOneBotInfoMain:
+                            raise NoItemsError
+                        else:
+                            embedVar = discord.Embed(
+                                title=getOneBotInfoMain["username"],
+                                color=discord.Color.from_rgb(191, 242, 255),
                             )
-                    await ctx.respond(embed=embedVar)
+                            embedVar.description = (
+                                str(getOneBotInfoMain["longdesc"])
+                                    .replace("\r", "")
+                                    .replace("<div align=center>", "")
+                                    .replace("<div align=left>", "")
+                                    .replace("<div align=right>", "")
+                            )
+                            excludedKeys = {"longdesc", "lib"}
+                            for key, val in getOneBotInfoMain.items():
+                                if key not in excludedKeys:
+                                    embedVar.add_field(
+                                        name=key, value=str(val).replace("'", ""), inline=True
+                                    )
+                            await ctx.respond(embed=embedVar)
+                    except NoItemsError:
+                        embedError = discord.Embed(
+                            color=discord.Color.from_rgb(231, 74, 255))
+                        embedError.description = "Sorry, but that bot doesn't exist. So please try again..."
+                        await ctx.respond(embed=embedError)
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(231, 74, 255))
@@ -78,31 +94,31 @@ class TopGGV2(commands.Cog):
                 user = await response.content.read()
                 userMain = parser.parse(user, recursive=True)
                 try:
-                    if "error" in userMain:
-                        embed = discord.Embed()
-                        embed.description = (
+                    try:
+                        if "error" in userMain:
+                            raise NoItemsError
+                        else:
+                            embedVar = discord.Embed(
+                                title=userMain["username"],
+                                color=discord.Color.from_rgb(191, 242, 255),
+                            )
+                            embedVar.description = userMain["bio"]
+                            excludedKeys = {"bio"}
+                            for key, val in userMain.items():
+                                if key not in excludedKeys:
+                                    embedVar.add_field(
+                                        name=key, value=val, inline=True)
+
+                            await ctx.respond(embed=embedVar)
+                    except NoItemsError:
+                        embedError = discord.Embed()
+                        embedError.description = (
                             "Sorry, but the user could not be found. Please try again"
                         )
-                        embed.set_footer(
+                        embedError.set_footer(
                             text="Tip: Try finding a user on the Top.gg Disord Server"
                         )
-                        embed.add_field(
-                            name="Reason", value=userMain["error"], inline=True
-                        )
-                        await ctx.respond(embed=embed)
-                    else:
-                        embedVar = discord.Embed(
-                            title=userMain["username"],
-                            color=discord.Color.from_rgb(191, 242, 255),
-                        )
-                        embedVar.description = userMain["bio"]
-                        excludedKeys = {"bio"}
-                        for key, val in userMain.items():
-                            if key not in excludedKeys:
-                                embedVar.add_field(
-                                    name=key, value=val, inline=True)
-
-                        await ctx.respond(embed=embedVar)
+                        await ctx.respond(embed=embedError)
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(231, 74, 255))

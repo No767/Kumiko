@@ -28,15 +28,11 @@ class DiscordBotsV1(commands.Cog):
         ctx,
         *,
         search: Option(str, "The bot that you wish to search for"),
-        sort: Option(
-            str,
-            "Sorts the results via the given keys",
-            choices=["username", "id", "guildcount", "library", "author"],
-        ),
+        
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
-            params = {"q": search, "sort": sort, "limit": 5}
+            params = {"q": search, "limit": 5}
             async with session.get(
                 "https://discord.bots.gg/api/v1/bots", headers=headers, params=params
             ) as r:
@@ -51,26 +47,23 @@ class DiscordBotsV1(commands.Cog):
                 ]
                 embedVar = discord.Embed()
                 try:
-                    for dictItem in dataMain["bots"]:
-                        for k, v in dictItem.items():
-                            if k not in filterMain:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
-                        for keys, value in dictItem["owner"].items():
-                            embedVar.add_field(
-                                name=keys, value=value, inline=True)
-                        embedVar.title = dictItem["username"]
-                        embedVar.description = dictItem["shortDescription"]
-                        embedVar.set_thumbnail(url=dictItem["avatarURL"])
-                        await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    print(dataMain)
-                    embedError = discord.Embed()
-                    embedError.description = (
-                        "It seems like it didn't work... Please try again"
-                    )
-                    embedError.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedError)
+                    if len(dataMain["bots"]) == 0:
+                        raise ValueError
+                    else:
+                        for dictItem in dataMain["bots"]:
+                            for k, v in dictItem.items():
+                                if k not in filterMain:
+                                    embedVar.add_field(
+                                        name=k, value=v, inline=True)
+                                    embedVar.remove_field(-18)
+                            embedVar.title = dictItem["username"]
+                            embedVar.description = dictItem["shortDescription"]
+                            embedVar.set_thumbnail(url=dictItem["avatarURL"])
+                            await ctx.respond(embed=embedVar)
+                except ValueError:
+                    embedValueError = discord.Embed()
+                    embedValueError.description = "Oh no, it seems like there are no bots that matches your search. Please try again"
+                    await ctx.respond(embed=embedValueError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -102,19 +95,27 @@ class DiscordBotsV2(commands.Cog):
                     "username",
                     "longDescription",
                 ]
-                for dictKey, dictVal in dataMain2.items():
-                    if dictKey not in filterMain2:
-                        embedVar.add_field(
-                            name=dictKey, value=dictVal, inline=True)
-                for dictKey1, dictVal1 in dataMain2["owner"].items():
-                    embedVar.add_field(
-                        name=dictKey1, value=dictVal1, inline=True)
-                embedVar.title = dataMain2["username"]
-                embedVar.description = (
-                    f"{dataMain2['shortDescription']}\n\n{dataMain2['longDescription']}"
-                )
-                embedVar.set_thumbnail(url=dataMain2["avatarURL"])
-                await ctx.respond(embed=embedVar)
+                try:
+                    if "message" in dataMain2["message"]:
+                        raise Exception
+                    else:
+                        for dictKey, dictVal in dataMain2.items():
+                            if dictKey not in filterMain2:
+                                embedVar.add_field(
+                                    name=dictKey, value=dictVal, inline=True)
+                        for dictKey1, dictVal1 in dataMain2["owner"].items():
+                            embedVar.add_field(
+                                name=dictKey1, value=dictVal1, inline=True)
+                        embedVar.title = dataMain2["username"]
+                        embedVar.description = (
+                            f"{dataMain2['shortDescription']}\n\n{dataMain2['longDescription']}"
+                        )
+                        embedVar.set_thumbnail(url=dataMain2["avatarURL"])
+                        await ctx.respond(embed=embedVar)
+                except Exception:
+                    embedError = discord.Embed()
+                    embedError.description = "It seems like that the bot doesn't exist... Please try again"
+                    await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

@@ -33,87 +33,97 @@ class SpigetV2(commands.Cog):
                 params=params,
             ) as r:
                 resource = await r.content.read()
-                resourceMain = parser.parse(resource, recursive=True)
                 try:
-                    for dictItem in resourceMain:
-                        thumbnail = (
-                            "https://www.spigotmc.org/" +
-                            dictItem["icon"]["url"]
-                        )
-                        download_url_external_false = "https://spigotmc.org/" + str(
-                            dictItem["file"]["url"]
-                        )
-                        filterMain6 = [
-                            "icon",
-                            "links",
-                            "releaseDate",
-                            "updateDate",
-                            "category",
-                            "author",
-                            "version",
-                            "id",
-                            "external",
-                            "tag",
-                            "rating",
-                            "existenceStatus",
-                            "name",
-                            "file",
-                        ]
-                        itemFilter = ["url"]
-                        if dictItem["file"]["type"] in "external":
-                            embedVar = discord.Embed(
-                                title=dictItem["name"],
-                                color=discord.Color.from_rgb(173, 156, 255),
-                            )
-                            embedVar.description = dictItem["tag"]
-                            for key, value in dictItem.items():
-                                if key not in filterMain6:
-                                    embedVar.add_field(
-                                        name=key, value=value, inline=True
-                                    )
-                            for item1, res1 in dictItem["file"].items():
-                                if item1 not in itemFilter:
-                                    embedVar.add_field(
-                                        name=item1,
-                                        value=f"{[res1]}".replace("'", ""),
-                                        inline=True,
-                                    )
-                            embedVar.add_field(
-                                name="Rating",
-                                value=dictItem["rating"]["average"],
-                                inline=True,
-                            )
-                            embedVar.set_thumbnail(url=str(thumbnail))
-                            await ctx.respond(embed=embedVar)
+                    resourceMain = parser.parse(resource, recursive=True)
+                    print(resourceMain)
+                    try:
+                        if len(resourceMain) == 0:
+                            raise ValueError
                         else:
-                            embedVar = discord.Embed(
-                                title=dictItem["name"],
-                                color=discord.Color.from_rgb(173, 156, 255),
-                            )
-                            embedVar.description = dictItem["tag"]
-                            for k, v in dictItem.items():
-                                if k not in filter:
-                                    embedVar.add_field(
-                                        name=k, value=v, inline=True)
-                            for item, res in dictItem["file"].items():
-                                if item not in itemFilter:
-                                    embedVar.add_field(
-                                        name=item,
-                                        value=f"{[res]}".replace("'", ""),
-                                        inline=True,
-                                    )
-                            embedVar.add_field(
-                                name="Rating",
-                                value=dictItem["rating"]["average"],
-                                inline=True,
-                            )
-                            embedVar.add_field(
-                                name="Download URL",
-                                value=f"{download_url_external_false}",
-                                inline=False,
-                            )
-                            embedVar.set_thumbnail(url=str(thumbnail))
-                            await ctx.respond(embed=embedVar)
+                            for dictItem in resourceMain:
+                                thumbnail = (
+                                    "https://www.spigotmc.org/" +
+                                    dictItem["icon"]["url"]
+                                )
+                                download_url_external_false = "https://spigotmc.org/" + str(
+                                    dictItem["file"]["url"]
+                                )
+                                filterMain6 = [
+                                    "icon",
+                                    "links",
+                                    "releaseDate",
+                                    "updateDate",
+                                    "category",
+                                    "author",
+                                    "version",
+                                    "id",
+                                    "external",
+                                    "tag",
+                                    "rating",
+                                    "existenceStatus",
+                                    "name",
+                                    "file",
+                                ]
+                                itemFilter = ["url"]
+                                for dictItemMain in resourceMain:
+                                    if not dictItemMain["external"]:
+                                        embedVar = discord.Embed(
+                                            title=dictItem["name"],
+                                            color=discord.Color.from_rgb(173, 156, 255),
+                                        )
+                                        embedVar.description = dictItem["tag"]
+                                        for key, value in dictItem.items():
+                                            if key not in filterMain6:
+                                                embedVar.add_field(
+                                                    name=key, value=value, inline=True
+                                                )
+                                        for item1, res1 in dictItem["file"].items():
+                                            if item1 not in itemFilter:
+                                                embedVar.add_field(
+                                                    name=item1,
+                                                    value=f"{[res1]}".replace("'", ""),
+                                                    inline=True,
+                                                )
+                                        embedVar.add_field(
+                                            name="Rating",
+                                            value=dictItem["rating"]["average"],
+                                            inline=True,
+                                        )
+                                        embedVar.set_thumbnail(url=str(thumbnail))
+                                        await ctx.respond(embed=embedVar)
+                                    else:
+                                        embedVar = discord.Embed(
+                                            title=dictItem["name"],
+                                            color=discord.Color.from_rgb(173, 156, 255),
+                                        )
+                                        embedVar.description = dictItem["tag"]
+                                        for k, v in dictItem.items():
+                                            if k not in filter:
+                                                embedVar.add_field(
+                                                    name=k, value=v, inline=True)
+                                        for item, res in dictItem["file"].items():
+                                            if item not in itemFilter:
+                                                embedVar.add_field(
+                                                    name=item,
+                                                    value=f"{[res]}".replace("'", ""),
+                                                    inline=True,
+                                                )
+                                        embedVar.add_field(
+                                            name="Rating",
+                                            value=dictItem["rating"]["average"],
+                                            inline=True,
+                                        )
+                                        embedVar.add_field(
+                                            name="Download URL",
+                                            value=f"{download_url_external_false}",
+                                            inline=False,
+                                        )
+                                        embedVar.set_thumbnail(url=str(thumbnail))
+                                        await ctx.respond(embed=embedVar)
+                    except ValueError:
+                        embedErrorMain = discord.Embed()
+                        embedErrorMain.description = "No results found... Please try again"
+                        await ctx.respond(embed=embedErrorMain)
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
