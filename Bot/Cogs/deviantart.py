@@ -66,8 +66,7 @@ class DeviantArtV1(commands.Cog):
             ) as r:
                 deviation = await r.content.read()
                 deviationMain = parser.parse(deviation, recursive=True)
-                embedVar = discord.Embed(
-                    color=discord.Color.from_rgb(255, 214, 214))
+                embedVar = discord.Embed(color=discord.Color.from_rgb(255, 214, 214))
                 try:
                     if r.status == 200:
                         filterItem = [
@@ -80,23 +79,18 @@ class DeviantArtV1(commands.Cog):
                             "printid",
                             "download_filesize",
                         ]
-                        authorFilterMain = [
-                            "type", "is_subscribed", "usericon"]
+                        authorFilterMain = ["type", "is_subscribed", "usericon"]
                         for keys, values in deviationMain.items():
                             if keys not in filterItem:
-                                embedVar.add_field(
-                                    name=keys, value=values, inline=True)
+                                embedVar.add_field(name=keys, value=values, inline=True)
                         for k, v in deviationMain["author"].items():
                             if k not in authorFilterMain:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                         for item, res in deviationMain["stats"].items():
-                            embedVar.add_field(
-                                name=item, value=res, inline=True)
+                            embedVar.add_field(name=item, value=res, inline=True)
                         embedVar.title = deviationMain["title"]
                         embedVar.set_image(url=deviationMain["content"]["src"])
-                        embedVar.set_thumbnail(
-                            url=deviationMain["author"]["usericon"])
+                        embedVar.set_thumbnail(url=deviationMain["author"]["usericon"])
                         await ctx.respond(embed=embedVar)
                     else:
                         embedVar = discord.Embed(
@@ -169,8 +163,7 @@ class DeviantArtV2(commands.Cog):
             ) as resp:
                 art = await resp.content.read()
                 artMain = parser.parse(art, recursive=True)
-                embedVar = discord.Embed(
-                    color=discord.Color.from_rgb(255, 156, 192))
+                embedVar = discord.Embed(color=discord.Color.from_rgb(255, 156, 192))
                 try:
                     artFilter = [
                         "preview",
@@ -189,18 +182,15 @@ class DeviantArtV2(commands.Cog):
                     for dictItem in artMain["results"]:
                         for k, v in dictItem["author"].items():
                             if k not in authorFilter:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                                 embedVar.remove_field(-11)
                         for key, value in dictItem.items():
                             if key not in artFilter:
-                                embedVar.add_field(
-                                    name=key, value=value, inline=True)
+                                embedVar.add_field(name=key, value=value, inline=True)
                                 embedVar.remove_field(-11)
                         embedVar.title = dictItem["title"]
                         embedVar.set_image(url=dictItem["content"]["src"])
-                        embedVar.set_thumbnail(
-                            url=dictItem["author"]["usericon"])
+                        embedVar.set_thumbnail(url=dictItem["author"]["usericon"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
@@ -256,8 +246,7 @@ class DeviantArtV3(commands.Cog):
             ) as response:
                 pop = await response.content.read()
                 popMain = parser.parse(pop, recursive=True)
-                embedVar = discord.Embed(
-                    color=discord.Color.from_rgb(255, 250, 181))
+                embedVar = discord.Embed(color=discord.Color.from_rgb(255, 250, 181))
                 try:
                     artFilter = [
                         "preview",
@@ -275,22 +264,18 @@ class DeviantArtV3(commands.Cog):
                     for dictItem2 in popMain["results"]:
                         for k, v in dictItem2["author"].items():
                             if k not in authorFilter:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                                 embedVar.remove_field(-13)
                         for key, value in dictItem2.items():
                             if key not in artFilter:
-                                embedVar.add_field(
-                                    name=key, value=value, inline=True)
+                                embedVar.add_field(name=key, value=value, inline=True)
                                 embedVar.remove_field(-13)
                         for item3, res3 in dictItem2["stats"].items():
-                            embedVar.add_field(
-                                name=item3, value=res3, inline=True)
+                            embedVar.add_field(name=item3, value=res3, inline=True)
                             embedVar.remove_field(-13)
                         embedVar.title = dictItem2["title"]
                         embedVar.set_image(url=dictItem2["content"]["src"])
-                        embedVar.set_thumbnail(
-                            url=dictItem2["author"]["usericon"])
+                        embedVar.set_thumbnail(url=dictItem2["author"]["usericon"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
@@ -344,8 +329,7 @@ class DeviantArtV4(commands.Cog):
             ) as rep:
                 tags = await rep.content.read()
                 tagsMain = parser.parse(tags, recursive=True)
-                embedVar = discord.Embed(
-                    color=discord.Color.from_rgb(235, 186, 255))
+                embedVar = discord.Embed(color=discord.Color.from_rgb(235, 186, 255))
                 try:
                     tagsFilter = [
                         "preview",
@@ -363,22 +347,18 @@ class DeviantArtV4(commands.Cog):
                     for dictItem3 in tagsMain["results"]:
                         for k, v in dictItem3["author"].items():
                             if k not in authorFilter3:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                                 embedVar.remove_field(-13)
                         for key, value in dictItem3.items():
                             if key not in tagsFilter:
-                                embedVar.add_field(
-                                    name=key, value=value, inline=True)
+                                embedVar.add_field(name=key, value=value, inline=True)
                                 embedVar.remove_field(-13)
                         for item3, res3 in dictItem3["stats"].items():
-                            embedVar.add_field(
-                                name=item3, value=res3, inline=True)
+                            embedVar.add_field(name=item3, value=res3, inline=True)
                             embedVar.remove_field(-13)
                         embedVar.title = dictItem3["title"]
                         embedVar.set_image(url=dictItem3["content"]["src"])
-                        embedVar.set_thumbnail(
-                            url=dictItem3["author"]["usericon"])
+                        embedVar.set_thumbnail(url=dictItem3["author"]["usericon"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
@@ -447,14 +427,12 @@ class DeviantArtV5(commands.Cog):
                                     name=keys, value=f"[{value}]", inline=True
                                 )
                         for k, v in usersMain["stats"].items():
-                            embedVar.add_field(
-                                name=k, value=f"[{v}]", inline=True)
+                            embedVar.add_field(name=k, value=f"[{v}]", inline=True)
                         embedVar.title = usersMain["user"]["username"]
                         embedVar.description = (
                             f"{usersMain['tagline']}\n\n{usersMain['bio']}"
                         )
-                        embedVar.set_thumbnail(
-                            url=usersMain["user"]["usericon"])
+                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
                         embedVar.set_image(
                             url=usersMain["cover_deviation"]["cover_deviation"][
                                 "content"
@@ -468,14 +446,12 @@ class DeviantArtV5(commands.Cog):
                                     name=keys1, value=f"[{value1}]", inline=True
                                 )
                         for k1, v1 in usersMain["stats"].items():
-                            embedVar.add_field(
-                                name=k1, value=f"[{v1}]", inline=True)
+                            embedVar.add_field(name=k1, value=f"[{v1}]", inline=True)
                         embedVar.title = usersMain["user"]["username"]
                         embedVar.description = (
                             f"{usersMain['tagline']}\n\n{usersMain['bio']}"
                         )
-                        embedVar.set_thumbnail(
-                            url=usersMain["user"]["usericon"])
+                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(

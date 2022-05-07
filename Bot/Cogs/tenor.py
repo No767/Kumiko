@@ -188,8 +188,7 @@ class TenorV4(commands.Cog):
         search_suggestion: Option(str, "Topic/Search Term for Search Suggestion"),
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"key": Tenor_API_Key,
-                      "q": search_suggestion, "limit": 25}
+            params = {"key": Tenor_API_Key, "q": search_suggestion, "limit": 25}
             async with session.get(
                 "https://g.tenor.com/v1/search_suggestions", params=params
             ) as resp:

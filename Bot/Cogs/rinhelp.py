@@ -50,8 +50,7 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
-                embedVar.add_field(
-                    name="Anime", value="`/rinhelp anime`", inline=True)
+                embedVar.add_field(name="Anime", value="`/rinhelp anime`", inline=True)
                 embedVar.add_field(
                     name="DeviantArt", value="`/rinhelp da`", inline=True
                 )
@@ -61,15 +60,12 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="First-FRC", value="`/rinhelp first-frc`", inline=True
                 )
-                embedVar.add_field(
-                    name="Fun", value="`/rinhelp fun`", inline=True)
+                embedVar.add_field(name="Fun", value="`/rinhelp fun`", inline=True)
                 embedVar.add_field(
                     name="Hypixel", value="`/rinhelp hypixel`", inline=True
                 )
-                embedVar.add_field(
-                    name="Minecraft", value="`/rinhelp mc`", inline=True)
-                embedVar.add_field(
-                    name="Misc", value="`/rinhelp misc`", inline=True)
+                embedVar.add_field(name="Minecraft", value="`/rinhelp mc`", inline=True)
+                embedVar.add_field(name="Misc", value="`/rinhelp misc`", inline=True)
                 embedVar.add_field(
                     name="Modrinth", value="`/rinhelp modrinth`", inline=True
                 )
@@ -85,15 +81,12 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="Spigot", value="`/rinhelp spigot`", inline=True
                 )
-                embedVar.add_field(
-                    name="Tenor", value="`/rinhelp tenor`", inline=True)
-                embedVar.add_field(
-                    name="Top.gg", value="`/rinhelp topgg`", inline=True)
+                embedVar.add_field(name="Tenor", value="`/rinhelp tenor`", inline=True)
+                embedVar.add_field(name="Top.gg", value="`/rinhelp topgg`", inline=True)
                 embedVar.add_field(
                     name="Twitter", value="`/rinhelp twitter`", inline=True
                 )
-                embedVar.add_field(
-                    name="YouTube", value="`/rinhelp yt`", inline=True)
+                embedVar.add_field(name="YouTube", value="`/rinhelp yt`", inline=True)
                 embedVar.set_author(
                     name="Rin Help",
                     url=discord.Embed.Empty,
@@ -108,8 +101,7 @@ class rinhelp(commands.Cog):
                     )
                 )
                 view.add_item(
-                    discord.ui.Button(
-                        label="Docs", url="https://docs.rinbot.live")
+                    discord.ui.Button(label="Docs", url="https://docs.rinbot.live")
                 )
                 view.add_item(
                     discord.ui.Button(
@@ -118,8 +110,7 @@ class rinhelp(commands.Cog):
                     )
                 )
                 view.add_item(
-                    discord.ui.Button(
-                        label="Website", url="https://rinbot.live")
+                    discord.ui.Button(label="Website", url="https://rinbot.live")
                 )
                 await ctx.respond(embed=embedVar, view=view)
 
