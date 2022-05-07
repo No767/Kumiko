@@ -16,12 +16,14 @@ YouTube_API_Key = os.getenv("YouTube_API_Key")
 
 parser = simdjson.Parser()
 
+
 class Error(Exception):
     pass
 
 
 class NoItemsError(Error):
     pass
+
 
 class YoutubeV1(commands.Cog):
     def __init__(self, bot):
@@ -65,7 +67,9 @@ class YoutubeV1(commands.Cog):
                                 "publishTime",
                             ]
                             for dictItem in dataMain["items"]:
-                                for i, values in dictItem["snippet"]["thumbnails"].items():
+                                for i, values in dictItem["snippet"][
+                                    "thumbnails"
+                                ].items():
                                     if i not in sizeFilter:
                                         embedVar.set_image(url=values["url"])
 
@@ -76,11 +80,15 @@ class YoutubeV1(commands.Cog):
                                         )
                                         embedVar.remove_field(3)
                                     embedVar.title = dictItem["snippet"]["title"]
-                                embedVar.description = dictItem["snippet"]["description"]
+                                embedVar.description = dictItem["snippet"][
+                                    "description"
+                                ]
                                 await ctx.respond(embed=embedVar)
                     except ValueError:
                         embedValError = discord.Embed()
-                        embedValError.description = "It seems like that search term didn't work.... 😭"
+                        embedValError.description = (
+                            "It seems like that search term didn't work.... 😭"
+                        )
                         await ctx.respond(embed=embedValError)
 
                 except Exception as e:
@@ -130,7 +138,8 @@ class YoutubeV2(commands.Cog):
                             "id": channel_id,
                         }
                         async with session.get(
-                            "https://www.googleapis.com/youtube/v3/channels", params=params
+                            "https://www.googleapis.com/youtube/v3/channels",
+                            params=params,
                         ) as re:
                             data = await re.content.read()
                             dataMain3 = parser.parse(data, recursive=True)
@@ -159,25 +168,32 @@ class YoutubeV2(commands.Cog):
                                         for key, val in dictItem.items():
                                             if key not in filterMain5:
                                                 embedVar.add_field(
-                                                    name=key, value=val, inline=True)
+                                                    name=key, value=val, inline=True
+                                                )
                                         for k, v in dictItem["snippet"].items():
                                             if k not in snippetFilter:
                                                 embedVar.add_field(
-                                                    name=k, value=v, inline=True)
-                                        for keys, value in dictItem["statistics"].items():
+                                                    name=k, value=v, inline=True
+                                                )
+                                        for keys, value in dictItem[
+                                            "statistics"
+                                        ].items():
                                             embedVar.add_field(
-                                                name=keys, value=value, inline=True)
+                                                name=keys, value=value, inline=True
+                                            )
                                         embedVar.title = dictItem["snippet"]["title"]
-                                        embedVar.description = dictItem["snippet"]["description"]
+                                        embedVar.description = dictItem["snippet"][
+                                            "description"
+                                        ]
                                         embedVar.set_thumbnail(
-                                            url=dictItem["snippet"]["thumbnails"]["high"]["url"]
+                                            url=dictItem["snippet"]["thumbnails"][
+                                                "high"
+                                            ]["url"]
                                         )
                                         await ctx.respond(embed=embedVar)
                             except ValueError:
                                 embedError = discord.Embed()
-                                embedError.description = (
-                                    f"No results found for {channel}. Please try again..."
-                                )
+                                embedError.description = f"No results found for {channel}. Please try again..."
                                 await ctx.respond(embed=embedError)
                 except NoItemsError:
                     embedError = discord.Embed()
@@ -248,7 +264,8 @@ class YoutubeV3(commands.Cog):
                                     "title",
                                     "description",
                                 ]
-                                videoFilter = ["default", "medium", "high", "standard"]
+                                videoFilter = ["default",
+                                               "medium", "high", "standard"]
                                 if len(dataMain["items"]) == 0:
                                     raise ValueError
                                 else:
@@ -256,7 +273,8 @@ class YoutubeV3(commands.Cog):
                                         for k, v in dictItems.items():
                                             if k not in filterList:
                                                 embedVar.add_field(
-                                                    name=k, value=v, inline=True)
+                                                    name=k, value=v, inline=True
+                                                )
                                                 embedVar.remove_field(3)
 
                                         for keys, val in dictItems["snippet"].items():
@@ -266,20 +284,23 @@ class YoutubeV3(commands.Cog):
                                                 )
                                                 embedVar.remove_field(3)
 
-                                        for item, res in dictItems["snippet"]["thumbnails"].items():
+                                        for item, res in dictItems["snippet"][
+                                            "thumbnails"
+                                        ].items():
                                             if item not in videoFilter:
-                                                embedVar.set_image(url=res["url"])
+                                                embedVar.set_image(
+                                                    url=res["url"])
 
                                         embedVar.title = dictItems["snippet"]["title"]
-                                        embedVar.description = dictItems["snippet"]["description"]
+                                        embedVar.description = dictItems["snippet"][
+                                            "description"
+                                        ]
 
                                         await ctx.respond(embed=embedVar)
 
                             except ValueError:
                                 embedError = discord.Embed()
-                                embedError.description = (
-                                    f"No results found for {channel_name}. Please try again..."
-                                )
+                                embedError.description = f"No results found for {channel_name}. Please try again..."
                                 await ctx.respond(embed=embedError)
                 except NoItemsError:
                     embedError = discord.Embed()
@@ -366,9 +387,9 @@ class YoutubeV4(commands.Cog):
                                 raise KeyError
                             else:
                                 for dictVal in dataMain4["items"]:
-                                    embedVar.title = dictVal["snippet"]["topLevelComment"][
-                                        "snippet"
-                                    ]["authorDisplayName"]
+                                    embedVar.title = dictVal["snippet"][
+                                        "topLevelComment"
+                                    ]["snippet"]["authorDisplayName"]
                                     embedVar.description = dictVal["snippet"][
                                         "topLevelComment"
                                     ]["snippet"]["textDisplay"]
@@ -376,20 +397,22 @@ class YoutubeV4(commands.Cog):
                                     for k, v in dictVal["snippet"].items():
                                         if k not in snippetFilter:
                                             embedVar.add_field(
-                                                name=k, value=v, inline=True)
+                                                name=k, value=v, inline=True
+                                            )
                                             embedVar.remove_field(6)
 
-                                    for key, res in dictVal["snippet"]["topLevelComment"][
-                                        "snippet"
-                                    ].items():
+                                    for key, res in dictVal["snippet"][
+                                        "topLevelComment"
+                                    ]["snippet"].items():
                                         if key not in topLevelCommentFilter:
                                             embedVar.add_field(
-                                                name=key, value=res, inline=True)
+                                                name=key, value=res, inline=True
+                                            )
                                             embedVar.remove_field(6)
 
-                                    for item, img in dictVal["snippet"]["topLevelComment"][
-                                        "snippet"
-                                    ].items():
+                                    for item, img in dictVal["snippet"][
+                                        "topLevelComment"
+                                    ]["snippet"].items():
                                         if item not in pfpFilter:
                                             embedVar.set_thumbnail(url=img)
 
@@ -449,16 +472,15 @@ class YoutubeV5(commands.Cog):
                             embed.title = items["snippet"]["title"]
                             embed.description = items["snippet"]["description"]
                             for key, value in items["statistics"].items():
-                                embed.add_field(name=key, value=value, inline=True)
+                                embed.add_field(
+                                    name=key, value=value, inline=True)
                             for k, v in items["snippet"]["thumbnails"].items():
                                 if k not in picFilter:
                                     embed.set_image(url=v["url"])
                         await ctx.respond(embed=embed)
                 except ValueError:
                     embedError = discord.Embed()
-                    embedError.description = (
-                        "Sorry, it seems like there wasn't any results... Please try again"
-                    )
+                    embedError.description = "Sorry, it seems like there wasn't any results... Please try again"
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

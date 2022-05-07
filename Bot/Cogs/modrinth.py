@@ -10,12 +10,14 @@ from discord.ext import commands
 
 parser = simdjson.Parser()
 
+
 class Error(Exception):
     pass
 
 
 class NoItemsError(Error):
     pass
+
 
 class ModrinthV1(commands.Cog):
     def __init__(self, bot):
@@ -176,15 +178,19 @@ class ModrinthV3(commands.Cog):
                                 for keys, value in dictVersions.items():
                                     if keys not in versionFilter:
                                         embedVar.add_field(
-                                            name=keys, value=value, inline=True)
+                                            name=keys, value=value, inline=True
+                                        )
                                         embedVar.remove_field(-14)
                                 for fileItems in dictVersions["files"]:
                                     for k, v in fileItems.items():
                                         if k not in "hashes":
                                             embedVar.add_field(
-                                                name=k, value=v, inline=True)
+                                                name=k, value=v, inline=True
+                                            )
                                             embedVar.remove_field(-14)
-                                    for hashKey, hashValue in fileItems["hashes"].items():
+                                    for hashKey, hashValue in fileItems[
+                                        "hashes"
+                                    ].items():
                                         embedVar.add_field(
                                             name=hashKey, value=hashValue, inline=True
                                         )
@@ -195,13 +201,14 @@ class ModrinthV3(commands.Cog):
                     except NoItemsError:
                         embedErrorMain = discord.Embed()
                         embedErrorMain.description = "Sorry, but it seems like there are no releases for the mod. Please try again"
-                        await ctx.respond(embed=embedErrorMain) 
+                        await ctx.respond(embed=embedErrorMain)
                 except Exception as e:
                     embedVarError = discord.Embed()
                     embedVarError.description = (
                         "Sorry, but the query could not be made. Please try again..."
                     )
-                    embedVarError.add_field(name="Reason", value=e, inline=True)
+                    embedVarError.add_field(
+                        name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVarError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -287,7 +294,8 @@ class ModrinthV5(commands.Cog):
                     embedErrorMain.description = (
                         "Sorry, but the query could not be made. Please try again..."
                     )
-                    embedErrorMain.add_field(name="Reason", value=e, inline=True)
+                    embedErrorMain.add_field(
+                        name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedErrorMain)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -309,7 +317,7 @@ class ModrinthV6(commands.Cog):
                 f"https://api.modrinth.com/v2/user/{username}/projects"
             ) as r:
                 data = await r.content.read()
-                
+
                 userProjectsFilter = [
                     "body",
                     "license",
@@ -331,8 +339,11 @@ class ModrinthV6(commands.Cog):
                                 for keys, value in dictProjects.items():
                                     if keys not in userProjectsFilter:
                                         embedVar.add_field(
-                                            name=keys, value=value, inline=True)
-                                for licenseItem, licenseRes in dictProjects["license"].items():
+                                            name=keys, value=value, inline=True
+                                        )
+                                for licenseItem, licenseRes in dictProjects[
+                                    "license"
+                                ].items():
                                     embedVar.add_field(
                                         name=f"License {licenseItem}",
                                         value=licenseRes,
@@ -340,7 +351,8 @@ class ModrinthV6(commands.Cog):
                                     )
                                 embedVar.title = dictProjects["title"]
                                 embedVar.description = dictProjects["description"]
-                                embedVar.set_thumbnail(url=dictProjects["icon_url"])
+                                embedVar.set_thumbnail(
+                                    url=dictProjects["icon_url"])
                                 await ctx.respond(embed=embedVar)
                     except ValueError:
                         embedErrorMain = discord.Embed()
@@ -447,7 +459,7 @@ class ModrinthV8(commands.Cog):
 def setup(bot):
     bot.add_cog(ModrinthV1(bot))
     bot.add_cog(ModrinthV2(bot))
-    bot.add_cog(ModrinthV3(bot)) # Disabled due to spam issues
+    bot.add_cog(ModrinthV3(bot))  # Disabled due to spam issues
     bot.add_cog(ModrinthV4(bot))
     bot.add_cog(ModrinthV5(bot))
     bot.add_cog(ModrinthV6(bot))

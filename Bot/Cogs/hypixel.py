@@ -15,12 +15,14 @@ load_dotenv()
 hypixel_api_key = os.getenv("Hypixel_API_Key")
 parser = simdjson.Parser()
 
+
 class Error(Exception):
     pass
 
 
 class UnknownPlayer(Error):
     pass
+
 
 class hypixel_api(commands.Cog):
     def __init__(self, bot):
@@ -63,7 +65,7 @@ class hypixel_api(commands.Cog):
                             "adventRewards2020",
                             "achievementRewardsNew",
                             "adsense_tokens",
-                            "displayname"
+                            "displayname",
                         ]
                         if "None" in playerMain["player"]:
                             raise UnknownPlayer
@@ -92,7 +94,6 @@ class hypixel_api(commands.Cog):
                     embedValError = discord.Embed()
                     embedValError.description = "It seems like that the player wasn't online.... Please try again"
                     await ctx.respond(embed=embedValError)
-
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

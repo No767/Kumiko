@@ -28,7 +28,6 @@ class DiscordBotsV1(commands.Cog):
         ctx,
         *,
         search: Option(str, "The bot that you wish to search for"),
-        
     ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
@@ -102,19 +101,21 @@ class DiscordBotsV2(commands.Cog):
                         for dictKey, dictVal in dataMain2.items():
                             if dictKey not in filterMain2:
                                 embedVar.add_field(
-                                    name=dictKey, value=dictVal, inline=True)
+                                    name=dictKey, value=dictVal, inline=True
+                                )
                         for dictKey1, dictVal1 in dataMain2["owner"].items():
                             embedVar.add_field(
-                                name=dictKey1, value=dictVal1, inline=True)
+                                name=dictKey1, value=dictVal1, inline=True
+                            )
                         embedVar.title = dataMain2["username"]
-                        embedVar.description = (
-                            f"{dataMain2['shortDescription']}\n\n{dataMain2['longDescription']}"
-                        )
+                        embedVar.description = f"{dataMain2['shortDescription']}\n\n{dataMain2['longDescription']}"
                         embedVar.set_thumbnail(url=dataMain2["avatarURL"])
                         await ctx.respond(embed=embedVar)
                 except Exception:
                     embedError = discord.Embed()
-                    embedError.description = "It seems like that the bot doesn't exist... Please try again"
+                    embedError.description = (
+                        "It seems like that the bot doesn't exist... Please try again"
+                    )
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

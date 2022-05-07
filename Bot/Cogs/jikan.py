@@ -62,7 +62,9 @@ class JikanV1(commands.Cog):
                                     )
                             for item in dictItem["genres"]:
                                 embedVar.add_field(
-                                    name="Genres", value=f'[{item["name"]}]', inline=True
+                                    name="Genres",
+                                    value=f'[{item["name"]}]',
+                                    inline=True,
                                 )
                             for item2 in dictItem["demographics"]:
                                 embedVar.add_field(
@@ -72,10 +74,14 @@ class JikanV1(commands.Cog):
                                 )
                             for item3 in dictItem["themes"]:
                                 embedVar.add_field(
-                                    name="Themes", value=f'[{item3["name"]}]', inline=True
+                                    name="Themes",
+                                    value=f'[{item3["name"]}]',
+                                    inline=True,
                                 )
                             embedVar.add_field(
-                                name="Aired", value=dictItem["aired"]["string"], inline=True
+                                name="Aired",
+                                value=dictItem["aired"]["string"],
+                                inline=True,
                             )
                             embedVar.set_image(
                                 url=dictItem["images"]["jpg"]["large_image_url"]
@@ -83,9 +89,7 @@ class JikanV1(commands.Cog):
                             await ctx.respond(embed=embedVar)
                 except ValueError:
                     embedVar = discord.Embed()
-                    embedVar.description = (
-                        "Sorry, but the anime you searched for either wasn't found or doesn't exist. Please try again"
-                    )
+                    embedVar.description = "Sorry, but the anime you searched for either wasn't found or doesn't exist. Please try again"
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -142,7 +146,9 @@ class JikanV2(commands.Cog):
                                     )
                             for name in dataItem["authors"]:
                                 embedVar.add_field(
-                                    name="Authors", value=f'[{name["name"]}]', inline=True
+                                    name="Authors",
+                                    value=f'[{name["name"]}]',
+                                    inline=True,
                                 )
                             for obj in dataItem["serializations"]:
                                 embedVar.add_field(
@@ -152,11 +158,15 @@ class JikanV2(commands.Cog):
                                 )
                             for genre in dataItem["genres"]:
                                 embedVar.add_field(
-                                    name="Genres", value=f'[{genre["name"]}]', inline=True
+                                    name="Genres",
+                                    value=f'[{genre["name"]}]',
+                                    inline=True,
                                 )
                             for theme in dataItem["themes"]:
                                 embedVar.add_field(
-                                    name="Themes", value=f'[{theme["name"]}]', inline=True
+                                    name="Themes",
+                                    value=f'[{theme["name"]}]',
+                                    inline=True,
                                 )
                             for demographic in dataItem["demographics"]:
                                 embedVar.add_field(
@@ -172,9 +182,7 @@ class JikanV2(commands.Cog):
                             await ctx.respond(embed=embedVar)
                 except ValueError:
                     embedVar = discord.Embed()
-                    embedVar.description = (
-                        "Sorry, but it seems like that manga cannot be found. Please try again"
-                    )
+                    embedVar.description = "Sorry, but it seems like that manga cannot be found. Please try again"
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -220,7 +228,8 @@ class JikanV3(commands.Cog):
                         for key, value in dataMain["data"].items():
                             if key not in mainFilter:
                                 embedVar.add_field(
-                                    name=str(key).replace("_", " ").capitalize(),
+                                    name=str(key).replace(
+                                        "_", " ").capitalize(),
                                     value=value,
                                     inline=True,
                                 )
@@ -228,14 +237,14 @@ class JikanV3(commands.Cog):
                             url=dataMain["data"]["images"]["jpg"]["large_image_url"]
                         )
                         await ctx.respond(embed=embedVar)
-                        
+
                 except ValueError:
                     embedVar = discord.Embed()
                     embedVar.description = (
                         "It seems like it might have broke itself... Please try again"
                     )
                     await ctx.respond(embed=embedVar)
-                    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
@@ -276,7 +285,8 @@ class JikanV4(commands.Cog):
                         for key, value in dataMain3["data"].items():
                             if key not in mangaFilter:
                                 embedVar.add_field(
-                                    name=str(key).replace("_", " ").capitalize(),
+                                    name=str(key).replace(
+                                        "_", " ").capitalize(),
                                     value=value,
                                     inline=True,
                                 )
@@ -290,7 +300,7 @@ class JikanV4(commands.Cog):
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
-                    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
@@ -360,7 +370,7 @@ class JikanV5(commands.Cog):
                             url=dictItem["images"]["jpg"]["large_image_url"]
                         )
                         await ctx.respond(embed=embedVar)
-                        
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 

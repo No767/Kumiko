@@ -15,6 +15,7 @@ load_dotenv()
 apiKey = os.getenv("Top_GG_API_Key")
 parser = simdjson.Parser()
 
+
 class Error(Exception):
     pass
 
@@ -50,22 +51,27 @@ class TopGGV1(commands.Cog):
                             )
                             embedVar.description = (
                                 str(getOneBotInfoMain["longdesc"])
-                                    .replace("\r", "")
-                                    .replace("<div align=center>", "")
-                                    .replace("<div align=left>", "")
-                                    .replace("<div align=right>", "")
+                                .replace("\r", "")
+                                .replace("<div align=center>", "")
+                                .replace("<div align=left>", "")
+                                .replace("<div align=right>", "")
                             )
                             excludedKeys = {"longdesc", "lib"}
                             for key, val in getOneBotInfoMain.items():
                                 if key not in excludedKeys:
                                     embedVar.add_field(
-                                        name=key, value=str(val).replace("'", ""), inline=True
+                                        name=key,
+                                        value=str(val).replace("'", ""),
+                                        inline=True,
                                     )
                             await ctx.respond(embed=embedVar)
                     except NoItemsError:
                         embedError = discord.Embed(
-                            color=discord.Color.from_rgb(231, 74, 255))
-                        embedError.description = "Sorry, but that bot doesn't exist. So please try again..."
+                            color=discord.Color.from_rgb(231, 74, 255)
+                        )
+                        embedError.description = (
+                            "Sorry, but that bot doesn't exist. So please try again..."
+                        )
                         await ctx.respond(embed=embedError)
                 except Exception as e:
                     embedVar = discord.Embed(

@@ -51,7 +51,9 @@ class MangaDexV1(commands.Cog):
                                 mangaID = dictItem["id"]
                                 mangaTitle = [
                                     val6
-                                    for _, val6 in dictItem["attributes"]["title"].items()
+                                    for _, val6 in dictItem["attributes"][
+                                        "title"
+                                    ].items()
                                 ]
                                 mainDesc = [
                                     val7
@@ -62,14 +64,17 @@ class MangaDexV1(commands.Cog):
                                 for k, v in dictItem["attributes"].items():
                                     if k not in mangaFilter:
                                         embedVar.add_field(
-                                            name=k, value=f"[{v}]", inline=True)
+                                            name=k, value=f"[{v}]", inline=True
+                                        )
                                 for item in dictItem["attributes"]["tags"]:
                                     embedVar.add_field(
                                         name="Tags",
                                         value=f'[{item["attributes"]["name"]["en"]}]',
                                         inline=True,
                                     )
-                                for item1, res in dictItem["attributes"]["links"].items():
+                                for item1, res in dictItem["attributes"][
+                                    "links"
+                                ].items():
                                     embedVar.add_field(
                                         name=item1, value=f"[{res}]", inline=True
                                     )
@@ -79,36 +84,40 @@ class MangaDexV1(commands.Cog):
                                             name=keys, value=f"[{values}]", inline=True
                                         )
                                 for item in dictItem["relationships"]:
-                                    if item["type"] not in ["manga", "author", "artist"]:
+                                    if item["type"] not in [
+                                        "manga",
+                                        "author",
+                                        "artist",
+                                    ]:
                                         coverArtID = item["id"]
                                         async with session.get(
                                             f"https://api.mangadex.org/cover/{coverArtID}"
                                         ) as rp:
-                                            cover_art_data = await rp.json(loads=orjson.loads)
-                                            cover_art = cover_art_data["data"]["attributes"][
-                                                "fileName"
-                                            ]
+                                            cover_art_data = await rp.json(
+                                                loads=orjson.loads
+                                            )
+                                            cover_art = cover_art_data["data"][
+                                                "attributes"
+                                            ]["fileName"]
                                             embedVar.set_image(
                                                 url=f"https://uploads.mangadex.org/covers/{mangaID}/{cover_art}"
                                             )
                                 embedVar.title = (
                                     str(mangaTitle)
-                                        .replace("'", "")
-                                        .replace("[", "")
-                                        .replace("]", "")
+                                    .replace("'", "")
+                                    .replace("[", "")
+                                    .replace("]", "")
                                 )
                                 embedVar.description = (
                                     str(mainDesc)
-                                        .replace("'", "")
-                                        .replace("[", "")
-                                        .replace("]", "")
+                                    .replace("'", "")
+                                    .replace("[", "")
+                                    .replace("]", "")
                                 )
                                 await ctx.respond(embed=embedVar)
                     except ValueError:
                         embedErrorAlt2 = discord.Embed()
-                        embedErrorAlt2.description = (
-                            "Sorry, but the manga you searched for does not exist or is invalid. Please try again."
-                        )
+                        embedErrorAlt2.description = "Sorry, but the manga you searched for does not exist or is invalid. Please try again."
                         await ctx.respond(embed=embedErrorAlt2)
                 except Exception as e:
                     embedErrorAlt = discord.Embed()
@@ -197,10 +206,12 @@ class MangaDexV2(commands.Cog):
                                     async with session.get(
                                         f"https://api.mangadex.org/cover/{coverArtID2}"
                                     ) as rp:
-                                        cover_art_data2 = await rp.json(loads=orjson.loads)
-                                        cover_art2 = cover_art_data2["data"]["attributes"][
-                                            "fileName"
-                                        ]
+                                        cover_art_data2 = await rp.json(
+                                            loads=orjson.loads
+                                        )
+                                        cover_art2 = cover_art_data2["data"][
+                                            "attributes"
+                                        ]["fileName"]
                                         embedVar.set_image(
                                             url=f"https://uploads.mangadex.org/covers/{mangaID2}/{cover_art2}"
                                         )
@@ -234,9 +245,10 @@ class MangaDexV2(commands.Cog):
                 except Exception as e:
                     embedErrorMain = discord.Embed()
                     embedErrorMain.description = "There was an error. Please try again."
-                    embedErrorMain.add_field(name="Error", value=e, inline=True)
+                    embedErrorMain.add_field(
+                        name="Error", value=e, inline=True)
                     await ctx.respond(embed=embedErrorMain)
-    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
@@ -280,7 +292,7 @@ class MangaDexV3(commands.Cog):
                             inline=True,
                         )
                         await ctx.respond(embed=embed1)
-                        
+
                     else:
                         for dictItem in mdDataMain["data"]:
                             embed2.title = dictItem["attributes"]["name"]
@@ -338,11 +350,14 @@ class MangaDexV4(commands.Cog):
                             ]
                             for k, v in payloadMain["data"]["attributes"].items():
                                 if k not in mdFilter2:
-                                    embed4.add_field(name=k, value=v, inline=True)
+                                    embed4.add_field(
+                                        name=k, value=v, inline=True)
                             await ctx.respond(embed=embed4)
                     except ValueError:
                         embedValError = discord.Embed()
-                        embedValError.description = "Hm, it seems like there are no results... Please try again"
+                        embedValError.description = (
+                            "Hm, it seems like there are no results... Please try again"
+                        )
                         await ctx.respond(embed=embedValError)
                 except Exception as e:
                     embedVar = discord.Embed()
@@ -372,7 +387,9 @@ class MangaDexV5(commands.Cog):
                     try:
                         if payloadMain2["result"] == "error":
                             embedError = discord.Embed()
-                            embedError.description = "Sorry, but no results were found... Please try again."
+                            embedError.description = (
+                                "Sorry, but no results were found... Please try again."
+                            )
                             await ctx.respond(embed=embedError)
                         elif len(payloadMain2["data"]) == 0:
                             raise ValueError
@@ -380,20 +397,27 @@ class MangaDexV5(commands.Cog):
                             embed = discord.Embed()
                             mainFilter = ["attributes", "relationships"]
                             embed.title = payloadMain2["data"]["attributes"]["username"]
-                            for payloadKeys, payloadValues in payloadMain2["data"].items():
+                            for payloadKeys, payloadValues in payloadMain2[
+                                "data"
+                            ].items():
                                 if payloadKeys not in mainFilter:
                                     embed.add_field(
-                                        name=payloadKeys, value=payloadValues, inline=True
+                                        name=payloadKeys,
+                                        value=payloadValues,
+                                        inline=True,
                                     )
                             for k, v in payloadMain2["data"]["attributes"].items():
                                 if k not in "username":
-                                    embed.add_field(name=k, value=v, inline=True)
+                                    embed.add_field(
+                                        name=k, value=v, inline=True)
                             await ctx.respond(embed=embed)
-                    except ValueError:  
+                    except ValueError:
                         embedValError = discord.Embed()
-                        embedValError.description = "Hm, it seems like there are no results... Please try again"
+                        embedValError.description = (
+                            "Hm, it seems like there are no results... Please try again"
+                        )
                         await ctx.respond(embed=embedValError)
-                    
+
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = (
@@ -429,25 +453,31 @@ class MangaDexV6(commands.Cog):
                             raise ValueError
                         else:
                             authorFilter = ["imageUrl", "name", "biography"]
-                            mainFilterV3 = ["attributes", "relationships", "type"]
+                            mainFilterV3 = ["attributes",
+                                            "relationships", "type"]
                             for authorDictItem in authorPayloadMain["data"]:
                                 embedVar.title = authorDictItem["attributes"]["name"]
-                                embedVar.description = authorDictItem["attributes"]["biography"]
+                                embedVar.description = authorDictItem["attributes"][
+                                    "biography"
+                                ]
                                 for keys, value in authorDictItem.items():
                                     if keys not in mainFilterV3:
                                         embedVar.add_field(
-                                            name=keys, value=value, inline=True)
+                                            name=keys, value=value, inline=True
+                                        )
                                         embedVar.remove_field(17)
                                 for k, v in authorDictItem["attributes"].items():
                                     if k not in authorFilter:
                                         embedVar.add_field(
                                             name=k, value=v, inline=True)
                                         embedVar.remove_field(17)
-        
+
                                 await ctx.respond(embed=embedVar)
-                    except ValueError:  
+                    except ValueError:
                         embedValError = discord.Embed()
-                        embedValError.description = "Hm, it seems like there are no results... Please try again"
+                        embedValError.description = (
+                            "Hm, it seems like there are no results... Please try again"
+                        )
                         await ctx.respond(embed=embedValError)
                 except Exception as e:
                     embedVar = discord.Embed()
