@@ -10,9 +10,9 @@ bot = commands.Bot(help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
-    "Cogs.kumikoinfo",
-    "Cogs.kumikoping",
-    "Cogs.kumikohelp",
+    # "Cogs.kumikoinfo",
+    # "Cogs.kumikoping",
+    # "Cogs.kumikohelp",
     "Cogs.reddit",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
@@ -20,7 +20,7 @@ initial_extensions = [
     "Cogs.waifu-pics",
     "Cogs.advice",
     "Cogs.qrcode",
-    "Cogs.spiget",
+    # "Cogs.spiget",
     "Cogs.jikan",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
@@ -38,10 +38,10 @@ initial_extensions = [
     "Cogs.help",
     "Cogs.modrinth",
     "Cogs.discord-bots",
-    "Cogs.first-frc-events",
+    # "Cogs.first-frc-events",
     "Cogs.economy.marketplace", 
     "Cogs.economy.users",
-    "Cogs.platform"
+    # "Cogs.platform"
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

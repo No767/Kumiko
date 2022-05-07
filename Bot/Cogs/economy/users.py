@@ -10,6 +10,10 @@ utilsUser = KumikoEcoUserUtils()
 
 
 class View(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+            
     @discord.ui.button(
         label="Yes", row=0, style=discord.ButtonStyle.primary, emoji="✔️"
     )
@@ -31,7 +35,6 @@ class ecoInit(commands.Cog):
     @slash_command(
         name="eco-init",
         description="Initialize your user account",
-        guild_ids=[970159505390325842],
     )
     async def ecoInit(self, ctx):
         embed = discord.Embed()
