@@ -18,6 +18,8 @@ class Marketplace(Document):
     description: Optional[str] = None
     amount: int
     price: int
+    date_added: str
+    owner: int
 
 
 class KumikoEcoUtils:
@@ -26,6 +28,8 @@ class KumikoEcoUtils:
 
     async def ins(
         self,
+        date_added: str,
+        owner: int,
         name: Optional[str] = None,
         description: Optional[str] = None,
         amount: Optional[int] = None,
@@ -37,13 +41,15 @@ class KumikoEcoUtils:
         await init_beanie(
             database=client.kumiko_marketplace, document_models=[Marketplace]
         )
-        entry = Marketplace(name=name, description=description, amount=amount, price=price)
-        await entry.insert()
+        entry = Marketplace(name=name, description=description, amount=amount, price=price, date_added=date_added, owner=owner)
+        await entry.create()
         
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def update(
         self,
+        date_added: str,
+        owner: int,
         name: Optional[str] = None,
         description: Optional[str] = None,
         amount: Optional[int] = None,
@@ -57,7 +63,7 @@ class KumikoEcoUtils:
                 Marketplace]
         )
         entryUpdate = Marketplace(
-            name=name, description=description, amount=amount, price=price)
+            name=name, description=description, amount=amount, price=price, date_added=date_added, owner=owner)
         await entryUpdate.save()
         
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
