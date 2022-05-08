@@ -2,7 +2,7 @@ default_language_version:
     python: python3.10
 files: '.py'
 exclude: ".env,.yml,.gitignore,.git,.md,.txt"
-default_stages: [post-commit]
+default_stages: [post-commit, push]
 repos:
 -   repo: https://github.com/PyCQA/bandit
     rev: 1.7.4
