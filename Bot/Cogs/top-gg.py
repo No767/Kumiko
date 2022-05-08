@@ -74,8 +74,7 @@ class TopGGV1(commands.Cog):
                         )
                         await ctx.respond(embed=embedError)
                 except Exception as e:
-                    embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(231, 74, 255))
+                    embedVar = discord.Embed(color=discord.Color.from_rgb(231, 74, 255))
                     embedVar.description = f"The query failed. Please try again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
@@ -112,8 +111,7 @@ class TopGGV2(commands.Cog):
                             excludedKeys = {"bio"}
                             for key, val in userMain.items():
                                 if key not in excludedKeys:
-                                    embedVar.add_field(
-                                        name=key, value=val, inline=True)
+                                    embedVar.add_field(name=key, value=val, inline=True)
 
                             await ctx.respond(embed=embedVar)
                     except NoItemsError:
@@ -126,8 +124,7 @@ class TopGGV2(commands.Cog):
                         )
                         await ctx.respond(embed=embedError)
                 except Exception as e:
-                    embedVar = discord.Embed(
-                        color=discord.Color.from_rgb(231, 74, 255))
+                    embedVar = discord.Embed(color=discord.Color.from_rgb(231, 74, 255))
                     embedVar.description = f"The query failed. Please try again."
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)

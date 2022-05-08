@@ -17,8 +17,7 @@ class PlatformV1(commands.Cog):
     async def platformChecker(self, ctx):
         embed = discord.Embed()
         embed.add_field(name="System", value=platform.system(), inline=True)
-        embed.add_field(name="System Version",
-                        value=platform.version(), inline=True)
+        embed.add_field(name="System Version", value=platform.version(), inline=True)
         embed.add_field(
             name="Processor", value=f"[{platform.processor()}]", inline=True
         )

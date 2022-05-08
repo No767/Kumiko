@@ -57,8 +57,7 @@ class RedditV1(commands.Cog):
                 ]
                 post = random.choice(posts)
                 submission = post
-                reddit_embed = discord.Embed(
-                    color=discord.Color.from_rgb(255, 69, 0))
+                reddit_embed = discord.Embed(color=discord.Color.from_rgb(255, 69, 0))
                 reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
                 reddit_embed.set_image(url=submission.url)
                 await ctx.respond(embed=reddit_embed)
@@ -98,12 +97,9 @@ class RedditV2(commands.Cog):
                 embedVar = discord.Embed()
                 embedVar.title = submission.title
                 embedVar.description = submission.selftext
-                embedVar.add_field(
-                    name="Author", value=submission.author, inline=True)
-                embedVar.add_field(
-                    name="Locked", value=submission.locked, inline=True)
-                embedVar.add_field(
-                    name="NSFW", value=submission.over_18, inline=True)
+                embedVar.add_field(name="Author", value=submission.author, inline=True)
+                embedVar.add_field(name="Locked", value=submission.locked, inline=True)
+                embedVar.add_field(name="NSFW", value=submission.over_18, inline=True)
                 embedVar.add_field(
                     name="Number of Upvotes", value=submission.score, inline=True
                 )
@@ -147,8 +143,7 @@ class RedditV3(commands.Cog):
                     await item.author.load()
                     embedVar.title = item.author.name
                     embedVar.description = item.body
-                    embedVar.add_field(
-                        name="Upvotes", value=item.score, inline=True)
+                    embedVar.add_field(name="Upvotes", value=item.score, inline=True)
                     embedVar.set_thumbnail(url=item.author.icon_img)
                     embedVar.remove_field(1)
                     await ctx.respond(embed=embedVar)
@@ -178,10 +173,8 @@ class RedditV4(commands.Cog):
             embedVar.add_field(
                 name="Comment Karma", value=user.comment_karma, inline=True
             )
-            embedVar.add_field(name="Created UTC",
-                               value=user.created_utc, inline=True)
-            embedVar.add_field(name="Link Karma",
-                               value=user.link_karma, inline=True)
+            embedVar.add_field(name="Created UTC", value=user.created_utc, inline=True)
+            embedVar.add_field(name="Link Karma", value=user.link_karma, inline=True)
             await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -242,12 +235,9 @@ class RedditV6(commands.Cog):
                 embedVar = discord.Embed()
                 embedVar.title = submission.title
                 embedVar.description = submission.selftext
-                embedVar.add_field(
-                    name="Author", value=submission.author, inline=True)
-                embedVar.add_field(
-                    name="Locked", value=submission.locked, inline=True)
-                embedVar.add_field(
-                    name="NSFW", value=submission.over_18, inline=True)
+                embedVar.add_field(name="Author", value=submission.author, inline=True)
+                embedVar.add_field(name="Locked", value=submission.locked, inline=True)
+                embedVar.add_field(name="NSFW", value=submission.over_18, inline=True)
                 embedVar.add_field(
                     name="Number of Upvotes", value=submission.score, inline=True
                 )
@@ -293,12 +283,9 @@ class RedditV7(commands.Cog):
                 embedVar = discord.Embed()
                 embedVar.title = submission.title
                 embedVar.description = submission.selftext
-                embedVar.add_field(
-                    name="Author", value=submission.author, inline=True)
-                embedVar.add_field(
-                    name="Locked", value=submission.locked, inline=True)
-                embedVar.add_field(
-                    name="NSFW", value=submission.over_18, inline=True)
+                embedVar.add_field(name="Author", value=submission.author, inline=True)
+                embedVar.add_field(name="Locked", value=submission.locked, inline=True)
+                embedVar.add_field(name="NSFW", value=submission.over_18, inline=True)
                 embedVar.add_field(
                     name="Number of Upvotes", value=submission.score, inline=True
                 )

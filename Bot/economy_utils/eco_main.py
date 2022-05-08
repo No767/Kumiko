@@ -1,11 +1,11 @@
+import asyncio
 import os
 from typing import Optional
 
 import motor.motor_asyncio
+import uvloop
 from beanie import Document, init_beanie
 from dotenv import load_dotenv
-import asyncio
-import uvloop
 
 load_dotenv()
 MongoDB_Password = os.getenv("MongoDB_Password")
@@ -41,9 +41,16 @@ class KumikoEcoUtils:
         await init_beanie(
             database=client.kumiko_marketplace, document_models=[Marketplace]
         )
-        entry = Marketplace(name=name, description=description, amount=amount, price=price, date_added=date_added, owner=owner)
+        entry = Marketplace(
+            name=name,
+            description=description,
+            amount=amount,
+            price=price,
+            date_added=date_added,
+            owner=owner,
+        )
         await entry.create()
-        
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def update(
@@ -59,13 +66,18 @@ class KumikoEcoUtils:
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
         await init_beanie(
-            database=clientUpdate.kumiko_marketplace, document_models=[
-                Marketplace]
+            database=clientUpdate.kumiko_marketplace, document_models=[Marketplace]
         )
         entryUpdate = Marketplace(
-            name=name, description=description, amount=amount, price=price, date_added=date_added, owner=owner)
+            name=name,
+            description=description,
+            amount=amount,
+            price=price,
+            date_added=date_added,
+            owner=owner,
+        )
         await entryUpdate.save()
-        
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def obtain(self):
@@ -73,12 +85,11 @@ class KumikoEcoUtils:
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
         await init_beanie(
-            database=clientObtain.kumiko_marketplace, document_models=[
-                Marketplace]
+            database=clientObtain.kumiko_marketplace, document_models=[Marketplace]
         )
         resMain = await Marketplace.find_all().to_list()
         return resMain
-    
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def getItem(self, name: str):
@@ -86,8 +97,7 @@ class KumikoEcoUtils:
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
         await init_beanie(
-            database=clientGetItem.kumiko_marketplace, document_models=[
-                Marketplace]
+            database=clientGetItem.kumiko_marketplace, document_models=[Marketplace]
         )
         resMain2 = await Marketplace.find(Marketplace.name == name).to_list()
         return resMain2

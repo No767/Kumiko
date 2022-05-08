@@ -70,8 +70,7 @@ class SpigetV2(commands.Cog):
                                     if not dictItemMain["external"]:
                                         embedVar = discord.Embed(
                                             title=dictItem["name"],
-                                            color=discord.Color.from_rgb(
-                                                173, 156, 255),
+                                            color=discord.Color.from_rgb(173, 156, 255),
                                         )
                                         embedVar.description = dictItem["tag"]
                                         for key, value in dictItem.items():
@@ -83,8 +82,7 @@ class SpigetV2(commands.Cog):
                                             if item1 not in itemFilter:
                                                 embedVar.add_field(
                                                     name=item1,
-                                                    value=f"{[res1]}".replace(
-                                                        "'", ""),
+                                                    value=f"{[res1]}".replace("'", ""),
                                                     inline=True,
                                                 )
                                         embedVar.add_field(
@@ -92,14 +90,12 @@ class SpigetV2(commands.Cog):
                                             value=dictItem["rating"]["average"],
                                             inline=True,
                                         )
-                                        embedVar.set_thumbnail(
-                                            url=str(thumbnail))
+                                        embedVar.set_thumbnail(url=str(thumbnail))
                                         await ctx.respond(embed=embedVar)
                                     else:
                                         embedVar = discord.Embed(
                                             title=dictItem["name"],
-                                            color=discord.Color.from_rgb(
-                                                173, 156, 255),
+                                            color=discord.Color.from_rgb(173, 156, 255),
                                         )
                                         embedVar.description = dictItem["tag"]
                                         for k, v in dictItem.items():
@@ -111,8 +107,7 @@ class SpigetV2(commands.Cog):
                                             if item not in itemFilter:
                                                 embedVar.add_field(
                                                     name=item,
-                                                    value=f"{[res]}".replace(
-                                                        "'", ""),
+                                                    value=f"{[res]}".replace("'", ""),
                                                     inline=True,
                                                 )
                                         embedVar.add_field(
@@ -125,8 +120,7 @@ class SpigetV2(commands.Cog):
                                             value=f"{download_url_external_false}",
                                             inline=False,
                                         )
-                                        embedVar.set_thumbnail(
-                                            url=str(thumbnail))
+                                        embedVar.set_thumbnail(url=str(thumbnail))
                                         await ctx.respond(embed=embedVar)
                     except ValueError:
                         embedErrorMain = discord.Embed()
@@ -176,11 +170,9 @@ class SpigetV3(commands.Cog):
                         embedVar.set_thumbnail(url=dictItem["icon"]["url"])
                         for k, v in dictItem.items():
                             if k not in authorFilter:
-                                embedVar.add_field(
-                                    name=k, value=v, inline=True)
+                                embedVar.add_field(name=k, value=v, inline=True)
                         for keys, value in dictItem["identities"].items():
-                            embedVar.add_field(
-                                name=keys, value=value, inline=True)
+                            embedVar.add_field(name=keys, value=value, inline=True)
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = "The query failed. Please Try Again...."
@@ -245,8 +237,7 @@ class SpigetV5(commands.Cog):
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(173, 156, 255)
                     )
-                    embedVar.add_field(
-                        name="Status", value=r.status, inline=True)
+                    embedVar.add_field(name="Status", value=r.status, inline=True)
                     await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(

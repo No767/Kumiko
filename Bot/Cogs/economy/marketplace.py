@@ -1,27 +1,27 @@
 import asyncio
+from datetime import datetime
 
 import discord
 import uvloop
-from discord.commands import Option, slash_command, SlashCommandGroup
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from economy_utils import KumikoEcoUtils
-from datetime import datetime
 
 utilsMain = KumikoEcoUtils()
 today = datetime.now()
-
 
 
 class ecoMarketplace(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    eco_marketplace = SlashCommandGroup(name="marketplace", description="Commands for Kumiko's Marketplace", guild_ids=[970159505390325842])
-    
-    @eco_marketplace.command(
-        name="add-item"
+    eco_marketplace = SlashCommandGroup(
+        name="marketplace",
+        description="Commands for Kumiko's Marketplace",
+        guild_ids=[970159505390325842],
     )
-    
+
+    @eco_marketplace.command(name="add-item")
     async def ecoAddItem(
         self,
         ctx,
@@ -36,7 +36,7 @@ class ecoMarketplace(commands.Cog):
         owner = ctx.user.id
         await utilsMain.ins(dateEntry, owner, name, description, amount, price)
         await ctx.respond("Item added to the marketplace")
-        
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @eco_marketplace.command(name="view")
@@ -55,9 +55,9 @@ class ecoMarketplace(commands.Cog):
                 embed.description = mainDict["description"]
 
             await ctx.respond(embed=embed)
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-            
+
     @eco_marketplace.command(
         name="search",
     )
@@ -80,13 +80,9 @@ class ecoMarketplace(commands.Cog):
             embed.description = dict(mainGetItem)["description"]
 
         await ctx.respond(embed=embed)
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
-
 
 
 def setup(bot):
     bot.add_cog(ecoMarketplace(bot))
-

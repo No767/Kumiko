@@ -1,9 +1,9 @@
 import asyncio
 import os
+
 import uvloop
 from dotenv import load_dotenv
-from sqlalchemy import (BigInteger, Column, Integer, MetaData, Sequence, Table,
-                        func, select)
+from sqlalchemy import BigInteger, Column, Integer, MetaData, Table, select
 from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
@@ -16,7 +16,7 @@ Username = os.getenv("Postgres_Username")
 class KumikoEcoUserUtils:
     def __init__(self):
         self.self = self
-        
+
     async def insUserFirstTime(self, user_id: int):
         meta = MetaData()
         engine = create_async_engine(
@@ -29,17 +29,15 @@ class KumikoEcoUserUtils:
             Column("coins", Integer),
         )
         async with engine.begin() as conn:
-            s = select(users.c.user_id).where(
-                users.c.user_id == user_id)
+            s = select(users.c.user_id).where(users.c.user_id == user_id)
             results = await conn.execute(s)
             results_fetched = results.fetchone()
             if results_fetched is None:
                 insert_new = users.insert().values(coins=0, user_id=user_id)
                 await conn.execute(insert_new)
 
-    
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-                
+
     async def updateUser(self, coins: int):
         meta = MetaData()
         engine = create_async_engine(
@@ -53,18 +51,17 @@ class KumikoEcoUserUtils:
         )
         async with engine.begin() as conn:
             update_values = (
-                users.update()
-                .values(coins=coins)
-                .filter(users.c.id == self.id)
+                users.update().values(coins=coins).filter(users.c.id == self.id)
             )
             await conn.execute(update_values)
-        
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
+
     async def initTables(self):
         meta4 = MetaData()
         engine4 = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users", echo=True
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users",
+            echo=True,
         )
         Table(
             "users",
@@ -74,9 +71,9 @@ class KumikoEcoUserUtils:
         )
         async with engine4.begin() as conn4:
             await conn4.run_sync(meta4.create_all)
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-            
+
     async def getUser(self, user_id: int):
         meta = MetaData()
         engine = create_async_engine(
@@ -93,10 +90,12 @@ class KumikoEcoUserUtils:
             result_select = await conn.stream(s)
             async for row in result_select:
                 return row
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
-    async def userTransaction(self, sender_id: int, receiver_id: int, sender_amount: int, receiver_amount: int):
+
+    async def userTransaction(
+        self, sender_id: int, receiver_id: int, sender_amount: int, receiver_amount: int
+    ):
         meta = MetaData()
         engineMain4 = create_async_engine(
             f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
@@ -113,12 +112,15 @@ class KumikoEcoUserUtils:
                 .values(coins=sender_amount)
                 .filter(users.c.user_id == sender_id)
             )
-            update_values2 = users.update().values(coins=receiver_amount).filter(users.c.user_id == receiver_id)
+            update_values2 = (
+                users.update()
+                .values(coins=receiver_amount)
+                .filter(users.c.user_id == receiver_id)
+            )
             await mainConn5.execute(update_values)
             await mainConn5.execute(update_values2)
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    
 
     async def removeUser(self, user_id: int):
         meta = MetaData()
@@ -134,6 +136,5 @@ class KumikoEcoUserUtils:
         async with engineMain2.begin() as mainConn2:
             delete_values = users.delete().where(users.c.user_id == user_id)
             await mainConn2.execute(delete_values)
-            
+
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    

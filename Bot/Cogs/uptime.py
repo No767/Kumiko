@@ -23,8 +23,7 @@ class UptimeV1(commands.Cog):
         guild_ids=[866199405090308116],
     )
     async def botUptime(self, ctx):
-        uptime = datetime.timedelta(
-            seconds=int(round(time.time() - startTime)))
+        uptime = datetime.timedelta(seconds=int(round(time.time() - startTime)))
         embed = discord.Embed(color=discord.Color.from_rgb(245, 227, 255))
         embed.description = f"Kumiko's Uptime: `{uptime.days} Days, {uptime.seconds//3600} Hours, {(uptime.seconds//60)%60} Minutes, {(uptime.seconds%60)} Seconds`"
         await ctx.respond(embed=embed)

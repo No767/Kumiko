@@ -52,8 +52,7 @@ class DiscordBotsV1(commands.Cog):
                         for dictItem in dataMain["bots"]:
                             for k, v in dictItem.items():
                                 if k not in filterMain:
-                                    embedVar.add_field(
-                                        name=k, value=v, inline=True)
+                                    embedVar.add_field(name=k, value=v, inline=True)
                                     embedVar.remove_field(-18)
                             embedVar.title = dictItem["username"]
                             embedVar.description = dictItem["shortDescription"]
