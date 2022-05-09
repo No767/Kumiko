@@ -2,7 +2,6 @@
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://stand-with-ukraine.pp.ua)
 
-### Slava Ukraini!
 # Kumiko
 
 <img src="./assets/kumiko.jpg" width=200 height=200>
@@ -16,9 +15,6 @@ The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moder
 
 <div align=left>
 
-# Important Message
-    
-So far, Kumiko has not gotten as much updates as Rin. For a more detailed explanation, see [here](https://gist.github.com/No767/a17da14edc4f06dcc837477b8811a50a)
 
 ## Kumiko 
 
@@ -33,11 +29,15 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 
 # Prefix
 
-Rin's prefix is `/`.
+Rin's prefix is `/`. Kumiko also uses the same prefix as Rin (`/`)
 
 # Inviting the Bot
 
 Still in early production. Not ready for release yet
+
+## Support
+
+If you would like to support me with projects like this, please consider starring this project and other ones! Both Rin and Kumiko take a lot of time to make, so please consider supporting me if you can.
 
 # Getting Started (For Developers)
 
