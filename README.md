@@ -27,6 +27,14 @@ Rin is a Discord bot written with Pycord and Python, and is focused on fetching 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
 hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. On top on that, Rin is powered by the fatest JSON parser in the world, SIMDJSON. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
+# Features
+
+- An **Opt-In** Economy System with jobs system and marketplace (WIP)
+- AI Driven GAN Anime Waifu Generator (Not implemented yet)
+- Genshin Impact Wish Sim (Not implemented yet)
+- Reaction Roles (Broken)
+- All of the services from upstream Rin
+
 # Prefix
 
 Rin's prefix is `/`. Kumiko also uses the same prefix as Rin (`/`)
@@ -35,7 +43,7 @@ Rin's prefix is `/`. Kumiko also uses the same prefix as Rin (`/`)
 
 Still in early production. Not ready for release yet
 
-## Support
+### Support
 
 If you would like to support me with projects like this, please consider starring this project and other ones! Both Rin and Kumiko take a lot of time to make, so please consider supporting me if you can.
 
