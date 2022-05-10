@@ -2,7 +2,7 @@
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://stand-with-ukraine.pp.ua)
 
-# Kumiko
+# Kumiko (久美子)
 
 <img src="./assets/kumiko.jpg" width=200 height=200>
 
