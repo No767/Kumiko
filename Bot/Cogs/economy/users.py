@@ -5,9 +5,10 @@ import discord
 import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
-from economy_utils import KumikoEcoUserUtils
+from economy_utils import KumikoEcoUserUtils, UsersInv
 
 utilsUser = KumikoEcoUserUtils()
+inv = UsersInv()
 
 
 class View(discord.ui.View):
@@ -98,6 +99,24 @@ class ecoUsers(commands.Cog):
             name="Total balance for receiver", value=totalAmountReceiver, inline=True
         )
         await ctx.respond(embed=embed)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @eco_users.command(name="inv")
+    async def ecoUserInv(self, ctx):
+        """Access your inventory"""
+        userInv = await inv.obtainInv(ctx.user.id)
+        embed = discord.Embed()
+        for items in userInv:
+            mainDict = dict(items)
+            mainItems = dict(mainDict["items"])
+            for k, v in mainDict["items"]:
+                if k not in ["name", "description"]:
+                    embed.add_field(name=k, value=v, inline=True)
+            embed.title = mainItems["name"]
+            embed.description = mainItems["description"]
+            embed.remove_field(-2)
+            await ctx.respond(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

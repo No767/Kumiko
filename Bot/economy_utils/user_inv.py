@@ -40,3 +40,16 @@ class UsersInv:
         await entry.create()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def obtainInv(self, user_id: int):
+        clientObtainInv = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
+        await init_beanie(
+            database=clientObtainInv.kumiko_marketplace,
+            document_models=[User_Inventory],
+        )
+        results = await User_Inventory.find_all().to_list()
+        return results
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
