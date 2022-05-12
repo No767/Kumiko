@@ -20,16 +20,9 @@ cchardet = "*"
 beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0b7", extras = ["voice"]}
 pysimdjson = "*"
-motor = "*"
-odmantic = "*"
-beanie = "*"
-click = "==8.1.2"
+beanie = "==1.11.0"
 
 [dev-packages]
-autopep8 = "*"
-isort = "*"
-autoflake = "*"
-pyflakes = "*"
 pre-commit = "*"
 
 [requires]

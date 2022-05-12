@@ -107,15 +107,13 @@ class ecoUsers(commands.Cog):
         """Access your inventory"""
         userInv = await inv.obtainInv(ctx.user.id)
         embed = discord.Embed()
-        for items in userInv:
-            mainDict = dict(items)
-            mainItems = dict(mainDict["items"])
-            for k, v in mainDict["items"]:
-                if k not in ["name", "description"]:
-                    embed.add_field(name=k, value=v, inline=True)
-            embed.title = mainItems["name"]
-            embed.description = mainItems["description"]
-            embed.remove_field(-2)
+        for mainItem in userInv:
+            mainDict = dict(mainItem)
+            mainDictItems = dict(mainDict["item"])
+            embed.title = mainDictItems["name"]
+            embed.description = mainDictItems["description"]
+            embed.add_field(name="Amount", value=mainDictItems["amount"], inline=True)
+            embed.remove_field(1)
             await ctx.respond(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
