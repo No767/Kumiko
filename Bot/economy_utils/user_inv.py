@@ -49,7 +49,7 @@ class UsersInv:
             database=clientObtainInv.kumiko_marketplace,
             document_models=[User_Inventory],
         )
-        results = await User_Inventory.find_all().to_list()
+        results = await User_Inventory.find_all(User_Inventory.user_id == user_id)
         return results
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

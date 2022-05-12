@@ -16,7 +16,7 @@ The Multipurpose Version of [Rin](https://github.com/No767/Rin) - Supports Moder
 <div align=left>
 
 
-## Kumiko 
+## Kumiko (久美子)
 
 Kumiko is a multipurpose fork of [Rin](https://github.com/No767/Rin), and includes features like an economy system, and more. Currently Kumiko is in heavy development, and is not ready for use. Just like 
 Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of the services that Rin has.
