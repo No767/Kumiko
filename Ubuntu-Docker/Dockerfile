@@ -1,11 +1,12 @@
 FROM ubuntu:22.04 as install_python
+ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends make build-essential 
 RUN apt-get install libssl-dev zlib1g-dev libbz2-dev libreadline-dev  -y --no-install-recommends
 RUN apt-get install libsqlite3-dev wget ca-certificates curl  -y --no-install-recommends
 RUN apt-get install llvm libncurses5-dev  -y --no-install-recommends
 RUN apt-get install xz-utils  -y --no-install-recommends
-RUN apt-get install tk-dev- -y --no-install-recommends
+RUN apt-get install tk-dev -y --no-install-recommends
 RUN apt-get install libxml2-dev libxmlsec1-dev libffi-dev  -y --no-install-recommends
 RUN apt-get install liblzma-dev mecab-ipadic-utf8 git python3.10-dev -y --no-install-recommends
 ENV PYENV_ROOT /root/.pyenv
