@@ -4,7 +4,7 @@ import re
 import discord
 import uvloop
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 from economy_utils import KumikoEcoUserUtils, UsersInv
 
 utilsUser = KumikoEcoUserUtils()
@@ -106,15 +106,16 @@ class ecoUsers(commands.Cog):
     async def ecoUserInv(self, ctx):
         """Access your inventory"""
         userInv = await inv.obtainInv(ctx.user.id)
-        embed = discord.Embed()
-        for mainItem in userInv:
-            mainDict = dict(mainItem)
-            mainDictItems = dict(mainDict["item"])
-            embed.title = mainDictItems["name"]
-            embed.description = mainDictItems["description"]
-            embed.add_field(name="Amount", value=mainDictItems["amount"], inline=True)
-            embed.remove_field(1)
-            await ctx.respond(embed=embed)
+        paginator = pages.Paginator(
+            pages=[
+                discord.Embed(
+                    title=dict(dict(mainItem)["item"])["name"],
+                    description=dict(dict(mainItem)["item"])["description"],
+                ).add_field(name="Amount", value=dict(dict(mainItem)["item"])["amount"])
+                for mainItem in userInv
+            ]
+        )
+        await paginator.respond(ctx.interaction, ephemeral=False)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

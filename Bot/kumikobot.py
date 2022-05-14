@@ -45,6 +45,7 @@ initial_extensions = [
     "Cogs.economy.marketplace",
     "Cogs.economy.users",
     "Cogs.platform",
+    "Cogs.pages",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
