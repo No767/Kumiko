@@ -9,19 +9,12 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+from exceptions import NoItemsError
 
 load_dotenv()
 
 apiKey = os.getenv("Top_GG_API_Key")
 parser = simdjson.Parser()
-
-
-class Error(Exception):
-    pass
-
-
-class NoItemsError(Error):
-    pass
 
 
 class TopGGV1(commands.Cog):

@@ -6,7 +6,7 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import slash_command
+from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -24,7 +24,9 @@ class TwitterV1(commands.Cog):
         name="twitter-search",
         description="Returns up to 5 recent tweets given the Twitter user",
     )
-    async def twitter_search(self, ctx, *, user: str):
+    async def twitter_search(
+        self, ctx, *, user: Option(str, "The username to search up")
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
             params = {"q": f"from:{user}", "count": 5}
@@ -35,9 +37,7 @@ class TwitterV1(commands.Cog):
             ) as r:
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
-
                 try:
-                    print(dataMain)
                     if dataMain["statuses"] is None:
                         embedVar = discord.Embed()
                         embedVar.description = (

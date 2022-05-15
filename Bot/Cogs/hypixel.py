@@ -9,19 +9,12 @@ import uvloop
 from discord.commands import slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+from exceptions import UnknownPlayer
 
 load_dotenv()
 
 hypixel_api_key = os.getenv("Hypixel_API_Key")
 parser = simdjson.Parser()
-
-
-class Error(Exception):
-    pass
-
-
-class UnknownPlayer(Error):
-    pass
 
 
 class hypixel_api(commands.Cog):

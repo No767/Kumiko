@@ -9,20 +9,13 @@ import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
 from dotenv import load_dotenv
+from exceptions import NoItemsError
 
 load_dotenv()
 
 YouTube_API_Key = os.getenv("YouTube_API_Key")
 
 parser = simdjson.Parser()
-
-
-class Error(Exception):
-    pass
-
-
-class NoItemsError(Error):
-    pass
 
 
 class YoutubeV1(commands.Cog):
