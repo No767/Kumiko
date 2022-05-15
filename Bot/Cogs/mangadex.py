@@ -5,7 +5,7 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from exceptions import NotFoundHTTPException
 
@@ -24,11 +24,11 @@ class MangaDexV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="mangadex-search",
-        description="Searches for up to 5 manga on MangaDex",
-    )
+    md = SlashCommandGroup("mangadex", "Commmands for the MangaDex service")
+
+    @md.command(name="search")
     async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
+        """Searches for up to 5 manga on MangaDex"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "title": manga,
@@ -141,16 +141,9 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-random",
-        description="Returns a random manga from MangaDex",
-    )
+    @md.command(name="random")
     async def manga_random(self, ctx):
+        """Returns an random manga from MangaDex"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.mangadex.org/manga/random") as r:
                 data2 = await r.content.read()
@@ -255,18 +248,11 @@ class MangaDexV2(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-scanlation-search",
-        description="Returns info about a scanlation group on MangaDex",
-    )
+    @md.command(name="scanlation-search")
     async def scanlation_search(
         self, ctx, *, name: Option(str, "The name of the scanlation group")
     ):
+        """Returns up to 5 scanlation groups via the name given"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "limit": 5,
@@ -315,18 +301,11 @@ class MangaDexV3(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-scanlation-id",
-        description="Returns info about a scanlation group on MangaDex (Done via ID)",
-    )
+    @md.command(name="scanlation-id")
     async def scanlation_id(
         self, ctx, *, scanlation_id: Option(str, "The ID of the scanlation group")
     ):
+        """Returns the scanlation group with the ID given"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.mangadex.org/group/{scanlation_id}"
@@ -371,16 +350,9 @@ class MangaDexV4(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-user",
-        description="Returns info about a user on MangaDex",
-    )
+    @md.command(name="user")
     async def user(self, ctx, *, user_id: Option(str, "The ID of the user")):
+        """Searches up users on mangadex via id"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.mangadex.org/user/{user_id}") as rep:
                 payload = await rep.content.read()
@@ -429,16 +401,9 @@ class MangaDexV5(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV6(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-author",
-        description="Returns info about an author on MangaDex",
-    )
+    @md.command(name="author")
     async def author(self, ctx, *, author_name: Option(str, "The name of the author")):
+        """Returns up to 5 authors and their info"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"limit": 5, "name": author_name, "order[name]": "asc"}
             async with session.get(
@@ -487,15 +452,7 @@ class MangaDexV6(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexReaderV1(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-read-manga",
-        description="Reads a chapter from the manga on MangaDex",
-    )
+    @md.command(name="read")
     async def manga_read(
         self,
         ctx,
@@ -503,6 +460,7 @@ class MangaDexReaderV1(commands.Cog):
         manga_id: Option(str, "The Manga's ID"),
         chapter_number: Option(int, "The chapter number of the manga"),
     ):
+        """Reads a chapter out of the manga provided on MangaDex"""
         try:
             async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
                 params = {
@@ -566,9 +524,3 @@ class MangaDexReaderV1(commands.Cog):
 
 def setup(bot):
     bot.add_cog(MangaDexV1(bot))
-    bot.add_cog(MangaDexV2(bot))
-    bot.add_cog(MangaDexV3(bot))
-    bot.add_cog(MangaDexV4(bot))
-    bot.add_cog(MangaDexV5(bot))
-    bot.add_cog(MangaDexV6(bot))
-    bot.add_cog(MangaDexReaderV1(bot))

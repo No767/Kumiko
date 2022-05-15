@@ -14,20 +14,14 @@ asyncpraw = "*"
 asyncpg = "*"
 uvloop = "*"
 ujson = "*"
-aiohttp = "==3.8.1"
+aiohttp = "*"
 qrcode = {extras = ["pil"], version = "*"}
 cchardet = "*"
 beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0b7", extras = ["voice"]}
 pysimdjson = "*"
-cysimdjson = "*"
 
 [dev-packages]
-black = "*"
-autopep8 = "*"
-isort = "*"
-autoflake = "*"
-pyflakes = "*"
 pre-commit = "*"
 
 [requires]
