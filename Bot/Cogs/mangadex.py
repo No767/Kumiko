@@ -6,9 +6,25 @@ import orjson
 import simdjson
 import uvloop
 from discord.commands import Option, slash_command
-from discord.ext import commands
+from discord.ext import commands, pages
 
 parser = simdjson.Parser()
+
+
+class List(list):
+    def __setitem__(self, id, data):
+        super().__setitem__(id - 1, data)
+
+    def __getitem__(self, id):
+        return super().__getitem__(id - 1)
+
+
+class Error(Exception):
+    pass
+
+
+class NotFoundHTTPException(Error):
+    pass
 
 
 class MangaDexV1(commands.Cog):
@@ -483,38 +499,76 @@ class MangaDexReaderV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Note that the MangaDex Reader has been saved for another release. v2.0.0 will not contain the mangadex reader
-    # Later this should allow for the name to be inputted, but for now it purely relies on the chapter id
-    @commands.command(name="mangadex-read", aliases=["md-read"])
-    async def manga_read(self, ctx, *, id: str):
+    @slash_command(
+        name="mangadex-read-manga",
+        description="Reads a chapter from the manga on MangaDex",
+    )
+    async def manga_read(
+        self,
+        ctx,
+        *,
+        manga_id: Option(str, "The Manga's ID"),
+        chapter_number: Option(int, "The chapter number of the manga"),
+    ):
         try:
             async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-                async with session.get(f"https://api.mangadex.org/chapter/{id}") as r:
-                    data = await r.json()
-                    chapter_hash = data["data"]["attributes"]["hash"]
-                    var = 0
-                    var += 1
-                    list_of_images = data["data"]["attributes"]["data"][var]
-                    len(data["data"]["attributes"]["data"])
-                    chapter_name = data["data"]["attributes"]["title"]
-                    chapter_num = data["data"]["attributes"]["chapter"]
-                    manga_id = data["data"]["relationships"][1]["id"]
-                    async with session.get(
-                        f"https://api.mangadex.org/manga/{manga_id}"
-                    ) as resp:
-                        data1 = await resp.json()
-                        title = data1["data"]["attributes"]["title"]["en"]
-                        embedVar = discord.Embed(
-                            title=f"{title}",
-                            color=discord.Color.from_rgb(231, 173, 255),
-                        )
-                        embedVar.description = f"{chapter_name} - Chapter {chapter_num}"
-                        embedVar.set_image(
-                            url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
-                        )
-                        await ctx.send(embed=embedVar)
-        except Exception as e:
-            await ctx.send(e)
+                params = {
+                    "contentRating[]": "safe",
+                    "includeFutureUpdates": 1,
+                    "order[createdAt]": "asc",
+                    "order[updatedAt]": "asc",
+                    "order[publishAt]": "asc",
+                    "order[readableAt]": "asc",
+                    "order[volume]": "asc",
+                    "order[chapter]": "asc",
+                }
+                async with session.get(
+                    f"https://api.mangadex.org/manga/{manga_id}/feed", params=params
+                ) as r:
+                    data = await r.content.read()
+                    dataMain = parser.parse(data, recursive=True)
+                    if "error" in dataMain["result"]:
+                        raise NotFoundHTTPException
+                    else:
+                        chapterIndexID = List(dataMain["data"])[chapter_number]["id"]
+                        chapterTitle = List(dataMain["data"])[chapter_number][
+                            "attributes"
+                        ]["title"]
+                        chapterPos = List(dataMain["data"])[chapter_number][
+                            "attributes"
+                        ]["chapter"]
+                        async with aiohttp.ClientSession(
+                            json_serialize=orjson.dumps
+                        ) as session:
+                            async with session.get(
+                                f"https://api.mangadex.org/at-home/server/{chapterIndexID}"
+                            ) as r:
+                                data2 = await r.content.read()
+                                dataMain2 = parser.parse(data2, recursive=True)
+                                if "error" in dataMain2["result"]:
+                                    raise NotFoundHTTPException
+                                else:
+                                    chapter_hash = dataMain2["chapter"]["hash"]
+                                    paginator = pages.Paginator(
+                                        pages=[
+                                            discord.Embed()
+                                            .set_footer(
+                                                text=f"{chapterTitle} - Chapter {chapterPos}"
+                                            )
+                                            .set_image(
+                                                url=f"https://uploads.mangadex.org/data/{chapter_hash}/{item}"
+                                            )
+                                            for item in dataMain2["chapter"]["data"]
+                                        ],
+                                        loop_pages=True,
+                                    )
+                                    await paginator.respond(
+                                        ctx.interaction, ephemeral=False
+                                    )
+        except NotFoundHTTPException:
+            embedError = discord.Embed()
+            embedError.description = "It seems like the manga's id is invalid or cannot be found. Please try again"
+            await ctx.respond(embed=embedError)
 
 
 def setup(bot):
@@ -524,3 +578,4 @@ def setup(bot):
     bot.add_cog(MangaDexV4(bot))
     bot.add_cog(MangaDexV5(bot))
     bot.add_cog(MangaDexV6(bot))
+    bot.add_cog(MangaDexReaderV1(bot))
