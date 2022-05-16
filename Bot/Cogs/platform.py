@@ -12,7 +12,6 @@ class PlatformV1(commands.Cog):
     @slash_command(
         name="kumiko-platform",
         description="Provides info about the current platform being used",
-        guild_ids=[866199405090308116],
     )
     async def platformChecker(self, ctx):
         embed = discord.Embed()

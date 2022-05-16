@@ -292,7 +292,6 @@ class JikanV4(commands.Cog):
                     embedVar.description = (
                         "The query could not be done. Please try again"
                     )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

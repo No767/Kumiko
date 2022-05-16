@@ -23,7 +23,6 @@ class BlueAllianceV1(commands.Cog):
     @slash_command(
         name="blue-alliance-team-info",
         description="Provides info about an FRC team",
-        guild_ids=[866199405090308116],
     )
     async def blueAllianceTeamInfo(
         self, ctx, *, team_number: Option(int, "The FRC team number")
@@ -63,7 +62,6 @@ class BlueAllianceV2(commands.Cog):
     @slash_command(
         name="blue-alliance-team-events",
         description="Return what events an FRC team has attended",
-        guild_ids=[866199405090308116],
     )
     async def blueAllianceTeamEvents(
         self, ctx, *, team_number: Option(int, "The FRC team number")
@@ -104,7 +102,6 @@ class BlueAllianceV3(commands.Cog):
     @slash_command(
         name="blue-alliance-team-matches-info",
         description="Returns the general info for each match that a team was in during the given event",
-        guild_ids=[866199405090308116],
     )
     async def blueAllianceTeamMatches(
         self,
@@ -150,7 +147,6 @@ class BlueAllianceV4(commands.Cog):
     @slash_command(
         name="blue-alliance-team-match-breakdown",
         description="Returns the breakdown of a team's match",
-        guild_ids=[866199405090308116],
     )
     async def blueAllianceBreakdown(
         self,
@@ -184,7 +180,6 @@ class BlueAllianceV5(commands.Cog):
     @slash_command(
         name="blue-alliance-event-rankings",
         description="Returns the event ranking",
-        guild_ids=[866199405090308116],
     )
     async def blueAllianceEventRankings(
         self, ctx, *, frc_event_key: Option(str, "The event key")

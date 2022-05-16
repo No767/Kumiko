@@ -13,9 +13,9 @@ bot = commands.Bot(help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
-    # "Cogs.kumikoinfo",
-    # "Cogs.kumikoping",
-    # "Cogs.kumikohelp",
+    "Cogs.kumikoinfo",
+    "Cogs.kumikoping",
+    "Cogs.kumikohelp",
     "Cogs.reddit",
     "Cogs.mcsrvstats",
     "Cogs.waifu-generator",
@@ -32,7 +32,7 @@ initial_extensions = [
     "Cogs.version",
     "Cogs.twitter",
     "Cogs.youtube",
-    # "Cogs.bonk",
+    "Cogs.bonk",
     "Cogs.tenor",
     "Cogs.uptime",
     "Cogs.jisho",

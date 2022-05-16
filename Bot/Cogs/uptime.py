@@ -17,11 +17,7 @@ class UptimeV1(commands.Cog):
         global startTime
         startTime = time.time()
 
-    @slash_command(
-        name="uptime",
-        description="Returns Uptime for Kumiko",
-        guild_ids=[866199405090308116],
-    )
+    @slash_command(name="uptime", description="Returns Uptime for Kumiko")
     async def botUptime(self, ctx):
         uptime = datetime.timedelta(seconds=int(round(time.time() - startTime)))
         embed = discord.Embed(color=discord.Color.from_rgb(245, 227, 255))

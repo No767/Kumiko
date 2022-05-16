@@ -15,7 +15,6 @@ class kumikoHelp(commands.Cog):
     @slash_command(
         name="kumikohelp",
         description="The Help Page for Kumiko",
-        guild_ids=[866199405090308116],
     )
     async def rinHelp(
         self,
