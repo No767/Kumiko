@@ -45,7 +45,6 @@ class ecoUsers(commands.Cog):
     eco_users = SlashCommandGroup(
         name="users",
         description="Commands for handling user-related data and transactions for Kumiko's economy system",
-        guild_ids=[970159505390325842],
     )
 
     @eco_users.command(name="init")
