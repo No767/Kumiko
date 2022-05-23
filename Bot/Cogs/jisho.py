@@ -55,7 +55,6 @@ class jishoDict(commands.Cog):
                     if len(jishoMain["data"]) == 0:
                         raise ValueError
                     else:
-
                         embedVar = discord.Embed()
                         for dictItem in jishoMain["data"]:
                             for jpnItem in dictItem["japanese"]:

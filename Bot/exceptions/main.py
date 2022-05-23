@@ -12,3 +12,7 @@ class NotFoundHTTPException(Error):
 
 class NoItemsError(Error):
     pass
+
+
+class ThereIsaRSlashInSubreddit(Error):
+    pass

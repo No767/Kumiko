@@ -6,9 +6,10 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
+from exceptions import NoItemsError
 
 load_dotenv()
 
@@ -20,13 +21,13 @@ class TwitterV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="twitter-search",
-        description="Returns up to 5 recent tweets given the Twitter user",
-    )
+    twitter = SlashCommandGroup("twitter", "Commands for the Twitter service")
+
+    @twitter.command(name="search")
     async def twitter_search(
         self, ctx, *, user: Option(str, "The username to search up")
     ):
+        """Returns up to 5 recent tweets from the given the Twitter user"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
             params = {"q": f"from:{user}", "count": 5}
@@ -38,17 +39,8 @@ class TwitterV1(commands.Cog):
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
                 try:
-                    if dataMain["statuses"] is None:
-                        embedVar = discord.Embed()
-                        embedVar.description = (
-                            "Sadly there are no tweets from this user."
-                        )
-                        embedVar.add_field(
-                            name="Result Count",
-                            value=dataMain["meta"]["result_count"],
-                            inline=True,
-                        )
-                        await ctx.respond(embed=embedVar)
+                    if len(dataMain["statuses"]) == 0:
+                        raise NoItemsError
                     else:
                         embed = discord.Embed()
                         excludedKeys = {
@@ -89,7 +81,7 @@ class TwitterV1(commands.Cog):
                                             value=val,
                                             inline=True,
                                         )
-                                        embed.remove_field(6)
+                                        embed.remove_field(-6)
                                 for v in dictItem["extended_entities"].items():
                                     embed.set_image(url=v[1][0]["media_url_https"])
                                 embed.description = dictItem["text"]
@@ -109,7 +101,7 @@ class TwitterV1(commands.Cog):
                                             value=val2,
                                             inline=True,
                                         )
-                                        embed.remove_field(6)
+                                        embed.remove_field(-6)
                                 embed.description = dictItem["text"]
                                 embed.set_thumbnail(
                                     url=str(
@@ -117,24 +109,16 @@ class TwitterV1(commands.Cog):
                                     ).replace("_normal", "_bigger")
                                 )
                                 await ctx.respond(embed=embed)
-                except Exception as e:
+                except NoItemsError:
                     embedError = discord.Embed()
-                    embedError.description = "Something went wrong. Please try again."
-                    embedError.add_field(name="Error", value=e, inline=True)
+                    embedError.description = f"It looks like there were no tweets from the user {user} found within the past 5 days... Please try again"
                     await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class TwitterV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="twitter-user",
-        description="Returns Info about the given Twitter user",
-    )
+    @twitter.command(name="user")
     async def twitter_user(self, ctx, *, user: str):
+        """Returns Info about the given Twitter user"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
             params = {"q": user, "count": 1}
@@ -174,52 +158,59 @@ class TwitterV2(commands.Cog):
                     "profile_banner_url",
                     "withheld_in_countries",
                 }
+                embedVar = discord.Embed()
                 try:
-                    embedVar = discord.Embed()
-                    for userItem in dataMain2:
-                        if "profile_banner_url" in userItem:
-                            for keys, val in userItem.items():
-                                if keys not in itemFilter:
-                                    embedVar.add_field(
-                                        name=str(keys).replace("_", " ").capitalize(),
-                                        value=f"[{val}]",
-                                        inline=True,
-                                    )
-                            embedVar.title = userItem["name"]
-                            embedVar.description = userItem["description"]
-                            embedVar.set_image(url=str(userItem["profile_banner_url"]))
-                            embedVar.set_thumbnail(
-                                url=str(userItem["profile_image_url_https"]).replace(
-                                    "_normal", "_bigger"
+                    if len(dataMain2) == 0:
+                        raise ValueError
+                    else:
+                        for userItem in dataMain2:
+                            if "profile_banner_url" in userItem:
+                                for keys, val in userItem.items():
+                                    if keys not in itemFilter:
+                                        embedVar.add_field(
+                                            name=str(keys)
+                                            .replace("_", " ")
+                                            .capitalize(),
+                                            value=f"[{val}]",
+                                            inline=True,
+                                        )
+                                embedVar.title = userItem["name"]
+                                embedVar.description = userItem["description"]
+                                embedVar.set_image(
+                                    url=str(userItem["profile_banner_url"])
                                 )
-                            )
-                            await ctx.respond(embed=embedVar)
-                        else:
-                            for keys2, val2 in userItem.items():
-                                if keys2 not in itemFilter:
-                                    embedVar.add_field(
-                                        name=str(keys2).replace("_", " ").capitalize(),
-                                        value=f"[{val2}]",
-                                        inline=True,
-                                    )
-                            embedVar.title = userItem["name"]
-                            embedVar.description = userItem["description"]
-                            embedVar.set_thumbnail(
-                                url=str(userItem["profile_image_url_https"]).replace(
-                                    "_normal", "_bigger"
+                                embedVar.set_thumbnail(
+                                    url=str(
+                                        userItem["profile_image_url_https"]
+                                    ).replace("_normal", "_bigger")
                                 )
-                            )
-                            await ctx.respond(embed=embedVar)
+                                await ctx.respond(embed=embedVar)
+                            else:
+                                for keys2, val2 in userItem.items():
+                                    if keys2 not in itemFilter:
+                                        embedVar.add_field(
+                                            name=str(keys2)
+                                            .replace("_", " ")
+                                            .capitalize(),
+                                            value=f"[{val2}]",
+                                            inline=True,
+                                        )
+                                embedVar.title = userItem["name"]
+                                embedVar.description = userItem["description"]
+                                embedVar.set_thumbnail(
+                                    url=str(
+                                        userItem["profile_image_url_https"]
+                                    ).replace("_normal", "_bigger")
+                                )
+                                await ctx.respond(embed=embedVar)
 
-                except Exception as e:
-                    embedError2 = discord.Embed()
-                    embedError2.description = "Something went wrong. Please try again."
-                    embedError2.add_field(name="Error", value=e, inline=True)
-                    await ctx.respond(embed=embedError2)
+                except ValueError:
+                    embedErrorMain = discord.Embed()
+                    embedErrorMain.description = "Sorry, but the user that you searched for doesn't exist. Please try again"
+                    await ctx.respond(embed=embedErrorMain)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
     bot.add_cog(TwitterV1(bot))
-    bot.add_cog(TwitterV2(bot))
