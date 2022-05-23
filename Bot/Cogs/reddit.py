@@ -24,7 +24,7 @@ class RedditV1(commands.Cog):
     redditUsers = reddit.create_subgroup("users", "Subgroup for Reddit Users")
 
     @reddit.command(name="search")
-    async def reddit(
+    async def redditSearch(
         self,
         ctx,
         *,
@@ -57,8 +57,7 @@ class RedditV1(commands.Cog):
                     or ".gif" in post.url
                     and not post.over_18
                 ]
-                # nosec B311
-                post = random.choice(posts)
+                post = random.choice(posts)  # nosec B311
                 submission = post
                 reddit_embed = discord.Embed(color=discord.Color.from_rgb(255, 69, 0))
                 reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
@@ -81,7 +80,7 @@ class RedditV1(commands.Cog):
             str, "The subreddit to search (Don't include r/ within the subreddit)"
         ),
     ):
-
+        """Returns up to 5 new posts from any given subreddit"""
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
