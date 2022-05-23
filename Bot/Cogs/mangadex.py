@@ -5,21 +5,30 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
-from discord.ext import commands
+from discord.commands import Option, SlashCommandGroup
+from discord.ext import commands, pages
+from exceptions import NotFoundHTTPException
 
 parser = simdjson.Parser()
+
+
+class List(list):
+    def __setitem__(self, id, data):
+        super().__setitem__(id - 1, data)
+
+    def __getitem__(self, id):
+        return super().__getitem__(id - 1)
 
 
 class MangaDexV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="mangadex-search",
-        description="Searches for up to 5 manga on MangaDex",
-    )
+    md = SlashCommandGroup("mangadex", "Commmands for the MangaDex service")
+
+    @md.command(name="search")
     async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
+        """Searches for up to 5 manga on MangaDex"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "title": manga,
@@ -132,16 +141,9 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-random",
-        description="Returns a random manga from MangaDex",
-    )
+    @md.command(name="random")
     async def manga_random(self, ctx):
+        """Returns an random manga from MangaDex"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.mangadex.org/manga/random") as r:
                 data2 = await r.content.read()
@@ -246,18 +248,11 @@ class MangaDexV2(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-scanlation-search",
-        description="Returns info about a scanlation group on MangaDex",
-    )
+    @md.command(name="scanlation-search")
     async def scanlation_search(
         self, ctx, *, name: Option(str, "The name of the scanlation group")
     ):
+        """Returns up to 5 scanlation groups via the name given"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "limit": 5,
@@ -306,18 +301,11 @@ class MangaDexV3(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-scanlation-id",
-        description="Returns info about a scanlation group on MangaDex (Done via ID)",
-    )
+    @md.command(name="scanlation-id")
     async def scanlation_id(
         self, ctx, *, scanlation_id: Option(str, "The ID of the scanlation group")
     ):
+        """Returns the scanlation group with the ID given"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.mangadex.org/group/{scanlation_id}"
@@ -362,16 +350,9 @@ class MangaDexV4(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-user",
-        description="Returns info about a user on MangaDex",
-    )
+    @md.command(name="user")
     async def user(self, ctx, *, user_id: Option(str, "The ID of the user")):
+        """Searches up users on mangadex via id"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.mangadex.org/user/{user_id}") as rep:
                 payload = await rep.content.read()
@@ -420,16 +401,9 @@ class MangaDexV5(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexV6(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="mangadex-author",
-        description="Returns info about an author on MangaDex",
-    )
+    @md.command(name="author")
     async def author(self, ctx, *, author_name: Option(str, "The name of the author")):
+        """Returns up to 5 authors and their info"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"limit": 5, "name": author_name, "order[name]": "asc"}
             async with session.get(
@@ -478,49 +452,75 @@ class MangaDexV6(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class MangaDexReaderV1(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # Note that the MangaDex Reader has been saved for another release. v2.0.0 will not contain the mangadex reader
-    # Later this should allow for the name to be inputted, but for now it purely relies on the chapter id
-    @commands.command(name="mangadex-read", aliases=["md-read"])
-    async def manga_read(self, ctx, *, id: str):
+    @md.command(name="read")
+    async def manga_read(
+        self,
+        ctx,
+        *,
+        manga_id: Option(str, "The Manga's ID"),
+        chapter_number: Option(int, "The chapter number of the manga"),
+    ):
+        """Reads a chapter out of the manga provided on MangaDex"""
         try:
             async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-                async with session.get(f"https://api.mangadex.org/chapter/{id}") as r:
-                    data = await r.json()
-                    chapter_hash = data["data"]["attributes"]["hash"]
-                    var = 0
-                    var += 1
-                    list_of_images = data["data"]["attributes"]["data"][var]
-                    len(data["data"]["attributes"]["data"])
-                    chapter_name = data["data"]["attributes"]["title"]
-                    chapter_num = data["data"]["attributes"]["chapter"]
-                    manga_id = data["data"]["relationships"][1]["id"]
-                    async with session.get(
-                        f"https://api.mangadex.org/manga/{manga_id}"
-                    ) as resp:
-                        data1 = await resp.json()
-                        title = data1["data"]["attributes"]["title"]["en"]
-                        embedVar = discord.Embed(
-                            title=f"{title}",
-                            color=discord.Color.from_rgb(231, 173, 255),
-                        )
-                        embedVar.description = f"{chapter_name} - Chapter {chapter_num}"
-                        embedVar.set_image(
-                            url=f"https://uploads.mangadex.org/data/{chapter_hash}/{list_of_images}"
-                        )
-                        await ctx.send(embed=embedVar)
-        except Exception as e:
-            await ctx.send(e)
+                params = {
+                    "contentRating[]": "safe",
+                    "includeFutureUpdates": 1,
+                    "order[createdAt]": "asc",
+                    "order[updatedAt]": "asc",
+                    "order[publishAt]": "asc",
+                    "order[readableAt]": "asc",
+                    "order[volume]": "asc",
+                    "order[chapter]": "asc",
+                }
+                async with session.get(
+                    f"https://api.mangadex.org/manga/{manga_id}/feed", params=params
+                ) as r:
+                    data = await r.content.read()
+                    dataMain = parser.parse(data, recursive=True)
+                    if "error" in dataMain["result"]:
+                        raise NotFoundHTTPException
+                    else:
+                        chapterIndexID = List(dataMain["data"])[chapter_number]["id"]
+                        chapterTitle = List(dataMain["data"])[chapter_number][
+                            "attributes"
+                        ]["title"]
+                        chapterPos = List(dataMain["data"])[chapter_number][
+                            "attributes"
+                        ]["chapter"]
+                        async with aiohttp.ClientSession(
+                            json_serialize=orjson.dumps
+                        ) as session:
+                            async with session.get(
+                                f"https://api.mangadex.org/at-home/server/{chapterIndexID}"
+                            ) as r:
+                                data2 = await r.content.read()
+                                dataMain2 = parser.parse(data2, recursive=True)
+                                if "error" in dataMain2["result"]:
+                                    raise NotFoundHTTPException
+                                else:
+                                    chapter_hash = dataMain2["chapter"]["hash"]
+                                    paginator = pages.Paginator(
+                                        pages=[
+                                            discord.Embed()
+                                            .set_footer(
+                                                text=f"{chapterTitle} - Chapter {chapterPos}"
+                                            )
+                                            .set_image(
+                                                url=f"https://uploads.mangadex.org/data/{chapter_hash}/{item}"
+                                            )
+                                            for item in dataMain2["chapter"]["data"]
+                                        ],
+                                        loop_pages=True,
+                                    )
+                                    await paginator.respond(
+                                        ctx.interaction, ephemeral=False
+                                    )
+        except NotFoundHTTPException:
+            embedError = discord.Embed()
+            embedError.description = "It seems like the manga's id is invalid or cannot be found. Please try again"
+            await ctx.respond(embed=embedError)
 
 
 def setup(bot):
     bot.add_cog(MangaDexV1(bot))
-    bot.add_cog(MangaDexV2(bot))
-    bot.add_cog(MangaDexV3(bot))
-    bot.add_cog(MangaDexV4(bot))
-    bot.add_cog(MangaDexV5(bot))
-    bot.add_cog(MangaDexV6(bot))

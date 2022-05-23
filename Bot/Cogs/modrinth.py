@@ -7,16 +7,9 @@ import simdjson
 import uvloop
 from discord.commands import Option, slash_command
 from discord.ext import commands
+from exceptions import NoItemsError
 
 parser = simdjson.Parser()
-
-
-class Error(Exception):
-    pass
-
-
-class NoItemsError(Error):
-    pass
 
 
 class ModrinthV1(commands.Cog):

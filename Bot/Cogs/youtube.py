@@ -6,9 +6,10 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
+from exceptions import NoItemsError
 
 load_dotenv()
 
@@ -17,23 +18,15 @@ YouTube_API_Key = os.getenv("YouTube_API_Key")
 parser = simdjson.Parser()
 
 
-class Error(Exception):
-    pass
-
-
-class NoItemsError(Error):
-    pass
-
-
 class YoutubeV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="youtube-search",
-        description="Finds up to 5 videos on YouTube based on the given search term",
-    )
+    yt = SlashCommandGroup("youtube", "Commands for the YouTube service")
+
+    @yt.command(name="search")
     async def youtube_search(self, ctx, *, search: Option(str, "Video Search Term")):
+        """Finds up to 5 videos on YouTube based on the given search term"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": YouTube_API_Key,
@@ -101,16 +94,9 @@ class YoutubeV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class YoutubeV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="youtube-channel",
-        description="Returns Given YouTube Channel Info",
-    )
+    @yt.command(name="channel")
     async def youtube_channel(self, ctx, *, channel: Option(str, "Channel Name")):
+        """Returns info about the given YouTube channel"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             search_params = {
                 "key": YouTube_API_Key,
@@ -204,18 +190,11 @@ class YoutubeV2(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class YoutubeV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="youtube-playlists",
-        description="Returns up to 5 YouTube playlists based on the given YT channel",
-    )
+    @yt.command(name="playlist")
     async def youtube_playlists(
         self, ctx, *, channel_name: Option(str, "Channel Name")
     ):
+        """Returns up to 5 YouTube playlists based on the given YT channel"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             search_params = {
                 "key": YouTube_API_Key,
@@ -309,16 +288,9 @@ class YoutubeV3(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class YoutubeV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="youtube-comments",
-        description="Returns up to 5 comments within a given video",
-    )
+    @yt.command(name="comments")
     async def youtube_comments(self, ctx, *, vid_id: Option(str, "YT Video ID")):
+        """Returns up to 5 comments for the given YouTube video"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": YouTube_API_Key,
@@ -430,16 +402,9 @@ class YoutubeV4(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class YoutubeV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="youtube-video",
-        description="Provides info about the given video",
-    )
+    @yt.command(name="video")
     async def youtube_video(self, ctx, *, video_id: Option(str, "YT Video ID")):
+        """Returns some info on the given YouTube video"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": YouTube_API_Key,
@@ -482,7 +447,3 @@ class YoutubeV5(commands.Cog):
 
 def setup(bot):
     bot.add_cog(YoutubeV1(bot))
-    bot.add_cog(YoutubeV2(bot))
-    bot.add_cog(YoutubeV3(bot))
-    bot.add_cog(YoutubeV4(bot))
-    bot.add_cog(YoutubeV5(bot))
