@@ -6,8 +6,9 @@ import motor.motor_asyncio
 import uvloop
 from beanie import Document, init_beanie
 from dotenv import load_dotenv
-from economy_utils import KumikoEcoUserUtils
 from pydantic import BaseModel
+
+from .eco_user import KumikoEcoUserUtils
 
 load_dotenv()
 MongoDB_Password = os.getenv("MongoDB_Password")
