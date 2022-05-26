@@ -12,6 +12,7 @@ load_dotenv()
 MongoDB_Password = os.getenv("MongoDB_Password")
 Username = os.getenv("MongoDB_Username")
 Server_IP = os.getenv("MongoDB_Server_IP")
+usersUtils = KumikoEcoUtils()
 
 
 class Marketplace(Document):
@@ -25,6 +26,12 @@ class Marketplace(Document):
 
 class ProjectOnlyID(BaseModel):
     owner: int
+
+
+class PurchaseProject(BaseModel):
+    owner: int
+    name: str
+    price: int
 
 
 class KumikoEcoUtils:
@@ -191,3 +198,19 @@ class KumikoEcoUtils:
         await entryDelAllItem.delete()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def purchase(self, owner_id: int, item_name: str, amount: int):
+        clientPurchase = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
+        await init_beanie(
+            database=clientPurchase.kumiko_marketplace, document_models=[Marketplace]
+        )
+        entryPurchaseInit = (
+            await Marketplace.find_all(
+                Marketplace.name == item_name, Marketplace.owner == owner_id
+            )
+            .project(PurchaseProject)
+            .to_list()
+        )
+        return entryPurchaseInit
