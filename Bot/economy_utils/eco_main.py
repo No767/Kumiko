@@ -6,13 +6,14 @@ import motor.motor_asyncio
 import uvloop
 from beanie import Document, init_beanie
 from dotenv import load_dotenv
+from economy_utils import KumikoEcoUserUtils
 from pydantic import BaseModel
 
 load_dotenv()
 MongoDB_Password = os.getenv("MongoDB_Password")
 Username = os.getenv("MongoDB_Username")
 Server_IP = os.getenv("MongoDB_Server_IP")
-usersUtils = KumikoEcoUtils()
+usersUtils = KumikoEcoUserUtils()
 
 
 class Marketplace(Document):
