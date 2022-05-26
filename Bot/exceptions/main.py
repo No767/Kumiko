@@ -16,3 +16,7 @@ class NoItemsError(Error):
 
 class ThereIsaRSlashInSubreddit(Error):
     pass
+
+
+class HTTPException(Error):
+    pass
