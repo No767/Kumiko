@@ -5,7 +5,7 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from exceptions import NoItemsError
 
@@ -16,10 +16,13 @@ class ModrinthV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="modrinth-search",
-        description="Searches for up to 5 mods on Modrinth",
-    )
+    modrinth = SlashCommandGroup("modrinth", "Commands for Modrinth")
+    mod = modrinth.create_subgroup("mod", "Commands for mods")
+    modVersions = modrinth.create_subgroup("versions", "Commands for mod versions")
+    modrinthUser = modrinth.create_subgroup("user", "Commands for users")
+    modrinthTeam = modrinth.create_subgroup("team", "Commands for teams")
+
+    @modrinth.command(name="search")
     async def modrinthSearch(
         self,
         ctx,
@@ -27,6 +30,7 @@ class ModrinthV1(commands.Cog):
         mod: Option(str, "The name of the mod"),
         modloader: Option(str, "Forge or Fabric"),
     ):
+        """Searches for up to 5 mods on Modrinth"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "query": mod,
@@ -62,18 +66,11 @@ class ModrinthV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-mod",
-        description="Gets info about the mod requested",
-    )
+    @mod.command(name="list")
     async def modrinthProject(
         self, ctx, *, mod_slug: Option(str, "The ID or slug of the project")
     ):
+        """Gets info about the mod requested"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.modrinth.com/v2/project/{mod_slug}"
@@ -117,15 +114,7 @@ class ModrinthV2(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-mod-versions",
-        description="Lists out all of the versions for a mod (may cause spam)",
-    )
+    @modVersions.command(name="all")
     async def modrinthProjectVersion(
         self,
         ctx,
@@ -139,6 +128,7 @@ class ModrinthV3(commands.Cog):
         ),
         game_version: Option(str, "The version of Minecraft", required=False),
     ):
+        """Lists out all of the versions for a mod (may cause spam)"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "loaders": f"[{str(loaders).lower()}]",
@@ -202,18 +192,11 @@ class ModrinthV3(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-mod-version",
-        description="Returns info on the given mod version ID",
-    )
+    @modVersions.command(name="id")
     async def modrinthModVersion(
         self, ctx, *, mod_version_id: Option(str, "The ID of the mod version")
     ):
+        """Returns info on the given mod version ID"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.modrinth.com/v2/version/{mod_version_id}"
@@ -246,18 +229,11 @@ class ModrinthV4(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-user",
-        description="Returns info on the given user",
-    )
-    async def modrinthUser(
+    @modrinthUser.command(name="search")
+    async def modrinthUserMain(
         self, ctx, *, username: Option(str, "The username or ID of the user")
     ):
+        """Returns info on the given user"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.modrinth.com/v2/user/{username}"
@@ -286,18 +262,11 @@ class ModrinthV5(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV6(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-user-projects",
-        description="Returns info on the given user's projects",
-    )
+    @modrinthUser.command(name="projects")
     async def modrinthUserProjects(
         self, ctx, *, username: Option(str, "The username or ID of the user")
     ):
+        """Returns info on the given user's projects"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.modrinth.com/v2/user/{username}/projects"
@@ -352,18 +321,11 @@ class ModrinthV6(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV7(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-project-team-members",
-        description="Returns the team memebers of a project",
-    )
+    @modrinthTeam.command(name="project")
     async def modrinthProjectTeamMembers(
         self, ctx, *, project: Option(str, "The slug or ID of the project")
     ):
+        """Returns the team members of a project"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.modrinth.com/v2/project/{project}/members"
@@ -393,18 +355,11 @@ class ModrinthV7(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class ModrinthV8(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="modrinth-team-members",
-        description="Returns the members within the given team",
-    )
+    @modrinthTeam.command(name="members")
     async def modrinthTeamMembers(
         self, ctx, *, team_id: Option(str, "The ID of the team")
     ):
+        """Returns the members within the given team"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 f"https://api.modrinth.com/v2/team/{team_id}/members"
@@ -437,10 +392,3 @@ class ModrinthV8(commands.Cog):
 
 def setup(bot):
     bot.add_cog(ModrinthV1(bot))
-    bot.add_cog(ModrinthV2(bot))
-    bot.add_cog(ModrinthV3(bot))  # Disabled due to spam issues
-    bot.add_cog(ModrinthV4(bot))
-    bot.add_cog(ModrinthV5(bot))
-    bot.add_cog(ModrinthV6(bot))
-    bot.add_cog(ModrinthV7(bot))
-    bot.add_cog(ModrinthV8(bot))

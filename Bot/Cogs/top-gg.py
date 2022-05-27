@@ -6,7 +6,7 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
 from exceptions import NoItemsError
@@ -21,11 +21,11 @@ class TopGGV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="topgg-search",
-        description="Returns Info about the given Discord bot on Top.gg",
-    )
+    topgg = SlashCommandGroup("topgg", "Commands for Top.gg")
+
+    @topgg.command(name="search")
     async def topgg_search_one(self, ctx, bot_id: Option(str, "Discord Bot ID")):
+        """Returns info about the given Discord bot on Top.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
             async with session.get(
@@ -74,16 +74,9 @@ class TopGGV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class TopGGV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="topgg-search-users",
-        description="Returns Info about the given user on Top.gg",
-    )
+    @topgg.command(name="id")
     async def topgg_search_users(self, ctx, *, user_id: Option(str, "User ID")):
+        """Returns info about the given user on Top.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
             async with session.get(
@@ -127,4 +120,3 @@ class TopGGV2(commands.Cog):
 
 def setup(bot):
     bot.add_cog(TopGGV1(bot))
-    bot.add_cog(TopGGV2(bot))
