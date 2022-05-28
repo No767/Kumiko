@@ -36,7 +36,7 @@ initial_extensions = [
     "Cogs.uptime",
     "Cogs.mangadex",
     "Cogs.bot-info",
-    "Cogs.openai-gpt3",
+    # "Cogs.openai-gpt3", # Disabled due to billing issues with openai
     "Cogs.help",
     "Cogs.modrinth",
     "Cogs.discord-bots",
