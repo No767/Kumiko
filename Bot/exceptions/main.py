@@ -20,3 +20,7 @@ class ThereIsaRSlashInSubreddit(Error):
 
 class HTTPException(Error):
     pass
+
+
+class InvalidToken(Error):
+    pass
