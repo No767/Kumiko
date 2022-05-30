@@ -25,6 +25,9 @@ class MangaDexV1(commands.Cog):
         self.bot = bot
 
     md = SlashCommandGroup("mangadex", "Commmands for the MangaDex service")
+    mdScanlation = md.create_subgroup(
+        "scanlation", "Commands for the scanlation section"
+    )
 
     @md.command(name="search")
     async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
@@ -248,7 +251,7 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @md.command(name="scanlation-search")
+    @mdScanlation.command(name="search")
     async def scanlation_search(
         self, ctx, *, name: Option(str, "The name of the scanlation group")
     ):
@@ -301,7 +304,7 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @md.command(name="scanlation-id")
+    @mdScanlation.command(name="id")
     async def scanlation_id(
         self, ctx, *, scanlation_id: Option(str, "The ID of the scanlation group")
     ):

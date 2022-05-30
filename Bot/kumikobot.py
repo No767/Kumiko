@@ -9,7 +9,7 @@ load_dotenv()
 Discord_Bot_Token = os.getenv("Petal")
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot(help_command=None)
+bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
@@ -37,15 +37,17 @@ initial_extensions = [
     "Cogs.uptime",
     "Cogs.jisho",
     "Cogs.bot-info",
-    "Cogs.openai-gpt3",
+    # "Cogs.openai-gpt3", # Disabled due to billing issues with openai
     "Cogs.help",
     "Cogs.modrinth",
     "Cogs.discord-bots",
-    # "Cogs.first-frc-events",
     "Cogs.economy.marketplace",
     "Cogs.economy.users",
     "Cogs.platform",
     "Cogs.pages",
+    "Cogs.first-frc-events",
+    "Cogs.blue-alliance",
+    "Cogs.legacy-help",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

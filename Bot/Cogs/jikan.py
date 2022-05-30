@@ -5,21 +5,24 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
-from discord.ext import commands
+from discord.commands import Option, SlashCommandGroup
+from discord.ext import commands, pages
+from exceptions import HTTPException, NoItemsError
 
 parser = simdjson.Parser()
 
 
-class JikanV1(commands.Cog):
+class MALV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="jikan-anime",
-        description="Fetches up to 5 anime from MAL",
-    )
+    mal = SlashCommandGroup("mal", "Commands for the MyAnimeList/Jikan service")
+    malSeasons = mal.create_subgroup("seasons", "Sub commands for anime seasons")
+    malRandom = mal.create_subgroup("random", "Random Anime/Manga Commands")
+
+    @mal.command(name="anime")
     async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
+        """Fetches up to 5 anime from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"limit": 5, "q": anime_name, "sfw": "true", "order_by": "title"}
             async with session.get(
@@ -92,16 +95,9 @@ class JikanV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class JikanV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="jikan-manga",
-        description="Fetches up to 5 mangas from MAL",
-    )
+    @mal.command(name="manga")
     async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
+        """Fetches up to 5 mangas from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"limit": 5, "q": manga_name, "sfw": "true", "order_by": "title"}
             async with session.get(
@@ -183,16 +179,9 @@ class JikanV2(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class JikanV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="jikan-random-anime",
-        description="Fetches a random anime from MAL",
-    )
+    @malRandom.command(name="anime")
     async def animeRandom(self, ctx):
+        """Fetches a random anime from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/anime") as response:
                 data = await response.content.read()
@@ -214,7 +203,6 @@ class JikanV3(commands.Cog):
                     "background",
                 ]
                 try:
-                    print(dataMain)
                     if len(dataMain["data"]) == 0:
                         raise ValueError
                     else:
@@ -242,16 +230,9 @@ class JikanV3(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class JikanV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="jikan-random-manga",
-        description="Fetches a random manga from MAL",
-    )
+    @malRandom.command(name="manga")
     async def mangaRandom(self, ctx):
+        """Fetches a random manga from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/manga") as r:
                 data = await r.content.read()
@@ -296,15 +277,7 @@ class JikanV4(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class JikanV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="jikan-seasons",
-        description="Returns animes for the given season and year",
-    )
+    @malSeasons.command(name="list")
     async def season(
         self,
         ctx,
@@ -312,119 +285,175 @@ class JikanV5(commands.Cog):
         *,
         season: Option(str, "Anime Season - Winter, Spring, Summer or Fall"),
     ):
-        if season in ["winter", "spring", "summer", "fall"]:
-            async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-                async with session.get(
-                    f"https://api.jikan.moe/v4/seasons/{year}/{season}"
-                ) as response:
-                    seasons = await response.content.read()
-                    seasonsMain = parser.parse(seasons, recursive=True)
-                    mainSeasonsFilter = [
-                        "images",
-                        "trailer",
-                        "aired",
-                        "producers",
-                        "licensors",
-                        "studios",
-                        "genres",
-                        "explicit_genres",
-                        "themes",
-                        "demographics",
-                        "title",
-                        "synopsis",
-                        "background",
-                        "broadcast",
-                    ]
-                    embedVar = discord.Embed()
-                    print(seasonsMain)
-                    for dictItem in seasonsMain["data"]:
-                        embedVar.title = dictItem["title"]
-                        embedVar.description = dictItem["synopsis"]
-                        for k, v in dictItem.items():
-                            if k not in mainSeasonsFilter:
-                                embedVar.add_field(
-                                    name=str(k).replace("_", " ").capitalize(),
-                                    value=v,
-                                    inline=True,
-                                )
-                        for item in dictItem["genres"]:
-                            embedVar.add_field(
-                                name="Genres", value=item["name"], inline=True
+        """Returns animes for the given season and year"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            async with session.get(
+                f"https://api.jikan.moe/v4/seasons/{year}/{season}"
+            ) as response:
+                seasons = await response.content.read()
+                seasonsMain = parser.parse(seasons, recursive=True)
+                try:
+                    try:
+                        if response.status == 400:
+                            raise HTTPException
+                        elif len(seasonsMain["data"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem["title"],
+                                        description=dictItem["synopsis"],
+                                    )
+                                    .set_image(
+                                        url=dictItem["images"]["jpg"]["large_image_url"]
+                                    )
+                                    .add_field(
+                                        name="Japanese Title",
+                                        value=dictItem["title_japanese"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Similar Titles",
+                                        value=dictItem["title_synonyms"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Episodes",
+                                        value=dictItem["episodes"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Status",
+                                        value=dictItem["status"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Aired",
+                                        value=dictItem["aired"]["string"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Score",
+                                        value=dictItem["score"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Rank", value=dictItem["rank"], inline=True
+                                    )
+                                    .add_field(
+                                        name="Genres",
+                                        value=[
+                                            item["name"] for item in dictItem["genres"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Themes",
+                                        value=[
+                                            item2["name"]
+                                            for item2 in dictItem["themes"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Demographics",
+                                        value=[
+                                            item3["name"]
+                                            for item3 in dictItem["demographics"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    for dictItem in seasonsMain["data"]
+                                ],
+                                loop_pages=True,
                             )
-                        for item1 in dictItem["themes"]:
-                            embedVar.add_field(
-                                name="Themes", value=item1["name"], inline=True
-                            )
-                        for item2 in dictItem["demographics"]:
-                            embedVar.add_field(
-                                name="Demographics", value=item2["name"], inline=True
-                            )
-                        embedVar.set_image(
-                            url=dictItem["images"]["jpg"]["large_image_url"]
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except HTTPException:
+                        embedHTTPExceptionError = discord.Embed()
+                        embedHTTPExceptionError.description = "It seems like you may have put invalid data, thus causing an error. Please try again, but with the proper data instead"
+                        embedHTTPExceptionError.add_field(
+                            name="HTTP Code", value=response.status, inline=True
                         )
-                        await ctx.respond(embed=embedVar)
+                        await ctx.respond(embed=embedHTTPExceptionError)
+                except NoItemsError:
+                    embedNoItemsError = discord.Embed()
+                    embedNoItemsError.description = "It seems like there were no items within the database... Please try again"
+                    await ctx.respond(embed=embedNoItemsError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class JikanV6(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="jikan-season-upcoming",
-        description="Returns anime for the upcoming season (will return ALL of it)",
-    )
+    @malSeasons.command(name="upcoming")
     async def seasonsUpcoming(self, ctx):
+        """Returns anime for the upcoming season"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
                 "https://api.jikan.moe/v4/seasons/upcoming"
             ) as full_response:
-                data = await full_response.content.read()
-                dataMain5 = parser.parse(data, recursive=True)
-                mainFilter = [
-                    "broadcast",
-                    "title",
-                    "synopsis",
-                    "images",
-                    "trailer",
-                    "producers",
-                    "licensors",
-                    "studios",
-                    "genres",
-                    "explicit_genres",
-                    "themes",
-                    "demographics",
-                    "broadcast",
-                    "aired",
-                ]
-                for dictItem in dataMain5["data"]:
-                    embedVar = discord.Embed()
-                    embedVar.title = dictItem["title"]
-                    embedVar.description = dictItem["synopsis"]
-                    embedVar.set_image(url=dictItem["images"]["jpg"]["large_image_url"])
-                    embedVar.add_field(
-                        name="Aired", value=dictItem["aired"]["string"], inline=True
-                    )
-                    for key, value in dictItem.items():
-                        if key not in mainFilter:
-                            embedVar.add_field(
-                                name=str(key).replace("_", " ").capitalize(),
-                                value=value,
+                try:
+                    data = await full_response.content.read()
+                    dataMain5 = parser.parse(data, recursive=True)
+                    mainPages = pages.Paginator(
+                        pages=[
+                            discord.Embed(
+                                title=dictItem["title"],
+                                description=dictItem["synopsis"],
+                            )
+                            .set_image(url=dictItem["images"]["jpg"]["large_image_url"])
+                            .add_field(name="Aired", value=dictItem["aired"]["string"])
+                            .add_field(
+                                name="Season", value=dictItem["season"], inline=True
+                            )
+                            .add_field(
+                                name="Japanese Title",
+                                value=dictItem["title_japanese"],
                                 inline=True,
                             )
-                    await ctx.respond(embed=embedVar)
+                            .add_field(
+                                name="Similar Titles",
+                                value=dictItem["title_synonyms"],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Rating", value=dictItem["rating"], inline=True
+                            )
+                            .add_field(
+                                name="Episodes", value=dictItem["episodes"], inline=True
+                            )
+                            .add_field(
+                                name="Genres",
+                                value=[item["name"] for item in dictItem["genres"]],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Themes",
+                                value=[item2["name"] for item2 in dictItem["themes"]],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Demographics",
+                                value=[
+                                    item3["name"] for item3 in dictItem["demographics"]
+                                ],
+                                inline=True,
+                            )
+                            for dictItem in dataMain5["data"]
+                        ],
+                        loop_pages=True,
+                    )
+                    await mainPages.respond(ctx.interaction, ephemeral=False)
+                except Exception:
+                    embedError = discord.Embed()
+                    embedError.description = (
+                        "Oops, something went wrong. Please try again..."
+                    )
+                    await ctx.respond(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-class JikanV7(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="jikan-user-profile",
-        description="Returns info about given user on MAL",
-    )
+    @mal.command(name="user")
     async def userLookup(self, ctx, *, username: Option(str, "Username of the user")):
+        """Returns info about the given user on MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
                 data = await r.content.read()
@@ -448,12 +477,8 @@ class JikanV7(commands.Cog):
                     embedVar.add_field(name="Reason", value=e, inline=True)
                     await ctx.respond(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def setup(bot):
-    bot.add_cog(JikanV1(bot))
-    bot.add_cog(JikanV2(bot))
-    bot.add_cog(JikanV3(bot))
-    bot.add_cog(JikanV4(bot))
-    # bot.add_cog(JikanV5(bot)) # Disabled due to spam issues...
-    # bot.add_cog(JikanV6(bot))
-    bot.add_cog(JikanV7(bot))
+    bot.add_cog(MALV1(bot))

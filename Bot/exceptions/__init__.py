@@ -1,10 +1,6 @@
-from .main import (
-    Error,
-    NoItemsError,
-    NotFoundHTTPException,
-    ThereIsaRSlashInSubreddit,
-    UnknownPlayer,
-)
+from .main import (Error, HTTPException, InvalidToken, NoItemsError,
+                   NotFoundHTTPException, ThereIsaRSlashInSubreddit,
+                   UnknownPlayer)
 
 __all__ = [
     "UnknownPlayer",
@@ -12,4 +8,6 @@ __all__ = [
     "NoItemsError",
     "Error",
     "ThereIsaRSlashInSubreddit",
+    "HTTPException",
+    "InvalidToken",
 ]

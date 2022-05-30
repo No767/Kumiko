@@ -6,7 +6,7 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import Option, slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -15,20 +15,20 @@ apiKey = os.getenv("Discord_Bots_API_Key")
 parser = simdjson.Parser()
 
 
-class DiscordBotsV1(commands.Cog):
+class DiscordBots(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="discord-bots-search",
-        description="Searches for any Discord Bots listed on discord.bots.gg",
-    )
+    db = SlashCommandGroup("discordbots", "Commands for Discord.bots.gg service")
+
+    @db.command(name="search")
     async def discordBotsSearch(
         self,
         ctx,
         *,
         search: Option(str, "The bot that you wish to search for"),
     ):
+        """Searches for any Discord Bots listed on discord.bots.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
             params = {"q": search, "limit": 5}
@@ -65,18 +65,11 @@ class DiscordBotsV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class DiscordBotsV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="discord-bots-id",
-        description="Searches for any Discord Bots listed on discord.bots.gg via the Discord Bot's ID",
-    )
+    @db.command(name="id")
     async def discordBotsID(
         self, ctx, *, bot_id: Option(str, "The ID of the Discord Bot")
     ):
+        """Searches for any Discord Bots listed on discord.bots.gg via the Discord Bot's ID"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
             async with session.get(
@@ -121,5 +114,4 @@ class DiscordBotsV2(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(DiscordBotsV1(bot))
-    bot.add_cog(DiscordBotsV2(bot))
+    bot.add_cog(DiscordBots(bot))

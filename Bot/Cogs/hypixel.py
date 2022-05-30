@@ -6,7 +6,7 @@ import discord
 import orjson
 import simdjson
 import uvloop
-from discord.commands import slash_command
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
 from exceptions import UnknownPlayer
@@ -17,15 +17,18 @@ hypixel_api_key = os.getenv("Hypixel_API_Key")
 parser = simdjson.Parser()
 
 
-class hypixel_api(commands.Cog):
+class HypixelV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(
-        name="hypixel-user",
-        description="Returns Info About A Minecraft User on Hypixel",
-    )
-    async def hypixel_user(self, ctx, *, uuid: str):
+    hypixel = SlashCommandGroup("hypixel", "Commands for Hypixel")
+    hypixelPlayer = hypixel.create_subgroup("player", "Commands for Hypixel Player")
+
+    @hypixelPlayer.command(name="info")
+    async def hypixel_user(
+        self, ctx, *, uuid: Option(str, "The UUID of the minecraft player")
+    ):
+        """Returns info about an minecraft user on Hypixel"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"uuid": uuid, "key": hypixel_api_key}
             async with session.get(
@@ -90,16 +93,9 @@ class hypixel_api(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class hypixel_player_count(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="hypixel-count",
-        description="Returns the Amount of Players in each game server",
-    )
+    @hypixel.command(name="count")
     async def player_count(self, ctx):
+        """Returns the amount of players in each game server"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": hypixel_api_key}
             async with session.get(
@@ -123,16 +119,11 @@ class hypixel_player_count(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class hypixel_status(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="hypixel-player-status",
-        description="Returns the given player's online status",
-    )
-    async def player_status(self, ctx, *, uuid: str):
+    @hypixelPlayer.command(name="status")
+    async def player_status(
+        self, ctx, *, uuid: Option(str, "The UUID of the minecraft player")
+    ):
+        """Shows the current status of the player given"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"uuid": uuid, "key": hypixel_api_key}
             async with session.get(
@@ -176,16 +167,9 @@ class hypixel_status(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class networkPunishments(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @slash_command(
-        name="hypixel-punishment-stats",
-        description="Shows the stats for the amount of punishments given on Hypixel (All Users)",
-    )
+    @hypixel.command(name="punishments")
     async def punishment_stats(self, ctx):
+        """Shows the stats for the amount of punishments given on Hypixel (All Users)"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": hypixel_api_key}
             async with session.get(
@@ -229,7 +213,4 @@ class networkPunishments(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(hypixel_api(bot))
-    bot.add_cog(hypixel_status(bot))
-    bot.add_cog(hypixel_player_count(bot))
-    bot.add_cog(networkPunishments(bot))
+    bot.add_cog(HypixelV1(bot))
