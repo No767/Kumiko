@@ -8,9 +8,9 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
 
-Password = os.getenv("Postgres_Password")
-Server_IP = os.getenv("Postgres_Server_IP")
-Username = os.getenv("Postgres_Username")
+Password = os.getenv("Postgres_Password_Dev")
+Server_IP = os.getenv("Postgres_Server_IP_Dev")
+Username = os.getenv("Postgres_Username_Dev")
 
 
 class KumikoEcoUserUtils:

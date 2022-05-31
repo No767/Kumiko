@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 
 load_dotenv()
-MongoDB_Password = os.getenv("MongoDB_Password")
-Username = os.getenv("MongoDB_Username")
-Server_IP = os.getenv("MongoDB_Server_IP")
+MongoDB_Password = os.getenv("MongoDB_Password_Dev")
+Username = os.getenv("MongoDB_Username_Dev")
+Server_IP = os.getenv("MongoDB_Server_IP_Dev")
 
 
 class Item(BaseModel):

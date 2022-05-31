@@ -6,6 +6,7 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from economy_utils import KumikoEcoUserUtils, UsersInv
+from exceptions import ItemNotFound
 
 utilsUser = KumikoEcoUserUtils()
 inv = UsersInv()
@@ -104,17 +105,27 @@ class ecoUsers(commands.Cog):
     @eco_users.command(name="inv")
     async def ecoUserInv(self, ctx):
         """Access your inventory"""
-        userInv = await inv.obtainInv(ctx.user.id)
-        paginator = pages.Paginator(
-            pages=[
-                discord.Embed(
-                    title=dict(dict(mainItem)["item"])["name"],
-                    description=dict(dict(mainItem)["item"])["description"],
-                ).add_field(name="Amount", value=dict(dict(mainItem)["item"])["amount"])
-                for mainItem in userInv
-            ]
-        )
-        await paginator.respond(ctx.interaction, ephemeral=False)
+        try:
+            userInv = await inv.obtainInv(ctx.user.id)
+            if userInv is None:
+                raise ItemNotFound
+            else:
+                paginator = pages.Paginator(
+                    pages=[
+                        discord.Embed(
+                            title=dict(dict(mainItem)["item"])["name"],
+                            description=dict(dict(mainItem)["item"])["description"],
+                        ).add_field(
+                            name="Amount", value=dict(dict(mainItem)["item"])["amount"]
+                        )
+                        for mainItem in userInv
+                    ]
+                )
+                await paginator.respond(ctx.interaction, ephemeral=False)
+        except ItemNotFound:
+            embedTypeError = discord.Embed()
+            embedTypeError.description = "It seems you don't have any items in your inventory! Start purchasing some items from the marketplace to get started!"
+            await ctx.respond(embed=embedTypeError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

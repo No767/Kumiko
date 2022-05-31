@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 from datetime import datetime
 
 import discord
@@ -6,17 +7,10 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from economy_utils import KumikoEcoUtils
+from exceptions import ItemNotFound
 
 utilsMain = KumikoEcoUtils()
 today = datetime.now()
-
-
-class Error(Exception):
-    pass
-
-
-class ItemNotFound(Error):
-    pass
 
 
 class ecoMarketplace(commands.Cog):
@@ -41,7 +35,10 @@ class ecoMarketplace(commands.Cog):
         """Adds an item into the marketplace"""
         dateEntry = today.strftime("%B %d, %Y %H:%M:%S")
         owner = ctx.user.id
-        await utilsMain.ins(dateEntry, owner, name, description, amount, price)
+        uuidItem = uuid.uuid4().hex[:16]
+        await utilsMain.ins(
+            uuidItem, dateEntry, owner, name, description, amount, price
+        )
         await ctx.respond("Item added to the marketplace")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -71,6 +68,7 @@ class ecoMarketplace(commands.Cog):
                             name="Owner",
                             value=f"{await self.bot.fetch_user(dict(items)['owner'])}",
                         )
+                        .add_field(name="UUID", value=dict(items)["uuid"], inline=True)
                         for items in mainObtain
                     ],
                 )
@@ -109,6 +107,7 @@ class ecoMarketplace(commands.Cog):
                             name="Owner",
                             value=f"{await self.bot.fetch_user(dict(item)['owner'])}",
                         )
+                        .add_field(name="UUID", value=dict(item)["uuid"], inline=True)
                         for item in mainGetItem
                     ]
                 )

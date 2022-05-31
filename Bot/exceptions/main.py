@@ -24,3 +24,7 @@ class HTTPException(Error):
 
 class InvalidToken(Error):
     pass
+
+
+class ItemNotFound(Error):
+    pass

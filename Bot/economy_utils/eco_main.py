@@ -11,9 +11,9 @@ from pydantic import BaseModel
 from .eco_user import KumikoEcoUserUtils
 
 load_dotenv()
-MongoDB_Password = os.getenv("MongoDB_Password")
-Username = os.getenv("MongoDB_Username")
-Server_IP = os.getenv("MongoDB_Server_IP")
+MongoDB_Password = os.getenv("MongoDB_Password_Dev")
+Username = os.getenv("MongoDB_Username_Dev")
+Server_IP = os.getenv("MongoDB_Server_IP_Dev")
 usersUtils = KumikoEcoUserUtils()
 
 
@@ -24,6 +24,7 @@ class Marketplace(Document):
     price: int
     date_added: str
     owner: int
+    uuid: str
 
 
 class ProjectOnlyID(BaseModel):
@@ -42,6 +43,7 @@ class KumikoEcoUtils:
 
     async def ins(
         self,
+        uuid: str,
         date_added: str,
         owner: int,
         name: Optional[str] = None,
@@ -62,6 +64,7 @@ class KumikoEcoUtils:
             price=price,
             date_added=date_added,
             owner=owner,
+            uuid=uuid,
         )
         await entry.create()
 
