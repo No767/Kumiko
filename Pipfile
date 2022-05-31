@@ -20,7 +20,7 @@ cchardet = "*"
 beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0rc1", extras = ["voice"]}
 pysimdjson = "*"
-beanie = "==1.11.0"
+beanie = "==1.11.1"
 
 [dev-packages]
 pre-commit = "*"
