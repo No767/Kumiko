@@ -219,3 +219,17 @@ class KumikoEcoUtils:
             .to_list()
         )
         return entryPurchaseInit
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def searchForID(self, uuid: str):
+        clientSearchID = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
+        await init_beanie(
+            database=clientSearchID.kumiko_marketplace, document_models=[Marketplace]
+        )
+        searchItemID = Marketplace.find(Marketplace.uuid == uuid)
+        return [item async for item in searchItemID]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

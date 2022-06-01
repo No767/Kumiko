@@ -133,6 +133,8 @@ class ecoMarketplace(commands.Cog):
             embed.description = "Sorry, but you can't delete all of your items in the marketplace. This is more than likely due to the user not being the owner of said item(s)."
             await ctx.respond(embed=embed)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @eco_marketplace.command(name="delete-one")
     async def ecoMarketplaceDeleteOne(
         self, ctx, *, name: Option(str, "The name of the item")
@@ -147,6 +149,46 @@ class ecoMarketplace(commands.Cog):
                 await ctx.respond("Item deleted from the marketplace")
         except ItemNotFound:
             await ctx.respond("Sorry, but that item does not exist in the marketplace.")
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @eco_marketplace.command(name="uuid")
+    async def ecoMarketplaceSearchUUID(
+        self, ctx, *, uuid: Option(str, "The UUID of the Item")
+    ):
+        """Searches the item via the UUID"""
+        try:
+            mainSearchUUID = await utilsMain.searchForID(uuid)
+            if mainSearchUUID is None:
+                raise ItemNotFound
+            else:
+                mainPages = pages.Paginator(
+                    pages=[
+                        discord.Embed(
+                            title=dict(item)["name"],
+                            description=dict(item)["description"],
+                        )
+                        .add_field(
+                            name="Amount", value=dict(item)["amount"], inline=True
+                        )
+                        .add_field(name="Price", value=dict(item)["price"], inline=True)
+                        .add_field(name="Date Added", value=dict(item)["date_added"])
+                        .add_field(
+                            name="Owner",
+                            value=f"{await self.bot.fetch_user(dict(item)['owner'])}",
+                        )
+                        .add_field(name="UUID", value=dict(item)["uuid"], inline=True)
+                        for item in mainSearchUUID
+                    ],
+                    loop_pages=True,
+                )
+                await mainPages.respond(ctx.interaction, ephemeral=False)
+        except ItemNotFound:
+            embedItemNotFoundError = discord.Embed()
+            embedItemNotFoundError.description = (
+                "Sorry, but that item does not exist in the marketplace."
+            )
+            await ctx.respond(embed=embedItemNotFoundError)
 
 
 def setup(bot):
