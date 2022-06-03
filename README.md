@@ -28,7 +28,8 @@ Rin's prefix is `/`.
 Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.com/No767/Rin#bot-discovery-network-links) section. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite). Note that previously (before v2.0.0), the prefix was `.`. Versions beyond v2.0.0 will only support the slash (`/`) prefix.
 
 # Installing Dependencies
-Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. Note that soon Rin will be using RustPython instead. If you want to get set up, here are the instructions to do so:
+
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
 
 ## Windows 
 
@@ -63,17 +64,11 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-6. Install Pipenv
+
+6. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-7. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ## Linux
@@ -110,17 +105,10 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ### OpenSUSE
@@ -154,17 +142,10 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ### Fedora/CentOS
@@ -205,19 +186,11 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
+    make dev-setup
     ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
-    ```
-
 ### Arch/Manjaro
 
 1. Install the suggested build dependencies for pyenv
@@ -248,17 +221,10 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ## MacOS
@@ -268,7 +234,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 2. Install the suggested build dependencies for pyenv
 
     ```sh
-    brew install openssl readline sqlite3 xz zlib tcl-tk git curl
+    brew install openssl readline sqlite3 xz zlib tcl-tk git curl make
     ```
 3. Install Pyenv via Homebrew
 
@@ -288,23 +254,16 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
 5. Follow the rest of the steps, starting on [Set Up Your shell Environment For Pyenv](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
 
-6. Fork and clone the repo
+5. Fork and clone the repo
 
     ```sh
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-7. Install Pipenv
+6. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-8. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 # Licensing
