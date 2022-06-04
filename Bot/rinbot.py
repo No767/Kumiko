@@ -36,13 +36,13 @@ initial_extensions = [
     "Cogs.uptime",
     "Cogs.mangadex",
     "Cogs.bot-info",
-    # "Cogs.openai-gpt3", # Disabled due to billing issues with openai
     "Cogs.help",
     "Cogs.modrinth",
     "Cogs.discord-bots",
     "Cogs.first-frc-events",
     "Cogs.blue-alliance",
     "Cogs.legacy-help",
+    "Cogs.github",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
