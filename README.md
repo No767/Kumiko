@@ -2,7 +2,7 @@
 
 # Rin
 
-<img src="./assets/Rin Logo V4 (GitHub).png">
+![Rin's Logo](./assets/Rin-Trans-Logo-V0.1.0.png)
 
 <br/>
 
