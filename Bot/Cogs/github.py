@@ -1,9 +1,11 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
 import simdjson
+import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
@@ -107,6 +109,8 @@ class GitHubV1(commands.Cog):
                     )
                     await ctx.respond(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @githubSearch.command(name="users")
     async def githubSearchUsers(
         self, ctx, *, user: Option(str, "The user on GitHub to search")
@@ -178,6 +182,7 @@ class GitHubV1(commands.Cog):
                     )
                     await ctx.respond(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     # Remake tokens with correct scopes
     @githubSearch.command(name="commits")
     async def githubSearchCommits(
@@ -250,6 +255,8 @@ class GitHubV1(commands.Cog):
                     )
                     await ctx.respond(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @github.command(name="commit")
     async def githubCommit(
         self,
@@ -295,6 +302,8 @@ class GitHubV1(commands.Cog):
                     embedError = discord.Embed()
                     embedError.description = "It seems like that there isn't a commit with that hash or repo. Please try again"
                     await ctx.respond(embed=embedError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @githubIssues.command(name="all")
     async def githubIssuesRepo(
@@ -406,6 +415,8 @@ class GitHubV1(commands.Cog):
                     )
                     await ctx.respond(embed=embedError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @githubIssues.command(name="one")
     async def githhubIssuesRepoOne(
         self,
@@ -475,6 +486,8 @@ class GitHubV1(commands.Cog):
                     embedHTTPExceptionError = discord.Embed()
                     embedHTTPExceptionError.description = "It seems like that there isn't an issue with that number. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @githubIssues.command(name="comments")
     async def githubIssuesRepoComments(
@@ -546,6 +559,8 @@ class GitHubV1(commands.Cog):
                     embedHTTPExceptionError.description = "Sorry, there seems to be no comments in that repo. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     @github.command(name="license")
     async def githubLicenses(
         self,
@@ -589,6 +604,8 @@ class GitHubV1(commands.Cog):
                     embedHTTPExceptionError = discord.Embed()
                     embedHTTPExceptionError.description = "Sorry, there seems to be no license in that repo. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @githubReleases.command(name="list")
     async def githubReleasesList(
@@ -678,6 +695,8 @@ class GitHubV1(commands.Cog):
                     embedHTTPExceptionError = discord.Embed()
                     embedHTTPExceptionError.description = "Sorry, there seems to be no releases in that repo. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
