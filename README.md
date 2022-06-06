@@ -43,9 +43,14 @@ Rin's prefix is `/`. Kumiko also uses the same prefix as Rin (`/`)
 
 Still in early production. Not ready for release yet
 
-### Support
+# Support 
 
 If you would like to support me with projects like this, please consider starring this project and other ones! Both Rin and Kumiko take a lot of time to make, so please consider supporting me if you can.
+
+# Installing Dependencies
+
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+
 
 # Getting Started (For Developers)
 
@@ -83,17 +88,11 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-6. Install Pipenv
+
+6. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-7. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ## Linux
@@ -130,17 +129,10 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ### OpenSUSE
@@ -174,17 +166,10 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ### Fedora/CentOS
@@ -225,19 +210,11 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
+    make dev-setup
     ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
-    ```
-
 ### Arch/Manjaro
 
 1. Install the suggested build dependencies for pyenv
@@ -268,17 +245,10 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-5. Install Pipenv
+5. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
-    ```
-
-6. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
+    make dev-setup
     ```
 
 ## MacOS
@@ -288,7 +258,7 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
 2. Install the suggested build dependencies for pyenv
 
     ```sh
-    brew install openssl readline sqlite3 xz zlib tcl-tk git curl
+    brew install openssl readline sqlite3 xz zlib tcl-tk git curl make
     ```
 3. Install Pyenv via Homebrew
 
@@ -308,25 +278,17 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
 
 5. Follow the rest of the steps, starting on [Set Up Your shell Environment For Pyenv](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
 
-6. Fork and clone the repo
+5. Fork and clone the repo
 
     ```sh
     git clone https://github.com/[username]/Rin.git && cd Rin
     ```
 
-7. Install Pipenv
+6. Run Make to create the venv and install dependencies
 
     ```sh
-    pip install --upgrade pipenv
+    make dev-setup
     ```
-
-8. Create the venv and install the dependencies
-
-    ```sh
-    pipenv --python 3.10
-    pipenv install --dev
-    ```
-
 # Licensing
 
 Kumiko and Rin are both licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 

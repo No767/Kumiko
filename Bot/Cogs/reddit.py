@@ -6,7 +6,7 @@ import asyncpraw
 import discord
 import uvloop
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 from dotenv import load_dotenv
 from exceptions import ThereIsaRSlashInSubreddit
 
@@ -343,6 +343,53 @@ class RedditV1(commands.Cog):
                 await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @reddit.command(name="egg_irl")
+    async def redditEgg(
+        self,
+        ctx,
+        filters: Option(str, "New, Top or Hot", choices=["new", "top", "hot"]),
+    ):
+        """Literally just shows you r/egg_irl posts."""
+        async with asyncpraw.Reddit(
+            client_id=Reddit_ID,
+            client_secret=Reddit_Secret,
+            user_agent="ubuntu:rin:v2.1.0 (by /u/No767)",
+        ) as redditapi:
+            try:
+                mainSub = await redditapi.subreddit("egg_irl")
+                if "new" in filters:
+                    subLooper = mainSub.new(limit=25)
+                elif "top" in filters:
+                    subLooper = mainSub.top(limit=25)
+                elif "hot" in filters:
+                    subLooper = mainSub.hot(limit=25)
+                mainPages = pages.Paginator(
+                    pages=[
+                        discord.Embed(
+                            title=submission.title, description=submission.selftext
+                        )
+                        .add_field(name="NSFW", value=submission.over_18, inline=True)
+                        .add_field(
+                            name="Number of Upvotes",
+                            value=submission.score,
+                            inline=True,
+                        )
+                        .add_field(name="ID", value=submission.id, inline=True)
+                        .add_field(
+                            name="Flair", value=submission.link_flair_text, inline=True
+                        )
+                        .set_image(url=submission.url)
+                        async for submission in subLooper
+                    ],
+                    loop_pages=True,
+                )
+                await mainPages.respond(ctx.interaction, ephemeral=False)
+            except Exception as e:
+                embedError = discord.Embed()
+                embedError.description = f"There was an error, this is likely caused by a lack of posts found in the query. Please try again."
+                embedError.add_field(name="Reason", value=e, inline=True)
+                await ctx.respond(embed=embedError)
 
 
 def setup(bot):
