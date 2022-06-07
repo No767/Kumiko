@@ -1,9 +1,8 @@
 tasks:
   - before: |
-      pyenv install 3.10.2 
-      pyenv local 3.10.2
+      sudo apt update && sudo apt-get install make
+      pyenv install 3.10.5 
+      pyenv local 3.10.5
   - init: |
-      pip install --upgrade pip pipenv
-      pipenv --python 3.10
-      pipenv install
-    command: python3 ./Bot/rinbot.py
+      
+    command: make run
