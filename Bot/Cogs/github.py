@@ -17,15 +17,21 @@ load_dotenv()
 
 githubAPIKey = os.getenv("GitHub_API_Access_Token")
 
+# ! also make sure to escape all markdown characters
+
 
 class GitHubV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     github = SlashCommandGroup("github", "GitHub commands")
+    githubUser = github.create_subgroup("user", "GitHub user commands")
     githubSearch = github.create_subgroup("search", "Search for repositories on GitHub")
     githubIssues = github.create_subgroup("issues", "Search for issues on GitHub")
     githubReleases = github.create_subgroup("releases", "Search for releases on GitHub")
+    githubRepos = github.create_subgroup(
+        "repos", "All commands for searching repositories"
+    )
 
     @githubSearch.command(name="repos")
     async def githubRepos(self, ctx, *, repo: Option(str, "The name of the repo")):
@@ -489,124 +495,6 @@ class GitHubV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @githubIssues.command(name="comments")
-    async def githubIssuesRepoComments(
-        self,
-        ctx,
-        *,
-        owner: Option(str, "The owner of the repo"),
-        repo: Option(str, "The name of the repo"),
-    ):
-        """Gets up to 25 of the comments from the repo's issues"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {
-                "Authorization": f"token {githubAPIKey}",
-                "accept": "application/vnd.github.v3+json",
-            }
-            params = {"sort", "created", "direction", "desc", "per_page", 25}
-            async with session.get(
-                f"https://api.github.com/repos/{owner}/{repo}/issues/comments",
-                headers=headers,
-                params=params,
-            ) as r:
-                data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
-                try:
-                    try:
-                        if len(dataMain) == 0:
-                            raise NoItemsError
-                        elif r.status == 404:
-                            raise HTTPException
-                        else:
-                            mainPages = pages.Paginator(
-                                pages=[
-                                    discord.Embed(
-                                        title=dictItem4["user"]["login"],
-                                        description=dictItem4["body"],
-                                    )
-                                    .add_field(
-                                        name="URL",
-                                        value=dictItem4["html_url"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Created At",
-                                        value=dictItem4["created_at"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Updated At",
-                                        value=dictItem4["updated_at"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Author Association",
-                                        value=f"[{dictItem4['author_association']}]",
-                                        inline=True,
-                                    )
-                                    .set_thumbnail(url=dictItem4["user"]["avatar_url"])
-                                    for dictItem4 in dataMain
-                                ],
-                                loop_pages=True,
-                            )
-                            await mainPages.respond(ctx.interaction, ephemeral=False)
-                    except NoItemsError:
-                        embedNoItemsError = discord.Embed()
-                        embedNoItemsError.description = "Sorry, there seems to be no comments in that repo. Please try again"
-                        await ctx.respond(embed=embedNoItemsError)
-                except HTTPException:
-                    embedHTTPExceptionError = discord.Embed()
-                    embedHTTPExceptionError.description = "Sorry, there seems to be no comments in that repo. Please try again"
-                    await ctx.respond(embed=embedHTTPExceptionError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @github.command(name="license")
-    async def githubLicenses(
-        self,
-        ctx,
-        *,
-        owner: Option(str, "The owner of the repo"),
-        repo: Option(str, "The name of the repo"),
-    ):
-        """Returns the license used in the repo"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {
-                "Authorization": f"token {githubAPIKey}",
-                "accept": "application/vnd.github.v3+json",
-            }
-            async with session.get(
-                f"https://api.github.com/repos/{owner}/{repo}/license", headers=headers
-            ) as r:
-                try:
-                    data = await r.content.read()
-                    dataMain = parser.parse(data, recursive=True)
-                    if r.status == 404:
-                        raise HTTPException
-                    else:
-                        embed = discord.Embed()
-                        filterV2 = [
-                            "git_url",
-                            "url",
-                            "_links",
-                            "license",
-                            "content",
-                            "encoding",
-                        ]
-                        for keys, value in dataMain.items():
-                            if keys not in filterV2:
-                                embed.add_field(name=keys, value=value, inline=True)
-                        for k, v in dataMain["_links"].items():
-                            embed.add_field(name=k, value=v, inline=True)
-                        embed.title = dataMain["license"]["name"]
-                        await ctx.respond(embed=embed)
-                except HTTPException:
-                    embedHTTPExceptionError = discord.Embed()
-                    embedHTTPExceptionError.description = "Sorry, there seems to be no license in that repo. Please try again"
-                    await ctx.respond(embed=embedHTTPExceptionError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     @githubReleases.command(name="list")
     async def githubReleasesList(
         self,
@@ -694,6 +582,199 @@ class GitHubV1(commands.Cog):
                 except HTTPException:
                     embedHTTPExceptionError = discord.Embed()
                     embedHTTPExceptionError.description = "Sorry, there seems to be no releases in that repo. Please try again"
+                    await ctx.respond(embed=embedHTTPExceptionError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @githubReleases.command(name="latest")
+    async def githubLatestRelease(
+        self,
+        ctx,
+        *,
+        owner: Option(str, "The owner of the repo"),
+        repo: Option(str, "The repo's name"),
+    ):
+        """Gets the latest published full release for any repo"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {
+                "Authorization": f"token {githubAPIKey}",
+                "accept": "application/vnd.github.v3+json",
+            }
+            async with session.get(
+                f"https://api.github.com/repos/{owner}/{repo}/releases/latest",
+                headers=headers,
+            ) as r:
+                data = await r.content.read()
+                dataMain = parser.parse(data, recursive=True)
+                mainFilter = ["author", "assets", "body", "name"]
+                embed = discord.Embed()
+                try:
+                    if r.status == 404:
+                        raise HTTPException
+                    else:
+                        for keys, value in dataMain.items():
+                            if keys not in mainFilter:
+                                embed.add_field(name=keys, value=value, inline=True)
+                        for mainItem in dataMain["assets"]:
+                            for k, v in mainItem.items():
+                                if k not in "uploader":
+                                    embed.add_field(name=k, value=v, inline=True)
+                        embed.add_field(
+                            name="author", value=dataMain["author"]["login"]
+                        )
+                        embed.title = dataMain["name"]
+                        embed.description = dataMain["body"]
+                        embed.set_thumbnail(url=dataMain["author"]["avatar_url"])
+                        await ctx.respond(embed=embed)
+                except HTTPException:
+                    embedHTTPExceptionError = discord.Embed()
+                    embedHTTPExceptionError.description = "Sorry, it seems like there is no repo named like that. Please try again"
+                    await ctx.respond(embed=embedHTTPExceptionError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @githubRepos.command(name="info")
+    async def githubReposInfo(
+        self,
+        ctx,
+        *,
+        owner: Option(str, "The owner of the repo"),
+        repo: Option(str, "The name of the repo"),
+    ):
+        """Returns info about any repo"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {
+                "Authorization": f"token {githubAPIKey}",
+                "accept": "application/vnd.github.v3+json",
+            }
+            async with session.get(
+                f"https://api.github.com/repos/{owner}/{repo}", headers=headers
+            ) as r:
+                data = await r.content.read()
+                dataMain = parser.parse(data, recursive=True)
+                embedMain = discord.Embed()
+                embedFilter = [
+                    "permissions",
+                    "owner",
+                    "template_repository",
+                    "organization",
+                    "source",
+                    "parent",
+                    "license",
+                    "url",
+                    "archive_url",
+                    "assignees_url",
+                    "blobs_url",
+                    "branches_url",
+                    "collaborators_url",
+                    "commits_url",
+                    "comments_url",
+                    "compare_url",
+                    "contributors_url",
+                    "deployments_url",
+                    "downloads_url",
+                    "events_url",
+                    "forks_url",
+                    "git_commits_url",
+                    "git_refs_url",
+                    "git_tags_url",
+                    "git_url",
+                    "issue_comment_url",
+                    "issue_events_url",
+                    "issues_url",
+                    "keys_url",
+                    "labels_url",
+                    "languages_url",
+                    "merges_url",
+                    "milestones_url",
+                    "notifications_url",
+                    "pulls_url",
+                    "releases_url",
+                    "stargazers_urls",
+                    "statuses_url",
+                    "subscribers_url",
+                    "subscription_url",
+                    "tags_url",
+                    "teams_url",
+                    "trees_url",
+                    "clone_url",
+                    "mirror_url",
+                    "hooks_url",
+                    "svn_url",
+                ]
+                licenseFilter = ["key, url", "spdx_id", "node_id", "html_url"]
+                try:
+                    if r.status == 404:
+                        raise HTTPException
+                    else:
+                        for keys, value in dataMain:
+                            if keys not in embedFilter:
+                                embedMain.add_field(name=keys, value=value, inline=True)
+                        for k, v in dataMain["license"].items():
+                            if k not in licenseFilter:
+                                embedMain.add_field(
+                                    name=f"License {k}", value=v, inline=True
+                                )
+                        for k1, v1 in dataMain["permissions"]:
+                            embedMain.add_field(
+                                name=f"Permissions {k1}", value=v1, inline=True
+                            )
+                        embedMain.title = dataMain["name"]
+                        embedMain.description = dataMain["description"]
+                        embedMain.set_thumbnail(url=dataMain["owner"]["avatar_url"])
+                        await ctx.respond(embed=embedMain)
+                except HTTPException:
+                    embedHTTPExceptionError = discord.Embed()
+                    embedHTTPExceptionError.description = "Sorry, it seems like there is no org named like that. Please try again"
+                    await ctx.respond(embed=embedHTTPExceptionError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    # probably would have to deal with this later
+    @github.command(name="user")
+    async def githubUser(self, ctx, *, username: Option(str, "The username to search")):
+        """Returns info on a user in GitHub"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            headers = {
+                "Authorization": f"token {githubAPIKey}",
+                "accept": "application/vnd.github.v3+json",
+            }
+            async with session.get(
+                f"https://api.github.com/users/{username}", headers=headers
+            ) as r:
+                data = await r.content.read()
+                dataMain = parser.parse(data, recursive=True)
+                embedMain = discord.Embed()
+                mainFilterEmbed = [
+                    "url",
+                    "followers_url",
+                    "following_url",
+                    "gists_url",
+                    "starred_url",
+                    "subscriptions_url",
+                    "organizations_url",
+                    "repos_url",
+                    "events_url",
+                    "received_events_url",
+                    "name",
+                    "bio",
+                    "login",
+                    "gravatar_id",
+                ]
+                try:
+                    if r.status == 404:
+                        raise HTTPException
+                    else:
+                        for keys, value in dataMain.items():
+                            if keys not in mainFilterEmbed:
+                                embedMain.add_field(name=keys, value=value, inline=True)
+                        embedMain.title = f"{dataMain['login']} - {dataMain['name']}"
+                        embedMain.description = dataMain["bio"]
+                        embedMain.set_thumbnail(url=dataMain["avatar_url"])
+                        await ctx.respond(embed=embedMain)
+                except HTTPException:
+                    embedHTTPExceptionError = discord.Embed()
+                    embedHTTPExceptionError.description = "Sorry, it seems like there is no org named like that. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
