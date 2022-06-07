@@ -1,8 +1,8 @@
 tasks:
   - before: |
       sudo apt update && sudo apt-get install make
-      pyenv install 3.10.4 
-      pyenv local 3.10.4
+      pyenv install 3.10.5 
+      pyenv local 3.10.5
   - init: |
       
     command: make run
