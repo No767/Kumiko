@@ -13,7 +13,7 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 - Make Rin's logo trans (in support of pride month)
 - Actually use pre-commit hooks instead of format workflow
 
-# Additions
+## Additions
 - GitHub API Support
 - Full Blue Alliance API Support
 - MangaDex Reader
@@ -25,7 +25,7 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 - Task template 
 - Actually use pre-commit hooks instead of format workflow
 
-# Removals
+## Removals
 
 - OpenAI API Support
 
