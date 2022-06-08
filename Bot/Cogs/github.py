@@ -29,9 +29,9 @@ class GitHubV1(commands.Cog):
     githubSearch = github.create_subgroup("search", "Search for repositories on GitHub")
     githubIssues = github.create_subgroup("issues", "Search for issues on GitHub")
     githubReleases = github.create_subgroup("releases", "Search for releases on GitHub")
-    githubRepos = github.create_subgroup(
-        "repos", "All commands for searching repositories"
-    )
+    # githubRepos = github.create_subgroup(
+    # "repos", "All commands for searching repositories"
+    # )
 
     @githubSearch.command(name="repos")
     async def githubRepos(self, ctx, *, repo: Option(str, "The name of the repo")):
@@ -633,7 +633,7 @@ class GitHubV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @githubRepos.command(name="info")
+    @github.command(name="repo")
     async def githubReposInfo(
         self,
         ctx,
@@ -701,23 +701,27 @@ class GitHubV1(commands.Cog):
                     "mirror_url",
                     "hooks_url",
                     "svn_url",
+                    "contents_url",
+                    "description",
                 ]
                 licenseFilter = ["key, url", "spdx_id", "node_id", "html_url"]
                 try:
                     if r.status == 404:
                         raise HTTPException
                     else:
-                        for keys, value in dataMain:
+                        for keys, value in dataMain.items():
                             if keys not in embedFilter:
-                                embedMain.add_field(name=keys, value=value, inline=True)
+                                embedMain.add_field(
+                                    name=keys, value=f"[{value}]", inline=True
+                                )
                         for k, v in dataMain["license"].items():
                             if k not in licenseFilter:
                                 embedMain.add_field(
-                                    name=f"License {k}", value=v, inline=True
+                                    name=f"License {k}", value=f"[{v}]", inline=True
                                 )
-                        for k1, v1 in dataMain["permissions"]:
+                        for k1, v1 in dataMain["permissions"].items():
                             embedMain.add_field(
-                                name=f"Permissions {k1}", value=v1, inline=True
+                                name=f"Permissions {k1}", value=f"[{v1}]", inline=True
                             )
                         embedMain.title = dataMain["name"]
                         embedMain.description = dataMain["description"]
@@ -725,13 +729,13 @@ class GitHubV1(commands.Cog):
                         await ctx.respond(embed=embedMain)
                 except HTTPException:
                     embedHTTPExceptionError = discord.Embed()
-                    embedHTTPExceptionError.description = "Sorry, it seems like there is no org named like that. Please try again"
+                    embedHTTPExceptionError.description = "Sorry, it seems like there is no repo named like that. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     # probably would have to deal with this later
-    @github.command(name="user")
+    @githubUser.command(name="one")
     async def githubUser(self, ctx, *, username: Option(str, "The username to search")):
         """Returns info on a user in GitHub"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
