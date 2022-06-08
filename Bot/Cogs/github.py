@@ -17,8 +17,6 @@ load_dotenv()
 
 githubAPIKey = os.getenv("GitHub_API_Access_Token")
 
-# ! also make sure to escape all markdown characters
-
 
 class GitHubV1(commands.Cog):
     def __init__(self, bot):
@@ -29,9 +27,6 @@ class GitHubV1(commands.Cog):
     githubSearch = github.create_subgroup("search", "Search for repositories on GitHub")
     githubIssues = github.create_subgroup("issues", "Search for issues on GitHub")
     githubReleases = github.create_subgroup("releases", "Search for releases on GitHub")
-    # githubRepos = github.create_subgroup(
-    # "repos", "All commands for searching repositories"
-    # )
 
     @githubSearch.command(name="repos")
     async def githubRepos(self, ctx, *, repo: Option(str, "The name of the repo")):
@@ -179,80 +174,7 @@ class GitHubV1(commands.Cog):
                             await mainPages.respond(ctx.interaction, ephemeral=False)
                     except NoItemsError:
                         embedNoItemsError = discord.Embed()
-                        embedNoItemsError.description = f"Sorry, there seems to be no repos from {user}. Please try again"
-                        await ctx.respond(embed=embedNoItemsError)
-                except Exception:
-                    embedError = discord.Embed()
-                    embedError.description = (
-                        "Sorry, but something went wrong. Please try again"
-                    )
-                    await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    # Remake tokens with correct scopes
-    @githubSearch.command(name="commits")
-    async def githubSearchCommits(
-        self,
-        ctx,
-        owner: Option(str, "The owner of the repo"),
-        repo: Option(str, "The name of the repo"),
-        search: Option(str, "The search term you wish to search for"),
-    ):
-        """Searches for commits in any GitHub repo based on the given search term"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {
-                "Authorization": f"token {githubAPIKey}",
-                "accept": "application/vnd.github.v3+json",
-            }
-            params = {
-                "q": f"repo:{owner}/{repo}+{search}",
-                "sort": "stars",
-                "order": "desc",
-                "per_page": 25,
-            }
-            async with session.get(
-                "https://api.github.com/search/commits", headers=headers, params=params
-            ) as r:
-                try:
-                    data = await r.content.read()
-                    dataMain = parser.parse(data, recursive=True)
-                    print(dataMain)
-                    try:
-                        if len(dataMain["items"]) == 0:
-                            raise NoItemsError
-                        else:
-                            mainPages = pages.Paginator(
-                                pages=[
-                                    discord.Embed(
-                                        title=mainItem2["commit"]["author"]["name"],
-                                        description=mainItem2["commit"]["message"],
-                                    )
-                                    .add_field(
-                                        name="Commit Hash",
-                                        value=mainItem2["sha"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="URL",
-                                        value=mainItem2["html_url"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Commit Date",
-                                        value=mainItem2["commit"]["date"],
-                                        inline=True,
-                                    )
-                                    .set_thumbnail(
-                                        url=mainItem2["author"]["avatar_url"]
-                                    )
-                                    for mainItem2 in dataMain["items"]
-                                ],
-                                loop_pages=True,
-                            )
-                            await mainPages.respond(ctx.interaction, ephemeral=False)
-                    except NoItemsError:
-                        embedNoItemsError = discord.Embed()
-                        embedNoItemsError.description = f"Sorry, there seems to be no commits that has any relationship with the term {search}. Please try again"
+                        embedNoItemsError.description = f"Sorry, there seems to be no users named {user}. Please try again"
                         await ctx.respond(embed=embedNoItemsError)
                 except Exception:
                     embedError = discord.Embed()
@@ -285,29 +207,33 @@ class GitHubV1(commands.Cog):
                 try:
                     data = await r.content.read()
                     dataMain = parser.parse(data, recursive=True)
-                    embedMain = discord.Embed()
-                    mainFilters = [
-                        "url",
-                        "author",
-                        "committer",
-                        "tree",
-                        "parents",
-                        "verification",
-                        "message",
-                    ]
-                    for k, v in dataMain.items():
-                        if k not in mainFilters:
-                            embedMain.add_field(name=k, value=v, inline=True)
-                    for keys, value in dataMain["verification"].items():
-                        embedMain.add_field(name=keys, value=value, inline=True)
-                    embedMain.title = dataMain["author"]["name"]
-                    embedMain.description = dataMain["message"]
-                    embedMain.set_thumbnail(url=dataMain["author"]["avatar_url"])
-                    await ctx.respond(embed=embedMain)
-                except Exception:
-                    embedError = discord.Embed()
-                    embedError.description = "It seems like that there isn't a commit with that hash or repo. Please try again"
-                    await ctx.respond(embed=embedError)
+                    if r.status == 404:
+                        raise HTTPException
+                    else:
+                        embedMain = discord.Embed()
+                        mainFilters = [
+                            "url",
+                            "author",
+                            "committer",
+                            "tree",
+                            "parents",
+                            "verification",
+                            "message",
+                        ]
+                        for k, v in dataMain.items():
+                            if k not in mainFilters:
+                                embedMain.add_field(name=k, value=v, inline=True)
+                        for keys, value in dataMain["verification"].items():
+                            embedMain.add_field(name=keys, value=value, inline=True)
+                        embedMain.title = dataMain["author"]["name"]
+                        embedMain.description = dataMain["message"]
+                        await ctx.respond(embed=embedMain)
+                except HTTPException:
+                    await ctx.respond(
+                        embed=discord.Embed(
+                            description="It seems like that there isn't a commit with that hash or repo. Please try again"
+                        )
+                    )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -345,71 +271,84 @@ class GitHubV1(commands.Cog):
                     data = await r.content.read()
                     dataMain = parser.parse(data, recursive=True)
                     try:
-                        if len(dataMain) == 0:
-                            raise NoItemsError
-                        else:
+                        try:
+                            if len(dataMain) == 0:
+                                raise NoItemsError
+                            elif r.status == 404:
+                                raise HTTPException
+                            else:
 
-                            mainPages = pages.Paginator(
-                                pages=[
-                                    discord.Embed(
-                                        title=mainItem3["title"],
-                                        description=mainItem3["body"],
-                                    )
-                                    .add_field(
-                                        name="URL",
-                                        value=mainItem3["html_url"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Issue State",
-                                        value=mainItem3["state"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Issue Number",
-                                        value=mainItem3["number"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Issue Created",
-                                        value=mainItem3["created_at"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Issue Updated",
-                                        value=mainItem3["updated_at"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Label",
-                                        value=[
-                                            labelItemMain["name"]
-                                            for labelItemMain in mainItem3["labels"]
-                                        ],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Comments", value=mainItem3["comments"]
-                                    )
-                                    .add_field(
-                                        name="Assigness",
-                                        value=[
-                                            item4["login"]
-                                            for item4 in mainItem3["assignees"]
-                                        ],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Reporter",
-                                        value=mainItem3["user"]["login"],
-                                        inline=True,
-                                    )
-                                    .set_thumbnail(url=mainItem3["user"]["avatar_url"])
-                                    for mainItem3 in dataMain
-                                ],
-                                loop_pages=True,
+                                mainPages = pages.Paginator(
+                                    pages=[
+                                        discord.Embed(
+                                            title=mainItem3["title"],
+                                            description=mainItem3["body"],
+                                        )
+                                        .add_field(
+                                            name="URL",
+                                            value=mainItem3["html_url"],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Issue State",
+                                            value=mainItem3["state"],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Issue Number",
+                                            value=mainItem3["number"],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Issue Created",
+                                            value=mainItem3["created_at"],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Issue Updated",
+                                            value=mainItem3["updated_at"],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Label",
+                                            value=[
+                                                labelItemMain["name"]
+                                                for labelItemMain in mainItem3["labels"]
+                                            ],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Comments", value=mainItem3["comments"]
+                                        )
+                                        .add_field(
+                                            name="Assigness",
+                                            value=[
+                                                item4["login"]
+                                                for item4 in mainItem3["assignees"]
+                                            ],
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Reporter",
+                                            value=mainItem3["user"]["login"],
+                                            inline=True,
+                                        )
+                                        .set_thumbnail(
+                                            url=mainItem3["user"]["avatar_url"]
+                                        )
+                                        for mainItem3 in dataMain
+                                    ],
+                                    loop_pages=True,
+                                )
+                                await mainPages.respond(
+                                    ctx.interaction, ephemeral=False
+                                )
+                        except HTTPException:
+                            await ctx.respond(
+                                embed=discord.Embed(
+                                    description="It seems like that there isn't a repo with that name. Please try again"
+                                )
                             )
-                            await mainPages.respond(ctx.interaction, ephemeral=False)
                     except NoItemsError:
                         embedNoItemsError = discord.Embed()
                         embedNoItemsError.description = f"Sorry, there seems to be no issues in that repo. Please try again"
@@ -438,7 +377,7 @@ class GitHubV1(commands.Cog):
                 "accept": "application/vnd.github.v3+json",
             }
             async with session.get(
-                f"https://api.github.com/repos/{owner}/{repo}/issues{issue_number}",
+                f"https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}",
                 headers=headers,
             ) as r:
                 try:
@@ -463,12 +402,14 @@ class GitHubV1(commands.Cog):
                             "labels_url",
                             "comments_url",
                             "events_url",
+                            "assignees",
+                            "reactions",
                         ]
-                        for k, v in dataMain.items():
+                        for k, v in dict(dataMain).items():
                             if k not in filter:
                                 embed.add_field(name=k, value=v, inline=True)
                         for itemMain in dataMain["labels"]:
-                            for k, v in itemMain["labels"]:
+                            for k, v in itemMain.items():
                                 embed.add_field(
                                     name=f"{k} (Labels)", value=v, inline=True
                                 )
@@ -516,69 +457,84 @@ class GitHubV1(commands.Cog):
                 params=params,
             ) as r:
                 try:
+
                     data = await r.content.read()
                     dataMain = parser.parse(data, recursive=True)
-                    if r.status == 404:
-                        raise HTTPException
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=dictItem5["name"],
-                                    description=dictItem5["body"],
-                                )
-                                .add_field(
-                                    name="URL", value=dictItem5["html_url"], inline=True
-                                )
-                                .add_field(
-                                    name="Created At",
-                                    value=dictItem5["created_at"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Published At",
-                                    value=dictItem5["published_at"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Tarball URL",
-                                    value=dictItem5["tarball_url"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Zipball URL", value=dictItem5["zipball_url"]
-                                )
-                                .add_field(
-                                    name="Author",
-                                    value=dictItem5["author"]["login"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Download URL",
-                                    value=str(
-                                        [
-                                            items5["browser_download_url"]
-                                            for items5 in dictItem5["assets"]
-                                        ]
-                                    ).replace("'", ""),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Download Count",
-                                    value=str(
-                                        [
-                                            items6["download_count"]
-                                            for items6 in dictItem5["assets"]
-                                        ]
-                                    ).replace("'", ""),
-                                    inline=True,
-                                )
-                                .set_thumbnail(url=dictItem5["author"]["avatar_url"])
-                                for dictItem5 in dataMain
-                            ],
-                            loop_pages=True,
+                    try:
+                        if r.status == 404:
+                            raise HTTPException
+                        elif len(dataMain) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem5["name"],
+                                        description=dictItem5["body"],
+                                    )
+                                    .add_field(
+                                        name="URL",
+                                        value=dictItem5["html_url"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Created At",
+                                        value=dictItem5["created_at"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Published At",
+                                        value=dictItem5["published_at"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Tarball URL",
+                                        value=dictItem5["tarball_url"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Zipball URL",
+                                        value=dictItem5["zipball_url"],
+                                    )
+                                    .add_field(
+                                        name="Author",
+                                        value=dictItem5["author"]["login"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Download URL",
+                                        value=str(
+                                            [
+                                                items5["browser_download_url"]
+                                                for items5 in dictItem5["assets"]
+                                            ]
+                                        ).replace("'", ""),
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Download Count",
+                                        value=str(
+                                            [
+                                                items6["download_count"]
+                                                for items6 in dictItem5["assets"]
+                                            ]
+                                        ).replace("'", ""),
+                                        inline=True,
+                                    )
+                                    .set_thumbnail(
+                                        url=dictItem5["author"]["avatar_url"]
+                                    )
+                                    for dictItem5 in dataMain
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        await ctx.respond(
+                            embed=discord.Embed(
+                                description="It seems like that there isn't a release for that repo. Please try again"
+                            )
                         )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
                 except HTTPException:
                     embedHTTPExceptionError = discord.Embed()
                     embedHTTPExceptionError.description = "Sorry, there seems to be no releases in that repo. Please try again"
@@ -628,7 +584,7 @@ class GitHubV1(commands.Cog):
                         await ctx.respond(embed=embed)
                 except HTTPException:
                     embedHTTPExceptionError = discord.Embed()
-                    embedHTTPExceptionError.description = "Sorry, it seems like there is no repo named like that. Please try again"
+                    embedHTTPExceptionError.description = "Sorry, but it seems like either there was no release or the repo doesn't exist. Please try again"
                     await ctx.respond(embed=embedHTTPExceptionError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -764,6 +720,8 @@ class GitHubV1(commands.Cog):
                     "bio",
                     "login",
                     "gravatar_id",
+                    "avatar_url",
+                    "plan",
                 ]
                 try:
                     if r.status == 404:
@@ -771,7 +729,9 @@ class GitHubV1(commands.Cog):
                     else:
                         for keys, value in dataMain.items():
                             if keys not in mainFilterEmbed:
-                                embedMain.add_field(name=keys, value=value, inline=True)
+                                embedMain.add_field(
+                                    name=keys, value=f"[{value}]", inline=True
+                                )
                         embedMain.title = f"{dataMain['login']} - {dataMain['name']}"
                         embedMain.description = dataMain["bio"]
                         embedMain.set_thumbnail(url=dataMain["avatar_url"])
