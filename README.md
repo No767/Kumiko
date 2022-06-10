@@ -6,8 +6,8 @@
 
 <br/>
 
-![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white) [![Top.gg Status](https://top.gg/api/widget/status/865883525932253184.png)](https://top.gg/bot/865883525932253184) 
-[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Rin/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/snyk.yml) [![Format](https://github.com/No767/Rin/actions/workflows/format.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/format.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2cf4ceacc746b3a4570d324c843a4b)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Open in GitPod](https://img.shields.io/badge/Open%20in%20-GitPod-blue?logo=gitpod)](https://gitpod.io/#https://github.com/No767/Rin) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin?label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
+![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white) 
+[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Rin/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/snyk.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2cf4ceacc746b3a4570d324c843a4b)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Open in GitPod](https://img.shields.io/badge/Open%20in%20-GitPod-blue?logo=gitpod)](https://gitpod.io/#https://github.com/No767/Rin) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin?label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
 
 A Discord bot focused on obtaining data from third-party services with lighting performance in mind
 
@@ -47,8 +47,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -88,8 +88,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -125,8 +125,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -169,8 +169,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -204,8 +204,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -247,8 +247,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
     ```sh
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
