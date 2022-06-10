@@ -1,3 +1,4 @@
+# Note that the Arch based Dockerfile is deprecated and will be removed in the future. Please use the Ubuntu-Docker dockerfile instead
 FROM archlinux:latest AS install_python
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm python wget curl libffi gcc clang dos2unix

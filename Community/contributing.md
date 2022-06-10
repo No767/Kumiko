@@ -31,8 +31,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -72,8 +72,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -109,8 +109,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -153,8 +153,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -188,8 +188,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -231,8 +231,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
     ```sh
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -344,6 +344,9 @@ Make sure to always keep this in mind: Always add exception handling for Rin. An
       await ctx.respond("That item doesn't exist! Please try again")
    ```
 
+## Naming Conventions
+
+For Rin, the main naming convention is camelCasing. Python's naming convention is snake_casing, but I personally find it easier to use camelCasing. All classes for any cogs should be in PascalCase. And yes camelCase all variables. You'll get used to it...
 
 ## Pull Requests and Commits
 
