@@ -53,11 +53,14 @@ class jishoDict(commands.Cog):
                             pages=[
                                 discord.Embed(
                                     title=str(
-                                        [
+                                        next(
                                             [value for _, value in jpnItem.items()]
                                             for jpnItem in dictItem["japanese"]
-                                        ]
-                                    ).replace("'", ""),
+                                        )
+                                    )
+                                    .replace("'", "")
+                                    .replace("[", "")
+                                    .replace("]", ""),
                                     description=str(
                                         [
                                             v
