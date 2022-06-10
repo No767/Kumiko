@@ -20,6 +20,7 @@ cchardet = "*"
 beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0rc1", extras = ["voice"]}
 pysimdjson = "*"
+gql = {extras = ["aiohttp"], version = "*"}
 
 [dev-packages]
 pre-commit = "*"
