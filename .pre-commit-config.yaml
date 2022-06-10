@@ -10,20 +10,21 @@ repos:
     -  id: bandit
        name: Bandit
        
+        
+# -   repo: https://github.com/pre-commit/mirrors-autopep8
+#     rev: 'v1.6.0'  
+#     hooks:
+#     -   id: autopep8
+#         args: ["--in-place", "-r"]
+#         name: AutoPEP8
+#         description: "Format with AutoPEP8"
+        
 -   repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
     -   id: black
         name: Black
-        
--   repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: 'v1.6.0'  
-    hooks:
-    -   id: autopep8
-        args: ["--in-place", "-r", ""]
-        name: AutoPEP8
-        description: "Format with AutoPEP8"
-        
+
 -   repo: https://github.com/PyCQA/autoflake
     rev: v1.4
     hooks:
