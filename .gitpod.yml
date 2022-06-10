@@ -6,6 +6,10 @@ tasks:
       cd /home/gitpod/.pyenv/plugins/python-build/../.. && git pull && cd -
       pyenv install 3.10.5 
       pyenv local 3.10.5
+      pip install --upgrade pip setuptools wheel pipenv
+      pipenv --python 3.10
+      pipenv install --dev
+      pipenv run pre-commit install
   - init: |
       
     command: make run
