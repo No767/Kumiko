@@ -46,3 +46,4 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 - Bump orjson from 3.7.0 to 3.7.1   (@dependabot[bot])
 - Bump actions/setup-node from 3.2.0 to 3.3.0  (@dependabot[bot])
 - Bump orjson from 3.7.1 to 3.7.2  (@dependabot[bot])
+- Bump actions/setup-python from 3 to 4 (@dependabot[bot])
