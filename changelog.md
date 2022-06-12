@@ -16,6 +16,7 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 ## Additions
 - GitHub API Support
 - Full Blue Alliance API Support
+- Full AniList API Support
 - MangaDex Reader
 - Custom exceptions package  
 - /reddit egg_irl command (just feeds u with posts from r/egg_irl)

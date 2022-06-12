@@ -249,7 +249,7 @@ class AniListV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @anilist.command(name="tags")
+    @anilistSearch.command(name="tags")
     async def aniListSearchTags(
         self, ctx, *, tags: Option(str, "The name of the tag to search for")
     ):
@@ -464,6 +464,412 @@ class AniListV1(commands.Cog):
                 embedNoItemsError = discord.Embed()
                 embedNoItemsError.description = "Sorry, but there seems to be no users with that name. Please try again"
                 await ctx.respond(embed=embedNoItemsError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @anilistSearch.command(name="character")
+    async def aniListSearchCharacter(
+        self, ctx, *, anime_character: Option(str, "The character to search for")
+    ):
+        """Searches up to 25 anime characters on AniList"""
+        transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
+        async with Client(
+            transport=transport,
+            fetch_schema_from_transport=True,
+        ) as session:
+            mainQuery = gql(
+                """ 
+                query ($search: String!, $perPage: Int) {
+                    Page (perPage: $perPage) {
+                        characters (search: $search) {
+                            name {
+                                full
+                                native
+                                alternative
+                            }
+                            description
+                            image {
+                                large
+                            }
+                            gender
+                            age
+                            media {
+                                nodes {
+                                    title {
+                                        romaji
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                }
+                """
+            )
+            params = {"search": anime_character, "perPage": 25}
+            data = await session.execute(mainQuery, variable_values=params)
+            try:
+                if len(data["Page"]["characters"]) == 0:
+                    raise NoItemsError
+                else:
+                    print(data)
+                    pagesMain2 = pages.Paginator(
+                        pages=[
+                            discord.Embed(
+                                title=f'{mainItem3["name"]["full"]} - {mainItem3["name"]["native"]}',
+                                description=mainItem3["description"],
+                            )
+                            .add_field(
+                                name="Alternative Name",
+                                value=str(mainItem3["name"]["alternative"]).replace(
+                                    "'", ""
+                                ),
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Gender", value=mainItem3["gender"], inline=True
+                            )
+                            .add_field(name="Age", value=mainItem3["age"], inline=True)
+                            .add_field(
+                                name="Media",
+                                value=str(
+                                    [
+                                        mediaMain["title"]["romaji"]
+                                        for mediaMain in mainItem3["media"]["nodes"]
+                                    ]
+                                ).replace("'", ""),
+                            )
+                            .set_image(url=mainItem3["image"]["large"])
+                            for mainItem3 in data["Page"]["characters"]
+                        ],
+                        loop_pages=True,
+                    )
+                    await pagesMain2.respond(ctx.interaction, ephemeral=False)
+            except NoItemsError:
+                embedNoItemsError = discord.Embed()
+                embedNoItemsError.description = "Sorry, but there seems to be no anime and/or manga characters with that name. Please try again"
+                await ctx.respond(embed=embedNoItemsError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @anilistSearch.command(name="actor")
+    async def aniListSearchStaff(
+        self, ctx, *, voice_actor: Option(str, "The voice actor of the character")
+    ):
+        """Searches for up to 25 voice actors or staff that have worked on an anime and/or its characters"""
+        transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
+        async with Client(
+            transport=transport,
+            fetch_schema_from_transport=True,
+        ) as session:
+            mainQuery = gql(
+                """ 
+                query ($search: String!, $perPage: Int) {
+                    Page (perPage: $perPage) {
+                        staff (search: $search) {
+                            name {
+                                full
+                                native
+                            }
+                            description
+                            languageV2
+                            image {
+                                large
+                            }
+                            gender
+                            dateOfBirth {
+                                year
+                                month
+                                day
+                            }
+                            dateOfDeath {
+                                year
+                                month
+                                day
+                            }
+                            age
+                            yearsActive
+                            homeTown
+                            characters {
+                                nodes {
+                                    name {
+                                        full
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                """
+            )
+            params = {"search": voice_actor, "perPage": 25}
+            data = await session.execute(mainQuery, variable_values=params)
+            try:
+                if len(data["Page"]["staff"]) == 0:
+                    raise NoItemsError
+                else:
+                    pagesMain3 = pages.Paginator(
+                        pages=[
+                            discord.Embed(
+                                title=f'{mainItem5["name"]["full"]} - {mainItem5["name"]["native"]}',
+                                description=mainItem5["description"],
+                            )
+                            .add_field(
+                                name="Primary Language",
+                                value=mainItem5["languageV2"],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Gender", value=mainItem5["gender"], inline=True
+                            )
+                            .add_field(name="Age", value=mainItem5["age"], inline=True)
+                            .add_field(
+                                name="Hometown",
+                                value=mainItem5["homeTown"],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Years Active",
+                                value=mainItem5["yearsActive"],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Date of Birth",
+                                value=f'{mainItem5["dateOfBirth"]["year"]}-{mainItem5["dateOfBirth"]["year"]}-{mainItem5["dateOfBirth"]["day"]}',
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Date of Death",
+                                value=f'{mainItem5["dateOfDeath"]["year"]}-{mainItem5["dateOfDeath"]["year"]}-{mainItem5["dateOfDeath"]["day"]}',
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Characters",
+                                value=str(
+                                    [
+                                        characterName["name"]["full"]
+                                        for characterName in mainItem5["characters"][
+                                            "nodes"
+                                        ]
+                                    ]
+                                ).replace("'", ""),
+                                inline=True,
+                            )
+                            .set_image(url=mainItem5["image"]["large"])
+                            for mainItem5 in data["Page"]["staff"]
+                        ],
+                        loop_pages=True,
+                    )
+                    await pagesMain3.respond(ctx.interaction, ephemeral=False)
+            except NoItemsError:
+                embedNoItemsError = discord.Embed()
+                embedNoItemsError.description = "Sorry, but there seems to be no staff and/or voice actors with that name. Please try again"
+                await ctx.respond(embed=embedNoItemsError)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @anilist.command(name="recommendations")
+    async def aniListRecommendations(
+        self, ctx, *, media_id: Option(int, "The ID of the anime/manga", max_value=6)
+    ):
+        """Returns up to 25 recommendations for an anime or manga"""
+        transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
+        async with Client(
+            transport=transport,
+            fetch_schema_from_transport=True,
+        ) as session:
+            mainQuery = gql(
+                """ 
+                query ($mediaId: Int!, $perPage: Int) {
+                    Page (perPage: $perPage) {
+                        recommendations (mediaId: $mediaId) {
+                            rating
+                            mediaRecommendation {
+                                title {
+                                romaji 
+                                native
+                            }
+                            description 
+                            type 
+                            startDate {
+                                year
+                                month
+                                day
+                            }
+                            endDate {
+                                year
+                                month
+                                day
+                            }
+                            coverImage {
+                                extraLarge
+                            }
+                            genres
+                            tags {
+                                name
+                            }
+                            }
+                            
+                            
+                        }
+                        
+                    }
+                }
+                """
+            )
+            params = {"mediaId": media_id, "perPage": 25}
+            data = await session.execute(mainQuery, variable_values=params)
+            try:
+                try:
+                    if len(data["Page"]["recommendations"]) == 0:
+                        raise NoItemsError
+                    else:
+                        mainDataPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=f'{item["mediaRecommendation"]["title"]["romaji"]} - {item["mediaRecommendation"]["title"]["native"]}',
+                                    description=item["mediaRecommendation"][
+                                        "description"
+                                    ],
+                                )
+                                .add_field(
+                                    name="Type",
+                                    value=item["mediaRecommendation"]["type"],
+                                )
+                                .add_field(
+                                    name="Start Date",
+                                    value=f'{item["mediaRecommendation"]["startDate"]["year"]}-{item["mediaRecommendation"]["startDate"]["month"]}-{item["mediaRecommendation"]["startDate"]["day"]}',
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="End Date",
+                                    value=f'{item["mediaRecommendation"]["endDate"]["year"]}-{item["mediaRecommendation"]["endDate"]["month"]}-{item["mediaRecommendation"]["endDate"]["day"]}',
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Genres",
+                                    value=str(
+                                        item["mediaRecommendation"]["genres"]
+                                    ).replace("'", ""),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Tags",
+                                    value=str(
+                                        [
+                                            tagsItem["name"]
+                                            for tagsItem in item["mediaRecommendation"][
+                                                "tags"
+                                            ]
+                                        ]
+                                    ).replace("'", ""),
+                                    inline=True,
+                                )
+                                .set_image(
+                                    url=item["mediaRecommendation"]["coverImage"][
+                                        "extraLarge"
+                                    ]
+                                )
+                                for item in data["Page"]["recommendations"]
+                            ],
+                            loop_pages=True,
+                        )
+                        await mainDataPages.respond(ctx.interaction, ephemeral=False)
+                except NoItemsError:
+                    embedNoItemsError = discord.Embed()
+                    embedNoItemsError.description = "Sorry, but there seems to be no recommendations for that media. Please try again"
+                    await ctx.respond(embed=embedNoItemsError)
+            except Exception as e:
+                await ctx.respond(
+                    discord.Embed(
+                        description="Oops, something went wrong. Please try again"
+                    ).add_field(name="Error", value=e, inline=True)
+                )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @anilist.command(name="reviews")
+    async def aniListReviews(
+        self, ctx, *, media_id: Option(int, "The ID of the anime/manga", max_value=6)
+    ):
+        """Returns up to 25 reviews of the given anime/manga ID"""
+        transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
+        async with Client(
+            transport=transport,
+            fetch_schema_from_transport=True,
+        ) as session:
+            mainQuery = gql(
+                """ 
+                query ($mediaId: Int!, $perPage: Int) {
+                    Page (perPage: $perPage) {
+                        reviews (mediaId: $mediaId, sort: CREATED_AT_DESC) {
+                            body
+                            rating
+                            ratingAmount
+                            score
+                            user {
+                                name
+                                avatar {
+                                    large
+                                }
+                            }
+                            media {
+                                title {
+                                    romaji
+                                    native
+                                }
+                            }
+                        }
+                    }
+                }
+                """
+            )
+            params = {"mediaId": media_id, "perPage": 25}
+            data = await session.execute(mainQuery, variable_values=params)
+            try:
+                try:
+                    if len(data["Page"]["reviews"]) == 0:
+                        raise NoItemsError
+                    else:
+                        mainPagesReview = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=f'{reviewItem["media"]["title"]["romaji"]}/{reviewItem["media"]["title"]["native"]}- {reviewItem["user"]["name"]}',
+                                    description=reviewItem["body"],
+                                )
+                                .add_field(
+                                    name="Rating",
+                                    value=reviewItem["rating"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Rating Amount",
+                                    value=reviewItem["ratingAmount"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Score", value=reviewItem["score"], inline=True
+                                )
+                                .set_thumbnail(
+                                    url=reviewItem["user"]["avatar"]["large"]
+                                )
+                                for reviewItem in data["Pages"]["reviews"]
+                            ],
+                            loop_pages=True,
+                        )
+                        await mainPagesReview.respond(ctx.interaction, ephemeral=False)
+                except NoItemsError:
+                    embedNoItemsError = discord.Embed()
+                    embedNoItemsError.description = "Sorry, but there seems to be no reviews associated with that media. Please try again"
+                    await ctx.respond(embed=embedNoItemsError)
+            except Exception as e:
+                await ctx.respond(
+                    discord.Embed(
+                        description="Oops, something went wrong. Please try again"
+                    ).add_field(name="Error", value=e, inline=True)
+                )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
