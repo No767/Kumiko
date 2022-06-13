@@ -268,7 +268,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
 # Licensing
 
-Rin is licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 
+All of Rin's code is licensed under Apache-2.0
 
 # Contributing
 
