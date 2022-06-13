@@ -30,8 +30,11 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 
 ## Removals
 
-- OpenAI API Support
+- OpenAI API Support + Cog
 - Format workflow (replaced with pre-commit hooks)
+- Arch-Docker Dockerfile (Use Ubuntu-Docker instead)
+- DeviantArt-Token-Refresher Cog
+- All of the old patches (they apparently never worked...)
 
 ## Dependency Updates
 
