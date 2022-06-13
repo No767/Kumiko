@@ -20,8 +20,9 @@ class DiscordBots(commands.Cog):
         self.bot = bot
 
     db = SlashCommandGroup("discordbots", "Commands for Discord.bots.gg service")
+    dbSearch = db.create_subgroup("search", "Search for bots on Discord.bots.gg")
 
-    @db.command(name="search")
+    @dbSearch.command(name="bots")
     async def discordBotsSearch(
         self,
         ctx,
@@ -65,7 +66,7 @@ class DiscordBots(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @db.command(name="id")
+    @dbSearch.command(name="id")
     async def discordBotsID(
         self, ctx, *, bot_id: Option(str, "The ID of the Discord Bot")
     ):

@@ -13,9 +13,7 @@ class AniListV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    anilist = SlashCommandGroup(
-        "anilist", "Commands for AniList service", guild_ids=[866199405090308116]
-    )
+    anilist = SlashCommandGroup("anilist", "Commands for AniList service")
     anilistSearch = anilist.create_subgroup("search", "Search for anime on AniList")
 
     @anilistSearch.command(name="anime")
@@ -467,7 +465,7 @@ class AniListV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @anilistSearch.command(name="character")
+    @anilistSearch.command(name="characters")
     async def aniListSearchCharacter(
         self, ctx, *, anime_character: Option(str, "The character to search for")
     ):
@@ -552,7 +550,7 @@ class AniListV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @anilistSearch.command(name="actor")
+    @anilistSearch.command(name="actors")
     async def aniListSearchStaff(
         self, ctx, *, voice_actor: Option(str, "The voice actor of the character")
     ):
@@ -670,7 +668,7 @@ class AniListV1(commands.Cog):
 
     @anilist.command(name="recommendations")
     async def aniListRecommendations(
-        self, ctx, *, media_id: Option(int, "The ID of the anime/manga", max_value=6)
+        self, ctx, *, media_id: Option(int, "The ID of the anime/manga")
     ):
         """Returns up to 25 recommendations for an anime or manga"""
         transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
@@ -717,9 +715,9 @@ class AniListV1(commands.Cog):
                 }
                 """
             )
-            params = {"mediaId": media_id, "perPage": 25}
-            data = await session.execute(mainQuery, variable_values=params)
             try:
+                params = {"mediaId": media_id, "perPage": 25}
+                data = await session.execute(mainQuery, variable_values=params)
                 try:
                     if len(data["Page"]["recommendations"]) == 0:
                         raise NoItemsError
@@ -790,7 +788,7 @@ class AniListV1(commands.Cog):
 
     @anilist.command(name="reviews")
     async def aniListReviews(
-        self, ctx, *, media_id: Option(int, "The ID of the anime/manga", max_value=6)
+        self, ctx, *, media_id: Option(int, "The ID of the anime/manga")
     ):
         """Returns up to 25 reviews of the given anime/manga ID"""
         transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
@@ -824,9 +822,9 @@ class AniListV1(commands.Cog):
                 }
                 """
             )
-            params = {"mediaId": media_id, "perPage": 25}
-            data = await session.execute(mainQuery, variable_values=params)
             try:
+                params = {"mediaId": media_id, "perPage": 25}
+                data = await session.execute(mainQuery, variable_values=params)
                 try:
                     if len(data["Page"]["reviews"]) == 0:
                         raise NoItemsError

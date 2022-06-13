@@ -15,7 +15,7 @@ class SpigetV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    spiget = SlashCommandGroup("spiget", "Commands for Spiget")
+    spiget = SlashCommandGroup("spigot", "Commands for Spiget")
 
     @spiget.command(name="search")
     async def spigetSearch(

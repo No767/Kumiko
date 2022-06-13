@@ -22,8 +22,9 @@ class TopGGV1(commands.Cog):
         self.bot = bot
 
     topgg = SlashCommandGroup("topgg", "Commands for Top.gg")
+    topggSearch = topgg.create_subgroup("search", "Searches for an item on Top.gg")
 
-    @topgg.command(name="search")
+    @topggSearch.command(name="bot")
     async def topgg_search_one(self, ctx, bot_id: Option(str, "Discord Bot ID")):
         """Returns info about the given Discord bot on Top.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -74,7 +75,7 @@ class TopGGV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @topgg.command(name="id")
+    @topggSearch.command(name="user")
     async def topgg_search_users(self, ctx, *, user_id: Option(str, "User ID")):
         """Returns info about the given user on Top.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
