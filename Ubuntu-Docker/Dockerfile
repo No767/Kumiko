@@ -12,18 +12,18 @@ RUN apt-get install liblzma-dev mecab-ipadic-utf8 git python3.10-dev -y --no-ins
 ENV PYENV_ROOT /root/.pyenv
 ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
 RUN set -ex \
-    && curl https://pyenv.run | bash \
-    && pyenv update \
-    && pyenv install 3.10.4 \
-    && pyenv global 3.10.4 \
-    && pyenv rehash
+  && curl https://pyenv.run | bash \
+  && pyenv update \
+  && pyenv install 3.10.5 \
+  && pyenv global 3.10.5 \
+  && pyenv rehash
 
 FROM install_python as install_node
 RUN mkdir -p /usr/local/nvm
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN apt-get update \
-    && apt-get install -y curl \
-    && apt-get -y autoclean
+RUN apt-get update --no-install-recommends  \
+  && apt-get install -y curl --no-install-recommends \
+  && apt-get -y autoclean
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 16.15.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash

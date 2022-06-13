@@ -48,6 +48,7 @@ initial_extensions = [
     "Cogs.blue-alliance",
     "Cogs.legacy-help",
     "Cogs.github",
+    "Cogs.anilist",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

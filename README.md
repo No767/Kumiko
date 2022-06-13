@@ -71,8 +71,8 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -112,8 +112,8 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -149,8 +149,8 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -193,8 +193,8 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -228,8 +228,8 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -271,8 +271,8 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
 
     ```sh
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 

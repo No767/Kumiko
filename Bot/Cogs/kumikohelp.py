@@ -22,19 +22,23 @@ class kumikoHelp(commands.Cog):
         *,
         category: Option(
             str,
-            "The different categories of commands that Kumiko has to offer",
+            "The different categories of services that Rin and Kumiko offers",
             choices=[
+                "AdviceSlip",
+                "AniList",
                 "Anime",
+                "Blue-Alliance",
                 "DeviantArt",
                 "Discord.bots.gg",
                 "First-FRC",
-                "Fun",
+                "GitHub",
                 "Hypixel",
+                "Jisho",
+                "MangaDex",
                 "Minecraft",
                 "Misc",
                 "Modrinth",
                 "MyAnimeList",
-                "OpenAI",
                 "Reddit",
                 "Spigot",
                 "Tenor",
@@ -51,53 +55,41 @@ class kumikoHelp(commands.Cog):
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
                 embedVar.add_field(
-                    name="Anime", value="`/kumikohelp anime`", inline=True
+                    name="AdviceSlip", value="`/help AdviceSlip`", inline=True
+                )
+                embedVar.add_field(name="AniList", value="`/help AniList`", inline=True)
+                embedVar.add_field(name="Anime", value="`/help Anime`", inline=True)
+                embedVar.add_field(
+                    name="Blue Alliance", value="`/help Blue-Alliance`", inline=True
                 )
                 embedVar.add_field(
-                    name="Discord.bots.gg", value="`/kumikohelp dbg`", inline=True
+                    name="DeviantArt", value="`/help DeviantArt`", inline=True
                 )
                 embedVar.add_field(
-                    name="First-FRC", value="`/kumikohelp first-frc`", inline=True
+                    name="First FRC", value="`/help First-FRC`", inline=True
                 )
-                embedVar.add_field(name="Fun", value="`/kumikohelp fun`", inline=True)
+                embedVar.add_field(name="GitHub", value="`/help GitHub`", inline=True)
+                embedVar.add_field(name="Hypixel", value="`/help Hypixel`", inline=True)
+                embedVar.add_field(name="Jisho", value="`/help Jisho`", inline=True)
                 embedVar.add_field(
-                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
-                )
-                embedVar.add_field(name="Fun", value="`/kumikohelp fun`", inline=True)
-                embedVar.add_field(
-                    name="Hypixel", value="`/kumikohelp hypixel`", inline=True
+                    name="MangaDex", value="`/help MangaDex`", inline=True
                 )
                 embedVar.add_field(
-                    name="Minecraft", value="`/kumikohelp mc`", inline=True
+                    name="Minecraft", value="`/help Minecraft`", inline=True
                 )
-                embedVar.add_field(name="Misc", value="`/kumikohelp misc`", inline=True)
+                embedVar.add_field(name="Misc", value="`/help Misc`", inline=True)
                 embedVar.add_field(
-                    name="Modrinth", value="`/kumikohelp modrinth`", inline=True
-                )
-                embedVar.add_field(
-                    name="MyAnimeList", value="`/kumikohelp mal`", inline=True
+                    name="Modrinth", value="`/help Modrinth`", inline=True
                 )
                 embedVar.add_field(
-                    name="OpenAI", value="`/kumikohelp openai`", inline=True
+                    name="MyAnimeList", value="`/help MyAnimeList`", inline=True
                 )
-                embedVar.add_field(
-                    name="Reddit", value="`/kumikohelp reddit`", inline=True
-                )
-                embedVar.add_field(
-                    name="Spigot", value="`/kumikohelp spigot`", inline=True
-                )
-                embedVar.add_field(
-                    name="Tenor", value="`/kumikohelp tenor`", inline=True
-                )
-                embedVar.add_field(
-                    name="Top.gg", value="`/kumikohelp topgg`", inline=True
-                )
-                embedVar.add_field(
-                    name="Twitter", value="`/kumikohelp twitter`", inline=True
-                )
-                embedVar.add_field(
-                    name="YouTube", value="`/kumikohelp yt`", inline=True
-                )
+                embedVar.add_field(name="Reddit", value="`/help Reddit`", inline=True)
+                embedVar.add_field(name="Spigot", value="`/help Spigot`", inline=True)
+                embedVar.add_field(name="Tenor", value="`/help Tenor`", inline=True)
+                embedVar.add_field(name="Top.gg", value="`/help Topgg`", inline=True)
+                embedVar.add_field(name="Twitter", value="`/help Twitter`", inline=True)
+                embedVar.add_field(name="YouTube", value="`/help YouTube`", inline=True)
                 embedVar.set_author(
                     name="Kumiko Help",
                     url=discord.Embed.Empty,
@@ -113,312 +105,79 @@ class kumikoHelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar, view=view)
 
-            if category in ["Discord.bots.gg", "dbg", "discord.bots.gg"]:
+            if category in ["AdviceSlip"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`discord-bots-search`",
-                    value="Searches for any Discord Bots listed on discord.bots.gg",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`discord-bots-id`",
-                    value="Searches for any Discord Bots listed on discord.bots.gg by ID",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Discord.bots.gg",
-                    icon_url=bot.user.display_avatar,
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["First-FRC", "ffrc", "first-frc"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`frc-season`",
-                    value="Returns a season summary for the current FRC season",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-events`",
-                    value="Lists out the events for the current FRC season",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-team-awards`",
-                    value="Returns the awards that a FRC team has won",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-score`",
-                    value="Returns the FRC team's score details for a given event",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-results`",
-                    value="Returns the FRC team's results for a given event",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-event-rankings-top`",
-                    value="Returns the top 10 FRC teams for a given event",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-event-schedule`",
-                    value="Returns the schedule for a given event",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`frc-event-alliances`",
-                    value="Returns the alliances for a given event",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - First FRC", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["twitter", "Twitter"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`twitter-search`",
-                    value="Grabs 5 most recent tweets from the specified user",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`twitter-user`",
-                    value="Grabs info about the specified user",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Twitter", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["reddit", "Reddit"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`reddit`", value="searches on reddit", inline=True
-                )
-                embedVar.add_field(
-                    name="`reddit-new`",
-                    value="Returns 5 new posts from any subreddit",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`reddit-top`",
-                    value="Returns 5 top posts from any subreddit",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`reddit-hot`",
-                    value="Returns 5 hot posts from any subreddit",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`reddit-comemnts`",
-                    value="Returns up to 10 comemnts from a given post ID",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`reddit-user`",
-                    value="Provides info about the given Redditor",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`reddit-user-comments`",
-                    value="Returns up to 10 comments from a given Redditor",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Reddit", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["minecraft", "mc", "Minecraft"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`javamcsrv`", value="Obtains Java server status", inline=True
-                )
-                embedVar.add_field(
-                    name="`bedrockmcsrv`",
-                    value="Obtains bedrock server status",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["spigot", "Spigot", "Spiget", "spiget"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`spiget-search`",
-                    value="Searches for Minecraft plugins via Spiget and returns information on such plugin",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`spiget-stats`",
-                    value="Returns stats for Spiget (total resources created, etc)",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`spiget-status`",
-                    value="Returns HTTP Status of the Spiget API",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Spigot", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["Hypixel", "hypixel"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`hypixel-user`",
-                    value="Gain Insight in Hypixel's player data",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`hypixel-count`",
-                    value="Obtain the amount of players online within the servers",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`hypixel-player-status`",
-                    value="Determine if the player is online or not",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`hypixel-punishments-stats`",
-                    value="Returns some stats about the amount of punishments given on Hypixel",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Hypixel", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["fun", "Fun"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`mylvl`", value="Displays DisQuest Level", inline=True
-                )
-                embedVar.add_field(
-                    name="`rank`",
-                    value="Displays the most active members of your server",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`globalrank`",
-                    value="Displays the most active members of all servers that this bot is connected to",
-                    inline=True,
-                )
                 embedVar.add_field(
                     name="`advice`",
-                    value="Returns some advice from Advice Slip",
+                    value="Gives some advice from AdviceSlip",
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Fun", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - AdviceSlip", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["misc", "Misc"]:
+            if category in ["AniList"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `anilist`"
                 embedVar.add_field(
-                    name="`jisho`",
-                    value="Uses Jisho and JMDict in order to obtain info on a word in Japanese",
+                    name="`search anime`",
+                    value="Searches up to 25 animes on AniList",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`kumikohelp`", value="Kumiko's Help command", inline=True
-                )
-                embedVar.add_field(
-                    name="`help`",
-                    value="Kumiko's Help command (the same as /kumikohelp)",
+                    name="`search manga`",
+                    value="Searches up to 25 mangas on AniList",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`kumikoinvite`",
-                    value="Kumiko's invite links.",
+                    name="`search tags`",
+                    value="Searches up to 25 tags on AniList",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`version`",
-                    value="Checks for current version of Kumiko",
+                    name="`search users`",
+                    value="Searches up to 25 users on AniList",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`uptime`", value="Checks for Rin's Uptime", inline=True
+                    name="`search characters`",
+                    value="Searches up to 25 characters on AniList",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`botinfo`", value="Statistics about this bot", inline=True
+                    name="`search actor`",
+                    value="Searches up to 25 actors on AniList",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`ping`", value="Checks the ping for the bot", inline=True
+                    name="`recommendations`",
+                    value="Returns up to 25 recommendations for an anime or manga",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`reviews`",
+                    value="Returns up to 25 reviews of the given anime/manga ID",
+                    inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Misc", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - AniList", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["deviantart", "da", "DevintArt"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`deviantart-item`",
-                    value="Returns image and some info about that item",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`deviantart-newest`",
-                    value="Returns 5 newest art based on selected category",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`deviantart-popular`",
-                    value="Returns 5 popular works of art based on selected category",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`deviantart-tag-search`",
-                    value="Returns 5 works of art based on selected tags",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`deviantart-user`",
-                    value="Returns info about the given user",
-                    inline=True,
-                )
-                embedVar.set_footer(
-                    text='These cmds have the prefix of "deviantart". This prefix can be swapped out for "da" instead. For example, the "deviantart-item" cmd can be shorten to "da-item"'
-                )
-                embedVar.set_author(
-                    name="Kumiko Help - Deviantart", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["anime", "Anime"]:
+            if category in ["Anime"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
                     name="`waifu`",
-                    value="Randomly selects a waifu from MyWaifuList",
+                    value="Gives some advice from AdviceSlip",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`waifupics`",
-                    value="Search for art from Waifu.pics",
+                    value="Returns a random image of a waifu from waifu.pics",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -426,137 +185,532 @@ class kumikoHelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in [
-                "jikan",
-                "jk",
-                "myanimelist",
-                "mal",
-                "MyAnimeList/Jikan",
-            ]:
+            if category in ["Blue-Alliance"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `blue-alliance`"
                 embedVar.add_field(
-                    name="`jikan-anime`",
-                    value="Seaches on Jikan/MyAnimeList and provides info about the given anime",
+                    name="`matches team`",
+                    value="Returns the general info for each match that a team was in during the given event",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`jikan-manga`",
-                    value="Seaches on Jikan/MyAnimeList and provides info about the given manga",
+                    name="`matches breakdown`",
+                    value="Returns all of the matches for an FRC event",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`jikan-top`",
-                    value="Returns the Top 10 items on Jikan/MAL",
+                    name="`matches all`",
+                    value="Returns all of the matches for an FRC event",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`jikan-season`",
-                    value="Returns 5 animes within those given years and seasons",
+                    name="`teams info`",
+                    value="Returns info about an FRC team",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`jikan-season-later`",
-                    value="Returns 5 animes that are already planned for viewing in the future",
+                    name="`teams events`",
+                    value="Returns what events an FRC team as attended",
                     inline=True,
                 )
-                embedVar.set_footer(
-                    text='Also note that the prefix can be shorten down to "jk"'
+                embedVar.add_field(
+                    name="`rankings`", value="Returns the event ranking of an event"
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - MyAnimeList/Jikan",
+                    name="Kumiko Help - Blue Alliance", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["DeviantArt"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "**Note that the DeviantArt service has been disabled for now**\n\nBase command: `deviantart`"
+                embedVar.add_field(
+                    name="`item`",
+                    value="Returns info about a deviantion on DeviantArt",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`newest`",
+                    value="returns up to 50 new art from DeviantArt based on the given search result",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`popular`",
+                    value="Returns up to 50 popular art from DeviantArt based on the given search result",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`tags`",
+                    value="Returns up to 50 art with the given tag from DeviantArt",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`users`", value="Returns the user's profile info"
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - DeviantArt", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Discord.bots.gg"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `discordbots`"
+                embedVar.add_field(
+                    name="`search bots`",
+                    value="Searches for any Discord bots listed on discord.bots.gg",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`search id`",
+                    value="Searches for any Discord bots listed on discord.bots.gg via the Discord bot's ID",
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Discord.bots.gg",
                     icon_url=bot.user.display_avatar,
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["topgg", "Top.gg"]:
+            if category in ["First-FRC"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `frc`"
                 embedVar.add_field(
-                    name="`topgg-search`",
-                    value="Returns details about 1 bot searched on Top.gg",
+                    name="`events list`",
+                    value="Returns events for the current FRC season",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`topgg-search-user`",
-                    value="Returns info about user on Top.gg",
+                    name="`events top`",
+                    value="Returns the top 10 FRC teams within a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`events schedule`",
+                    value="Returns the schedule for a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`events alliances`",
+                    value="Returns the alliances within a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`season`",
+                    value="Returns the seasons summary for the current FRC season (may cause spam)",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`score`",
+                    value="Returns the score for a given team",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`results`",
+                    value="Returns the FRc team's results for a given event",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`awards`",
+                    value="Returns a list of awards that the given team has gotten",
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Topgg", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - First-FRC", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["youtube", "yt", "YouTube"]:
+            if category in ["GitHub"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `github`"
                 embedVar.add_field(
-                    name="`youtube-search`",
-                    value="Returns 5 videos given the search query",
+                    name="`user one`",
+                    value="Returns the user's profile on GitHub",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`youtube-channel`",
-                    value="Returns info about the given channel",
+                    name="`search repos`",
+                    value="Searches for repos on GitHub",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`youtube-playlists`",
-                    value="Finds and returns 5 playlists from the given channel",
+                    name="`search users`",
+                    value="Searches for users on GitHub",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`youtube-comments`",
-                    value="Returns 5 comments (sorted by time) from the given video",
+                    name="`issues all`",
+                    value="Gets all issues from a repo",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`youtube-video`",
-                    value="Return info about the given video",
+                    name="`issues one`",
+                    value="Gets info about one issue on any repo on GitHub",
                     inline=True,
                 )
-                embedVar.set_footer(
-                    text='Note that the alias prefix is "yt". This means that for example, the cmd "youtube-search" can be shorten down to "yt-search"'
+                embedVar.add_field(
+                    name="`releases list`",
+                    value="Lists out up to 25 releases of any repo",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`releases latest`",
+                    value="Gets the latest published full release for any repo",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`commit`",
+                    value="Gets info about a commit based on commit hash",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`repo`",
+                    value="Gets info about a repo based on repo name",
+                    inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - YouTube", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - GitHub", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["tenor", "Tenor"]:
+            if category in ["Hypixel"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `hypixel`"
+                embedVar.add_field(
+                    name="`player info`",
+                    value="Returns info about a minecraft player on Hypixel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`player status`",
+                    value="Shows the current status of the player given",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`count`",
+                    value="Returns the amount of players in each game server",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`punishments`",
+                    value="Shows the stats for the amount of punishments given on Hypixel (All Users)",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Hypixel", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Jisho"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.add_field(
-                    name="`tenor-search-multiple`",
-                    value="Searches 5 gifs from Tenor",
+                    name="`jisho`",
+                    value="Searches for any words and/or definitions on Jisho",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Jisho", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["MangaDex"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `mangadex`"
+                embedVar.add_field(
+                    name="`scanlation search`",
+                    value="Returns up to 5 scanlation groups via the name given",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`tenor-search-one`",
-                    value="Searches for 1 gif on Tenor",
+                    name="`scanlation id`",
+                    value="Returns the scanlation group with the ID given",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`tenor-trending`",
-                    value="Gets 5 trending gifs from Tenor",
+                    name="`search`",
+                    value="Searches for up to 5 manga on MangaDex",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`tenor-search-suggestions`",
-                    value="Provies some search suggetsions from Tenor",
+                    name="`random`",
+                    value="Returns an random manga from MangaDex",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`tenor-trending-terms`",
-                    value="Returns some trending terms",
+                    name="`user`",
+                    value="Returns the user's profile on MangaDex",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`tenor-gif`", value="SEarches for 1 gif on Tenor", inline=True
+                    name="`author`",
+                    value="Returns up to 5 authors and their info",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`tenor-random`",
-                    value="Returns a random gif based on the search term",
+                    name="`read`",
+                    value="Reads a chapter out of a manga provided on MangaDex",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - MangaDex", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Minecraft"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `minecraft`"
+                embedVar.add_field(
+                    name="`java`",
+                    value="Checks and returns info about the given Minecraft Java server",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`bedrock`",
+                    value="Returns the status and info of any Bedrock or Geyser-compatible server",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Minecraft", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Misc"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.add_field(
+                    name="`botinfo`", value="Returns stats for Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`help`", value="The help page for Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`ping`", value="Returns the ping of Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`qrcode`",
+                    value="Creates a QR Code based on given input",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`rinhelp`", value="Returns the help page for Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`rininfo`", value="Info about Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`rininvite`", value="Invite links for Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`uptime`", value="Returns the uptime of Rin", inline=True
+                )
+                embedVar.add_field(
+                    name="`version`", value="Returns the version of Rin", inline=True
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Misc", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Modrinth"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `modrinth`"
+                embedVar.add_field(
+                    name="`mod list`",
+                    value="Gets info about the mod requested",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`versions all`",
+                    value="Lists out all of the versions for a mod",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`versions id`",
+                    value="Returns info on the given mod version ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`users search`",
+                    value="Returns info on the given user",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`users projects`",
+                    value="Returns info on the given user's projects",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`team project`",
+                    value="Returns the projects within a team",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`team members`",
+                    value="Returns the team members of a project",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`search`", value="Searches for up to 5 mods on Modrinth"
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Modrinth", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["MyAnimeList"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `mal`"
+                embedVar.add_field(
+                    name="`seasons list`",
+                    value="Returns animes for the given season and year",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`seasons upcoming`",
+                    value="Returns anime for the upcoming season",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`random anime`", value="Fetches a random anime from MAL"
+                )
+                embedVar.add_field(
+                    name="`random manga`",
+                    value="Fetches a random manga from MAL",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`anime`", value="Fetches up to 5 anime from MAL", inline=True
+                )
+                embedVar.add_field(
+                    name="`manga`", value="Fetches up to 5 manga from MAL", inline=True
+                )
+                embedVar.add_field(
+                    name="`user`",
+                    value="Fetches the user's profile from MAL",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - MyAnimeList", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Reddit"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `reddit`"
+                embedVar.add_field(
+                    name="`users info`",
+                    value="Provides info about a Redditor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`users comments`",
+                    value="Returns up to 10 comments from a given Redditor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`search`", value="Searches on reddit for content", inline=True
+                )
+                embedVar.add_field(
+                    name="`new`",
+                    value="Returns up to 5 new posts from any given subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="comments",
+                    value="Returns up to 10 comments from a given post ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`hot`",
+                    value="Returns up to 5 hot posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`top`",
+                    value="Returns 5 top posts from any subreddit",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`egg_irl`",
+                    value="Literally just shows you r/egg_irl posts",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Reddit", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Spigot"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `spigot`"
+                embedVar.add_field(
+                    name="`search`",
+                    value="Finds up to 5 plugins matching the name of the given plugin",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`author`",
+                    value="Returns some info about a plugin author",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`status`",
+                    value="Returns the status of Spigot (HTTP Status)",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - Spigot", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Tenor"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `tenor`"
+                embedVar.add_field(
+                    name="`search multiple`",
+                    value="Searches for a single gif on Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`search one`",
+                    value="Searches for a single gif on Tenor",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`search suggestions`",
+                    value="Gives a list of suggested search terms based on the given topic",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`trending gif`",
+                    value="Returns up to 25 trending gifs",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`trending terms`",
+                    value="Returns a list of trending search terms",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`gif`",
+                    value="Gives a gif based on the given GIF ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`random`",
+                    value="Gives out 25 random gifs from Tenor based on the given search term",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -564,73 +718,75 @@ class kumikoHelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["openai", "ai", "gpt-3", "OpenAI"]:
+            if category in ["Top.gg"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `top.gg`"
                 embedVar.add_field(
-                    name="`openai-complete`",
-                    value="Completes a sentence using GPT-3",
+                    name="`search bot`",
+                    value="Searches for a bot on Top.gg",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`openai-classify`",
-                    value="Classifies a sentence into negative or positive (using AI)",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`openai-answers`",
-                    value="Generates answers written by AI for a given question",
+                    name="`search user`",
+                    value="Searches for a user on Top.gg",
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - OpenAI", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Top.gg", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
-            if category in ["modrinth", "Modrinth"]:
+
+            if category in ["Twitter"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `twitter`"
                 embedVar.add_field(
-                    name="`modrinth-search`",
-                    value="Searches for up to 5 mods on Modrinth",
+                    name="`search`",
+                    value="Returns up to 5 recent tweets from the given twitter user",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`modrinth-mod`",
-                    value="Returns info about the given mod",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`modrinth-mod-versions`",
-                    value="Lists out all of the versions for a mod (may cause spam)",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`modrinth-mod-version`",
-                    value="Returns info about the mod using the version ID",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`modrinth-user`",
-                    value="Returns info on the given user",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`modrinth-user-projects`",
-                    value="Returns info on the given user's projects",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`modrinth-project-team-members`",
-                    value="Lists out all of the team members for a project",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`modrinth-team-members`",
-                    value="Returns the team members within the given user",
+                    name="`user`",
+                    value="Returns the user's profile from Twitter",
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Kumiko Help - Modrinth", icon_url=bot.user.display_avatar
+                    name="Kumiko Help - Twitter", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["YouTube"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `youtube`"
+                embedVar.add_field(
+                    name="`search`",
+                    value="Returns up to 5 videos from the given YouTube search term",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`channel`",
+                    value="Returns the channel's profile from YouTube",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`playlist`",
+                    value="Returns up to 5 youtube playlists based on the given YT channel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`comments`",
+                    value="Returns up to 5 comments from a given video ID",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`video`",
+                    value="Returns some info on the given YouTube video",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Kumiko Help - YouTube", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
         except Exception as e:

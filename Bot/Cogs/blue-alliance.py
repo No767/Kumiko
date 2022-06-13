@@ -118,14 +118,14 @@ class BlueAllianceV1(commands.Cog):
                 dataMain = parser.parse(data, recursive=True)
                 embed = discord.Embed()
 
-                filter = ["score_breakdown", "alliances", "videos", "match_number"]
+                filter5 = ["score_breakdown", "alliances", "videos", "match_number"]
                 try:
                     if "Error" in dataMain:
                         raise ValueError
                     else:
                         for dictItem in dataMain:
                             for key, value in dictItem.items():
-                                if key not in filter:
+                                if key not in filter5:
                                     embed.add_field(name=key, value=value, inline=True)
                             for k, v in dictItem["alliances"]["blue"].items():
                                 embed.add_field(name=k, value=v, inline=True)
