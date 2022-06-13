@@ -387,7 +387,7 @@ class GitHubV1(commands.Cog):
                         data = await r.content.read()
                         dataMain = parser.parse(data, recursive=True)
                         embed = discord.Embed()
-                        filter = [
+                        filter54 = [
                             "user",
                             "labels",
                             "assignee",
@@ -406,7 +406,7 @@ class GitHubV1(commands.Cog):
                             "reactions",
                         ]
                         for k, v in dict(dataMain).items():
-                            if k not in filter:
+                            if k not in filter54:
                                 embed.add_field(name=k, value=v, inline=True)
                         for itemMain in dataMain["labels"]:
                             for k, v in itemMain.items():
