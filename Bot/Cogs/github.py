@@ -690,9 +690,10 @@ class GitHubV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # probably would have to deal with this later
     @githubUser.command(name="one")
-    async def githubUser(self, ctx, *, username: Option(str, "The username to search")):
+    async def githubUserSearch(
+        self, ctx, *, username: Option(str, "The username to search")
+    ):
         """Returns info on a user in GitHub"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {
