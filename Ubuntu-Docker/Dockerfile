@@ -20,8 +20,8 @@ RUN set -ex \
 FROM install_python as install_node
 RUN mkdir -p /usr/local/nvm
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN apt-get update \
-  && apt-get install -y curl \
+RUN apt-get update --no-install-recommends  \
+  && apt-get install -y curl --no-install-recommends \
   && apt-get -y autoclean
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION lts

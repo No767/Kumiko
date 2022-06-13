@@ -25,7 +25,7 @@ class GitHubV1(commands.Cog):
     github = SlashCommandGroup("github", "GitHub commands")
     githubUser = github.create_subgroup("user", "GitHub user commands")
     githubSearch = github.create_subgroup("search", "Search for repositories on GitHub")
-    githubIssues = github.create_subgroup("issues", "Search for issues on GitHub")
+    githubIssuesGroup = github.create_subgroup("issues", "Search for issues on GitHub")
     githubReleases = github.create_subgroup("releases", "Search for releases on GitHub")
 
     @githubSearch.command(name="repos")
@@ -237,7 +237,7 @@ class GitHubV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @githubIssues.command(name="all")
+    @githubIssuesGroup.command(name="all")
     async def githubIssuesRepo(
         self,
         ctx,
@@ -362,7 +362,7 @@ class GitHubV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @githubIssues.command(name="one")
+    @githubIssuesGroup.command(name="one")
     async def githhubIssuesRepoOne(
         self,
         ctx,
