@@ -16,7 +16,7 @@ class VersionV1(commands.Cog):
     )
     async def version(self, ctx):
         embedVar = discord.Embed()
-        embedVar.description = "Build Version: v2.0.4-dev"
+        embedVar.description = "Build Version: v2.1.0"
         await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
