@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "27231d275408214bc881e1940c13bb2c7da0f8e622f1e1c927798f7a09e64de7"
+            "sha256": "798953d8867d68ac74e6e0af0a709d5f84d6098ce1049b544f70b329014dcfde"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -206,11 +206,11 @@
         },
         "beanie": {
             "hashes": [
-                "sha256:0b163f425b6cf00a1ad3221417049c2fddba1f09bbcde6c59d2273712be24d27",
-                "sha256:570f02da519af61d5ce7e67838c1e63b9b0fcbf20d67a99a9c23bbb0830937d7"
+                "sha256:7bc63100e2add6bfb4a4159a460b88d91bc4e3c355be7194ba1ff18822714535",
+                "sha256:90251b6c51a4e28fe4e6c83dbbddce928f954079780ebc5f69b96f4bd348ee9c"
             ],
             "index": "pypi",
-            "version": "==1.11.3"
+            "version": "==1.11.4"
         },
         "beautifulsoup4": {
             "hashes": [
@@ -483,7 +483,7 @@
                 "sha256:9d1bf141427b7d54be944587c8349df791ce60ade2e3cccaf9c56368c133c201",
                 "sha256:f83c658e4968998eed1923a2e3e3eddd347e005ac0315fbb7ca4d70ea9156323"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==3.2.1"
         },
         "greenlet": {
@@ -1082,7 +1082,7 @@
                 "sha256:bc7861137fbce630f17b03d3ad02ad0bf978c844f3536d0edda6499dafce2b6f",
                 "sha256:d568723a7ebd25875d8d1eaf5dfa068cd2fc8194b2e483d7b1f7c81918dbec6b"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==2.28.0"
         },
         "soupsieve": {
@@ -1219,7 +1219,7 @@
                 "sha256:44ece4d53fb1706f667c9bd1c648f5469a2ec925fcf3a776667042d645472c14",
                 "sha256:aabaf16477806a5e1dd19aa41f8c2b7950dd3c746362d7e3223dbe6de6ac448e"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
             "version": "==1.26.9"
         },
         "uvloop": {
