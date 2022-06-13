@@ -344,6 +344,24 @@ Make sure to always keep this in mind: Always add exception handling for Rin. An
       await ctx.respond("That item doesn't exist! Please try again")
    ```
 
+## API Keys
+
+Some of the API's that Rin uses requires an API key. Here's the list of all of the services that require one:
+
+- Twitter (requires bearer token)
+- Reddit 
+- Hypixel
+- DeviantArt (Use the DA-Token-Refresher script in production for refreshing tokens)
+- Tenor
+- First FRC
+- Discord.bots.gg
+- Top.gg
+- GitHub
+- YouTube
+- Blue Alliance
+- Spotify (Requires refresher script as well)
+- Twitch
+
 ## Naming Conventions
 
 For Rin, the main naming convention is camelCasing. Python's naming convention is snake_casing, but I personally find it easier to use camelCasing. All classes for any cogs should be in PascalCase. And yes camelCase all variables. You'll get used to it...

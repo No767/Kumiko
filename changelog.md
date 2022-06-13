@@ -12,6 +12,8 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 - Switched Pyenv to use 3.10.5 instead of 3.10.4
 - Make Rin's logo trans (in support of pride month)
 - Actually use pre-commit hooks instead of format workflow
+- Update Help Command
+- Actually specify which exceptions to handle 
 
 ## Additions
 - GitHub API Support
@@ -29,6 +31,7 @@ This update mainly focuses on properly handling exceptions (eg when a user puts 
 ## Removals
 
 - OpenAI API Support
+- Format workflow (replaced with pre-commit hooks)
 
 ## Dependency Updates
 
