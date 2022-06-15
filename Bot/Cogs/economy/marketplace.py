@@ -6,10 +6,11 @@ import discord
 import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
-from economy_utils import KumikoEcoUtils
+from economy_utils import KumikoEcoUtils, UsersInv
 from exceptions import ItemNotFound
 
 utilsMain = KumikoEcoUtils()
+utilsEnv = UsersInv()
 today = datetime.now()
 
 
@@ -188,6 +189,36 @@ class ecoMarketplace(commands.Cog):
             embedItemNotFoundError.description = (
                 "Sorry, but that item does not exist in the marketplace."
             )
+            await ctx.respond(embed=embedItemNotFoundError)
+
+    @eco_marketplace.command(name="purchase")
+    async def ecoMarketplacePurchase(
+        self,
+        ctx,
+        *,
+        item: Option(str, "The name of the item to purchase (case-sensitive)"),
+        amount: Option(int, "The amount of items to purchase"),
+        price: Option(str, "The price of the item"),
+    ):
+        """Purchases an item from the marketplace"""
+        try:
+            beforePurchasing = await utilsMain.beforePurchase(
+                owner_id=ctx.user.id, item_name=item
+            )
+            if len(beforePurchasing) == 0:
+                raise ItemNotFound
+            else:
+                print(beforePurchasing)
+                for mainItems in beforePurchasing:
+                    dictMainItems = dict(mainItems)
+                # ! may not work... redo later
+                await utilsEnv.insItem(
+                    dictMainItems["owner"],
+                    {"name": item, "amount": amount, "price": price},
+                )
+        except ItemNotFound:
+            embedItemNotFoundError = discord.Embed()
+            embedItemNotFoundError.description = "Sorry, but that item does not exist in the marketplace. Maybe try redoing your search? It is case sensitive so..."
             await ctx.respond(embed=embedItemNotFoundError)
 
 

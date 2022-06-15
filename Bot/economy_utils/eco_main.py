@@ -51,6 +51,17 @@ class KumikoEcoUtils:
         amount: Optional[int] = None,
         price: Optional[int] = None,
     ):
+        """Inserts an item into the MongoDB database
+
+        Args:
+            uuid (str): UUID of the item
+            date_added (str): Dated added - defaults to the current date
+            owner (int): Discord uesr's ID
+            name (Optional[str], optional): The name of the item. Defaults to None.
+            description (Optional[str], optional): The description of the item. Defaults to None.
+            amount (Optional[int], optional): The amount that the user has. Defaults to None.
+            price (Optional[int], optional): The price set by the user. Defaults to None.
+        """
         client = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
@@ -204,7 +215,7 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def purchase(self, owner_id: int, item_name: str, amount: int):
+    async def beforePurchase(self, owner_id: int, item_name: str):
         clientPurchase = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
@@ -212,7 +223,7 @@ class KumikoEcoUtils:
             database=clientPurchase.kumiko_marketplace, document_models=[Marketplace]
         )
         entryPurchaseInit = (
-            await Marketplace.find_all(
+            await Marketplace.find(
                 Marketplace.name == item_name, Marketplace.owner == owner_id
             )
             .project(PurchaseProject)
