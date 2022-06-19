@@ -29,10 +29,10 @@ class DiscordBots(commands.Cog):
         *,
         search: Option(str, "The bot that you wish to search for"),
     ):
-        """Searches for any Discord Bots listed on discord.bots.gg"""
+        """Searches for up to 1 of any Discord Bots listed on discord.bots.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
-            params = {"q": search, "limit": 5}
+            params = {"q": search, "limit": 1}
             async with session.get(
                 "https://discord.bots.gg/api/v1/bots", headers=headers, params=params
             ) as r:
