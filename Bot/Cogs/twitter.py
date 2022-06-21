@@ -7,7 +7,7 @@ import orjson
 import simdjson
 import uvloop
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 from dotenv import load_dotenv
 from exceptions import NoItemsError
 
@@ -27,22 +27,28 @@ class TwitterV1(commands.Cog):
     async def twitter_search(
         self, ctx, *, user: Option(str, "The username to search up")
     ):
-        """Returns up to 5 recent tweets from the given the Twitter user"""
+        """Returns up to 25 recent tweets from the given the Twitter user"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
-            params = {"q": f"from:{user}", "count": 5}
+            params = {
+                "query": f"from:{user}",
+                "expansions": "author_id,attachments.media_keys",
+                "tweet.fields": "created_at",
+                "user.fields": "name,profile_image_url,username",
+                "media.fields": "preview_image_url",
+            }
             async with session.get(
-                "https://api.twitter.com/1.1/search/tweets.json",
+                "https://api.twitter.com/2/tweets/search/recent",
                 headers=headers,
                 params=params,
             ) as r:
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
                 try:
-                    if len(dataMain["statuses"]) == 0:
+                    if len(dataMain["data"]) == 0:
                         raise NoItemsError
                     else:
-                        embed = discord.Embed()
+                        discord.Embed()
                         excludedKeys = {
                             "entities",
                             "retweeted_status",
@@ -70,45 +76,69 @@ class TwitterV1(commands.Cog):
                             "retweeted",
                             "lang",
                         }
-                        for dictItem in dataMain["statuses"]:
-                            if "extended_entities" in dictItem:
-                                for keys, val in dictItem.items():
-                                    if keys not in excludedKeys:
-                                        embed.add_field(
-                                            name=str(keys)
-                                            .replace("_", " ")
-                                            .capitalize(),
-                                            value=val,
-                                            inline=True,
-                                        )
-                                        embed.remove_field(-6)
-                                for v in dictItem["extended_entities"].items():
-                                    embed.set_image(url=v[1][0]["media_url_https"])
-                                embed.description = dictItem["text"]
-                                embed.set_thumbnail(
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=f'{[dictItem3["username"] for dictItem3 in dataMain["includes"]["users"]]} - {[dictItem2["name"] for dictItem2 in dataMain["includes"]["users"]]}',
+                                    description=[mainItem["text"]],
+                                ).set_thumbnail(
                                     url=str(
-                                        dictItem["user"]["profile_image_url_https"]
-                                    ).replace("_normal", "_bigger")
+                                        [
+                                            str(dictItem2["profile_image_url"]).replace(
+                                                "_normal", "_bigger"
+                                            )
+                                            for dictItem2 in dataMain["includes"][
+                                                "users"
+                                            ]
+                                        ]
+                                    )
+                                    .replace("'", "")
+                                    .replace("[", "")
+                                    .replace("]", "")
                                 )
-                                await ctx.respond(embed=embed)
-                            else:
-                                for keys2, val2 in dictItem.items():
-                                    if keys2 not in excludedKeys:
-                                        embed.add_field(
-                                            name=str(keys2)
-                                            .replace("_", " ")
-                                            .capitalize(),
-                                            value=val2,
-                                            inline=True,
-                                        )
-                                        embed.remove_field(-6)
-                                embed.description = dictItem["text"]
-                                embed.set_thumbnail(
-                                    url=str(
-                                        dictItem["user"]["profile_image_url_https"]
-                                    ).replace("_normal", "_bigger")
-                                )
-                                await ctx.respond(embed=embed)
+                                for mainItem in dataMain["data"]
+                            ]
+                        )
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
+                        # for dictItem in dataMain["statuses"]:
+                        #     if "extended_entities" in dictItem:
+                        #         for keys, val in dictItem.items():
+                        #             if keys not in excludedKeys:
+                        #                 embed.add_field(
+                        #                     name=str(keys)
+                        #                     .replace("_", " ")
+                        #                     .capitalize(),
+                        #                     value=val,
+                        #                     inline=True,
+                        #                 )
+                        #                 embed.remove_field(-6)
+                        #         for v in dictItem["extended_entities"].items():
+                        #             embed.set_image(url=v[1][0]["media_url_https"])
+                        #         embed.description = dictItem["text"]
+                        #         embed.set_thumbnail(
+                        #             url=str(
+                        #                 dictItem["user"]["profile_image_url_https"]
+                        #             ).replace("_normal", "_bigger")
+                        #         )
+                        #         await ctx.respond(embed=embed)
+                        #     else:
+                        #         for keys2, val2 in dictItem.items():
+                        #             if keys2 not in excludedKeys:
+                        #                 embed.add_field(
+                        #                     name=str(keys2)
+                        #                     .replace("_", " ")
+                        #                     .capitalize(),
+                        #                     value=val2,
+                        #                     inline=True,
+                        #                 )
+                        #                 embed.remove_field(-6)
+                        #         embed.description = dictItem["text"]
+                        #         embed.set_thumbnail(
+                        #             url=str(
+                        #                 dictItem["user"]["profile_image_url_https"]
+                        #             ).replace("_normal", "_bigger")
+                        #         )
+                        #         await ctx.respond(embed=embed)
                 except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = f"It looks like there were no tweets from the user {user} found within the past 5 days... Please try again"
