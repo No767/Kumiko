@@ -22,6 +22,7 @@ py-cord = {version = "==2.0.0rc1", extras = ["voice"]}
 pysimdjson = "*"
 gql = {extras = ["aiohttp"], version = "*"}
 python-dateutil = "*"
+rin-exceptions = "*"
 
 [dev-packages]
 pre-commit = "*"
