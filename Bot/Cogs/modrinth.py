@@ -192,43 +192,6 @@ class ModrinthV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @modVersions.command(name="id")
-    async def modrinthModVersion(
-        self, ctx, *, mod_version_id: Option(str, "The ID of the mod version")
-    ):
-        """Returns info on the given mod version ID"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            async with session.get(
-                f"https://api.modrinth.com/v2/version/{mod_version_id}"
-            ) as r:
-                data = await r.content.read()
-                versionFilter = ["changelog", "name", "dependencies", "files"]
-                embedVar = discord.Embed()
-                try:
-                    dataMain3 = parser.parse(data, recursive=True)
-                    for keys, value in dataMain3.items():
-                        if keys not in versionFilter:
-                            embedVar.add_field(name=keys, value=value, inline=True)
-                    for fileItems in dataMain3["files"]:
-                        for k, v in fileItems.items():
-                            if k not in "hashes":
-                                embedVar.add_field(name=k, value=v, inline=True)
-                        for hashKey, hashValue in fileItems["hashes"].items():
-                            embedVar.add_field(
-                                name=hashKey, value=hashValue, inline=True
-                            )
-                    embedVar.title = dataMain3["name"]
-                    embedVar.description = dataMain3["changelog"]
-                    await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedVar.description = (
-                        "Sorry, but the query could not be made. Please try again..."
-                    )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     @modrinthUser.command(name="search")
     async def modrinthUserMain(
         self, ctx, *, username: Option(str, "The username or ID of the user")
@@ -345,40 +308,6 @@ class ModrinthV1(commands.Cog):
                         embedVar.title = dictTeam["user"]["username"]
                         embedVar.description = dictTeam["user"]["bio"]
                         embedVar.set_thumbnail(url=dictTeam["user"]["avatar_url"])
-                        await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedVar.description = (
-                        "Sorry, but the query could not be made. Please try again..."
-                    )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @modrinthTeam.command(name="members")
-    async def modrinthTeamMembers(
-        self, ctx, *, team_id: Option(str, "The ID of the team")
-    ):
-        """Returns the members within the given team"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            async with session.get(
-                f"https://api.modrinth.com/v2/team/{team_id}/members"
-            ) as r:
-                teamData = await r.content.read()
-                teamDataMain = parser.parse(teamData, recursive=True)
-                teamFilter = ["bio", "avatar_url", "username"]
-                embedVar = discord.Embed()
-                try:
-                    for dictTeam2 in teamDataMain:
-                        for keys, value in dictTeam2.items():
-                            if keys not in "user":
-                                embedVar.add_field(name=keys, value=value, inline=True)
-                        for k, v in dictTeam2["user"].items():
-                            if k not in teamFilter:
-                                embedVar.add_field(name=k, value=v, inline=True)
-                        embedVar.title = dictTeam2["user"]["username"]
-                        embedVar.description = dictTeam2["user"]["bio"]
-                        embedVar.set_thumbnail(url=dictTeam2["user"]["avatar_url"])
                         await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar.description = (

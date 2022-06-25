@@ -185,58 +185,6 @@ class GitHubV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @github.command(name="commit")
-    async def githubCommit(
-        self,
-        ctx,
-        *,
-        owner: Option(str, "The owner of the repo"),
-        repo: Option(str, "The name of the repo"),
-        commit_sha: Option(str, "The commit's SHA hash"),
-    ):
-        """Gets info about a commit based on hash"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {
-                "Authorization": f"token {githubAPIKey}",
-                "accept": "application/vnd.github.v3+json",
-            }
-            async with session.get(
-                f"https://api.github.com/repos/{owner}/{repo}/git/commits/{commit_sha}",
-                headers=headers,
-            ) as r:
-                try:
-                    data = await r.content.read()
-                    dataMain = parser.parse(data, recursive=True)
-                    if r.status == 404:
-                        raise HTTPException
-                    else:
-                        embedMain = discord.Embed()
-                        mainFilters = [
-                            "url",
-                            "author",
-                            "committer",
-                            "tree",
-                            "parents",
-                            "verification",
-                            "message",
-                        ]
-                        for k, v in dataMain.items():
-                            if k not in mainFilters:
-                                embedMain.add_field(name=k, value=v, inline=True)
-                        for keys, value in dataMain["verification"].items():
-                            embedMain.add_field(name=keys, value=value, inline=True)
-                        embedMain.title = dataMain["author"]["name"]
-                        embedMain.description = dataMain["message"]
-                        await ctx.respond(embed=embedMain)
-                except HTTPException:
-                    await ctx.respond(
-                        embed=discord.Embed(
-                            description="It seems like that there isn't a commit with that hash or repo. Please try again"
-                        )
-                    )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     @githubIssuesGroup.command(name="all")
     async def githubIssuesRepo(
         self,

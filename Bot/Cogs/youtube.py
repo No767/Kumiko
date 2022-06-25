@@ -404,7 +404,7 @@ class YoutubeV1(commands.Cog):
 
     @yt.command(name="video")
     async def youtube_video(self, ctx, *, video_id: Option(str, "YT Video ID")):
-        """Returns some info on the given YouTube video"""
+        """Returns some info on the given YouTube video."""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": YouTube_API_Key,

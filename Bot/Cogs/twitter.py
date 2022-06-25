@@ -6,15 +6,16 @@ import discord
 import orjson
 import simdjson
 import uvloop
+from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 from dotenv import load_dotenv
 from exceptions import NoItemsError
 
 load_dotenv()
 
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
-parser = simdjson.Parser()
+JSONparser = simdjson.Parser()
 
 
 class TwitterV1(commands.Cog):
@@ -27,88 +28,96 @@ class TwitterV1(commands.Cog):
     async def twitter_search(
         self, ctx, *, user: Option(str, "The username to search up")
     ):
-        """Returns up to 5 recent tweets from the given the Twitter user"""
+        """Returns up to 25 recent tweets from the given the Twitter user"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
-            params = {"q": f"from:{user}", "count": 5}
+            params = {
+                "query": f"from:{user}",
+                "expansions": "author_id,attachments.media_keys",
+                "tweet.fields": "created_at,public_metrics,id",
+                "user.fields": "name,profile_image_url,username",
+                "media.fields": "preview_image_url",
+                "max_results": 25,
+            }
             async with session.get(
-                "https://api.twitter.com/1.1/search/tweets.json",
+                "https://api.twitter.com/2/tweets/search/recent",
                 headers=headers,
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
+                dataMain = JSONparser.parse(data, recursive=True)
                 try:
-                    if len(dataMain["statuses"]) == 0:
+                    if len(dataMain["data"]) == 0:
                         raise NoItemsError
                     else:
-                        embed = discord.Embed()
-                        excludedKeys = {
-                            "entities",
-                            "retweeted_status",
-                            "quoted_status",
-                            "metadata",
-                            "id",
-                            "id_str",
-                            "source",
-                            "in_reply_to_status_id",
-                            "in_reply_to_status_id_str",
-                            "in_reply_to_user_id",
-                            "in_reply_to_user_id_str",
-                            "text",
-                            "source",
-                            "is_quote_status",
-                            "quoted_status_id",
-                            "quoted_status_id_str",
-                            "possibly_sensitive",
-                            "contributors",
-                            "in_reply_to_screen_name",
-                            "truncated",
-                            "extended_entities",
-                            "user",
-                            "favorited",
-                            "retweeted",
-                            "lang",
-                        }
-                        for dictItem in dataMain["statuses"]:
-                            if "extended_entities" in dictItem:
-                                for keys, val in dictItem.items():
-                                    if keys not in excludedKeys:
-                                        embed.add_field(
-                                            name=str(keys)
-                                            .replace("_", " ")
-                                            .capitalize(),
-                                            value=val,
-                                            inline=True,
-                                        )
-                                        embed.remove_field(-6)
-                                for v in dictItem["extended_entities"].items():
-                                    embed.set_image(url=v[1][0]["media_url_https"])
-                                embed.description = dictItem["text"]
-                                embed.set_thumbnail(
-                                    url=str(
-                                        dictItem["user"]["profile_image_url_https"]
-                                    ).replace("_normal", "_bigger")
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=f'{[dictItem3["username"] for dictItem3 in dataMain["includes"]["users"]]} - {[dictItem2["name"] for dictItem2 in dataMain["includes"]["users"]]}'.replace(
+                                        "'", ""
+                                    )
+                                    .replace("[", "")
+                                    .replace("]", ""),
+                                    description=mainItem["text"],
                                 )
-                                await ctx.respond(embed=embed)
-                            else:
-                                for keys2, val2 in dictItem.items():
-                                    if keys2 not in excludedKeys:
-                                        embed.add_field(
-                                            name=str(keys2)
-                                            .replace("_", " ")
-                                            .capitalize(),
-                                            value=val2,
-                                            inline=True,
-                                        )
-                                        embed.remove_field(-6)
-                                embed.description = dictItem["text"]
-                                embed.set_thumbnail(
-                                    url=str(
-                                        dictItem["user"]["profile_image_url_https"]
-                                    ).replace("_normal", "_bigger")
+                                .add_field(
+                                    name="Created At (UTC, 24hr)",
+                                    value=parser.isoparse(
+                                        mainItem["created_at"]
+                                    ).strftime("%B %d, %Y %H:%M:%S"),
+                                    inline=True,
                                 )
-                                await ctx.respond(embed=embed)
+                                .add_field(
+                                    name="Created At (UTC, 12hr)",
+                                    value=parser.isoparse(
+                                        mainItem["created_at"]
+                                    ).strftime("%B %d, %Y %I:%M:%S %p"),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Original URL",
+                                    value=f'https://twitter.com/{dataMain["includes"]["users"][0]["username"]}/status/{mainItem["id"]}',
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Retweet Count",
+                                    value=mainItem["public_metrics"]["retweet_count"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Reply Count",
+                                    value=mainItem["public_metrics"]["reply_count"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Like Count",
+                                    value=mainItem["public_metrics"]["like_count"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Quote Count",
+                                    value=mainItem["public_metrics"]["quote_count"],
+                                    inline=True,
+                                )
+                                .set_thumbnail(
+                                    url=str(
+                                        [
+                                            str(dictItem2["profile_image_url"]).replace(
+                                                "_normal", "_bigger"
+                                            )
+                                            for dictItem2 in dataMain["includes"][
+                                                "users"
+                                            ]
+                                        ]
+                                    )
+                                    .replace("'", "")
+                                    .replace("[", "")
+                                    .replace("]", "")
+                                )
+                                for mainItem in dataMain["data"]
+                            ]
+                        )
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
                 except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = f"It looks like there were no tweets from the user {user} found within the past 5 days... Please try again"
@@ -128,7 +137,7 @@ class TwitterV1(commands.Cog):
                 params=params,
             ) as resp:
                 data2 = await resp.content.read()
-                dataMain2 = parser.parse(data2, recursive=True)
+                dataMain2 = JSONparser.parse(data2, recursive=True)
                 itemFilter = {
                     "profile_image_url_https",
                     "id",
