@@ -269,69 +269,6 @@ class TenorV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @tenor.command(name="gif")
-    async def tenor_gif(self, ctx, *, search_gif: Option(int, "Tenor GIF ID")):
-        """Gives a gif based on the given GIF ID"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {
-                "key": Tenor_API_Key,
-                "ids": search_gif,
-                "limit": 1,
-                "media_filter": "minimal",
-            }
-            async with session.get(
-                "https://g.tenor.com/v1/gifs", params=params
-            ) as respon:
-                data7 = await respon.content.read()
-                dataMain7 = parser.parse(data7, recursive=True)
-                filterList2 = [
-                    "created",
-                    "bg_color",
-                    "content_rating",
-                    "title",
-                    "h1_title",
-                    "url",
-                    "hasaudio",
-                    "hascaption",
-                    "source_id",
-                    "composite",
-                    "media",
-                    "tags",
-                    "flags",
-                    "content_description",
-                    "shares",
-                ]
-                embedVar = discord.Embed()
-                try:
-                    try:
-                        if len(dataMain7["results"]) == 0:
-                            raise NoItemsError
-                        for dictValues in dataMain7["results"]:
-                            for k, v in dictValues.items():
-                                if k not in filterList2:
-                                    embedVar.title = dictValues["content_description"]
-                                    embedVar.add_field(
-                                        name=str(k).capitalize(), value=v, inline=True
-                                    )
-                            for item3 in dictValues.get("media"):
-                                embedVar.set_image(url=item3["gif"]["url"])
-                            await ctx.respond(embed=embedVar)
-                    except NoItemsError:
-                        embedNoItemsError = discord.Embed()
-                        embedNoItemsError.description = (
-                            "It seems like that gif doesn't exist... Please try again"
-                        )
-                        await ctx.respond(embed=embedNoItemsError)
-                except Exception as e:
-                    embedError = discord.Embed()
-                    embedError.description = (
-                        "Sorry, but the query failed. Please try again..."
-                    )
-                    embedError.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     @tenor.command(name="random")
     async def tenor_random(
         self, ctx, *, search_random_term: Option(str, "Search Term")
