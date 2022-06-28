@@ -38,7 +38,7 @@ class KumikoEcoUserUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def updateUser(self, coins: int):
+    async def updateUser(self, owner_id: int, coins: int):
         meta = MetaData()
         engine = create_async_engine(
             f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
@@ -51,7 +51,7 @@ class KumikoEcoUserUtils:
         )
         async with engine.begin() as conn:
             update_values = (
-                users.update().values(coins=coins).filter(users.c.id == self.id)
+                users.update().values(coins=coins).filter(users.c.user_id == owner_id)
             )
             await conn.execute(update_values)
 

@@ -58,6 +58,24 @@ class everyonePingChecker(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
+class cooldownChecker(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    # later add the actual amount of time left...
+    @commands.Cog.listener()
+    async def on_application_command_error(
+        self, ctx: discord.ApplicationContext, error: discord.DiscordException
+    ):
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.respond(
+                embed=discord.Embed(
+                    description=f"This command is currently on cooldown."
+                )
+            )
+
+
 def setup(bot):
     bot.add_cog(ErrorHandler(bot))
     bot.add_cog(everyonePingChecker(bot))
+    bot.add_cog(cooldownChecker(bot))

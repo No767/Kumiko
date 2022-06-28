@@ -22,6 +22,7 @@ gql = {extras = ["aiohttp"], version = "*"}
 python-dateutil = "*"
 rin-exceptions = "*"
 beanie = "==1.11.6"
+numpy = "*"
 
 [dev-packages]
 pre-commit = "*"
