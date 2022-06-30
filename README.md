@@ -30,6 +30,7 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 # Features
 
 - An **Opt-In** Economy System with jobs system and marketplace (WIP)
+- Complete Web Dashboard + Custom Embeds (WIP)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Genshin Impact Wish Sim (Not implemented yet)
 - Reaction Roles (Broken)
