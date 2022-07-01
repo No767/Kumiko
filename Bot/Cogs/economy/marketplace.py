@@ -10,7 +10,7 @@ from economy_utils import KumikoEcoUtils, UsersInv
 from exceptions import ItemNotFound
 
 utilsMain = KumikoEcoUtils()
-utilsEnv = UsersInv()
+utilsInv = UsersInv()
 today = datetime.now()
 
 
@@ -208,14 +208,12 @@ class ecoMarketplace(commands.Cog):
             if len(beforePurchasing) == 0:
                 raise ItemNotFound
             else:
-                print(beforePurchasing)
                 for mainItems in beforePurchasing:
-                    dictMainItems = dict(mainItems)
-                # ! may not work... redo later
-                await utilsEnv.insItem(
-                    dictMainItems["owner"],
-                    {"name": item, "amount": amount, "price": price},
-                )
+                    dict(mainItems)
+
+                addingToInv = await utilsInv.insertItem(
+                    ctx.user.id, {}
+                )  # ! requires a dict with fields. add later...
         except ItemNotFound:
             embedItemNotFoundError = discord.Embed()
             embedItemNotFoundError.description = "Sorry, but that item does not exist in the marketplace. Maybe try redoing your search? It is case sensitive so..."

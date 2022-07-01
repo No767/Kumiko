@@ -106,22 +106,21 @@ class ecoUsers(commands.Cog):
     async def ecoUserInv(self, ctx):
         """Access your inventory"""
         try:
-            userInv = await inv.obtainInv(ctx.user.id)
-            if userInv is None:
+            userInv = await inv.obtainUserInv(ctx.user.id)
+            if len(userInv) == 0:
                 raise ItemNotFound
             else:
-                paginator = pages.Paginator(
+                mainPages = pages.Paginator(
                     pages=[
                         discord.Embed(
-                            title=dict(dict(mainItem)["item"])["name"],
-                            description=dict(dict(mainItem)["item"])["description"],
-                        ).add_field(
-                            name="Amount", value=dict(dict(mainItem)["item"])["amount"]
-                        )
-                        for mainItem in userInv
-                    ]
+                            title=dictItem[1]["name"],
+                            description=dictItem[1]["description"],
+                        ).add_field(name="Amount", value=dictItem[1]["amount"])
+                        for dictItem in userInv
+                    ],
+                    loop_pages=True,
                 )
-                await paginator.respond(ctx.interaction, ephemeral=False)
+                await mainPages.respond(ctx.interaction, ephemeral=False)
         except ItemNotFound:
             embedTypeError = discord.Embed()
             embedTypeError.description = "It seems you don't have any items in your inventory! Start purchasing some items from the marketplace to get started!"

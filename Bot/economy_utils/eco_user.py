@@ -4,6 +4,7 @@ import os
 import uvloop
 from dotenv import load_dotenv
 from sqlalchemy import BigInteger, Column, Integer, MetaData, Table, select
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
@@ -68,6 +69,23 @@ class KumikoEcoUserUtils:
             meta4,
             Column("user_id", BigInteger),
             Column("coins", Integer),
+        )
+        async with engine4.begin() as conn4:
+            await conn4.run_sync(meta4.create_all)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def initInvTables(self):
+        meta4 = MetaData()
+        engine4 = create_async_engine(
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users",
+            echo=True,
+        )
+        Table(
+            "users_inventory",
+            meta4,
+            Column("user_id", BigInteger),
+            Column("items", JSONB),
         )
         async with engine4.begin() as conn4:
             await conn4.run_sync(meta4.create_all)

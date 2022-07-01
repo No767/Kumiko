@@ -35,6 +35,7 @@ class PurchaseProject(BaseModel):
     owner: int
     name: str
     price: int
+    amount: int
 
 
 class KumikoEcoUtils:
