@@ -2,7 +2,7 @@
 
 # Rin
 
-![Rin's Logo](./assets/Rin-Trans-Logo-V0.1.0.png)
+![Rin's Logo](./assets/Rin%20Logo%20V4%20(GitHub).png)
 
 <br/>
 
@@ -23,6 +23,22 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 
 Rin is designed to be modular, where you can remove cogs, or add new ones. In fact, you can build your entire bot on top of Rin, and [Kumiko](https://github.com/No767/Kumiko) basically does that. However, if you want to build your bot on top of Rin, you have to cite the bot as a fork of Rin (you are essentially using a fork of Rin if you decide to do so), link back the GitHub repo in somewhere that people will notice, and give credit to the original developer (which is me, No767).
 
+## Features
+
+Rin comes with integration from 15+ services. Some of these services that are fully supported and integrated include:
+
+- AniList
+- Twitter
+- Modrinth
+- YouTube
+- Waifu.IM
+- MyAnimeList
+- MangaDex
+- Reddit
+- Twitch
+
+And many more!
+
 # Prefix
 
 Rin's prefix is `/`.
@@ -33,7 +49,7 @@ Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.co
 
 # Installing Dependencies
 
-Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is faster than bots written with Node.js. If you want to get set up, here are the instructions to do so:
 
 ## Windows 
 
