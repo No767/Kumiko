@@ -375,6 +375,22 @@ MongoDB_Server_IP_Dev = "127.0.0.1" # also could use ipv4 address if localhost d
 
 Now connect to the MongoDB server with MongoDBCompass or Mongosh and create a database called `kumiko_marketplace`. There is no need to create any collections, since beanie will create them when needed. 
 
+## API Keys
+
+Kumiko is built on top of Rin, and Rin requires some API keys. Here's a list of current services that require API keys:
+
+- Twitter (requires bearer token, make sure that the bearer token supports Twitter API V2)
+- Reddit 
+- Hypixel
+- DeviantArt (Use the DA-Token-Refresher script in production for refreshing tokens)
+- Tenor (Use API V2)
+- First FRC
+- Discord.bots.gg
+- Top.gg
+- GitHub
+- YouTube
+- Blue Alliance
+- Twitch
 
 ## Pull Requests and Commits
 

@@ -10,7 +10,7 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from exceptions import NoItemsError
+from rin_exceptions import NoItemsError
 
 load_dotenv()
 

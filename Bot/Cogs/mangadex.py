@@ -7,7 +7,7 @@ import simdjson
 import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
-from exceptions import NotFoundHTTPException
+from rin_exceptions import NotFoundHTTPException
 
 parser = simdjson.Parser()
 

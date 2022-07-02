@@ -36,6 +36,22 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 - Reaction Roles (Broken)
 - All of the services from upstream Rin
 
+## Rin's Supported Services
+
+Kumiko comes with integration from 15+ services. Some of these services that are fully supported and integrated include:
+
+- AniList
+- Twitter
+- Modrinth
+- YouTube
+- Waifu.IM
+- MyAnimeList
+- MangaDex
+- Reddit
+- Twitch
+
+And many more! For a full list, see the [Supported Services](https://docs.rinbot.live/docs/about/supported-services) page.
+
 # Prefix
 
 Rin's prefix is `/`. Kumiko also uses the same prefix as Rin (`/`)
@@ -50,7 +66,7 @@ If you would like to support me with projects like this, please consider starrin
 
 # Installing Dependencies
 
-Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is faster than bots written with Node.js. If you want to get set up, here are the instructions to do so:
 
 
 # Getting Started (For Developers)
