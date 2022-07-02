@@ -9,7 +9,7 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from exceptions import NoItemsError
+from rin_exceptions import NoItemsError
 from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
 

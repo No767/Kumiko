@@ -7,7 +7,7 @@ import simdjson
 import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
-from exceptions import NoItemsError
+from rin_exceptions import NoItemsError
 
 parser = simdjson.Parser()
 
