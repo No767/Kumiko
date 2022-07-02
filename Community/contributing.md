@@ -348,18 +348,17 @@ Make sure to always keep this in mind: Always add exception handling for Rin. An
 
 Some of the API's that Rin uses requires an API key. Here's the list of all of the services that require one:
 
-- Twitter (requires bearer token)
+- Twitter (requires bearer token, make sure that the bearer token supports Twitter API V2)
 - Reddit 
 - Hypixel
 - DeviantArt (Use the DA-Token-Refresher script in production for refreshing tokens)
-- Tenor
+- Tenor (Use API V2)
 - First FRC
 - Discord.bots.gg
 - Top.gg
 - GitHub
 - YouTube
 - Blue Alliance
-- Spotify (Requires refresher script as well)
 - Twitch
 
 ## Naming Conventions
