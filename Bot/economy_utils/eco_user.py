@@ -9,9 +9,10 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
 
-Password = os.getenv("Postgres_Password_Dev")
-Server_IP = os.getenv("Postgres_Server_IP_Dev")
-Username = os.getenv("Postgres_Username_Dev")
+POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
+POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
+POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
 
 
 class KumikoEcoUserUtils:
@@ -19,9 +20,14 @@ class KumikoEcoUserUtils:
         self.self = self
 
     async def insUserFirstTime(self, user_id: int):
+        """Initializes a user's account
+
+        Args:
+            user_id (int): Discord User ID
+        """
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
         )
         users = Table(
             "users",
@@ -40,9 +46,15 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def updateUser(self, owner_id: int, coins: int):
+        """Updates the amount of coins a user has
+
+        Args:
+            owner_id (int): Discord User ID
+            coins (int): The amount of coins to update to
+        """
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
         )
         users = Table(
             "users",
@@ -59,9 +71,10 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def initTables(self):
+        """Initializes the user data tables for the economy system. This is used for the Postgres-Init script."""
         meta4 = MetaData()
         engine4 = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users",
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}",
             echo=True,
         )
         Table(
@@ -76,9 +89,10 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def initInvTables(self):
+        """Initializes the user inv tables for the economy system. This is used for the Postgres-Init script."""
         meta4 = MetaData()
         engine4 = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users",
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}",
             echo=True,
         )
         Table(
@@ -93,9 +107,14 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def getUser(self, user_id: int):
+        """Obtains the amount of coins a user has
+
+        Args:
+            user_id (int): Discord User ID
+        """
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
         )
         users = Table(
             "users",
@@ -114,9 +133,17 @@ class KumikoEcoUserUtils:
     async def userTransaction(
         self, sender_id: int, receiver_id: int, sender_amount: int, receiver_amount: int
     ):
+        """Performs a transaction between two users
+
+        Args:
+            sender_id (int): The sender's Discord User ID
+            receiver_id (int): The receiver's Discord User ID
+            sender_amount (int): The amount of coins to send
+            receiver_amount (int): The amount of coins to receive
+        """
         meta = MetaData()
         engineMain4 = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
         )
         users = Table(
             "users",
@@ -141,9 +168,14 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def removeUser(self, user_id: int):
+        """Removes a user from the database
+
+        Args:
+            user_id (int): Discord User ID
+        """
         meta = MetaData()
         engineMain2 = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:5432/kumiko_eco_users"
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
         )
         users = Table(
             "users",

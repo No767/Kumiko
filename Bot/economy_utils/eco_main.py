@@ -8,13 +8,11 @@ from beanie import Document, init_beanie
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from .eco_user import KumikoEcoUserUtils
-
 load_dotenv()
-MongoDB_Password = os.getenv("MongoDB_Password_Dev")
-Username = os.getenv("MongoDB_Username_Dev")
-Server_IP = os.getenv("MongoDB_Server_IP_Dev")
-usersUtils = KumikoEcoUserUtils()
+
+MONGODB_PASSWORD = os.getenv("MongoDB_Password_Dev")
+MONGODB_USERNAME = os.getenv("MongoDB_Username_Dev")
+MONGODB_SERVER_IP = os.getenv("MongoDB_Server_IP_Dev")
 
 
 class Marketplace(Document):
@@ -70,7 +68,7 @@ class KumikoEcoUtils:
             price (Optional[int], optional): The price set by the user. Defaults to None.
         """
         client = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=client.kumiko_marketplace, document_models=[Marketplace]
@@ -108,7 +106,7 @@ class KumikoEcoUtils:
             price (Optional[int], optional): Item Price. Defaults to None.
         """
         clientUpdate = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientUpdate.kumiko_marketplace, document_models=[Marketplace]
@@ -132,7 +130,7 @@ class KumikoEcoUtils:
             List: List of all items in the database
         """
         clientObtain = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientObtain.kumiko_marketplace, document_models=[Marketplace]
@@ -143,8 +141,16 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def obtainOnlyID(self, owner_id: int):
+        """Obtains the Discord ID of the item within the database
+
+        Args:
+            owner_id (int): Discord User ID
+
+        Returns:
+            List: List containing only the owner IDs of the item(s) found
+        """
         clientObtainOnlyID = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientObtainOnlyID.kumiko_marketplace,
@@ -158,8 +164,17 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def obtainOnlyIDWithName(self, name: str, owner_id: int):
+        """Obtains the Discord ID of the item but with the name of the item
+
+        Args:
+            name (str): The name of the item within the Marketplace
+            owner_id (int): Owner's Discord ID
+
+        Returns:
+            List: List containing the owner IDs and the name of the item(s) found
+        """
         clientObtainOnlyIDWithName = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientObtainOnlyIDWithName.kumiko_marketplace,
@@ -173,8 +188,16 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def getItem(self, name: str):
+        """Obtains the item via the name from the database
+
+        Args:
+            name (str): The name of the item
+
+        Returns:
+            List: List containing the data of the item(s) found
+        """
         clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientGetItem.kumiko_marketplace, document_models=[Marketplace]
@@ -193,8 +216,18 @@ class KumikoEcoUtils:
         amount: Optional[int] = None,
         price: Optional[int] = None,
     ):
+        """Edits an item in the Marketplace
+
+        Args:
+            date_added (str): The date added. Usually the same date that it is edited
+            owner (int): Owner Discord's ID
+            name (Optional[str], optional): The name of the item. Defaults to None.
+            description (Optional[str], optional): The description of the item. Defaults to None.
+            amount (Optional[int], optional): The amount that is in stock. Defaults to None.
+            price (Optional[int], optional): The price of the item. Defaults to None.
+        """
         clientEditItem = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientEditItem.kumiko_marketplace, document_models=[Marketplace]
@@ -212,8 +245,14 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def delOneItem(self, name: str, owner: int):
+        """Deletes one item from the Marketplace via the item's name
+
+        Args:
+            name (str): The item's name
+            owner (int): Owner's Discord ID
+        """
         clientDelItem = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientDelItem.kumiko_marketplace, document_models=[Marketplace]
@@ -226,8 +265,13 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def delAll(self, owner: int):
+        """Literally clears out all of the items associated with the owner's ID
+
+        Args:
+            owner (int): Owner's Discord ID'
+        """
         clientDelAll = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientDelAll.kumiko_marketplace, document_models=[Marketplace]
@@ -238,8 +282,17 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def beforePurchase(self, owner_id: int, item_name: str):
+        """Obtains the needed data before making the purchase of said item
+
+        Args:
+            owner_id (int): Owner's Discord ID'
+            item_name (str): The name of the item
+
+        Returns:
+            List: List containing the data of the item(s) found
+        """
         clientPurchase = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientPurchase.kumiko_marketplace, document_models=[Marketplace]
@@ -260,9 +313,12 @@ class KumikoEcoUtils:
 
         Args:
             uuid (str): Marketplace Item UUID
+
+        Returns:
+            List: List containing only the UUID of the item(s) found
         """
         clientItemAuth = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientItemAuth.kumiko_marketplace, document_models=[Marketplace]
@@ -283,7 +339,7 @@ class KumikoEcoUtils:
             uuid (str): Marketplace Item UUID
         """
         clientItemDelete = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientItemDelete.kumiko_marketplace, document_models=[Marketplace]
@@ -294,8 +350,16 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def searchForID(self, uuid: str):
+        """Searches for the item via the item's UUID
+
+        Args:
+            uuid (str): The UUID of said item
+
+        Returns:
+            List: List containing the data of the item(s) found
+        """
         clientSearchID = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientSearchID.kumiko_marketplace, document_models=[Marketplace]
@@ -313,7 +377,7 @@ class KumikoEcoUtils:
             amount (int): The amount of the item in the Marketplace
         """
         clientUpdateItemPrice = motor.motor_asyncio.AsyncIOMotorClient(
-            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
         )
         await init_beanie(
             database=clientUpdateItemPrice.kumiko_marketplace,
