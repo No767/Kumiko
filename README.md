@@ -4,12 +4,12 @@
 
 # Kumiko (久美子)
 
-<img src="./assets/kumiko.jpg" width=200 height=200>
+![Kumiko](./assets/kumiko-resized.jpg)
 
 <br>
 
 ![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white)
-[![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Format](https://github.com/No767/Kumiko/actions/workflows/format.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/format.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
+[![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE)
 
 The Multipurpose version of [Rin](https://github.com/No767/Rin) built with freedom and choice in mind
 
@@ -18,10 +18,9 @@ The Multipurpose version of [Rin](https://github.com/No767/Rin) built with freed
 
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose fork of [Rin](https://github.com/No767/Rin), and includes features like an economy system, and more. Currently Kumiko is in heavy development, and is not ready for use. Just like 
-Rin, Kumiko is written in Python and uses Pycord as well. Kumiko supports all of the services that Rin has.
+Kumiko is a multipurpose fork of [Rin](https://github.com/No767/Rin) built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, and soon a web dashboard (pinned for v2.0). Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that all of Rin's 15+ services are directly integrated into Kumiko.
 
-## Rin
+## Rin (リン)
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
@@ -29,8 +28,8 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 
 # Features
 
-- An **Opt-In** Economy System with jobs system and marketplace (WIP)
-- Complete Web Dashboard + Custom Embeds (WIP)
+- An **Opt-In** Economy System with jobs system and marketplace (WIP, pinned for v1)
+- Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Genshin Impact Wish Sim (Not implemented yet)
 - Reaction Roles (Broken)
@@ -58,7 +57,7 @@ Rin's prefix is `/`. Kumiko also uses the same prefix as Rin (`/`)
 
 # Inviting the Bot
 
-Still in early production. Not ready for release yet
+Still in early production. Not ready for release yet.
 
 # Support 
 
@@ -308,8 +307,12 @@ Getting the environment set up for Kumiko is a kinda complex process. Kumiko now
     ```
 # Licensing
 
-Kumiko and Rin are both licensed under Apache-2.0. This project uses some of the cogs from EasyBot.py and its plugins. All EasyBot.py and EasyBot-Plugin code is licensed under CC0-1.0, and all private code changes is licensed under Apache-2.0. 
+Kumiko being a direct upstream fork of Rin, is licensed under the same license as Rin, which is [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
 
 # Contributing
 
 See [Contributing](https://github.com/No767/Kumiko/blob/dev/Community/contributing.md)
+
+# Name Inspiration
+
+Kumiko's name comes from the anime character [Kumiko Oumae](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae) from the anime Hibike! Euphonium.
