@@ -25,7 +25,7 @@ RUN apt-get update --no-install-recommends  \
   && apt-get install -y curl --no-install-recommends \
   && apt-get -y autoclean
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 16.15.0
+ENV NODE_VERSION 16.15.1
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 RUN source $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
