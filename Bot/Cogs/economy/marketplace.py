@@ -7,7 +7,7 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from economy_utils import KumikoEcoUtils, UsersInv
-from exceptions import ItemNotFound
+from rin_exceptions import ItemNotFound
 
 utilsMain = KumikoEcoUtils()
 utilsInv = UsersInv()
