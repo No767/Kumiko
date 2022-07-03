@@ -1,4 +1,4 @@
-# ✨ Rin V2.1.0 ✨
+# ✨ Kumiko v0.3.0 ✨
 
 This update mainly focuses on properly handling exceptions (eg when a user puts in random data), and includes new services as well. 
 
