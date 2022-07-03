@@ -107,14 +107,19 @@ class ecoUsers(commands.Cog):
         """Access your inventory"""
         try:
             userInv = await inv.obtainUserInv(ctx.user.id)
-            for mainItems in userInv:
-                print(mainItems[1]["name"])
             if len(userInv) == 0:
                 raise ItemNotFound
             else:
                 mainPages = pages.Paginator(
                     pages=[
-                        discord.Embed(title=dict(dictItem)["items"]["name"])
+                        discord.Embed(
+                            title=dict(dictItem)["items"]["name"],
+                            description=dict(dictItem)["items"]["description"],
+                        ).add_field(
+                            name="Amount",
+                            value=dict(dictItem)["items"]["amount"],
+                            inline=True,
+                        )
                         for dictItem in userInv
                     ],
                     loop_pages=True,

@@ -26,6 +26,7 @@ This update focuses on Kumiko's Economy system (which was completely rebuilt fro
 - Attempt to redo ban + pronoun cogs
 - Use pre-commit hooks instead of format workflow
 - Upgrade all Python versions in workflows to 3.10.5
+- Make sure that the fields for the user inv are correct and set
 
 ## Additions
 - The full rebuild of the economy system
