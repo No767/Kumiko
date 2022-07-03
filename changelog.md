@@ -1,55 +1,48 @@
 # ✨ Kumiko v0.3.0 ✨
 
-This update mainly focuses on properly handling exceptions (eg when a user puts in random data), and includes new services as well. 
+This update focuses on Kumiko's Economy system (which was completely rebuilt from the ground up), and upstream commits from Rin v1.4.x, v2.0.x, v2.1.x and dev branch. This update together is probably literally 500+ commits more than Kumiko v0.2.0. For details for upstream changes from Rin, please refer to the following links (latest point releases):
+
+- Rin v1.4.4: https://github.com/No767/Rin/releases/tag/v1.4.4
+- Rin v2.0.2: https://github.com/No767/Rin/releases/tag/v2.0.2
+- Rin v2.1.0: https://github.com/No767/Rin/releases/tag/v2.1.0
+
+## TD;LR
+
+- Rebuilt Kumiko's Economy system from the ground up
+- All upstream commits from Rin v1.4.x, v2.0.x, v2.1.x and dev branch
+- Migrate all commands to slash commands
 
 ## Changes
 
-- Use Pysimdjson for handling JSON processing instead of Orjson
-- Finished Blue Alliance API support
-- Swap from Python docker images to process management with PM2 within an Ubuntu docker image
-- Organize all commands into groups and subgroups
-- Changed Jisho and other cogs to use a paginated embed instead
-- Switched Pyenv to use 3.10.5 instead of 3.10.4
-- Make Rin's logo trans (in support of pride month)
-- Actually use pre-commit hooks instead of format workflow
-- Update Help Command
-- Actually specify which exceptions to handle 
+- Rebuilt Kumiko's Economy system from the ground up.
+- Switch to using Rin-Exceptions package from PyPi
+- Use PM2 for process management (from upstream Rin)
+- Require all new items being stored to contain an UUID
+- Finished user inv + transaction system
+- Full proper exception handling for all commands (including eco commands)
+- Search User's ID for Inv Method instead
+- Organize eco commands into groups
+- Include User signup
+- Attempt to redo ban + pronoun cogs
+- Use pre-commit hooks instead of format workflow
+- Upgrade all Python versions in workflows to 3.10.5
 
 ## Additions
-- GitHub API Support
-- Full Blue Alliance API Support
-- Full AniList API Support
-- MangaDex Reader
-- Custom exceptions package  
-- /reddit egg_irl command (just feeds u with posts from r/egg_irl)
-- Use Makefile for easier and faster setup + development
-- Proper exception handling for all service cogs
-- Guides for setup + development for Rin
-- Task template 
-- Actually use pre-commit hooks instead of format workflow
+- The full rebuild of the economy system
+- economy_utils package (used by the economy system)
+- Beg command
+- Add Task template on GitHub Issues
+- Add timeouts to eco-init buttons
+- Add user transaction command
+- Add command to search via UUID
+- Include commands to be able to add items, and remove items from the marketplace
+- Add platform cog
 
 ## Removals
 
-- OpenAI API Support + Cog
-- Format workflow (replaced with pre-commit hooks)
-- Arch-Docker Dockerfile (Use Ubuntu-Docker instead)
-- DeviantArt-Token-Refresher Cog
-- All of the old patches (they apparently never worked...)
-
-## Dependency Updates
-
-- Bump py-cord from 2.0.0b5 to 2.0.0b7 (@dependabot[bot])
-- Bump actions/setup-node from 3.1.0 to 3.1.1  (@dependabot[bot])
-- Bump github/codeql-action from 1 to 2  (@dependabot[bot])
-- Bump sqlalchemy from 1.4.35 to 1.4.36  (@dependabot[bot])
-- Bump py-cord from 2.0.0b7 to 2.0.0rc1  (@dependabot[bot])
-- Bump ujson from 5.2.0 to 5.3.0  (@dependabot[bot])
-- Bump pysimdjson from 4.0.3 to 5.0.1  (@dependabot[bot])
-- Bump lxml from 4.8.0 to 4.9.0  (@dependabot[bot])
-- Bump sqlalchemy from 1.4.36 to 1.4.37  (@dependabot[bot])
-- Bump orjson from 3.6.8 to 3.6.9  (@dependabot[bot])
-- Bump orjson from 3.6.9 to 3.7.0  (@dependabot[bot])
-- Bump orjson from 3.7.0 to 3.7.1   (@dependabot[bot])
-- Bump actions/setup-node from 3.2.0 to 3.3.0  (@dependabot[bot])
-- Bump orjson from 3.7.1 to 3.7.2  (@dependabot[bot])
-- Bump actions/setup-python from 3 to 4 (@dependabot[bot])
+- Chat, Global, DisQuest, and many many other cogs
+- All of the old patches (never worked anyways)
+- Old economy files
+- Exceptions package (use Rin-Exceptions package from PyPi instead)
+- Format workflow
+- Arch-Docker Dockerfile
