@@ -37,6 +37,7 @@ This update focuses on Kumiko's Economy system (which was completely rebuilt fro
 - Add command to search via UUID
 - Include commands to be able to add items, and remove items from the marketplace
 - Add platform cog
+- Proper docstrings for all economy_utils coroutines
 
 ## Removals
 
@@ -46,3 +47,4 @@ This update focuses on Kumiko's Economy system (which was completely rebuilt fro
 - Exceptions package (use Rin-Exceptions package from PyPi instead)
 - Format workflow
 - Arch-Docker Dockerfile
+- Removed Unused and unneeded coroutines
