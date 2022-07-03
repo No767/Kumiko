@@ -24,11 +24,11 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
-    - name: Set up Python 3.10.4
+    - name: Set up Python 3.10
       id: setup-python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10.4
+        python-version: 3.10
     - name: Upgrade Pip + Install Pipenv
       run: |
         python3 -m pip install --upgrade pip pipenv
