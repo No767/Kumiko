@@ -34,8 +34,14 @@ class ProjectOnlyID(BaseModel):
 class PurchaseProject(BaseModel):
     owner: int
     name: str
+    description: str
     price: int
     amount: int
+    uuid: str
+
+
+class ItemAuthProject(BaseModel):
+    uuid: str
 
 
 class KumikoEcoUtils:
@@ -91,6 +97,16 @@ class KumikoEcoUtils:
         amount: Optional[int] = None,
         price: Optional[int] = None,
     ):
+        """Updates an item in the MongoDB database
+
+        Args:
+            date_added (str): The Date Added
+            owner (int): Discord Owner ID
+            name (Optional[str], optional): The Item's Name. Defaults to None.
+            description (Optional[str], optional): Item Description. Defaults to None.
+            amount (Optional[int], optional): Item Amount. Defaults to None.
+            price (Optional[int], optional): Item Price. Defaults to None.
+        """
         clientUpdate = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
@@ -110,6 +126,11 @@ class KumikoEcoUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def obtain(self):
+        """Obtains all Id
+
+        Returns:
+            List: List of all items in the database
+        """
         clientObtain = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
         )
@@ -234,6 +255,44 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+    async def purchaseAuth(self, uuid: str):
+        """Obtains the UUID for the item, which will authorize the transaction of the item
+
+        Args:
+            uuid (str): Marketplace Item UUID
+        """
+        clientItemAuth = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
+        await init_beanie(
+            database=clientItemAuth.kumiko_marketplace, document_models=[Marketplace]
+        )
+        entryItemAuth = (
+            await Marketplace.find(Marketplace.uuid == uuid)
+            .project(ItemAuthProject)
+            .to_list()
+        )
+        return entryItemAuth
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def delItemUUID(self, uuid: str):
+        """Deletes one item from the marketplace via the UUID
+
+        Args:
+            uuid (str): Marketplace Item UUID
+        """
+        clientItemDelete = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
+        await init_beanie(
+            database=clientItemDelete.kumiko_marketplace, document_models=[Marketplace]
+        )
+        entryItemDelete = Marketplace.find(Marketplace.uuid == uuid)
+        await entryItemDelete.delete()
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     async def searchForID(self, uuid: str):
         clientSearchID = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
@@ -243,5 +302,25 @@ class KumikoEcoUtils:
         )
         searchItemID = Marketplace.find(Marketplace.uuid == uuid)
         return [item async for item in searchItemID]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def updateItemAmount(self, uuid: str, amount: int):
+        """Update the amount of the item given
+
+        Args:
+            uuid (str): The UUID of the item in the Marketplace
+            amount (int): The amount of the item in the Marketplace
+        """
+        clientUpdateItemPrice = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{Username}:{MongoDB_Password}@{Server_IP}:27017"
+        )
+        await init_beanie(
+            database=clientUpdateItemPrice.kumiko_marketplace,
+            document_models=[Marketplace],
+        )
+        await Marketplace.find(Marketplace.uuid == uuid).set(
+            {Marketplace.amount: amount}
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

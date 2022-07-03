@@ -198,22 +198,101 @@ class ecoMarketplace(commands.Cog):
         *,
         item: Option(str, "The name of the item to purchase (case-sensitive)"),
         amount: Option(int, "The amount of items to purchase"),
-        price: Option(str, "The price of the item"),
+        price: Option(int, "The price of the item. Note that you have to pay in full"),
     ):
         """Purchases an item from the marketplace"""
         try:
             beforePurchasing = await utilsMain.beforePurchase(
                 owner_id=ctx.user.id, item_name=item
             )
+
             if len(beforePurchasing) == 0:
                 raise ItemNotFound
             else:
                 for mainItems in beforePurchasing:
-                    dict(mainItems)
+                    items = dict(mainItems)
+                    itemAuth = await utilsMain.purchaseAuth(items["uuid"])
 
-                addingToInv = await utilsInv.insertItem(
-                    ctx.user.id, {}
-                )  # ! requires a dict with fields. add later...
+                    userInvCheck = await utilsInv.checkForItemInInv(
+                        ctx.user.id, items["uuid"]
+                    )
+                    for mainUserInvCheck in userInvCheck:
+                        userInvChecker = dict(mainUserInvCheck)
+
+                    for mainAuthItem in itemAuth:
+                        auth = dict(mainAuthItem)
+
+                        # yep check via uuid auth
+                        if auth["uuid"] == items["uuid"] and int(items["price"]) == int(
+                            price
+                        ):
+                            if int(amount) > int(items["amount"]):
+                                await ctx.respond(
+                                    f"Sorry, but there is only {items['amount']} {items['name']} within the listing. You have requested more than that, so therefore the transaction is denied. Please try again."
+                                )
+                            elif int(amount) < int(items["amount"]):
+                                if len(userInvCheck) == 0:
+                                    totalAmountLeft = int(items["amount"]) - int(amount)
+                                    await utilsMain.updateItemAmount(
+                                        items["uuid"], totalAmountLeft
+                                    )
+                                    await utilsInv.insertItem(
+                                        ctx.user.id,
+                                        {
+                                            "name": items["name"],
+                                            "description": items["description"],
+                                            "amount": amount,
+                                            "uuid": items["uuid"],
+                                        },
+                                    )
+                                    await ctx.respond(
+                                        f"Successfully purchased {amount} {items['name']} for {items['price']} coins. There are {totalAmountLeft} remaining in stock."
+                                    )
+                                else:
+                                    amountInInv = userInvChecker["items"]["amount"]
+                                    totalAmountRemaining = int(items["amount"]) - int(
+                                        amount
+                                    )
+                                    amountAdding = amountInInv + amount
+                                    await utilsMain.updateItemAmount(
+                                        items["uuid"], totalAmountRemaining
+                                    )
+                                    await utilsInv.updateItem(
+                                        ctx.user.id,
+                                        {
+                                            "name": items["name"],
+                                            "description": items["description"],
+                                            "amount": amountAdding,
+                                            "uuid": items["uuid"],
+                                        },
+                                    )
+                                    await ctx.respond(
+                                        f"Successfully purchased {amount} {items['name']} for {items['price']} coins. There are {totalAmountRemaining} remaining in stock. You currently have {amountInInv + amount} {items['name']} in your inv."
+                                    )
+                            elif int(amount) == int(items["amount"]):
+                                await utilsInv.insertItem(
+                                    ctx.user.id,
+                                    {
+                                        "name": items["name"],
+                                        "description": items["description"],
+                                        "amount": items["amount"],
+                                        "uuid": items["uuid"],
+                                    },
+                                )
+                                await utilsMain.delItemUUID(
+                                    items["uuid"]
+                                )  # Delete the item if the price, and the amount is the same. This is done to reduce the amount of storage space needed on MongoDB
+                                await ctx.respond(
+                                    f"Successfully purchased {amount} {items['name']} for {items['price']} coins."
+                                )
+                            else:
+                                await ctx.respond(
+                                    f'Unable to purchase {items["name"]} for {items["price"]} coins. Please try again'
+                                )
+                        else:
+                            await ctx.respond(
+                                f"Unable to purchase {items['name']} for {items['price']} coins. This is due to either the UUID's not matching up, or the incorrect price was given. Please try again"
+                            )
         except ItemNotFound:
             embedItemNotFoundError = discord.Embed()
             embedItemNotFoundError.description = "Sorry, but that item does not exist in the marketplace. Maybe try redoing your search? It is case sensitive so..."

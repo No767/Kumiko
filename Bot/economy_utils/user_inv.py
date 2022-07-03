@@ -110,3 +110,54 @@ class UsersInv:
             await conn.execute(insert_values)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def checkForItemInInv(self, user_id: int, uuid: str):
+        """Checks if the user already has the item within their inventory
+
+        Args:
+            user_id (int): Discord User ID
+            uuid (str): The UUID of the Marketplace item
+        """
+        meta = MetaData()
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+        )
+        usersInv = Table(
+            "users_inventory",
+            meta,
+            Column("user_id", BigInteger),
+            Column("items", JSONB),
+        )
+        async with engine.connect() as mainConn:
+            selectValues = usersInv.select(usersInv.c.user_id == user_id)
+            results = await mainConn.stream(selectValues)
+            return [rows async for rows in results if rows[1]["uuid"] == uuid]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def updateItem(self, user_id: int, item: dict):
+        """Updates an JSON item into PostgreSQL. Used for the users inv system
+
+        Args:
+            user_id (int): Discord User ID
+            item (dict): Dict containing fields such as uuids, name, etc
+        """
+        meta = MetaData()
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+        )
+        usersInv = Table(
+            "users_inventory",
+            meta,
+            Column("user_id", BigInteger),
+            Column("items", JSONB),
+        )
+        async with engine.begin() as conn:
+            insert_values = (
+                usersInv.update()
+                .values(items=item)
+                .filter(usersInv.c.user_id == user_id)
+            )
+            await conn.execute(insert_values)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
