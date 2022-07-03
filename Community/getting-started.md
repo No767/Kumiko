@@ -14,7 +14,7 @@ To get started, you'll need these things installed:
 - Discord Account + Discord App
 ## Installing Dependencies
 
-Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+Getting the environment set up for the bot is a kinda complex process. If you want to get set up, here are the instructions to do so:
 
 ## Windows 
 
@@ -46,7 +46,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 5. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 
@@ -87,7 +87,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -124,7 +124,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -168,7 +168,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -203,7 +203,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -242,7 +242,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 5. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 6. Run Make to create the venv and install dependencies
@@ -254,7 +254,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
 ### Getting the Discord Bot
 
-First things first, you'll more than likely need a dev bot to run Rin. Luckily you'll find the steps below to help you on that
+First things first, you'll more than likely need a dev bot to run Kumiko. Luckily you'll find the steps below to help you on that
 
 ![images](../assets/getting-started-assets/create-app.png)
 
@@ -315,11 +315,11 @@ Once you have the discord bot up, there's a few things that needs to be done bef
    make run
    ```
 
-   To exit out of Rin, hit Ctrl + C to kill the process. 
+   To exit out of Kumiko, hit Ctrl + C to kill the process. 
 
 ### Things to keep in mind
 
-Make sure to always keep this in mind: Always add exception handling for Rin. And make sure it is done correctly. A poor example would be this:
+Make sure to always keep this in mind: Always add exception handling for Kumiko. And make sure it is done correctly. A poor example would be this:
 
    ```py
    try:
@@ -351,7 +351,7 @@ Kumiko requires PostgreSQL and MongoDB to get started.
 
 ### PostgreSQL Setup
 
-Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD`, `POSTGRES_USER`. `POSTGRES_USER` should be named `Beryl` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users`. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
+Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD`, `POSTGRES_USER`. `POSTGRES_USER` should be named `Kumiko` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users`. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
 
 ```
 # Bot/.env
@@ -359,6 +359,7 @@ TOKEN = "Discord Bot Tokens"
 Postgres_Password = "Password for Postgres"
 Postgres_IP = 127.0.0.1 # if localhost doesn't work, use your ipv4 address instead
 Postgres_User = "Kumiko"
+Postgres_Database = "kumiko_eco_users"
 ```
 
 Now run `postgres-init.py` located within the scripts folder. This will create the table within the database that will store all of the data. 
