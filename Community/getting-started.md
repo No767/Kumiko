@@ -12,6 +12,7 @@ To get started, you'll need these things installed:
 - [Pipenv](https://pipenv.pypa.io/en/latest/)
 - [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
 - Discord Account + Discord App
+- 
 ## Installing Dependencies
 
 Getting the environment set up for the bot is a kinda complex process. If you want to get set up, here are the instructions to do so:
@@ -32,8 +33,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -73,8 +74,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -110,8 +111,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -154,8 +155,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -189,8 +190,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -232,8 +233,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
 
     ```sh
     pyenv update
-    pyenv install 3.10.4
-    pyenv global 3.10.4
+    pyenv install 3.10.5
+    pyenv global 3.10.5
     pyenv rehash
     ```
 
@@ -287,7 +288,7 @@ First things first, you'll more than likely need a dev bot to run Kumiko. Luckil
 8. Head back into the root directory of the repo, and run this command: 
 
    ```sh
-   make init BOT_TOKEN="[token]"
+   make init BOT_TOKEN="token"
    ```
 
    This will create a `.env` file and add the token into it.
@@ -351,7 +352,7 @@ Kumiko requires PostgreSQL and MongoDB to get started.
 
 ### PostgreSQL Setup
 
-Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD`, `POSTGRES_USER`. `POSTGRES_USER` should be named `Kumiko` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users`. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
+Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD` and `POSTGRES_USER`. `POSTGRES_USER` should be named `Kumiko` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
 
 ```
 # Bot/.env
@@ -359,7 +360,7 @@ TOKEN = "Discord Bot Tokens"
 Postgres_Password = "Password for Postgres"
 Postgres_IP = 127.0.0.1 # if localhost doesn't work, use your ipv4 address instead
 Postgres_User = "Kumiko"
-Postgres_Database = "kumiko_eco_users"
+Postgres_Database = "database"
 ```
 
 Now run `postgres-init.py` located within the scripts folder. This will create the table within the database that will store all of the data. 
