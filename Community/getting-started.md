@@ -12,7 +12,7 @@ To get started, you'll need these things installed:
 - [Pipenv](https://pipenv.pypa.io/en/latest/)
 - [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
 - Discord Account + Discord App
-- 
+
 ## Installing Dependencies
 
 Getting the environment set up for the bot is a kinda complex process. If you want to get set up, here are the instructions to do so:
