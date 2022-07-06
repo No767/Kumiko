@@ -26,8 +26,10 @@ This update focuses on Kumiko's Economy system (which was completely rebuilt fro
 - Attempt to redo ban + pronoun cogs
 - Use pre-commit hooks instead of format workflow
 - Upgrade all Python versions in workflows to 3.10.5
+- Bump Node.js to 16.15.1 and Python to 3.10.5 in Kumiko's Dockerfile
 - Make sure that the fields for the user inv are correct and set
 - Moved User inv from MongoDB to PostgreSQL
+- Deploy Kumiko's Docs + contributing guide changes
 
 ## Additions
 - The full rebuild of the economy system
