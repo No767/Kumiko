@@ -27,6 +27,7 @@ This update focuses on Kumiko's Economy system (which was completely rebuilt fro
 - Use pre-commit hooks instead of format workflow
 - Upgrade all Python versions in workflows to 3.10.5
 - Make sure that the fields for the user inv are correct and set
+- Moved User inv from MongoDB to PostgreSQL
 
 ## Additions
 - The full rebuild of the economy system
@@ -39,6 +40,7 @@ This update focuses on Kumiko's Economy system (which was completely rebuilt fro
 - Include commands to be able to add items, and remove items from the marketplace
 - Add platform cog
 - Proper docstrings for all economy_utils coroutines
+- Add Regex filters when creating marketplace items
 
 ## Removals
 
