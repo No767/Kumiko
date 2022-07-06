@@ -1,13 +1,16 @@
 import asyncio
+import os
+import re
 import uuid
 from datetime import datetime
 
 import discord
 import uvloop
+import yaml
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from economy_utils import KumikoEcoUtils, UsersInv
-from rin_exceptions import ItemNotFound
+from rin_exceptions import NoItemsError
 
 utilsMain = KumikoEcoUtils()
 utilsInv = UsersInv()
@@ -37,10 +40,41 @@ class ecoMarketplace(commands.Cog):
         dateEntry = today.strftime("%B %d, %Y %H:%M:%S")
         owner = ctx.user.id
         uuidItem = uuid.uuid4().hex[:16]
-        await utilsMain.ins(
-            uuidItem, dateEntry, owner, name, description, amount, price
+        filterFile = os.path.join(
+            os.path.dirname(__file__), "config", "marketplace_filters.yml"
         )
-        await ctx.respond("Item added to the marketplace")
+        try:
+            with open(filterFile, "r") as stream:
+                try:
+                    filterList = yaml.safe_load(stream)
+                    mainFilterList = filterList["filters"]
+                    mainFilter = re.compile(
+                        "|".join([str(item) for item in mainFilterList]), re.IGNORECASE
+                    )
+                    filteredItemName = re.sub(mainFilter, "item", str(name))
+                    filteredItemDescription = re.sub(
+                        mainFilter, "item", str(description)
+                    )
+                    await utilsMain.ins(
+                        uuidItem,
+                        dateEntry,
+                        owner,
+                        filteredItemName,
+                        filteredItemDescription,
+                        amount,
+                        price,
+                    )
+                    await ctx.respond("Item added to the marketplace")
+                except yaml.YAMLError:
+                    await ctx.respond(
+                        "Oops, something went wrong with the yaml file! Please try again."
+                    )
+        except Exception:
+            await ctx.respond(
+                embed=discord.Embed(
+                    description="Oops, something went wrong! Please try again."
+                )
+            )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -50,7 +84,7 @@ class ecoMarketplace(commands.Cog):
         try:
             mainObtain = await utilsMain.obtain()
             if len(mainObtain) == 0:
-                raise ValueError
+                raise NoItemsError
             else:
                 paginator = pages.Paginator(
                     pages=[
@@ -74,7 +108,7 @@ class ecoMarketplace(commands.Cog):
                     ],
                 )
                 await paginator.respond(ctx.interaction, ephemeral=False)
-        except ValueError:
+        except NoItemsError:
             embedErrorMain = discord.Embed()
             embedErrorMain.description = "There seems to be no items in the marketplace right now. Please try again..."
             await ctx.respond(embed=embedErrorMain)
@@ -91,7 +125,7 @@ class ecoMarketplace(commands.Cog):
         try:
             mainGetItem = await utilsMain.getItem(name)
             if len(mainGetItem) == 0:
-                raise ValueError
+                raise NoItemsError
             else:
                 paginator = pages.Paginator(
                     pages=[
@@ -113,7 +147,7 @@ class ecoMarketplace(commands.Cog):
                     ]
                 )
                 await paginator.respond(ctx.interaction, ephemeral=False)
-        except ValueError:
+        except NoItemsError:
             embedError = discord.Embed()
             embedError.description = (
                 "Sorry, but the search produced no results. Please try again"
@@ -144,11 +178,11 @@ class ecoMarketplace(commands.Cog):
         try:
             mainChecker = await utilsMain.obtainOnlyIDWithName(name, ctx.user.id)
             if mainChecker is None:
-                raise ItemNotFound
+                raise NoItemsError
             else:
                 await utilsMain.delOneItem(name, ctx.user.id)
                 await ctx.respond("Item deleted from the marketplace")
-        except ItemNotFound:
+        except NoItemsError:
             await ctx.respond("Sorry, but that item does not exist in the marketplace.")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -161,7 +195,7 @@ class ecoMarketplace(commands.Cog):
         try:
             mainSearchUUID = await utilsMain.searchForID(uuid)
             if mainSearchUUID is None:
-                raise ItemNotFound
+                raise NoItemsError
             else:
                 mainPages = pages.Paginator(
                     pages=[
@@ -184,12 +218,12 @@ class ecoMarketplace(commands.Cog):
                     loop_pages=True,
                 )
                 await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
-            embedItemNotFoundError = discord.Embed()
-            embedItemNotFoundError.description = (
+        except NoItemsError:
+            embedNoItemsError = discord.Embed()
+            embedNoItemsError.description = (
                 "Sorry, but that item does not exist in the marketplace."
             )
-            await ctx.respond(embed=embedItemNotFoundError)
+            await ctx.respond(embed=embedNoItemsError)
 
     @eco_marketplace.command(name="purchase")
     async def ecoMarketplacePurchase(
@@ -207,7 +241,7 @@ class ecoMarketplace(commands.Cog):
             )
 
             if len(beforePurchasing) == 0:
-                raise ItemNotFound
+                raise NoItemsError
             else:
                 for mainItems in beforePurchasing:
                     items = dict(mainItems)
@@ -293,10 +327,10 @@ class ecoMarketplace(commands.Cog):
                             await ctx.respond(
                                 f"Unable to purchase {items['name']} for {items['price']} coins. This is due to either the UUID's not matching up, or the incorrect price was given. Please try again"
                             )
-        except ItemNotFound:
-            embedItemNotFoundError = discord.Embed()
-            embedItemNotFoundError.description = "Sorry, but that item does not exist in the marketplace. Maybe try redoing your search? It is case sensitive so..."
-            await ctx.respond(embed=embedItemNotFoundError)
+        except NoItemsError:
+            embedNoItemsError = discord.Embed()
+            embedNoItemsError.description = "Sorry, but that item does not exist in the marketplace. Maybe try redoing your search? It is case sensitive so..."
+            await ctx.respond(embed=embedNoItemsError)
 
 
 def setup(bot):

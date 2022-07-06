@@ -44,8 +44,10 @@ COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/.env /Kumiko/Bot
 RUN mkdir /Kumiko/Bot/Cogs
 RUN mkdir /Kumiko/Bot/economy_utils
+RUN mkdir /Kumiko/Bot/economy/config
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
+COPY /Bot/Cogs/economy/config/marketplace_filters /Kumiko/Bot/economy/config/
 RUN pip install --upgrade pip setuptools wheel pipenv
 RUN cd /Kumiko/ && pipenv install
 EXPOSE 4002
