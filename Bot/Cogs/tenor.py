@@ -1,366 +1,307 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands
+import simdjson
+import uvloop
+from discord.commands import Option, SlashCommandGroup
+from discord.ext import commands, pages
 from dotenv import load_dotenv
+from rin_exceptions import NoItemsError
 
 load_dotenv()
 
-Tenor_API_Key = os.getenv("Tenor_API_Key")
+Tenor_API_Key = os.getenv("Tenor_API_V2_Key")
+parser = simdjson.Parser()
 
 
 class TenorV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="tenor-search-multiple", aliases=["tsm"])
-    async def tenor_search(self, ctx, *, search: str):
+    tenor = SlashCommandGroup("tenor", "Tenor API commands")
+    tenorSearch = tenor.create_subgroup("search", "Search Tenor")
+    tenorTrending = tenor.create_subgroup("trending", "Trending Tenor")
+
+    @tenorSearch.command(name="multiple")
+    async def tenor_search(
+        self, ctx, *, search_term: Option(str, "Search Term for GIFs")
+    ):
+        """Searches for up to 25 gifs on Tenor"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            params = {
+                "q": search_term,
+                "key": Tenor_API_Key,
+                "contentfilter": "medium",
+                "limit": 25,
+                "media_filter": "minimal",
+            }
+            async with session.get(
+                "https://tenor.googleapis.com/v2/search", params=params
+            ) as r:
+                data = await r.content.read()
+                dataMain = parser.parse(data, recursive=True)
+                embedVar = discord.Embed()
+                try:
+                    try:
+                        if len(dataMain["results"]) == 0 or r.status == 404:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem["content_description"]
+                                    ).set_image(
+                                        url=dictItem["media_formats"]["gif"]["url"]
+                                    )
+                                    for dictItem in dataMain["results"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "No GIFs found for that search term"
+                        )
+                        await ctx.respond(embed=embedNoItemsError)
+                except Exception as e:
+                    embedVar = discord.Embed()
+                    embedVar.description = f"Sorry, but the search for {search_term} has failed. Please try again..."
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @tenorSearch.command(name="one")
+    async def tenor_search_one(
+        self, ctx, *, search: Option(str, "Search Term for GIF")
+    ):
+        """Searches for a single gif on Tenor"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "q": search,
                 "key": Tenor_API_Key,
                 "contentfilter": "medium",
-                "limit": 5,
+                "limit": 1,
                 "media_filter": "minimal",
             }
-            async with session.get("https://g.tenor.com/v1/search", params=params) as r:
-                data = await r.json()
+            async with session.get(
+                "https://tenor.googleapis.com/v2/search", params=params
+            ) as re:
+                data2 = await re.content.read()
+                dataMain2 = parser.parse(data2, recursive=True)
                 try:
-                    embed1 = discord.Embed()
-                    embed1.title = data["results"][0]["content_description"]
-                    embed1.set_image(
-                        url=data["results"][0]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed1)
-                    embed2 = discord.Embed()
-                    embed2.title = data["results"][1]["content_description"]
-                    embed2.set_image(
-                        url=data["results"][1]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed2)
-                    embed3 = discord.Embed()
-                    embed3.title = data["results"][2]["content_description"]
-                    embed3.set_image(
-                        url=data["results"][2]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed3)
-                    embed4 = discord.Embed()
-                    embed4.title = data["results"][3]["content_description"]
-                    embed4.set_image(
-                        url=data["results"][3]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed4)
-                    embed5 = discord.Embed()
-                    embed5.title = data["results"][4]["content_description"]
-                    embed5.set_image(
-                        url=data["results"][4]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed5)
+                    try:
+                        if len(dataMain2["results"]) == 0 or re.status == 404:
+                            raise NoItemsError
+                        else:
+                            embedPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem["content_description"]
+                                    ).set_image(
+                                        url=dictItem["media_formats"]["gif"]["url"]
+                                    )
+                                    for dictItem in dataMain2["results"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await embedPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "No GIFs found for that search term"
+                        )
+                        await ctx.respond(embed=embedNoItemsError)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = f"Sorry, but the search for {search} has failed. Please try again..."
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
-    @tenor_search.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class TenorV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="tenor-search-one", aliases=["tso"])
-    async def tenor_search_one(self, ctx, *, search_one: str):
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {
-                "q": search_one,
-                "key": Tenor_API_Key,
-                "contentfilter": "medium",
-                "limit": 2,
-                "media_filter": "minimal",
-            }
-            async with session.get(
-                "https://g.tenor.com/v1/search", params=params
-            ) as re:
-                data2 = await re.json()
-                try:
-                    embedVar1 = discord.Embed()
-                    embedVar1.title = data2["results"][0]["content_description"]
-                    embedVar1.set_image(
-                        url=data2["results"][0]["media"][0]["gif"]["url"]
-                    )
-                    await ctx.send(embed=embedVar1)
-                except Exception as e:
-                    embedVar = discord.Embed()
-                    embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
-
-    @tenor_search_one.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-
-class TenorV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="tenor-trending", aliases=["tt"])
-    async def tenor_trending(self, ctx):
+    @tenor.command(name="featured")
+    async def tenor_featured(self, ctx):
+        """Returns up to 25 featured gifs from Tenor"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,
                 "contentfilter": "medium",
-                "limit": 5,
+                "limit": 25,
                 "media_filter": "minimal",
             }
             async with session.get(
-                "https://g.tenor.com/v1/trending", params=params
+                "https://tenor.googleapis.com/v2/featured", params=params
             ) as response:
-                data3 = await response.json()
+                data3 = await response.content.read()
+                dataMain3 = parser.parse(data3, recursive=True)
                 try:
-                    embed1 = discord.Embed()
-                    embed1.title = data3["results"][0]["content_description"]
-                    embed1.set_image(
-                        url=data3["results"][0]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed1)
-                    embed2 = discord.Embed()
-                    embed2.title = data3["results"][1]["content_description"]
-                    embed2.set_image(
-                        url=data3["results"][1]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed2)
-                    embed3 = discord.Embed()
-                    embed3.title = data3["results"][2]["content_description"]
-                    embed3.set_image(
-                        url=data3["results"][2]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed3)
-                    embed4 = discord.Embed()
-                    embed4.title = data3["results"][3]["content_description"]
-                    embed4.set_image(
-                        url=data3["results"][3]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed4)
-                    embed5 = discord.Embed()
-                    embed5.title = data3["results"][4]["content_description"]
-                    embed5.set_image(
-                        url=data3["results"][4]["media"][0]["gif"]["url"])
-                    await ctx.send(embed=embed5)
+                    try:
+                        if len(dataMain3["results"]) == 0 or response.status == 404:
+                            raise NoItemsError
+                        else:
+                            embedPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem2["content_description"]
+                                    ).set_image(
+                                        url=dictItem2["media_formats"]["gif"]["url"]
+                                    )
+                                    for dictItem2 in dataMain3["results"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await embedPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "Apparently there are no featured gifs... werid huh"
+                        )
+                        await ctx.respond(embed=embedNoItemsError)
                 except Exception as e:
                     embedVar = discord.Embed()
-                    embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
+                    embedVar.description = (
+                        "Sorry, but the query has failed. Please try again..."
+                    )
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-class TenorV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="tenor-search-suggestions", aliases=["tss"])
-    async def tenor_search_suggestions(self, ctx, *, search_suggestion: str):
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"key": Tenor_API_Key,
-                      "q": search_suggestion, "limit": 25}
-            async with session.get(
-                "https://g.tenor.com/v1/search_suggestions", params=params
-            ) as resp:
-                data5 = await resp.json()
-                try:
-                    embedVar = discord.Embed()
-                    embedVar.title = "Search Suggestions"
-                    embedVar.description = str(
-                        [items for items in data5["results"]]
-                    ).replace("'", "")
-                    await ctx.send(embed=embedVar)
-                except Exception as e:
-                    embedVar = discord.Embed()
-                    embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
-
-    @tenor_search_suggestions.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+    @tenorSearch.command(name="suggestions")
+    async def tenor_search_suggestions(
+        self,
+        ctx,
+        *,
+        search_suggestion: Option(str, "Topic/Search Term for Search Suggestion"),
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
+        """Gives a list of suggested search terms based on the given topic"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            params = {"key": Tenor_API_Key, "q": search_suggestion, "limit": 25}
+            async with session.get(
+                "https://tenor.googleapis.com/v2/search_suggestions", params=params
+            ) as resp:
+                data5 = await resp.content.read()
+                dataMain5 = parser.parse(data5, recursive=True)
+                try:
+                    try:
+                        if len(dataMain5["results"]) == 0 or resp.status == 404:
+                            raise NoItemsError
+                        else:
+                            embedVar = discord.Embed()
+                            embedVar.title = "Search Suggestions"
+                            embedVar.description = str(
+                                [items for items in dataMain5["results"]]
+                            ).replace("'", "")
+                            await ctx.respond(embed=embedVar)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "Apparently there are no terms... werid huh"
+                        )
+                        await ctx.respond(embed=embedNoItemsError)
+                except Exception as e:
+                    embedVar = discord.Embed()
+                    embedVar.description = f"Sorry, but the search for {search_suggestion} has failed. Please try again..."
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
 
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-class TenorV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="tenor-trending-terms", aliases=["tt-terms"])
+    @tenorTrending.command(name="terms")
     async def tenor_trending_terms(self, ctx):
+        """Gives a list of trending search terms on Tenor"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"key": Tenor_API_Key, "limit": 25}
             async with session.get(
-                "https://g.tenor.com/v1/trending_terms", params=params
+                "https://tenor.googleapis.com/v2/trending_terms", params=params
             ) as rep:
-                data6 = await rep.json()
+                data6 = await rep.content.read()
+                dataMain6 = parser.parse(data6, recursive=True)
                 try:
-                    embedVar = discord.Embed()
-                    embedVar.title = "Trending Search Terms"
-                    embedVar.description = str(
-                        [items for items in data6["results"]]
-                    ).replace("'", "")
-                    await ctx.send(embed=embedVar)
+                    try:
+                        if len(dataMain6["results"]) == 0 or rep.status == 404:
+                            raise NoItemsError
+                        else:
+                            embedVar = discord.Embed()
+                            embedVar.title = "Trending Search Terms"
+                            embedVar.description = str(
+                                [items for items in dataMain6["results"]]
+                            ).replace("'", "")
+                            await ctx.respond(embed=embedVar)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "Apparently there are no trending terms... werid huh"
+                        )
+                        await ctx.respond(embed=embedNoItemsError)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = "Sorry, but the search for {search} has failed. Please try again..."
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
-    @tenor_trending_terms.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @tenor.command(name="random")
+    async def tenor_random(
+        self, ctx, *, search_random_term: Option(str, "Search Term")
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-
-class TenorV6(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="tenor-gif", aliases=["tg"])
-    async def tenor_gif(self, ctx, *, search_gif: str):
+        """Gives out 25 random gifs from Tenor based on given search term"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "key": Tenor_API_Key,
-                "q": search_gif,
-                "limit": 1,
-                "media_filter": "minimal",
-            }
-            async with session.get(
-                "https://g.tenor.com/v1/gifs", params=params
-            ) as respon:
-                data7 = await respon.json()
-                try:
-                    embedVar = discord.Embed()
-                    embedVar.title = data7["results"][0]["content_description"]
-                    embedVar.add_field(
-                        name="GIF ID", value=data7["results"][0]["id"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Item URL",
-                        value=data7["results"][0]["itemurl"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Tags",
-                        value=[items for items in data7["results"][0]["tags"]],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        names="Flags",
-                        value=[items for items in data7["results"][0]["flags"]],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Shares", value=data7["results"][0]["shares"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Has Audio",
-                        value=data7["results"][0]["has_audio"],
-                        inline=True,
-                    )
-                    embedVar.set_image(
-                        url=data7["results"][0]["media"][0]["gif"]["url"]
-                    )
-                    await ctx.send(embed=embedVar)
-                except Exception as e:
-                    embedVar = discord.Embed()
-                    embedVar.description = (
-                        "Sorry, but the query failed. Please try again..."
-                    )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
-
-    @tenor_gif.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-
-class TenorV7(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="tenor-random", aliases=["tr"])
-    async def tenor_random(self, ctx, *, search_random: str):
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {
-                "key": Tenor_API_Key,
-                "limit": 1,
+                "limit": 25,
                 "media_filter": "minimal",
                 "contentfilter": "medium",
-                "q": search_random,
+                "q": search_random_term,
+                "random": "true",
             }
             async with session.get(
-                "https://g.tenor.com/v1/random", params=params
-            ) as another_object:
-                data8 = await another_object.json()
+                "https://tenor.googleapis.com/v2/search", params=params
+            ) as object3:
+                data8 = await object3.content.read()
+                dataMain8 = parser.parse(data8, recursive=True)
                 try:
-                    embedVar = discord.Embed()
-                    embedVar.title = data8["results"][0]["content_description"]
-                    embedVar.add_field(
-                        name="GIF ID", value=data8["results"][0]["id"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Item URL",
-                        value=data8["results"][0]["itemurl"],
-                        inline=True,
-                    )
-                    embedVar.set_image(
-                        url=data8["results"][0]["media"][0]["gif"]["url"]
-                    )
-                    await ctx.send(embed=embedVar)
+                    try:
+                        if len(dataMain8["results"]) == 0 or object3.status == 404:
+                            raise NoItemsError
+                        else:
+                            embedVar = discord.Embed()
+                            moreEmbedPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem["content_description"]
+                                    ).set_image(
+                                        url=dictItem["media_formats"]["gif"]["url"]
+                                    )
+                                    for dictItem in dataMain8["results"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await moreEmbedPages.respond(
+                                ctx.interaction, ephemeral=False
+                            )
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "Apparently there are no gifs..."
+                        )
+                        await ctx.respond(embed=embedNoItemsError)
                 except Exception as e:
                     embedVar = discord.Embed()
                     embedVar.description = (
                         "Sorry, but the query failed. Please try again..."
                     )
                     embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
-    @tenor_random.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
     bot.add_cog(TenorV1(bot))
-    bot.add_cog(TenorV2(bot))
-    bot.add_cog(TenorV3(bot))
-    bot.add_cog(TenorV4(bot))
-    bot.add_cog(TenorV5(bot))
-    bot.add_cog(TenorV6(bot))
-    bot.add_cog(TenorV7(bot))

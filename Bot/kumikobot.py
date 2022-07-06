@@ -1,50 +1,54 @@
-import discord
-from discord import Intents
-from discord.ext import commands
 import os
+
+import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-TOKEN = os.getenv("Kumiko")
-intents = Intents.all()
-bot = commands.Bot(command_prefix=".", help_command=None)
+Discord_Bot_Token = os.getenv("Petal")
+intents = discord.Intents.default()
+intents.members = True
+bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)
 
 # Loads in all extensions
 initial_extensions = [
     "Cogs.kumikoinfo",
-    "Cogs.plugin_tools",
-    "Cogs.global",
     "Cogs.kumikoping",
-    "Cogs.valid",
     "Cogs.kumikohelp",
     "Cogs.reddit",
-    "Cogs.chat",
-    "Cogs.translate",
-    "Cogs.server-info",
     "Cogs.mcsrvstats",
-    "Cogs.waifu-generator",
+    "Cogs.waifu",
     "Cogs.hypixel",
-    "Cogs.waifu-pics",
     "Cogs.advice",
-    "Cogs.qrcode",
+    "Cogs.qrcode-maker",
     "Cogs.spiget",
     "Cogs.jikan",
-    "Cogs.nb-pride",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
-    "Cogs.spotify",
-    "Cogs.pinterest",
     "Cogs.kumikoinvite",
     "Cogs.mangadex",
     "Cogs.version",
-    "Cogs.clear",
     "Cogs.twitter",
     "Cogs.youtube",
     "Cogs.bonk",
     "Cogs.tenor",
-    "Cogs.economy-base",
     "Cogs.uptime",
+    "Cogs.jisho",
+    "Cogs.bot-info",
+    "Cogs.help",
+    "Cogs.modrinth",
+    "Cogs.discord-bots",
+    "Cogs.economy.marketplace",
+    "Cogs.economy.users",
+    "Cogs.economy.coins",
+    "Cogs.platform",
+    "Cogs.pages",
+    "Cogs.first-frc-events",
+    "Cogs.blue-alliance",
+    "Cogs.legacy-help",
+    "Cogs.github",
+    "Cogs.anilist",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
@@ -53,8 +57,12 @@ for extension in initial_extensions:
 # Adds in the bot presence
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=".kumikohelp"))
+    await bot.change_presence(
+        activity=discord.Activity(
+            type=discord.ActivityType.watching, name="/kumikohelp"
+        )
+    )
 
 
 # Run the bot
-bot.run(TOKEN)
+bot.run(Discord_Bot_Token)

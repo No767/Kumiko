@@ -1,18 +1,27 @@
+import asyncio
 import os
 
 import aiohttp
 import discord
 import orjson
-from discord.ext import commands
+import simdjson
+import uvloop
+from discord.commands import Option, SlashCommandGroup
+from discord.ext import commands, pages
 from dotenv import load_dotenv
+from rin_exceptions import NoItemsError
 from sqlalchemy import Column, MetaData, String, Table
 from sqlalchemy.ext.asyncio import create_async_engine
 
 load_dotenv()
 
 Password = os.getenv("Postgres_Password")
-IP = os.getenv("Postgres_Server_IP")
+Server_IP = os.getenv("Postgres_Server_IP")
 Username = os.getenv("Postgres_Username")
+Port = os.getenv("Postgres_Port")
+Database = os.getenv("Postgres_Database")
+
+parser = simdjson.Parser()
 
 
 class tokenFetcher:
@@ -22,7 +31,7 @@ class tokenFetcher:
     async def get(self):
         meta = MetaData()
         engine = create_async_engine(
-            f"postgresql+asyncpg://{Username}:{Password}@{IP}:5432/rin-deviantart-tokens"
+            f"postgresql+asyncpg://{Username}:{Password}@{Server_IP}:{Port}/{Database}"
         )
         tokens = Table(
             "DA_Tokens",
@@ -35,78 +44,76 @@ class tokenFetcher:
             result_select = await conn.execute(s)
             for row in result_select:
                 return row
-            await conn.close()
 
 
 class DeviantArtV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="deviantart-item", aliases=["da-item"])
-    async def da(self, ctx, *, deviation_id: str):
+    da = SlashCommandGroup("deviantart", "Commands for DeviantArt")
+
+    @da.command(name="item")
+    async def daItem(
+        self, ctx, *, deviation_id: Option(str, "The ID for the Deviation")
+    ):
+        """Returns info about a deviation on DeviantArt"""
         token = tokenFetcher()
+        accessToken = await token.get()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "with_session": "false",
                 "limit": "5",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 f"https://www.deviantart.com/api/v1/oauth2/deviation/{deviation_id}",
                 params=params,
             ) as r:
-                deviation = await r.json()
+                deviation = await r.content.read()
+                deviationMain = parser.parse(deviation, recursive=True)
+                embedVar = discord.Embed(color=discord.Color.from_rgb(255, 214, 214))
                 try:
                     if r.status == 200:
-                        embedVar = discord.Embed(
-                            title=deviation["title"],
-                            color=discord.Color.from_rgb(255, 214, 214),
-                        )
-                        embedVar.add_field(
-                            name="Creator",
-                            value=deviation["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Category", value=deviation["category"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Comments",
-                            value=deviation["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Favorites",
-                            value=deviation["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Is Mature", value=deviation["is_mature"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="URL", value=deviation["url"], inline=True
-                        )
-                        embedVar.set_image(url=deviation["content"]["src"])
-                        embedVar.set_thumbnail(
-                            url=deviation["author"]["usericon"])
-                        await ctx.send(embed=embedVar)
+                        filterItem = [
+                            "author",
+                            "stats",
+                            "preview",
+                            "thumbs",
+                            "content",
+                            "title",
+                            "printid",
+                            "download_filesize",
+                        ]
+                        authorFilterMain = ["type", "is_subscribed", "usericon"]
+                        for keys, values in deviationMain.items():
+                            if keys not in filterItem:
+                                embedVar.add_field(name=keys, value=values, inline=True)
+                        for k, v in deviationMain["author"].items():
+                            if k not in authorFilterMain:
+                                embedVar.add_field(name=k, value=v, inline=True)
+                        for item, res in deviationMain["stats"].items():
+                            embedVar.add_field(name=item, value=res, inline=True)
+                        embedVar.title = deviationMain["title"]
+                        embedVar.set_image(url=deviationMain["content"]["src"])
+                        embedVar.set_thumbnail(url=deviationMain["author"]["usericon"])
+                        await ctx.respond(embed=embedVar)
                     else:
                         embedVar = discord.Embed(
                             color=discord.Color.from_rgb(255, 214, 214)
                         )
-                        embedVar.description = "The query failed. Please try again"
+                        embedVar.description = "It seems like either the data was put in incorrectly, or there is an issue. Please double check that the data is correct"
                         embedVar.add_field(
-                            name="Error", value=deviation["error"], inline=True
+                            name="Error", value=deviationMain["error"], inline=True
                         )
                         embedVar.add_field(
                             name="Error Description",
-                            value=deviation["error_description"],
+                            value=deviationMain["error_description"],
                             inline=True,
                         )
                         embedVar.add_field(
-                            name="Status", value=deviation["status"], inline=True
+                            name="Status", value=deviationMain["status"], inline=True
                         )
-                        await ctx.send(embed=embedVar)
+                        await ctx.respond(embed=embedVar)
                 except Exception as e:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(255, 214, 214)
@@ -114,935 +121,397 @@ class DeviantArtV1(commands.Cog):
                     embedVar.description = "The query failed. Please try again"
                     embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=deviation["error"], inline=True
+                        name="Error", value=deviationMain["error"], inline=True
                     )
                     embedVar.add_field(
                         name="Error Description",
-                        value=deviation["error_description"],
+                        value=deviationMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=deviation["status"], inline=True
+                        name="Status", value=deviationMain["status"], inline=True
                     )
-                    await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
 
-    @da.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @da.command(name="newest")
+    async def da_query(
+        self,
+        ctx,
+        *,
+        search_newest: Option(
+            str, "The search term you want to use to fetch the latest art"
+        ),
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    @da.before_invoke
-    async def before_command(self, ctx=None):
+        """Returns up to 50 newest art from DeviantArt based on the given search result"""
         token = tokenFetcher()
-        await token.get()
-
-
-class DeviantArtV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="deviantart-newest", aliases=["da-newest"])
-    async def da_query(self, ctx, *, search: str):
-        token = tokenFetcher()
-        search = search.replace(" ", "%20")
+        search_newest = search_newest.replace(" ", "%20")
+        accessToken = await token.get()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "q": f"{search}",
+                "q": f"{search_newest}",
                 "with_session": "false",
-                "limit": 10,
+                "limit": 50,
                 "mature_content": "False",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/newest", params=params
             ) as resp:
-                art = await resp.json()
+                art = await resp.content.read()
+                artMain = parser.parse(art, recursive=True)
                 try:
-                    if int(art["estimated_total"]) > 5:
-                        embedVar1 = discord.Embed(
-                            title=art["results"][0]["title"],
-                            color=discord.Color.from_rgb(255, 156, 192),
-                        )
-                        embedVar1.add_field(
-                            name="Creator",
-                            value=art["results"][0]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Category",
-                            value=art["results"][0]["category"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Comments",
-                            value=art["results"][0]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Favorites",
-                            value=art["results"][0]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Deviation ID",
-                            value=art["results"][0]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="URL", value=art["results"][0]["url"], inline=True
-                        )
-                        embedVar1.set_image(
-                            url=art["results"][0]["content"]["src"])
-                        embedVar1.set_thumbnail(
-                            url=art["results"][0]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar1)
-                        embedVar2 = discord.Embed(
-                            title=art["results"][1]["title"],
-                            color=discord.Color.from_rgb(219, 156, 255),
-                        )
-                        embedVar2.add_field(
-                            name="Creator",
-                            value=art["results"][1]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Category",
-                            value=art["results"][1]["category"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Comments",
-                            value=art["results"][1]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Favorites",
-                            value=art["results"][1]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Deviation ID",
-                            value=art["results"][1]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="URL", value=art["results"][1]["url"], inline=True
-                        )
-                        embedVar2.set_image(
-                            url=art["results"][1]["content"]["src"])
-                        embedVar2.set_thumbnail(
-                            url=art["results"][1]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar2)
-                        embedVar3 = discord.Embed(
-                            title=art["results"][2]["title"],
-                            color=discord.Color.from_rgb(168, 156, 255),
-                        )
-                        embedVar3.add_field(
-                            name="Creator",
-                            value=art["results"][2]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Category",
-                            value=art["results"][2]["category"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Comments",
-                            value=art["results"][2]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Favorites",
-                            value=art["results"][2]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Deviation ID",
-                            value=art["results"][2]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="URL", value=art["results"][2]["url"], inline=True
-                        )
-                        embedVar3.set_image(
-                            url=art["results"][2]["content"]["src"])
-                        embedVar3.set_thumbnail(
-                            url=art["results"][2]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar3)
-                        embedVar4 = discord.Embed(
-                            title=art["results"][3]["title"],
-                            color=discord.Color.from_rgb(156, 207, 255),
-                        )
-                        embedVar4.add_field(
-                            name="Creator",
-                            value=art["results"][3]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Category",
-                            value=art["results"][3]["category"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Comments",
-                            value=art["results"][3]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Favorites",
-                            value=art["results"][3]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Deviation ID",
-                            value=art["results"][3]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="URL", value=art["results"][3]["url"], inline=True
-                        )
-                        embedVar4.set_image(
-                            url=art["results"][3]["content"]["src"])
-                        embedVar4.set_thumbnail(
-                            url=art["results"][3]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar4)
-                        embedVar5 = discord.Embed(
-                            title=art["results"][4]["title"],
-                            color=discord.Color.from_rgb(156, 255, 225),
-                        )
-                        embedVar5.add_field(
-                            name="Creator",
-                            value=art["results"][4]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Category",
-                            value=art["results"][4]["category"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Comments",
-                            value=art["results"][4]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Favorites",
-                            value=art["results"][4]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Deviation ID",
-                            value=art["results"][4]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="URL", value=art["results"][4]["url"], inline=True
-                        )
-                        embedVar5.set_image(
-                            url=art["results"][4]["content"]["src"])
-                        embedVar5.set_thumbnail(
-                            url=art["results"][4]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar5)
-                    else:
-                        embedVar = discord.Embed(
-                            color=discord.Color.from_rgb(255, 156, 192)
-                        )
-                        embedVar.add_field(
-                            name="Has More", value=art["has_more"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Estimated Total",
-                            value=art["estimated_total"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Total", value=len(art["results"]), inline=True
-                        )
-                        embedVar.set_footer(
-                            text="This only appears if the estimated total is less than 5 results. Info given here are for reference."
-                        )
-                        await ctx.send(embed=embedVar)
-                except Exception as e:
+                    try:
+                        if len(artMain["results"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        color=discord.Color.from_rgb(255, 156, 192),
+                                        title=dictItem["title"],
+                                    )
+                                    .set_thumbnail(url=dictItem["author"]["usericon"])
+                                    .set_image(url=dictItem["content"]["src"])
+                                    .add_field(
+                                        name="Author",
+                                        value=dictItem["author"]["username"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Category",
+                                        value=dictItem["category"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Comments",
+                                        value=dictItem["stats"]["comments"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Favorites",
+                                        value=dictItem["stats"]["favourites"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Downloadable",
+                                        value=dictItem["is_downloadable"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Deviantion ID",
+                                        value=dictItem["deviationid"],
+                                        inline=True,
+                                    )
+                                    for dictItem in artMain["results"]
+                                ]
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = "Sorry, but there seems to be no posts from the search query given. Please try again"
+                        await ctx.respond(embed=embedNoItemsError)
+                except Exception:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(255, 214, 214)
                     )
                     embedVar.description = "The query failed. Please try again"
-                    embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=art["error"], inline=True)
+                        name="Error", value=artMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
-                        value=art["error_description"],
+                        value=artMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=art["status"], inline=True)
-                    await ctx.send(embed=embedVar)
+                        name="Status", value=artMain["status"], inline=True
+                    )
+                    await ctx.respond(embed=embedVar)
 
-    @da_query.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @da.command(name="popular")
+    async def deviantart_popular(
+        self,
+        ctx,
+        *,
+        search_popular: Option(
+            str, "The search term you want to use to fetch the popular art"
+        ),
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    @da_query.before_invoke
-    async def on_command(self, ctx=None):
+        """Returns up to 50 popular art from DeviantArt based on the given search result"""
         token = tokenFetcher()
-        await token.get()
-
-
-class DeviantArtV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="deviantart-popular", aliases=["da-popular"])
-    async def deviantart_popular(self, ctx, *, search: str):
-        token = tokenFetcher()
-        search = search.replace(" ", "%20")
+        accessToken = await token.get()
+        search_popular = search_popular.replace(" ", "%20")
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "q": f"{search}",
+                "q": f"{search_popular}",
                 "with_session": "false",
-                "limit": "10",
+                "limit": 50,
                 "mature_content": "false",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/popular", params=params
             ) as response:
-                pop = await response.json()
+                pop = await response.content.read()
+                popMain = parser.parse(pop, recursive=True)
                 try:
-                    if pop["estimated_total"] > 5:
-                        embedVar1 = discord.Embed(
-                            title=pop["results"][0]["title"],
-                            color=discord.Color.from_rgb(255, 250, 181),
-                        )
-                        embedVar1.add_field(
-                            name="Creator",
-                            value=pop["results"][0]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Category",
-                            value=pop["results"][0]["category"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Comments",
-                            value=pop["results"][0]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Favorites",
-                            value=pop["results"][0]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Deviation ID",
-                            value=pop["results"][0]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="URL", value=pop["results"][0]["url"], inline=True
-                        )
-                        embedVar1.set_image(
-                            url=pop["results"][0]["content"]["src"])
-                        embedVar1.set_thumbnail(
-                            url=pop["results"][0]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar1)
-                        embedVar2 = discord.Embed(
-                            title=pop["results"][1]["title"],
-                            color=discord.Color.from_rgb(255, 250, 181),
-                        )
-                        embedVar2.add_field(
-                            name="Creator",
-                            value=pop["results"][1]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Category",
-                            value=pop["results"][1]["category"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Comments",
-                            value=pop["results"][1]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Favorites",
-                            value=pop["results"][1]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Deviation ID",
-                            value=pop["results"][1]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="URL", value=pop["results"][1]["url"], inline=True
-                        )
-                        embedVar2.set_image(
-                            url=pop["results"][1]["content"]["src"])
-                        embedVar2.set_thumbnail(
-                            url=pop["results"][1]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar2)
-                        embedVar3 = discord.Embed(
-                            title=pop["results"][2]["title"],
-                            color=discord.Color.from_rgb(255, 250, 181),
-                        )
-                        embedVar3.add_field(
-                            name="Creator",
-                            value=pop["results"][2]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Category",
-                            value=pop["results"][2]["category"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Comments",
-                            value=pop["results"][2]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Favorites",
-                            value=pop["results"][2]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Deviation ID",
-                            value=pop["results"][2]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="URL", value=pop["results"][2]["url"], inline=True
-                        )
-                        embedVar3.set_image(
-                            url=pop["results"][2]["content"]["src"])
-                        embedVar3.set_thumbnail(
-                            url=pop["results"][2]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar3)
-                        embedVar4 = discord.Embed(
-                            title=pop["results"][3]["title"],
-                            color=discord.Color.from_rgb(255, 250, 181),
-                        )
-                        embedVar4.add_field(
-                            name="Creator",
-                            value=pop["results"][3]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Category",
-                            value=pop["results"][3]["category"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Comments",
-                            value=pop["results"][3]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Favorites",
-                            value=pop["results"][3]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Deviation ID",
-                            value=pop["results"][3]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="URL", value=pop["results"][3]["url"], inline=True
-                        )
-                        embedVar4.set_image(
-                            url=pop["results"][3]["content"]["src"])
-                        embedVar4.set_thumbnail(
-                            url=pop["results"][3]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar4)
-                        embedVar5 = discord.Embed(
-                            title=pop["results"][4]["title"],
-                            color=discord.Color.from_rgb(255, 250, 181),
-                        )
-                        embedVar5.add_field(
-                            name="Creator",
-                            value=pop["results"][4]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Category",
-                            value=pop["results"][4]["category"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Comments",
-                            value=pop["results"][4]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Favorites",
-                            value=pop["results"][4]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Deviation ID",
-                            value=pop["results"][4]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="URL", value=pop["results"][4]["url"], inline=True
-                        )
-                        embedVar5.set_image(
-                            url=pop["results"][4]["content"]["src"])
-                        embedVar5.set_thumbnail(
-                            url=pop["results"][4]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar5)
-                    else:
-                        embedVar = discord.Embed(
-                            color=discord.Color.from_rgb(255, 156, 192)
-                        )
-                        embedVar.add_field(
-                            name="Has More", value=pop["has_more"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Estimated Total",
-                            value=pop["estimated_total"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Total", value=len(pop["results"]), inline=True
-                        )
-                        embedVar.set_footer(
-                            text="This only appears if the estimated total is less than 5 results. Info given here are for reference."
-                        )
-                        await ctx.send(embed=embedVar)
-                except Exception as e:
+                    try:
+                        if len(popMain["results"]) == 0:
+                            raise NoItemsError
+                        else:
+                            popMainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        color=discord.Color.from_rgb(255, 250, 181),
+                                        title=dictItem2["title"],
+                                    )
+                                    .set_image(url=dictItem2["content"]["src"])
+                                    .set_thumbnail(url=dictItem2["author"]["usericon"])
+                                    .add_field(
+                                        name="Author",
+                                        value=dictItem2["author"]["username"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Category",
+                                        value=dictItem2["category"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Comments",
+                                        value=dictItem2["stats"]["comments"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Favorites",
+                                        value=dictItem2["stats"]["favourites"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Downloadable",
+                                        value=dictItem2["is_downloadable"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Deviantion ID",
+                                        value=dictItem2["deviationid"],
+                                        inline=True,
+                                    )
+                                    for dictItem2 in popMain["results"]
+                                ]
+                            )
+                            await popMainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = "It seems like there were no posts found... Please try again"
+                        await ctx.respond(embed=embedNoItemsError)
+                except Exception:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(255, 214, 214)
                     )
                     embedVar.description = "The query failed. Please try again"
-                    embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=pop["error"], inline=True)
+                        name="Error", value=popMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
-                        value=pop["error_description"],
+                        value=popMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=pop["status"], inline=True)
-                    await ctx.send(embed=embedVar)
+                        name="Status", value=popMain["status"], inline=True
+                    )
+                    await ctx.respond(embed=embedVar)
 
-    @deviantart_popular.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @da.command(name="tags")
+    async def tagsMain(
+        self,
+        ctx,
+        *,
+        tag: Option(str, "The tag you want to use to fetch the search results"),
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    @deviantart_popular.before_invoke
-    async def on_command(self, ctx=None):
+        """Returns up to 50 search results from DeviantArt based on the given tag"""
         token = tokenFetcher()
-        await token.get()
-
-
-class DeviantArtV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="deviantart-tag-search", aliases=["da-tag-search"])
-    async def tags(self, ctx, *, search: str):
-        token = tokenFetcher()
-        search = search.replace(" ", "%20")
+        accessToken = await token.get()
+        tag = tag.replace(" ", "%20")
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "tag": f"{search}",
+                "tag": f"{tag}",
                 "with_session": "false",
-                "limit": "10",
+                "limit": 50,
                 "mature_content": "false",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
                 "https://www.deviantart.com/api/v1/oauth2/browse/tags", params=params
             ) as rep:
-                tags = await rep.json()
+                tags = await rep.content.read()
+                tagsMain = parser.parse(tags, recursive=True)
+                embedVar = discord.Embed(color=discord.Color.from_rgb(235, 186, 255))
                 try:
-                    if int(len(tags["results"])) > 5:
-                        embedVar1 = discord.Embed(
-                            title=tags["results"][0]["title"],
-                            color=discord.Color.from_rgb(255, 99, 99),
-                        )
-                        embedVar1.add_field(
-                            name="Creator",
-                            value=tags["results"][0]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Category",
-                            value=tags["results"][0]["category"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Comments",
-                            value=tags["results"][0]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Favorites",
-                            value=tags["results"][0]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="Deviation ID",
-                            value=tags["results"][0]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar1.add_field(
-                            name="URL", value=tags["results"][0]["url"], inline=True
-                        )
-                        embedVar1.set_image(
-                            url=tags["results"][0]["content"]["src"])
-                        embedVar1.set_thumbnail(
-                            url=tags["results"][0]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar1)
-                        embedVar2 = discord.Embed(
-                            title=tags["results"][1]["title"],
-                            color=discord.Color.from_rgb(255, 242, 99),
-                        )
-                        embedVar2.add_field(
-                            name="Creator",
-                            value=tags["results"][1]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Category",
-                            value=tags["results"][1]["category"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Comments",
-                            value=tags["results"][1]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Favorites",
-                            value=tags["results"][1]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Deviation ID",
-                            value=tags["results"][1]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="URL", value=tags["results"][1]["url"], inline=True
-                        )
-                        embedVar2.set_image(
-                            url=tags["results"][1]["content"]["src"])
-                        embedVar2.set_thumbnail(
-                            url=tags["results"][1]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar2)
-                        embedVar3 = discord.Embed(
-                            title=tags["results"][2]["title"],
-                            color=discord.Color.from_rgb(143, 255, 99),
-                        )
-                        embedVar3.add_field(
-                            name="Creator",
-                            value=tags["results"][2]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Category",
-                            value=tags["results"][2]["category"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Comments",
-                            value=tags["results"][2]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Favorites",
-                            value=tags["results"][2]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Deviation ID",
-                            value=tags["results"][2]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="URL", value=tags["results"][2]["url"], inline=True
-                        )
-                        embedVar3.set_image(
-                            url=tags["results"][2]["content"]["src"])
-                        embedVar3.set_thumbnail(
-                            url=tags["results"][2]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar3)
-                        embedVar4 = discord.Embed(
-                            title=tags["results"][3]["title"],
-                            color=discord.Color.from_rgb(99, 255, 213),
-                        )
-                        embedVar4.add_field(
-                            name="Creator",
-                            value=tags["results"][3]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Category",
-                            value=tags["results"][3]["category"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Comments",
-                            value=tags["results"][3]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Favorites",
-                            value=tags["results"][3]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Deviation ID",
-                            value=tags["results"][3]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="URL", value=tags["results"][3]["url"], inline=True
-                        )
-                        embedVar4.set_image(
-                            url=tags["results"][3]["content"]["src"])
-                        embedVar4.set_thumbnail(
-                            url=tags["results"][3]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar4)
-                        embedVar5 = discord.Embed(
-                            title=tags["results"][4]["title"],
-                            color=discord.Color.from_rgb(164, 99, 255),
-                        )
-                        embedVar5.add_field(
-                            name="Creator",
-                            value=tags["results"][4]["author"]["username"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Category",
-                            value=tags["results"][4]["category"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Comments",
-                            value=tags["results"][4]["stats"]["comments"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Favorites",
-                            value=tags["results"][4]["stats"]["favourites"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Deviation ID",
-                            value=tags["results"][4]["deviationid"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="URL", value=tags["results"][4]["url"], inline=True
-                        )
-                        embedVar5.set_image(
-                            url=tags["results"][4]["content"]["src"])
-                        embedVar5.set_thumbnail(
-                            url=tags["results"][4]["author"]["usericon"]
-                        )
-                        await ctx.send(embed=embedVar5)
-                    else:
-                        embedVar = discord.Embed(
-                            color=discord.Color.from_rgb(255, 156, 192)
-                        )
-                        embedVar.add_field(
-                            name="Has More", value=tags["has_more"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Total", value=len(tags["results"]), inline=True
-                        )
-                        embedVar.set_footer(
-                            text="This only appears if the estimated total is less than 5 results. Info given here are for reference."
-                        )
-                        await ctx.send(embed=embedVar)
-                except Exception as e:
+                    try:
+                        if len(tagsMain["results"]) == 0:
+                            raise NoItemsError
+                        else:
+                            tagsMainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        color=discord.Color.from_rgb(255, 250, 181),
+                                        title=dictItem3["title"],
+                                    )
+                                    .set_image(url=dictItem3["content"]["src"])
+                                    .set_thumbnail(url=dictItem3["author"]["usericon"])
+                                    .add_field(
+                                        name="Author",
+                                        value=dictItem3["author"]["username"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Category",
+                                        value=dictItem3["category"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Comments",
+                                        value=dictItem3["stats"]["comments"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Favorites",
+                                        value=dictItem3["stats"]["favourites"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Downloadable",
+                                        value=dictItem3["is_downloadable"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Deviantion ID",
+                                        value=dictItem3["deviationid"],
+                                        inline=True,
+                                    )
+                                    for dictItem3 in tagsMain["results"]
+                                ]
+                            )
+                            await tagsMainPages.respond(
+                                ctx.interaction, ephemeral=False
+                            )
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = "It seems like there were no posts found... Please try again"
+                        await ctx.respond(embed=embedNoItemsError)
+                except Exception:
                     embedVar = discord.Embed(
                         color=discord.Color.from_rgb(255, 214, 214)
                     )
                     embedVar.description = "The query failed. Please try again"
-                    embedVar.add_field(name="Reason", value=e, inline=False)
                     embedVar.add_field(
-                        name="Error", value=tags["error"], inline=True)
+                        name="Error", value=tagsMain["error"], inline=True
+                    )
                     embedVar.add_field(
                         name="Error Description",
-                        value=tags["error_description"],
+                        value=tagsMain["error_description"],
                         inline=True,
                     )
                     embedVar.add_field(
-                        name="Status", value=tags["status"], inline=True)
-                    await ctx.send(embed=embedVar)
+                        name="Status", value=tagsMain["status"], inline=True
+                    )
+                    await ctx.respond(embed=embedVar)
 
-    @tags.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @da.command(name="users")
+    async def userv1(
+        self, ctx, *, user: Option(str, "The username you want to search for")
     ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    @tags.before_invoke
-    async def on_command(self, ctx=None):
+        """Returns the user's profile information"""
         token = tokenFetcher()
-        await token.get()
-
-
-class DeviantArtV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="deviantart-user", aliases=["da-user"])
-    async def user(self, ctx, *, search: str):
-        token = tokenFetcher()
+        accessToken = await token.get()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "ext_collections": "false",
                 "ext_galleries": "false",
                 "with_session": "false",
                 "mature_content": "false",
-                "access_token": f"{await token.get()[0]}",
+                "access_token": f"{accessToken[0]}",
             }
             async with session.get(
-                f"https://www.deviantart.com/api/v1/oauth2/user/profile/{search}",
+                f"https://www.deviantart.com/api/v1/oauth2/user/profile/{user}",
                 params=params,
             ) as respon:
-                users = await respon.json()
+                users = await respon.content.read()
+                usersMain = parser.parse(users, recursive=True)
+                usersFilter = [
+                    "bio",
+                    "tagline",
+                    "cover_deviation",
+                    "last_status",
+                    "cover_photo",
+                    "stats",
+                    "user",
+                ]
+                embedVar = discord.Embed()
                 try:
-                    embedVar = discord.Embed(
-                        title=users["user"]["username"],
-                        color=discord.Color.from_rgb(255, 156, 192),
-                    )
-                    embedVar.add_field(
-                        name="Real Name", value=f"[{users['real_name']}]", inline=True
-                    )
-                    embedVar.add_field(
-                        name="Tagline", value=f"[{users['tagline']}]", inline=True
-                    )
-                    embedVar.add_field(
-                        name="Bio", value=f"[{users['bio']}]", inline=True
-                    )
-                    embedVar.add_field(
-                        name="Type", value=users["user"]["type"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="User ID", value=users["user"]["userid"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Profile URL", value=users["profile_url"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Is Artist", value=users["user_is_artist"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Artist Level", value=users["artist_level"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Artist Specialty",
-                        value=users["artist_specialty"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Country", value=users["country"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Last Status", value=users["last_status"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="User Deviations",
-                        value=users["stats"]["user_deviations"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="User Favorites",
-                        value=users["stats"]["user_favourites"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="User Comments",
-                        value=users["stats"]["user_comments"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Profile Views",
-                        value=users["stats"]["profile_pageviews"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Profile Comments",
-                        value=users["stats"]["profile_comments"],
-                        inline=True,
-                    )
-                    embedVar.set_thumbnail(url=users["user"]["usericon"])
-                    await ctx.send(embed=embedVar)
-                except Exception as e:
-                    embedVar = discord.Embed(
+                    if "cover_deviation" in usersMain:
+                        for keys, value in usersMain.items():
+                            if keys not in usersFilter:
+                                embedVar.add_field(
+                                    name=keys, value=f"[{value}]", inline=True
+                                )
+                        for k, v in usersMain["stats"].items():
+                            embedVar.add_field(name=k, value=f"[{v}]", inline=True)
+                        embedVar.title = usersMain["user"]["username"]
+                        embedVar.description = (
+                            f"{usersMain['tagline']}\n\n{usersMain['bio']}"
+                        )
+                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
+                        embedVar.set_image(
+                            url=usersMain["cover_deviation"]["cover_deviation"][
+                                "content"
+                            ]["src"]
+                        )
+                        await ctx.respond(embed=embedVar)
+                    else:
+                        for keys1, value1 in usersMain.items():
+                            if keys1 not in usersFilter:
+                                embedVar.add_field(
+                                    name=keys1, value=f"[{value1}]", inline=True
+                                )
+                        for k1, v1 in usersMain["stats"].items():
+                            embedVar.add_field(name=k1, value=f"[{v1}]", inline=True)
+                        embedVar.title = usersMain["user"]["username"]
+                        embedVar.description = (
+                            f"{usersMain['tagline']}\n\n{usersMain['bio']}"
+                        )
+                        embedVar.set_thumbnail(url=usersMain["user"]["usericon"])
+                        await ctx.respond(embed=embedVar)
+                except Exception:
+                    embedError = discord.Embed(
                         color=discord.Color.from_rgb(255, 214, 214)
                     )
-                    embedVar.description = "The query failed. Please try again"
-                    embedVar.add_field(name="Reason", value=e, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embedError.description = "The query failed. Please try again"
+                    embedError.add_field(
+                        name="Error", value=usersMain["error"], inline=True
+                    )
+                    embedError.add_field(
+                        name="Error Description",
+                        value=usersMain["error_description"],
+                        inline=True,
+                    )
+                    embedError.add_field(
+                        name="Status", value=usersMain["status"], inline=True
+                    )
+                    await ctx.respond(embed=embedError)
 
-    @user.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    @user.before_invoke
-    async def on_command(self, ctx=None):
-        token = tokenFetcher()
-        await token.get()
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
     bot.add_cog(DeviantArtV1(bot))
-    bot.add_cog(DeviantArtV2(bot))
-    bot.add_cog(DeviantArtV3(bot))
-    bot.add_cog(DeviantArtV4(bot))
-    bot.add_cog(DeviantArtV5(bot))

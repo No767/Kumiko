@@ -1,68 +1,91 @@
 import discord
 from discord.ext import commands
-from discord.utils import get
 
 
-# Disabled for now. needs more testing
-class check_pronouns(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+class PronounsCheckerV1(commands.Cog):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    @commands.Cog.listener()
-    @commands.is_owner()
-    async def on_message(self, ctx):
-        if ctx.author.id != self.bot.user.id and ctx.channel.name == "hanako-roles":
-            bot = self.bot
-            embedVar = discord.Embed(title="What are your pronouns?")
-            embedVar.set_thumbnail(url=bot.user.avatar_url)
-            embedVar.description = """
-                :orange_heart: - he/him
-                :heart: - she/her
-                :white_heart: - they/them
-                :green_heart: - he/they
-                :blue_heart: - she/they
-                :yellow_heart: - he/she/they
-                :purple_heart: - ask
-                """
-            embedVar.set_footer(
-                text="React to those emojis to get a role assigned with those pronouns!"
-            )
-            msg = await ctx.channel.send(embed=embedVar)
-            await msg.add_reaction("🧡")
-            await msg.add_reaction(":heart:")
-            await msg.add_reaction(":white_heart:")
-            await msg.add_reaction(":green_heart:")
-            await msg.add_reaction(":blue_heart:")
-            await msg.add_reaction(":yellow_heart:")
-            await msg.add_reaction(":purple_heart:")
+        self.role_message_id = (
+            0  # ID of the message that can be reacted to to add/remove a role.
+        )
+        self.emoji_to_role = {
+            discord.PartialEmoji(
+                name="🔴"
+            ): 0,  # ID of the role associated with unicode emoji '🔴'.
+            discord.PartialEmoji(
+                name="🟡"
+            ): 0,  # ID of the role associated with unicode emoji '🟡'.
+            discord.PartialEmoji(
+                name="green", id=0
+            ): 0,  # ID of the role associated with a partial emoji's ID.
+        }
 
-            def check2(r, u):
-                return u == ctx.author and str(r.emoji) in ":heart:"
+    async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
+        """Gives a role based on a reaction emoji."""
+        # Make sure that the message the user is reacting to is the one we care about.
+        if payload.message_id != self.role_message_id:
+            return
 
-            def check3(r, u):
-                return u == ctx.author and str(r.emoji) in ":white_heart:"
+        guild = self.get_guild(payload.guild_id)
+        if guild is None:
+            # Check if we're still in the guild and it's cached.
+            return
 
-            def check4(r, u):
-                return u == ctx.author and str(r.emoji) in ":green_heart:"
+        try:
+            role_id = self.emoji_to_role[payload.emoji]
+        except KeyError:
+            # If the emoji isn't the one we care about then exit as well.
+            return
 
-            def check5(r, u):
-                return u == ctx.author and str(r.emoji) in ":blue_heart:"
+        role = guild.get_role(role_id)
+        if role is None:
+            # Make sure the role still exists and is valid.
+            return
 
-            def check6(r, u):
-                return u == ctx.author and str(r.emoji) in ":yellow_heart:"
+        try:
+            # Finally, add the role.
+            await payload.member.add_roles(role)
+        except discord.HTTPException:
+            # If we want to do something in case of errors we'd do it here.
+            pass
 
-            def check7(r, u):
-                return u == ctx.author and str(r.emoji) in ":purple_heart:"
+    async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
+        """Removes a role based on a reaction emoji."""
+        # Make sure that the message the user is reacting to is the one we care about.
+        if payload.message_id != self.role_message_id:
+            return
 
-            reaction, user = await self.bot.wait_for_reaction("reaction_add")
-            if str(reaction.emoji) == "🧡":
-                guild = ctx.guild
-                await guild.create_role(name="He/Him", color=0xE67E22)
-                member = ctx.message.author
-                role = get(member.server.roles, name="He/Him")
-                await bot.add_roles(member, "He/Him")
-                await ctx.send("added roles")
+        guild = self.get_guild(payload.guild_id)
+        if guild is None:
+            # Check if we're still in the guild and it's cached.
+            return
+
+        try:
+            role_id = self.emoji_to_role[payload.emoji]
+        except KeyError:
+            # If the emoji isn't the one we care about then exit as well.
+            return
+
+        role = guild.get_role(role_id)
+        if role is None:
+            # Make sure the role still exists and is valid.
+            return
+
+        # The payload for `on_raw_reaction_remove` does not provide `.member`
+        # so we must get the member ourselves from the payload's `.user_id`.
+        member = guild.get_member(payload.user_id)
+        if member is None:
+            # Make sure the member still exists and is valid.
+            return
+
+        try:
+            # Finally, remove the role.
+            await member.remove_roles(role)
+        except discord.HTTPException:
+            # If we want to do something in case of errors we'd do it here.
+            pass
 
 
 def setup(bot):
-    bot.add_cog(check_pronouns(bot))
+    bot.add_cog(PronounsCheckerV1(bot))

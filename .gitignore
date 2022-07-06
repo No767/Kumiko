@@ -53,3 +53,12 @@ tokens.db
 daTokens/
 button-test.py
 reddit-links.txt
+test-script.py
+pages.py
+Bot/database-testing.py
+spotify-links.txt
+Bot/Cogs/test.py
+marketplace_filters.yml
+Bot/Cog/economy/config/*
+Bot/Cog/economy/config
+config

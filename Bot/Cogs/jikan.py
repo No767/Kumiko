@@ -3,1134 +3,482 @@ import asyncio
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
-from discord.ext import commands
+from discord.commands import Option, SlashCommandGroup
+from discord.ext import commands, pages
+from rin_exceptions import HTTPException, NoItemsError
+
+parser = simdjson.Parser()
 
 
-class JikanV1(commands.Cog):
+class MALV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jikan-anime", aliases=["jk-anime"])
-    async def anime(self, ctx, *, search: str):
-        search = search.replace(" ", "%20")
+    mal = SlashCommandGroup("mal", "Commands for the MyAnimeList/Jikan service")
+    malSeasons = mal.create_subgroup("seasons", "Sub commands for anime seasons")
+    malRandom = mal.create_subgroup("random", "Random Anime/Manga Commands")
+
+    @mal.command(name="anime")
+    async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
+        """Fetches up to 5 anime from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"q": search, "order_by": "title", "limit": 1}
+            params = {"limit": 5, "q": anime_name, "sfw": "true", "order_by": "title"}
             async with session.get(
-                "https://api.jikan.moe/v3/search/anime", params=params
+                "https://api.jikan.moe/v4/anime/", params=params
             ) as r:
-                data = await r.json()
-                anime_id = data["results"][0]["mal_id"]
-                async with session.get(
-                    f"https://api.jikan.moe/v3/anime/{anime_id}"
-                ) as resp:
-                    anime_info_v2 = await resp.json()
-                    try:
-                        embedVar = discord.Embed(title=anime_info_v2["title"])
-                        embedVar2 = discord.Embed(
-                            title=f"Synopsis - {anime_info_v2['title_english']}"
-                        )
-                        embedVar.add_field(
-                            name="English Title",
-                            value=anime_info_v2["title_english"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Japanese Title",
-                            value=anime_info_v2["title_japanese"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Title Synonyms",
-                            value=str(anime_info_v2["title_synonyms"]).replace(
-                                "'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Type", value=anime_info_v2["type"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Source", value=anime_info_v2["source"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Status", value=anime_info_v2["status"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Aired",
-                            value=anime_info_v2["aired"]["string"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Premiered",
-                            value=anime_info_v2["premiered"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Rating", value=anime_info_v2["rating"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Score", value=anime_info_v2["score"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Scored By",
-                            value=anime_info_v2["scored_by"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Rank", value=anime_info_v2["rank"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Popularity",
-                            value=anime_info_v2["popularity"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Members", value=anime_info_v2["members"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Favorites",
-                            value=anime_info_v2["favorites"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Official Site",
-                            value=anime_info_v2["external_links"][0]["url"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="AnimeDB",
-                            value=anime_info_v2["external_links"][1]["url"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="AnimeNewsNetwork",
-                            value=anime_info_v2["external_links"][2]["url"],
-                            inline=True,
-                        )
-                        embedVar2.description = f"{str(anime_info_v2['synopsis']).replace('[Written by MAL Rewrite]', '')}"
-                        embedVar2.add_field(
-                            name="Background",
-                            value=anime_info_v2["background"],
-                            inline=True,
-                        )
-                        embedVar.set_thumbnail(url=anime_info_v2["image_url"])
-                        await ctx.send(embed=embedVar)
-                        await ctx.send(embed=embedVar2)
-                    except Exception as e:
-                        embedVar = discord.Embed()
-                        embedVar.description = f"The query could not be performed. Please try again.\nReason: {e}"
-                        await ctx.send(embed=embedVar)
+                data = await r.content.read()
+                dataMain = parser.parse(data, recursive=True)
+                filterList = [
+                    "images",
+                    "title",
+                    "aired",
+                    "synopsis",
+                    "background",
+                    "broadcast",
+                    "producers",
+                    "licensors",
+                    "studios",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "trailer",
+                ]
+                try:
+                    if len(dataMain["data"]) == 0:
+                        raise ValueError
+                    else:
+                        for dictItem in dataMain["data"]:
+                            embedVar = discord.Embed()
+                            embedVar.title = dictItem["title"]
+                            embedVar.description = dictItem["synopsis"]
+                            for key, value in dictItem.items():
+                                if key not in filterList:
+                                    embedVar.add_field(
+                                        name=str(key).replace("_", " ").capitalize(),
+                                        value=value,
+                                        inline=True,
+                                    )
+                            for item in dictItem["genres"]:
+                                embedVar.add_field(
+                                    name="Genres",
+                                    value=f'[{item["name"]}]',
+                                    inline=True,
+                                )
+                            for item2 in dictItem["demographics"]:
+                                embedVar.add_field(
+                                    name="Demographics",
+                                    value=f'[{item2["name"]}]',
+                                    inline=True,
+                                )
+                            for item3 in dictItem["themes"]:
+                                embedVar.add_field(
+                                    name="Themes",
+                                    value=f'[{item3["name"]}]',
+                                    inline=True,
+                                )
+                            embedVar.add_field(
+                                name="Aired",
+                                value=dictItem["aired"]["string"],
+                                inline=True,
+                            )
+                            embedVar.set_image(
+                                url=dictItem["images"]["jpg"]["large_image_url"]
+                            )
+                            await ctx.respond(embed=embedVar)
+                except ValueError:
+                    embedVar = discord.Embed()
+                    embedVar.description = "Sorry, but the anime you searched for either wasn't found or doesn't exist. Please try again"
+                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @anime.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = "Missing a required argument: Anime name"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
-class JikanV2(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="jikan-manga", aliases=["jk-manga"])
-    async def manga(self, ctx, *, search: str):
-        search = search.replace(" ", "%20")
+    @mal.command(name="manga")
+    async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
+        """Fetches up to 5 mangas from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"q": search}
+            params = {"limit": 5, "q": manga_name, "sfw": "true", "order_by": "title"}
             async with session.get(
-                "https://api.jikan.moe/v3/search/manga", params=params
+                "https://api.jikan.moe/v4/manga", params=params
             ) as response:
-                data = await response.json()
-                manga_id = data["results"][0]["mal_id"]
-                async with session.get(
-                    f"https://api.jikan.moe/v3/manga/{manga_id}"
-                ) as re:
-                    manga_info_v1 = await re.json()
+                data = await response.content.read()
+                dataMain2 = parser.parse(data, recursive=True)
+                filterList = [
+                    "title",
+                    "images",
+                    "published",
+                    "authors",
+                    "serializations",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "background",
+                    "synopsis",
+                ]
+                try:
+                    if len(dataMain2["data"]) == 0:
+                        raise ValueError
+                    else:
+                        for dataItem in dataMain2["data"]:
+                            embedVar = discord.Embed()
+                            embedVar.title = dataItem["title"]
+                            embedVar.description = dataItem["synopsis"]
+                            embedVar.set_image(
+                                url=dataItem["images"]["jpg"]["large_image_url"]
+                            )
+                            for key, value in dataItem.items():
+                                if key not in filterList:
+                                    embedVar.add_field(
+                                        name=str(key).replace("_", " ").capitalize(),
+                                        value=value,
+                                        inline=True,
+                                    )
+                            for name in dataItem["authors"]:
+                                embedVar.add_field(
+                                    name="Authors",
+                                    value=f'[{name["name"]}]',
+                                    inline=True,
+                                )
+                            for obj in dataItem["serializations"]:
+                                embedVar.add_field(
+                                    name="Serializations",
+                                    value=f'[{obj["name"]}]',
+                                    inline=True,
+                                )
+                            for genre in dataItem["genres"]:
+                                embedVar.add_field(
+                                    name="Genres",
+                                    value=f'[{genre["name"]}]',
+                                    inline=True,
+                                )
+                            for theme in dataItem["themes"]:
+                                embedVar.add_field(
+                                    name="Themes",
+                                    value=f'[{theme["name"]}]',
+                                    inline=True,
+                                )
+                            for demographic in dataItem["demographics"]:
+                                embedVar.add_field(
+                                    name="Demographics",
+                                    value=f'[{demographic["name"]}]',
+                                    inline=True,
+                                )
+                            embedVar.add_field(
+                                name="Published",
+                                value=dataItem["published"]["string"],
+                                inline=True,
+                            )
+                            await ctx.respond(embed=embedVar)
+                except ValueError:
+                    embedVar = discord.Embed()
+                    embedVar.description = "Sorry, but it seems like that manga cannot be found. Please try again"
+                    await ctx.respond(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @malRandom.command(name="anime")
+    async def animeRandom(self, ctx):
+        """Fetches a random anime from MAL"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            async with session.get("https://api.jikan.moe/v4/random/anime") as response:
+                data = await response.content.read()
+                dataMain = parser.parse(data, recursive=True)
+                mainFilter = [
+                    "images",
+                    "trailer",
+                    "aired",
+                    "producers",
+                    "licensors",
+                    "studios",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "synopsis",
+                    "title",
+                    "broadcast",
+                    "background",
+                ]
+                try:
+                    if len(dataMain["data"]) == 0:
+                        raise ValueError
+                    else:
+                        embedVar = discord.Embed()
+                        embedVar.title = dataMain["data"]["title"]
+                        embedVar.description = dataMain["data"]["synopsis"]
+                        for key, value in dataMain["data"].items():
+                            if key not in mainFilter:
+                                embedVar.add_field(
+                                    name=str(key).replace("_", " ").capitalize(),
+                                    value=value,
+                                    inline=True,
+                                )
+                        embedVar.set_image(
+                            url=dataMain["data"]["images"]["jpg"]["large_image_url"]
+                        )
+                        await ctx.respond(embed=embedVar)
+
+                except ValueError:
+                    embedVar = discord.Embed()
+                    embedVar.description = (
+                        "It seems like it might have broke itself... Please try again"
+                    )
+                    await ctx.respond(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @malRandom.command(name="manga")
+    async def mangaRandom(self, ctx):
+        """Fetches a random manga from MAL"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            async with session.get("https://api.jikan.moe/v4/random/manga") as r:
+                data = await r.content.read()
+                dataMain3 = parser.parse(data, recursive=True)
+                mangaFilter = [
+                    "title",
+                    "published",
+                    "authors",
+                    "serializations",
+                    "genres",
+                    "explicit_genres",
+                    "themes",
+                    "demographics",
+                    "published",
+                    "images",
+                    "background",
+                    "synopsis",
+                ]
+                embedVar = discord.Embed()
+                try:
+                    if len(dataMain3["data"]) == 0:
+                        raise ValueError
+                    else:
+                        embedVar.title = dataMain3["data"]["title"]
+                        embedVar.description = dataMain3["data"]["synopsis"]
+                        for key, value in dataMain3["data"].items():
+                            if key not in mangaFilter:
+                                embedVar.add_field(
+                                    name=str(key).replace("_", " ").capitalize(),
+                                    value=value,
+                                    inline=True,
+                                )
+                        embedVar.set_image(
+                            url=dataMain3["data"]["images"]["jpg"]["large_image_url"]
+                        )
+                        await ctx.respond(embed=embedVar)
+                except ValueError:
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
+                    await ctx.respond(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @malSeasons.command(name="list")
+    async def season(
+        self,
+        ctx,
+        year: Option(int, "Which year for the season"),
+        *,
+        season: Option(str, "Anime Season - Winter, Spring, Summer or Fall"),
+    ):
+        """Returns animes for the given season and year"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            async with session.get(
+                f"https://api.jikan.moe/v4/seasons/{year}/{season}"
+            ) as response:
+                seasons = await response.content.read()
+                seasonsMain = parser.parse(seasons, recursive=True)
+                try:
                     try:
-                        embedVar = discord.Embed(
-                            title=manga_info_v1["title"],
-                            color=discord.Color.from_rgb(145, 197, 255),
-                        )
-                        embedVar2 = discord.Embed(
-                            title=f"Synopsis - {manga_info_v1['title']}",
-                            color=discord.Color.from_rgb(145, 197, 255),
-                        )
-                        embedVar.add_field(
-                            name="English Title",
-                            value=manga_info_v1["title_english"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Japanese Title",
-                            value=manga_info_v1["title_japanese"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Title Synonyms",
-                            value=str(manga_info_v1["title_synonyms"]).replace(
-                                "'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Status", value=manga_info_v1["status"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Type", value=manga_info_v1["type"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Published",
-                            value=manga_info_v1["publishing"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Published Status",
-                            value=manga_info_v1["published"]["string"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Volumes", value=manga_info_v1["volumes"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Chapters",
-                            value=manga_info_v1["chapters"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Genre",
-                            value=str(
-                                [name["name"]
-                                    for name in manga_info_v1["genres"]]
+                        if response.status == 400:
+                            raise HTTPException
+                        elif len(seasonsMain["data"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=dictItem["title"],
+                                        description=dictItem["synopsis"],
+                                    )
+                                    .set_image(
+                                        url=dictItem["images"]["jpg"]["large_image_url"]
+                                    )
+                                    .add_field(
+                                        name="Japanese Title",
+                                        value=dictItem["title_japanese"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Similar Titles",
+                                        value=dictItem["title_synonyms"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Episodes",
+                                        value=dictItem["episodes"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Status",
+                                        value=dictItem["status"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Aired",
+                                        value=dictItem["aired"]["string"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Score",
+                                        value=dictItem["score"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Rank", value=dictItem["rank"], inline=True
+                                    )
+                                    .add_field(
+                                        name="Genres",
+                                        value=[
+                                            item["name"] for item in dictItem["genres"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Themes",
+                                        value=[
+                                            item2["name"]
+                                            for item2 in dictItem["themes"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Demographics",
+                                        value=[
+                                            item3["name"]
+                                            for item3 in dictItem["demographics"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    for dictItem in seasonsMain["data"]
+                                ],
+                                loop_pages=True,
                             )
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
-                            inline=True,
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except HTTPException:
+                        embedHTTPExceptionError = discord.Embed()
+                        embedHTTPExceptionError.description = "It seems like you may have put invalid data, thus causing an error. Please try again, but with the proper data instead"
+                        embedHTTPExceptionError.add_field(
+                            name="HTTP Code", value=response.status, inline=True
                         )
-                        embedVar.add_field(
-                            name="Author(s)",
-                            value=str(
-                                [name["name"]
-                                    for name in manga_info_v1["authors"]]
-                            )
-                            .replace("[", "")
-                            .replace("]", "")
-                            .replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Rank", value=manga_info_v1["rank"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Score", value=manga_info_v1["score"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Scored by",
-                            value=manga_info_v1["scored_by"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Popularity",
-                            value=manga_info_v1["popularity"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Members", value=manga_info_v1["members"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Favorites",
-                            value=manga_info_v1["favorites"],
-                            inline=True,
-                        )
-                        embedVar2.description = f"{manga_info_v1['synopsis']}"
-                        embedVar2.add_field(
-                            name="Background",
-                            value=manga_info_v1["background"],
-                            inline=True,
-                        )
-                        embedVar.set_thumbnail(url=manga_info_v1["image_url"])
-                        await ctx.send(embed=embedVar)
-                        await ctx.send(embed=embedVar2)
-                    except Exception as e:
-                        embedVar = discord.Embed(
-                            color=discord.Color.from_rgb(235, 201, 255)
-                        )
-                        embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
-                        await ctx.send(emvbed=embedVar)
+                        await ctx.respond(embed=embedHTTPExceptionError)
+                except NoItemsError:
+                    embedNoItemsError = discord.Embed()
+                    embedNoItemsError.description = "It seems like there were no items within the database... Please try again"
+                    await ctx.respond(embed=embedNoItemsError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @manga.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = "Missing a required argument: Manga name"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
+    @malSeasons.command(name="upcoming")
+    async def seasonsUpcoming(self, ctx):
+        """Returns anime for the upcoming season"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            async with session.get(
+                "https://api.jikan.moe/v4/seasons/upcoming"
+            ) as full_response:
+                try:
+                    data = await full_response.content.read()
+                    dataMain5 = parser.parse(data, recursive=True)
+                    mainPages = pages.Paginator(
+                        pages=[
+                            discord.Embed(
+                                title=dictItem["title"],
+                                description=dictItem["synopsis"],
+                            )
+                            .set_image(url=dictItem["images"]["jpg"]["large_image_url"])
+                            .add_field(name="Aired", value=dictItem["aired"]["string"])
+                            .add_field(
+                                name="Season", value=dictItem["season"], inline=True
+                            )
+                            .add_field(
+                                name="Japanese Title",
+                                value=dictItem["title_japanese"],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Similar Titles",
+                                value=dictItem["title_synonyms"],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Rating", value=dictItem["rating"], inline=True
+                            )
+                            .add_field(
+                                name="Episodes", value=dictItem["episodes"], inline=True
+                            )
+                            .add_field(
+                                name="Genres",
+                                value=[item["name"] for item in dictItem["genres"]],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Themes",
+                                value=[item2["name"] for item2 in dictItem["themes"]],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="Demographics",
+                                value=[
+                                    item3["name"] for item3 in dictItem["demographics"]
+                                ],
+                                inline=True,
+                            )
+                            for dictItem in dataMain5["data"]
+                        ],
+                        loop_pages=True,
+                    )
+                    await mainPages.respond(ctx.interaction, ephemeral=False)
+                except Exception:
+                    embedError = discord.Embed()
+                    embedError.description = (
+                        "Oops, something went wrong. Please try again..."
+                    )
+                    await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class JikanV3(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="jikan-top", aliases=["jk-top"])
-    async def top(self, ctx, *, type: str):
-        try:
-            if str(type) in "anime":
-                async with aiohttp.ClientSession(
-                    json_serialize=orjson.dumps
-                ) as session:
-                    async with session.get(
-                        f"https://api.jikan.moe/v3/top/{type}"
-                    ) as res:
-                        top_items = await res.json()
-                        embedVar = discord.Embed(
-                            title="Top 10 Anime",
-                            color=discord.Color.from_rgb(219, 166, 255),
-                        )
-                        embedVar.add_field(
-                            name="Top 1",
-                            value=top_items["top"][0]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 2",
-                            value=top_items["top"][1]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 3",
-                            value=top_items["top"][2]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 4",
-                            value=top_items["top"][3]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 5",
-                            value=top_items["top"][4]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 6",
-                            value=top_items["top"][5]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 7",
-                            value=top_items["top"][6]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 8",
-                            value=top_items["top"][7]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 9",
-                            value=top_items["top"][8]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 10",
-                            value=top_items["top"][9]["title"],
-                            inline=True,
-                        )
-                        await ctx.send(embed=embedVar)
-            if str(type) in "manga":
-                async with aiohttp.ClientSession(
-                    json_serialize=orjson.dumps
-                ) as session:
-                    async with session.get(
-                        f"https://api.jikan.moe/v3/top/{type}"
-                    ) as respo:
-                        top_items = await respo.json()
-                        embedVar = discord.Embed(
-                            title="Top 10 Manga",
-                            color=discord.Color.from_rgb(166, 225, 255),
-                        )
-                        embedVar.add_field(
-                            name="Top 1",
-                            value=top_items["top"][0]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 2",
-                            value=top_items["top"][1]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 3",
-                            value=top_items["top"][2]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 4",
-                            value=top_items["top"][3]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 5",
-                            value=top_items["top"][4]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 6",
-                            value=top_items["top"][5]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 7",
-                            value=top_items["top"][6]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 8",
-                            value=top_items["top"][7]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 9",
-                            value=top_items["top"][8]["title"],
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 10",
-                            value=top_items["top"][9]["title"],
-                            inline=True,
-                        )
-                        await ctx.send(embed=embedVar)
-            if str(type) in "people":
-                async with aiohttp.ClientSession(
-                    json_serialize=orjson.dumps
-                ) as session:
-                    async with session.get(
-                        f"https://api.jikan.moe/v3/top/{type}"
-                    ) as ree:
-                        top_items = await ree.json()
-                        embedVar = discord.Embed(
-                            title="Top 10 Voice Actors",
-                            color=discord.Color.from_rgb(255, 201, 248),
-                        )
-                        embedVar.add_field(
-                            name="Top 1",
-                            value=f"{top_items['top'][0]['title']} ({top_items['top'][0]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 2",
-                            value=f"{top_items['top'][1]['title']} ({top_items['top'][1]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 3",
-                            value=f"{top_items['top'][2]['title']} ({top_items['top'][2]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 4",
-                            value=f"{top_items['top'][3]['title']} ({top_items['top'][3]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 5",
-                            value=f"{top_items['top'][4]['title']} ({top_items['top'][4]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 6",
-                            value=f"{top_items['top'][5]['title']} ({top_items['top'][5]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 7",
-                            value=f"{top_items['top'][6]['title']} ({top_items['top'][6]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 8",
-                            value=f"{top_items['top'][7]['title']} ({top_items['top'][7]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 9",
-                            value=f"{top_items['top'][8]['title']} ({top_items['top'][8]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 10",
-                            value=f"{top_items['top'][9]['title']} ({top_items['top'][9]['name_kanji']})",
-                            inline=True,
-                        )
-                        await ctx.send(embed=embedVar)
-            if str(type) in "characters":
-                async with aiohttp.ClientSession(
-                    json_serialize=orjson.dumps
-                ) as session:
-                    async with session.get(
-                        f"https://api.jikan.moe/v3/top/{type}"
-                    ) as a_response:
-                        top_items = await a_response.json()
-                        embedVar = discord.Embed(
-                            title="Top 10 Characters",
-                            color=discord.Color.from_rgb(255, 249, 201),
-                        )
-                        embedVar.add_field(
-                            name="Top 1",
-                            value=f"{top_items['top'][0]['title']} ({top_items['top'][0]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 2",
-                            value=f"{top_items['top'][1]['title']} ({top_items['top'][1]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 3",
-                            value=f"{top_items['top'][2]['title']} ({top_items['top'][2]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 4",
-                            value=f"{top_items['top'][3]['title']} ({top_items['top'][3]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 5",
-                            value=f"{top_items['top'][4]['title']} ({top_items['top'][4]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 6",
-                            value=f"{top_items['top'][5]['title']} ({top_items['top'][5]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 7",
-                            value=f"{top_items['top'][6]['title']} ({top_items['top'][6]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 8",
-                            value=f"{top_items['top'][7]['title']} ({top_items['top'][7]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 9",
-                            value=f"{top_items['top'][8]['title']} ({top_items['top'][8]['name_kanji']})",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Top 10",
-                            value=f"{top_items['top'][9]['title']} ({top_items['top'][9]['name_kanji']})",
-                            inline=True,
-                        )
-                        await ctx.send(embed=embedVar)
-        except Exception as e:
-            embedVar = discord.Embed(
-                color=discord.Color.from_rgb(235, 201, 255))
-            embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
-            await ctx.send(emvbed=embedVar)
-
-    @top.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}\nThese are the following: `anime`, `manga`, `characters`, `people`"
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-
-class JikanV4(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="jikan-season", aliases=["jk-season"])
-    async def season(self, ctx, year: int, *, season: str):
-        try:
-            if str(season) in ["winter", "spring", "summer", "fall"]:
-                async with aiohttp.ClientSession(
-                    json_serialize=orjson.dumps
-                ) as session:
-                    async with session.get(
-                        f"https://api.jikan.moe/v3/season/{year}/{season}"
-                    ) as response:
-                        seasonv1 = await response.json()
-                        embedVar = discord.Embed(
-                            title=f"{seasonv1['season_year']} {seasonv1['season_name']} Animes [Anime 1]",
-                            color=discord.Color.from_rgb(255, 249, 201),
-                        )
-                        embedVar.add_field(
-                            name="Name",
-                            value=f"{seasonv1['anime'][0]['title']}",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Episodes",
-                            value=f"{seasonv1['anime'][0]['episodes']}",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Genre(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][0]["genres"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Theme(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][0]["themes"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Continuing",
-                            value=f"{seasonv1['anime'][0]['continuing']}",
-                            inline=True,
-                        )
-                        embedVar.add_field(
-                            name="Score",
-                            value=f"{seasonv1['anime'][0]['score']}",
-                            inline=True,
-                        )
-                        embedVar.set_thumbnail(
-                            url=seasonv1["anime"][0]["image_url"])
-                        embedVar2 = discord.Embed(
-                            title=f"{seasonv1['season_year']} {seasonv1['season_name']} Animes [Anime 2]",
-                            color=discord.Color.from_rgb(66, 188, 245),
-                        )
-                        embedVar2.add_field(
-                            name="Name",
-                            value=f"{seasonv1['anime'][1]['title']}",
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Episodes",
-                            value=f"{seasonv1['anime'][1]['episodes']}",
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Genre(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][1]["genres"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Theme(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][1]["themes"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Continuing",
-                            value=f"{seasonv1['anime'][1]['continuing']}",
-                            inline=True,
-                        )
-                        embedVar2.add_field(
-                            name="Score",
-                            value=f"{seasonv1['anime'][1]['score']}",
-                            inline=True,
-                        )
-                        embedVar2.set_thumbnail(
-                            url=seasonv1["anime"][1]["image_url"])
-                        embedVar3 = discord.Embed(
-                            title=f"{seasonv1['season_year']} {seasonv1['season_name']} Animes [Anime 3]",
-                            color=discord.Color.from_rgb(245, 185, 66),
-                        )
-                        embedVar3.add_field(
-                            name="Name",
-                            value=f"{seasonv1['anime'][2]['title']}",
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Episodes",
-                            value=f"{seasonv1['anime'][2]['episodes']}",
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Genre(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][2]["genres"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Theme(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][2]["themes"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Continuing",
-                            value=f"{seasonv1['anime'][2]['continuing']}",
-                            inline=True,
-                        )
-                        embedVar3.add_field(
-                            name="Score",
-                            value=f"{seasonv1['anime'][2]['score']}",
-                            inline=True,
-                        )
-                        embedVar3.set_thumbnail(
-                            url=seasonv1["anime"][2]["image_url"])
-                        embedVar4 = discord.Embed(
-                            title=f"{seasonv1['season_year']} {seasonv1['season_name']} Animes [Anime 4]",
-                            color=discord.Color.from_rgb(255, 206, 173),
-                        )
-                        embedVar4.add_field(
-                            name="Name",
-                            value=f"{seasonv1['anime'][3]['title']}",
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Episodes",
-                            value=f"{seasonv1['anime'][3]['episodes']}",
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Genre(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][3]["genres"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Theme(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][3]["themes"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Continuing",
-                            value=seasonv1["anime"][3]["continuing"],
-                            inline=True,
-                        )
-                        embedVar4.add_field(
-                            name="Score",
-                            value=seasonv1["anime"][3]["score"],
-                            inline=True,
-                        )
-                        embedVar4.set_thumbnail(
-                            url=seasonv1["anime"][3]["image_url"])
-                        embedVar5 = discord.Embed(
-                            title=f"{seasonv1['season_year']} {seasonv1['season_name']} Animes [Anime 5]",
-                            color=discord.Color.from_rgb(255, 173, 224),
-                        )
-                        embedVar5.add_field(
-                            name="Name",
-                            value=f"{seasonv1['anime'][4]['title']}",
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Episodes",
-                            value=f"{seasonv1['anime'][4]['episodes']}",
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Genre(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][4]["genres"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Theme(s)",
-                            value=str(
-                                [
-                                    name["name"]
-                                    for name in seasonv1["anime"][4]["themes"]
-                                ]
-                            ).replace("'", ""),
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Continuing",
-                            value=seasonv1["anime"][4]["continuing"],
-                            inline=True,
-                        )
-                        embedVar5.add_field(
-                            name="Score",
-                            value=seasonv1["anime"][4]["score"],
-                            inline=True,
-                        )
-                        embedVar5.set_thumbnail(
-                            url=seasonv1["anime"][4]["image_url"])
-                        await ctx.send(embed=embedVar)
-                        await ctx.send(embed=embedVar2)
-                        await ctx.send(embed=embedVar3)
-                        await ctx.send(embed=embedVar4)
-                        await ctx.send(embed=embedVar5)
-        except Exception as e:
-            embedVar = discord.Embed(
-                color=discord.Color.from_rgb(235, 201, 255))
-            embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
-            await ctx.send(embed=embedVar)
-
-    @season.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedVar = discord.Embed(color=discord.Color.from_rgb(255, 51, 51))
-            embedVar.description = f"Missing a required argument: {error.param}\n\nFor selecting a year, it can be from 1917-present.\nFor selecting which season, you must provide only one of these: `spring`, `fall`, `winter`, `summer`."
-            msg = await ctx.send(embed=embedVar, delete_after=10)
-            await msg.delete(delay=10)
-
-
-class JikanV5(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.command(name="jikan-season-later", aliases=["jk-season-later"])
-    async def on_message(self, ctx):
-        try:
-            async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-                async with session.get(
-                    "https://api.jikan.moe/v3/season/later"
-                ) as full_response:
-                    season_later = await full_response.json()
-                    embedVar = discord.Embed(
-                        title=f"{season_later['season_name']} Animes [Anime 1]",
-                        color=discord.Color.from_rgb(255, 252, 171),
-                    )
-                    embedVar.add_field(
-                        name="Name",
-                        value=f"{season_later['anime'][0]['title']}",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Synopsis",
-                        value=f"{season_later['anime'][0]['synopsis']}".replace(
-                            "[Written by MAL Rewrite]", ""
-                        ),
-                        inline=False,
-                    )
-                    embedVar.add_field(
-                        name="Genre(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][0]["genres"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Theme(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][0]["themes"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Continuing",
-                        value=season_later["anime"][0]["continuing"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="MAL ID",
-                        value=season_later["anime"][0]["mal_id"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Source",
-                        value=season_later["anime"][0]["source"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Type", value=season_later["anime"][0]["type"], inline=True
-                    )
+    @mal.command(name="user")
+    async def userLookup(self, ctx, *, username: Option(str, "Username of the user")):
+        """Returns info about the given user on MAL"""
+        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+            async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
+                data = await r.content.read()
+                dataMain6 = parser.parse(data, recursive=True)
+                userFilter = ["username", "images"]
+                try:
+                    embedVar = discord.Embed()
+                    embedVar.title = dataMain6["data"]["username"]
                     embedVar.set_thumbnail(
-                        url=season_later["anime"][0]["image_url"])
-                    embedVar2 = discord.Embed(
-                        title=f"{season_later['season_name']} Animes [Anime 2]",
-                        color=discord.Color.from_rgb(219, 255, 171),
+                        url=dataMain6["data"]["images"]["jpg"]["image_url"]
                     )
-                    embedVar2.add_field(
-                        name="Name",
-                        value=f"{season_later['anime'][1]['title']}",
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Synopsis",
-                        value=f"{season_later['anime'][1]['synopsis']}".replace(
-                            "[Written by MAL Rewrite]", ""
-                        ),
-                        inline=False,
-                    )
-                    embedVar2.add_field(
-                        name="Genre(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][1]["genres"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Theme(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][1]["themes"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Continuing",
-                        value=season_later["anime"][1]["continuing"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="MAL ID",
-                        value=season_later["anime"][1]["mal_id"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Source",
-                        value=season_later["anime"][1]["source"],
-                        inline=True,
-                    )
-                    embedVar2.add_field(
-                        name="Type", value=season_later["anime"][1]["type"], inline=True
-                    )
-                    embedVar2.set_thumbnail(
-                        url=season_later["anime"][1]["image_url"])
-                    embedVar3 = discord.Embed(
-                        title=f"{season_later['season_name']} Animes [Anime 3]",
-                        color=discord.Color.from_rgb(171, 255, 193),
-                    )
-                    embedVar3.add_field(
-                        name="Name",
-                        value=f"{season_later['anime'][2]['title']}",
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Synopsis",
-                        value=f"{season_later['anime'][2]['synopsis']}".replace(
-                            "[Written by MAL Rewrite]", ""
-                        ),
-                        inline=False,
-                    )
-                    embedVar3.add_field(
-                        name="Genre(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][2]["genres"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Theme(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][2]["themes"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Continuing",
-                        value=season_later["anime"][2]["continuing"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="MAL ID",
-                        value=season_later["anime"][2]["mal_id"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Source",
-                        value=season_later["anime"][2]["source"],
-                        inline=True,
-                    )
-                    embedVar3.add_field(
-                        name="Type", value=season_later["anime"][2]["type"], inline=True
-                    )
-                    embedVar3.set_thumbnail(
-                        url=season_later["anime"][2]["image_url"])
-                    embedVar4 = discord.Embed(
-                        title=f"{season_later['season_name']} Animes [Anime 4]",
-                        color=discord.Color.from_rgb(171, 255, 237),
-                    )
-                    embedVar4.add_field(
-                        name="Name",
-                        value=f"{season_later['anime'][3]['title']}",
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Synopsis",
-                        value=f"{season_later['anime'][3]['synopsis']}".replace(
-                            "[Written by MAL Rewrite]", ""
-                        ),
-                        inline=False,
-                    )
-                    embedVar4.add_field(
-                        name="Genre(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][3]["genres"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Theme(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][3]["themes"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Continuing",
-                        value=season_later["anime"][3]["continuing"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="MAL ID",
-                        value=season_later["anime"][3]["mal_id"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Source",
-                        value=season_later["anime"][3]["source"],
-                        inline=True,
-                    )
-                    embedVar4.add_field(
-                        name="Type", value=season_later["anime"][3]["type"], inline=True
-                    )
-                    embedVar4.set_thumbnail(
-                        url=season_later["anime"][3]["image_url"])
-                    embedVar5 = discord.Embed(
-                        title=f"{season_later['season_name']} Animes [Anime 5]",
-                        color=discord.Color.from_rgb(171, 231, 255),
-                    )
-                    embedVar5.add_field(
-                        name="Name",
-                        value=f"{season_later['anime'][4]['title']}",
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Synopsis",
-                        value=f"{season_later['anime'][4]['synopsis']}".replace(
-                            "[Written by MAL Rewrite]", ""
-                        ),
-                        inline=False,
-                    )
-                    embedVar5.add_field(
-                        name="Genre(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][4]["genres"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Theme(s)",
-                        value=str(
-                            [
-                                name["name"]
-                                for name in season_later["anime"][4]["themes"]
-                            ]
-                        ).replace("'", ""),
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Continuing",
-                        value=season_later["anime"][4]["continuing"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="MAL ID",
-                        value=season_later["anime"][4]["mal_id"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Source",
-                        value=season_later["anime"][4]["source"],
-                        inline=True,
-                    )
-                    embedVar5.add_field(
-                        name="Type", value=season_later["anime"][4]["type"], inline=True
-                    )
-                    embedVar5.set_thumbnail(
-                        url=season_later["anime"][4]["image_url"])
-                    await ctx.send(embed=embedVar)
-                    await ctx.send(embed=embedVar2)
-                    await ctx.send(embed=embedVar3)
-                    await ctx.send(embed=embedVar4)
-                    await ctx.send(embed=embedVar5)
+                    for key, value in dataMain6["data"].items():
+                        if key not in userFilter:
+                            embedVar.add_field(name=key, value=value, inline=True)
 
-        except Exception as e:
-            embedVar = discord.Embed(
-                color=discord.Color.from_rgb(235, 201, 255))
-            embedVar.description = f"The current query could not be performed. Please try again.\nReason: {e}"
-            await ctx.send(embed=embedVar)
+                    await ctx.respond(embed=embedVar)
+                except Exception as e:
+                    embedVar.description = (
+                        "The query could not be done. Please try again"
+                    )
+                    embedVar.add_field(name="Reason", value=e, inline=True)
+                    await ctx.respond(embed=embedVar)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
-    bot.add_cog(JikanV1(bot))
-    bot.add_cog(JikanV2(bot))
-    bot.add_cog(JikanV3(bot))
-    bot.add_cog(JikanV4(bot))
-    bot.add_cog(JikanV5(bot))
+    bot.add_cog(MALV1(bot))

@@ -1,138 +1,126 @@
 import asyncio
-import re
 
 import aiohttp
 import discord
 import orjson
+import simdjson
 import uvloop
-from discord.ext import commands
-from jamdict import Jamdict
+from discord.commands import Option, slash_command
+from discord.ext import commands, pages
 
-jam = Jamdict()
-
-
-def kanjiv2(search):
-    res = jam.lookup(search.replace("\n", " "))
-    for c in res.chars:
-        return str(c).replace("\n", " ")
+parser = simdjson.Parser()
 
 
-def hiragana(search):
-    result = jam.lookup(search)
-    for word in result.entries:
-        m = re.findall("[ぁ-ん]", str(word))
-        r = str(m).replace("'", "").replace(",", "").replace(" ", "")
-        return str(r)
-
-
-def katakana(search):
-    result = jam.lookup(search.replace("\n", " "))
-    for entry in result.entries:
-        m = re.findall("[ァ-ン]", str(entry))
-        r = (
-            str(m)
-            .replace("[", " ")
-            .replace("]", " ")
-            .replace("'", " ")
-            .replace(",", "")
-            .replace(" ", "")
-        )
-        return str(r)
-
-
-def searcher(search):
-    result = jam.lookup(search)
-    for word in result.entries:
-        return str(word[4:10])
-
-
-def better_hiragana(search):
-    searcher(search)
-
-
-class jisho_dict(commands.Cog):
+class jishoDict(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="jisho")
-    async def jisho(self, ctx, search: str):
+    @slash_command(
+        name="jisho",
+        description="Searches for words on Jisho",
+    )
+    async def jishoSearcher(
+        self,
+        ctx,
+        search: Option(
+            str,
+            "The word you want to search for. It could be in either English or Japanese.",
+        ),
+    ):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {"keyword": search}
             async with session.get(
                 "https://jisho.org/api/v1/search/words", params=params
             ) as r:
-                jisho = await r.json()
+                jisho = await r.content.read()
+                jishoMain = parser.parse(jisho, recursive=True)
+                engDefFilter = [
+                    "parts_of_speech",
+                    "links",
+                    "tags",
+                    "restrictions",
+                    "see_also",
+                    "antonyms",
+                    "source",
+                    "info",
+                    "sentences",
+                ]
                 try:
-                    res = jam.lookup(search)
-                    embedVar = discord.Embed()
-                    embedVar.add_field(
-                        name="Kanji",
-                        value=[str(c).replace("'", "") for c in res.chars],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Position of Speech (POS)",
-                        value=jisho["data"][0]["senses"][0]["parts_of_speech"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Is Common?",
-                        value=jisho["data"][0]["is_common"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Tags", value=jisho["data"][0]["tags"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="JLPT", value=jisho["data"][0]["jlpt"], inline=True
-                    )
-                    embedVar.add_field(
-                        name="Antonmys",
-                        value=jisho["data"][0]["senses"][0]["antonyms"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="See Also",
-                        value=jisho["data"][0]["senses"][0]["see_also"],
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="Links",
-                        value=jisho["data"][0]["senses"][0]["links"],
-                        inline=True,
-                    )
-
-                    embedVar.add_field(
-                        name="Attributions",
-                        value=f"JMDict >> {jisho['data'][0]['attribution']['jmdict']}\nJMNEDict >> {jisho['data'][0]['attribution']['jmnedict']}\nDBPedia >> {jisho['data'][0]['attribution']['dbpedia']}",
-                        inline=True,
-                    )
-                    embedVar.add_field(
-                        name="HTTP Status (Jisho API)", value=r.status, inline=True
-                    )
-                    embedVar.description = str(
-                        [str(word[0]) for word in res.entries])
-                    await ctx.send(embed=embedVar)
-                except Exception as e:
-                    embed_discord = discord.Embed()
-                    embed_discord.description = (
-                        f"An error has occurred. Please try again\nReason: {e}"
-                    )
-                    await ctx.send(embed=embed_discord)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @jisho.error
-    async def on_message_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ):
-        if isinstance(error, commands.MissingRequiredArgument):
-            embed_discord = discord.Embed()
-            embed_discord.description = f"Missing a requireed argument: {error.param}"
-            await ctx.send(embed=embed_discord)
+                    if len(jishoMain["data"]) == 0:
+                        raise ValueError
+                    else:
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=str(
+                                        next(
+                                            [value for _, value in jpnItem.items()]
+                                            for jpnItem in dictItem["japanese"]
+                                        )
+                                    )
+                                    .replace("'", "")
+                                    .replace("[", "")
+                                    .replace("]", ""),
+                                    description=str(
+                                        [
+                                            v
+                                            for itemVal in dictItem["senses"]
+                                            for k, v, in itemVal.items()
+                                            if k not in engDefFilter
+                                        ]
+                                    )
+                                    .replace("[", "")
+                                    .replace("]", "")
+                                    .replace("'", ""),
+                                )
+                                .add_field(
+                                    name="Parts of Speech",
+                                    value=str(
+                                        next(
+                                            (
+                                                mainItem["parts_of_speech"]
+                                                for mainItem in dictItem["senses"]
+                                            )
+                                        )
+                                    ).replace("'", ""),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Tags",
+                                    value=str(
+                                        next(
+                                            (
+                                                mainItem["tags"]
+                                                for mainItem in dictItem["senses"]
+                                            )
+                                        )
+                                    ).replace("'", ""),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="See Also",
+                                    value=str(
+                                        next(
+                                            (
+                                                mainItem["see_also"]
+                                                for mainItem in dictItem["senses"]
+                                            )
+                                        )
+                                    ).replace("'", ""),
+                                    inline=True,
+                                )
+                                for dictItem in jishoMain["data"]
+                            ],
+                            loop_pages=True,
+                        )
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = f"It seems like the word `{search}` is not in the dictionary. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
-    bot.add_cog(jisho_dict(bot))
+    bot.add_cog(jishoDict(bot))
