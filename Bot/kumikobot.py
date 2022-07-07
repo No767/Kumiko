@@ -1,3 +1,4 @@
+import logging
 import os
 
 import discord
@@ -10,6 +11,12 @@ Discord_Bot_Token = os.getenv("Petal")
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)s] | %(asctime)s >> %(message)s",
+    datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
+)
 
 # Loads in all extensions
 initial_extensions = [
@@ -49,6 +56,7 @@ initial_extensions = [
     "Cogs.legacy-help",
     "Cogs.github",
     "Cogs.anilist",
+    "Cogs.rabbitmq-consumer",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

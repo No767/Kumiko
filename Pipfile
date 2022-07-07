@@ -23,6 +23,7 @@ python-dateutil = "*"
 rin-exceptions = "*"
 beanie = "==1.11.6"
 numpy = "*"
+aio-pika = "*"
 
 [dev-packages]
 pre-commit = "*"
