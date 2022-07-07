@@ -1,0 +1,71 @@
+# This docker compose file is actually not used by Kumiko, since Kumiko relies on the db and other stuff via a seperate server
+# This is just for example
+# MAKE SURE TO CHANGE THE VALUES FOR KUMIKO
+
+version: "3.9"
+services:
+  kumiko:
+    # Use cloudflare's DNS server. This is what Discord uses as well
+    dns: 
+      - 1.1.1.1
+      - 1.0.0.1
+    container_name: Kumiko
+    restart: always
+    build:
+      dockerfile: ./Ubuntu-Docker/Dockerfile
+      context: .
+      args:
+        # Both fields are optional. These are for if you want to hook up Kumiko to PM2, which natively in the Dockerfile, is supported
+        - PM2_PUBLIC_KEY_INGEST=pub_key # Change this to your own PM2 public key
+        - PM2_SECRET_KEY_INGEST=secret_key # Change this to your own PM2 private key
+    ports:
+      - 4002:4002 # Used by uptime kuma. remove if not needed
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 0s
+        max_attempts: 3
+        window: 120s
+      mode: replicated
+    
+  postgres:
+    container_name: Kumiko-Postgres
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=password # Chnage this to a secure password
+      - POSTGRES_USER=Kumiko
+      - POSTGRES_DB=Kumiko
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  mongodb:
+    container_name: Kumiko-MongoDB
+    image: mongo:latest
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=Kumiko
+      - MONGO_INITDB_ROOT_PASSWORD=password # Chnage this to a secure password
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_volume:/data/db
+
+  rabbitmq:
+    container_name: Kumiko-RabbitMQ
+    image: rabbitmq:3-management
+    hostname: kumiko_prod
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=Kumiko
+      - RABBITMQ_DEFAULT_PASS=password # Chnage this to a secure password
+      - RABBITMQ_DEFAULT_VHOST=kumiko
+
+volumes:
+  postgres_volume:
+  mongodb_volume:
