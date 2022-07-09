@@ -6,9 +6,8 @@ DOCKER_TAG_VERSION ?=
 all: run
 
 dev-setup:
-	pip install --upgrade pip setuptools wheel pipenv
-	pipenv --python 3.10
-	pipenv install --dev
+	poetry env use 3.10
+	poetry install
 
 init:
 	touch Bot/.env

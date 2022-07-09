@@ -8,7 +8,7 @@ To get started, you'll need these things installed:
 
 - [Git](https://git-scm.com/)
 - [Python 3.10](https://www.python.org/)
-- [Pipenv](https://pipenv.pypa.io/en/latest/)
+- [Poetry](https://python-poetry.org/)
 - [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
 - Discord Account + Discord App
 ## Installing Dependencies
@@ -296,10 +296,10 @@ First things first, you'll more than likely need a dev bot to run Rin. Luckily y
 Once you have the discord bot up, there's a few things that needs to be done before development can begin. 
 
 1. Follow the steps in [Installing Dependencies](#installing-dependencies) to get all of the dependencies installed.
-2. Now create a shell that pipenv needs. Run the following command:
+2. Now create a shell that poetry needs. Run the following command:
 
     ```sh
-    pipenv shell
+    poetry shell
     ```
 
 3. To run Kumiko, run the following command:
