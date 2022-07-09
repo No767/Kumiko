@@ -22,7 +22,7 @@ logging.basicConfig(
 
 async def on_queue_message(message: AbstractIncomingMessage) -> None:
     async with message.process():
-        print(f"[x] {message.body!r}")
+        logging.info(f"[x] {message.body!r}")
 
 
 class InitRabbitMQConsumer(commands.Cog):
@@ -44,8 +44,8 @@ class InitRabbitMQConsumer(commands.Cog):
             queue = await channel.declare_queue(exclusive=True)
             await queue.bind(auctionHouse)
             await queue.consume(on_queue_message)
-            logging.info("Successfully Started RabbitMQ Consumer")
-            await asyncio.Future()
+            logging.info("Successfully started RabbitMQ consumer")
+            await asyncio.Future()  # blame pycord for more stuff
 
 
 def setup(bot):

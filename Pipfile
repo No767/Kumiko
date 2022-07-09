@@ -24,6 +24,8 @@ rin-exceptions = "*"
 beanie = "==1.11.6"
 numpy = "*"
 aio-pika = "*"
+aioamqp = "*"
+pyyaml = "*"
 
 [dev-packages]
 pre-commit = "*"
