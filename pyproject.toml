@@ -27,7 +27,7 @@ rin-exceptions = "^1.0.1"
 beanie = "^1.11.6"
 numpy = "^1.23.1"
 PyYAML = "^6.0"
-aiormq = "^6.3.3"
+aiormq = "^6.3.4"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"
