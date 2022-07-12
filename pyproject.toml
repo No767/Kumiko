@@ -30,7 +30,7 @@ PyYAML = "^6.0"
 aiormq = "^6.3.3"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.19.0"
+pre-commit = "^2.20.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
