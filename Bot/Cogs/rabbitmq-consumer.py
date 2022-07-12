@@ -2,8 +2,8 @@ import asyncio
 import logging
 import os
 
-from aio_pika import ExchangeType, connect
-from aio_pika.abc import AbstractIncomingMessage
+import aiormq
+import aiormq.types
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -20,9 +20,27 @@ logging.basicConfig(
 )
 
 
-async def on_queue_message(message: AbstractIncomingMessage) -> None:
-    async with message.process():
-        logging.info(f"[x] {message.body!r}")
+async def on_queue_message(message: aiormq.types.DeliveredMessage) -> None:
+    logging.info("[x] %r" % (message.body,))
+
+    await message.channel.basic_ack(message.delivery.delivery_tag)
+
+
+class RabbitMQConsumerProcess:
+    def __init__(self):
+        self.self = self
+
+    async def mainProc(self):
+        """The main process of the RabbitMQ consumer"""
+        connection = await aiormq.connect(
+            f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
+        )
+        channel = await connection.channel()
+        await channel.basic_qos(prefetch_count=1)
+        await channel.exchange_declare(exchange="auction_house", exchange_type="fanout")
+        declareAuctionHouseQueue = await channel.queue_declare(exclusive=True)
+        await channel.queue_bind(declareAuctionHouseQueue.queue, "auction_house")
+        await channel.basic_consume(declareAuctionHouseQueue.queue, on_queue_message)
 
 
 class InitRabbitMQConsumer(commands.Cog):
@@ -31,21 +49,12 @@ class InitRabbitMQConsumer(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(ctx):
-        connection = await connect(
-            f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
-        )
-        async with connection:
-            channel = await connection.channel()
-            await channel.set_qos(prefetch_count=1)
-            auctionHouse = await channel.declare_exchange(
-                "auction_house",
-                ExchangeType.FANOUT,
-            )
-            queue = await channel.declare_queue(exclusive=True)
-            await queue.bind(auctionHouse)
-            await queue.consume(on_queue_message)
-            logging.info("Successfully started RabbitMQ consumer")
-            await asyncio.Future()  # blame pycord for more stuff
+        mainProcesses = RabbitMQConsumerProcess()
+        task = asyncio.create_task(mainProcesses.mainProc(), name="RabbitMQConsumer")
+        background_tasks = set()
+        background_tasks.add(await task)
+        task.add_done_callback(background_tasks.discard)
+        logging.info("Successfully started RabbitMQ consumer")
 
 
 def setup(bot):

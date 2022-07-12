@@ -57,6 +57,7 @@ initial_extensions = [
     "Cogs.github",
     "Cogs.anilist",
     "Cogs.rabbitmq-consumer",
+    "Cogs.economy.auction_house",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

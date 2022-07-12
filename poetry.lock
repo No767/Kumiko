@@ -1,30 +1,4 @@
 [[package]]
-name = "aio-pika"
-version = "8.0.3"
-description = "Wrapper for the aiormq for asyncio and humans."
-category = "main"
-optional = false
-python-versions = ">3.6, <4"
-
-[package.dependencies]
-aiormq = ">=6.3.2,<6.4.0"
-yarl = "*"
-
-[package.extras]
-develop = ["aiomisc (>=16.0,<17.0)", "coverage (!=4.3)", "coveralls", "pylava", "pytest", "pytest-cov", "shortuuid", "nox", "sphinx", "sphinx-autobuild", "timeout-decorator", "tox (>=2.4)"]
-
-[[package]]
-name = "aioamqp"
-version = "0.15.0"
-description = "AMQP implementation using asyncio"
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-pamqp = ">=3.1.0"
-
-[[package]]
 name = "aiodns"
 version = "3.0.0"
 description = "Simple DNS resolver for asyncio"
@@ -820,14 +794,9 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6da2d57d93eec94890bbcf562c7b413f85c42ebed99f60594887245252ca6cf9"
+content-hash = "00429c11d8465a4b8740c656db8ea0e86fd4906c78b6cf1918ee6dd826e0518d"
 
 [metadata.files]
-aio-pika = [
-    {file = "aio-pika-8.0.3.tar.gz", hash = "sha256:3cfe5d994a079a6836383f610990499e60b00503814bc208c2392153261573f5"},
-    {file = "aio_pika-8.0.3-py3-none-any.whl", hash = "sha256:ce3b1501abd4c93ef2b01f7b8245e432d2ea5eb4a1286c4b5ff5d72e22feffd7"},
-]
-aioamqp = []
 aiodns = [
     {file = "aiodns-3.0.0-py3-none-any.whl", hash = "sha256:2b19bc5f97e5c936638d28e665923c093d8af2bf3aa88d35c43417fa25d136a2"},
     {file = "aiodns-3.0.0.tar.gz", hash = "sha256:946bdfabe743fceeeb093c8a010f5d1645f708a241be849e17edfb0e49e08cd6"},
