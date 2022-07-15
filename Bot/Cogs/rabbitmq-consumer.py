@@ -48,7 +48,7 @@ class InitRabbitMQConsumer(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(ctx):
+    async def on_connect(ctx):
         mainProcesses = RabbitMQConsumerProcess()
         task = asyncio.create_task(mainProcesses.mainProc(), name="RabbitMQConsumer")
         background_tasks = set()
