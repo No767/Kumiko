@@ -12,8 +12,7 @@ wsUtils = KumikoWSUtils()
 
 
 async def main():
-    await wsUtils.initWSItemTable()
-    # await wsUtils.initUserWSInvTable()
+    await wsUtils.initAllWSTables()
 
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

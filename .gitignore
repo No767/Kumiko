@@ -62,3 +62,4 @@ marketplace_filters.yml
 Bot/Cog/economy/config/*
 Bot/Cog/economy/config
 config
+gws-items.py
