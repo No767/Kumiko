@@ -49,6 +49,16 @@ class AuctionHouseV1(commands.Cog):
         await rabbitPub(str(price))
         await ctx.respond(f"bid placed ({price})")
 
+    @auctionHouse.command(name="add")
+    async def addItemToAuctionHouse(
+        self,
+        ctx,
+        *,
+        name: (str, "The item that you are putting up for bidding"),
+        price: (int, "The initial price of the item"),
+    ):
+        """Adds an item to the Auction House"""
+
 
 def setup(bot):
     bot.add_cog(AuctionHouseV1(bot))

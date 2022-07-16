@@ -20,7 +20,7 @@ class KumikoGWSBanners(commands.Cog):
         guild_ids=[970159505390325842],
     )
 
-    @gwsEvents.commands(name="available")
+    @gwsEvents.command(name="available")
     async def getGWSEventsBanner(self, ctx):
         """Lists out all available events"""
         curPath = os.path.dirname(__file__)
