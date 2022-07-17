@@ -17,4 +17,4 @@ run:
 	python Bot/kumikobot.py
 
 deploy: 
-	sudo docker build -t no767/rin:$(DOCKER_TAG_VERSION) --build-arg PM2_PUBLIC_KEY_INGEST=$(PM2_PUBLIC_KEY_INGEST) --build-arg PM2_SECRET_KEY_INGEST=$(PM2_SECRET_KEY_INGEST) -f ./Ubuntu-Docker/Dockerfile .
+	sudo docker build -t no767/kumiko:$(DOCKER_TAG_VERSION) --build-arg PM2_PUBLIC_KEY_INGEST=$(PM2_PUBLIC_KEY_INGEST) --build-arg PM2_SECRET_KEY_INGEST=$(PM2_SECRET_KEY_INGEST) -f ./Ubuntu-Docker/Dockerfile .

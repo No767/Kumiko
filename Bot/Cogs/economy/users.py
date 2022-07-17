@@ -6,7 +6,7 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from economy_utils import KumikoEcoUserUtils, UsersInv
-from exceptions import ItemNotFound
+from rin_exceptions import NoItemsError
 
 utilsUser = KumikoEcoUserUtils()
 inv = UsersInv()
@@ -108,7 +108,7 @@ class ecoUsers(commands.Cog):
         try:
             userInv = await inv.obtainUserInv(ctx.user.id)
             if len(userInv) == 0:
-                raise ItemNotFound
+                raise NoItemsError
             else:
                 mainPages = pages.Paginator(
                     pages=[
@@ -125,7 +125,7 @@ class ecoUsers(commands.Cog):
                     loop_pages=True,
                 )
                 await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
+        except NoItemsError:
             embedTypeError = discord.Embed()
             embedTypeError.description = "It seems you don't have any items in your inventory! Start purchasing some items from the marketplace to get started!"
             await ctx.respond(embed=embedTypeError)

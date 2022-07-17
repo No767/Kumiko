@@ -25,7 +25,7 @@ RUN apt-get update --no-install-recommends  \
   && apt-get install -y curl --no-install-recommends \
   && apt-get -y autoclean
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION 16.15.1
+ENV NODE_VERSION 16.16.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 RUN source $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
@@ -35,25 +35,31 @@ ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 RUN npm install -g npm pm2@latest
 
-FROM install_node AS prod_deployment
+FROM install_node AS install_poetry
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+RUN python -m pip install --upgrade pip setuptools
+RUN apt-get install netcat -y --no-install-recommends
+RUN curl -sSL https://install.python-poetry.org | python -
+ENV PATH="${PATH}:/root/.local/bin"
+
+FROM install_poetry AS prod_deployment
 WORKDIR /
 RUN mkdir /Kumiko/ 
-COPY /Pipfile /Kumiko/
-COPY /Pipfile.lock /Kumiko/
+COPY /pyproject.toml /Kumiko/
+COPY /poetry.lock /Kumiko/
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/.env /Kumiko/Bot
 RUN mkdir /Kumiko/Bot/Cogs
 RUN mkdir /Kumiko/Bot/economy_utils
-RUN mkdir /Kumiko/Bot/economy/config
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
+COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
-COPY /Bot/Cogs/economy/config/marketplace_filters /Kumiko/Bot/economy/config/
-RUN pip install --upgrade pip setuptools wheel pipenv
-RUN cd /Kumiko/ && pipenv install
+RUN cd /Kumiko/ && poetry install
 EXPOSE 4002
 ARG PM2_PUBLIC_KEY_INGEST
 ARG PM2_SECRET_KEY_INGEST
 ENV PM2_PUBLIC_KEY=${PM2_PUBLIC_KEY_INGEST}
 ENV PM2_SECRET_KEY=${PM2_SECRET_KEY_INGEST}
-CMD ["pm2-runtime", "cd /Kumiko/ && pipenv install && pipenv run python /Kumiko/Bot/kumikobot.py", "--name", "Kumiko"]
+CMD ["pm2-runtime", "cd /Kumiko/ && poetry install && poetry run python /Kumiko/Bot/kumikobot.py", "--name", "Kumiko"]
 

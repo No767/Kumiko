@@ -1,0 +1,7 @@
+Bot/Cogs/Kumiko-GWS-Banners/*
+Bot/Cogs/Kumiko-GWS-Banners
+__pycache__
+__pycache__/*
+Bot/Cogs/__pycache__
+*.pyc
+**/*.pyc
