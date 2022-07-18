@@ -63,3 +63,6 @@ Bot/Cog/economy/config/*
 Bot/Cog/economy/config
 config
 gws-items.py
+docker-compose.yml
+docker-compose
+docker-compose2.yml
