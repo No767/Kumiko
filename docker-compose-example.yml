@@ -66,6 +66,16 @@ services:
       - RABBITMQ_DEFAULT_PASS=password # Chnage this to a secure password
       - RABBITMQ_DEFAULT_VHOST=kumiko
 
+  redis:
+    container_name: Kumiko-Redis-Dev
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+
 volumes:
   postgres_volume:
   mongodb_volume:
+  redis_volume:
