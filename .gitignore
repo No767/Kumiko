@@ -66,3 +66,4 @@ gws-items.py
 docker-compose.yml
 docker-compose
 docker-compose2.yml
+redis-cache.py

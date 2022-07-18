@@ -6,14 +6,16 @@ import uvloop
 
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "Bot"))
 
-from economy_utils import KumikoEcoUserUtils
+from economy_utils import KumikoAuctionHouseUtils, KumikoEcoUserUtils
 
 utils = KumikoEcoUserUtils()
+ahUtils = KumikoAuctionHouseUtils()
 
 
 async def main():
-    await utils.initTables()
-    await utils.initInvTables()
+    # await utils.initTables()
+    # await utils.initInvTables()
+    await ahUtils.initAHTables()
 
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
