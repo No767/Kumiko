@@ -7,6 +7,7 @@ from datetime import datetime
 import discord
 import uvloop
 import yaml
+from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from economy_utils import KumikoEcoUtils, UsersInv
@@ -37,7 +38,7 @@ class ecoMarketplace(commands.Cog):
         price: Option(int, "The price of the item"),
     ):
         """Adds an item into the marketplace"""
-        dateEntry = today.strftime("%B %d, %Y %H:%M:%S")
+        dateEntry = today.isoformat()
         owner = ctx.user.id
         uuidItem = uuid.uuid4().hex[:16]
         filterFile = os.path.join(
@@ -98,12 +99,17 @@ class ecoMarketplace(commands.Cog):
                         .add_field(
                             name="Price", value=dict(items)["price"], inline=True
                         )
-                        .add_field(name="Date Added", value=dict(items)["date_added"])
+                        .add_field(
+                            name="Date Added",
+                            value=parser.isoparse(dict(items)["date_added"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
                         .add_field(
                             name="Owner",
                             value=f"{await self.bot.fetch_user(dict(items)['owner'])}",
                         )
-                        .add_field(name="UUID", value=dict(items)["uuid"], inline=True)
                         for items in mainObtain
                     ],
                 )
@@ -137,12 +143,17 @@ class ecoMarketplace(commands.Cog):
                             name="Amount", value=dict(item)["amount"], inline=True
                         )
                         .add_field(name="Price", value=dict(item)["price"], inline=True)
-                        .add_field(name="Date Added", value=dict(item)["date_added"])
+                        .add_field(
+                            name="Date Added",
+                            value=parser.isoparse(dict(item)["date_added"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
                         .add_field(
                             name="Owner",
                             value=f"{await self.bot.fetch_user(dict(item)['owner'])}",
                         )
-                        .add_field(name="UUID", value=dict(item)["uuid"], inline=True)
                         for item in mainGetItem
                     ]
                 )
@@ -212,7 +223,6 @@ class ecoMarketplace(commands.Cog):
                             name="Owner",
                             value=f"{await self.bot.fetch_user(dict(item)['owner'])}",
                         )
-                        .add_field(name="UUID", value=dict(item)["uuid"], inline=True)
                         for item in mainSearchUUID
                     ],
                     loop_pages=True,
