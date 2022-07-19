@@ -22,7 +22,7 @@ beautifulsoup4 = "^4.11.1"
 pysimdjson = "^5.0.1"
 gql = { extras = ["aiohttp"], version = "^3.4.0" }
 python-dateutil = "^2.8.2"
-rin-exceptions = "^1.0.1"
+rin-exceptions = "^1.0.2"
 beanie = "^1.11.6"
 numpy = "^1.23.1"
 PyYAML = "^6.0"
