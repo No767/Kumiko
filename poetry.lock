@@ -39,7 +39,7 @@ speedups = ["aiodns", "brotli", "cchardet"]
 
 [[package]]
 name = "aiormq"
-version = "6.3.4"
+version = "6.4.0"
 description = "Pure python AMQP asynchronous client library"
 category = "main"
 optional = false
@@ -883,7 +883,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "88a53e62d5a5eb696ceb31fc0233788d1948d35d3fc84247f9eb4c68843e11a9"
+content-hash = "59baef536431020de29e57400fd2b7ac55c529ba334c354b07a9705b54938509"
 
 [metadata.files]
 aiodns = [
@@ -969,8 +969,8 @@ aiohttp = [
     {file = "aiohttp-3.8.1.tar.gz", hash = "sha256:fc5471e1a54de15ef71c1bc6ebe80d4dc681ea600e68bfd1cbce40427f0b7578"},
 ]
 aiormq = [
-    {file = "aiormq-6.3.4-py3-none-any.whl", hash = "sha256:9bde835724b767061b0815b0daeb782a04e48e5a9984da1714b7563dfb281517"},
-    {file = "aiormq-6.3.4.tar.gz", hash = "sha256:479b5323f897002efd50976df5fe2359bd19c7ebb65d37626af270d24a38522e"},
+    {file = "aiormq-6.4.0-py3-none-any.whl", hash = "sha256:0e38a3c63d606a976c8b1045c10ac8edfb80c3212964672589e0eca43766f7e1"},
+    {file = "aiormq-6.4.0.tar.gz", hash = "sha256:1c7b0df934734453a6d858520da98cb21023ac5b770fa4a8dcee187f0ae568f5"},
 ]
 aiosignal = [
     {file = "aiosignal-1.2.0-py3-none-any.whl", hash = "sha256:26e62109036cd181df6e6ad646f91f0dcfd05fe16d0cb924138ff2ab75d64e3a"},
