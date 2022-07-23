@@ -200,3 +200,26 @@ class KumikoAuctionHouseUtils:
                 await session.commit()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def selectAHItemUUID(self, name: str):
+        """This only selects from the UUID Column and is used to grab the
+
+        Args:
+            name (str): The name of the AH Item
+        """
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+        )
+
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selectItem = select(AuctionHouseItem.uuid).filter(
+                    AuctionHouseItem.name == name
+                )
+                res = await session.execute(selectItem)
+                return [row for row in res.scalars()]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

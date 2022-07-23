@@ -20,17 +20,6 @@ RABBITMQ_SERVER_IP = os.getenv("RabbitMQ_Server_IP_Dev")
 auctionHouseUtils = KumikoAuctionHouseUtils()
 
 
-async def rabbitPub(price):
-    connection = await aiormq.connect(
-        f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
-    )
-    channel = await connection.channel()
-    await channel.exchange_declare(exchange="auction_house", exchange_type="fanout")
-    body = bytes(price, "utf-8")
-    await channel.basic_publish(body, routing_key="info", exchange="auction_house")
-    await connection.close()
-
-
 class AuctionHouseV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -39,11 +28,41 @@ class AuctionHouseV1(commands.Cog):
         "auction", "Auction off your highest items here", guild_ids=[970159505390325842]
     )
 
+    @auctionHouse.command(name="select")
+    async def selectAHItem(
+        self, ctx, *, name: Option(str, "The name of the item you wish to select")
+    ):
+        """Selects an item on the Auction House before to bid for"""
+        selectMainItem = await auctionHouseUtils.selectAHItemUUID(name)
+        for item in selectMainItem:
+            ahItemUUID = item
+        await auctionHouseUtils.setItemKey(str(ctx.user.id), ahItemUUID)
+        await ctx.respond("Item selected")
+
     @auctionHouse.command(name="bid")
     async def bindForPrice(self, ctx, *, price: Option(int, "The price to bid")):
         """Bid for a higher price for an item"""
-        await rabbitPub(str(price))
-        await ctx.respond(f"bid placed ({price})")
+        try:
+            selectedItem = await auctionHouseUtils.getItemKey(str(ctx.user.id))
+            selectItemPrice = await auctionHouseUtils.getItemKey(selectedItem)
+            if price < int(selectItemPrice):
+                raise ValueError
+            else:
+                connection = await aiormq.connect(
+                    f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
+                )
+                channel = await connection.channel()
+                await channel.exchange_declare(
+                    exchange="auction_house", exchange_type="fanout"
+                )
+                body = bytes(f"{selectedItem}:{price}", "utf-8")
+                await channel.basic_publish(body, exchange="auction_house")
+                await connection.close()
+                await ctx.respond(f"bid placed ({price})")
+        except ValueError:  # THIS NEEDS TO BE CHANGED OUT WITH A CUSTOM EXCEPTION LATER
+            await ctx.respond(
+                "It seems like the price given is lower than the one set. Please try again."
+            )
 
     @auctionHouse.command(name="add")
     async def addItemToAuctionHouse(

@@ -3,9 +3,10 @@ import logging
 import os
 
 import aiormq
-import aiormq.types
+import aiormq.abc
 from discord.ext import commands
 from dotenv import load_dotenv
+from economy_utils import KumikoAuctionHouseUtils
 
 load_dotenv()
 
@@ -19,9 +20,14 @@ logging.basicConfig(
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
 
+ahUtils = KumikoAuctionHouseUtils()
 
-async def on_queue_message(message: aiormq.types.DeliveredMessage) -> None:
-    logging.info("[x] %r" % (message.body,))
+
+async def on_queue_message(message: aiormq.abc.DeliveredMessage) -> None:
+    mainMessage = message.body
+    decodedMainMessage = mainMessage.decode("utf-8")
+    splitMessage = decodedMainMessage.split(":")
+    await ahUtils.setItemKey(key=str(splitMessage[0]), value=int(splitMessage[1]))
 
     await message.channel.basic_ack(message.delivery.delivery_tag)
 
@@ -32,27 +38,16 @@ class RabbitMQConsumerProcess:
 
     async def mainProc(self):
         """The main process of the RabbitMQ consumer"""
-        connection = await aiormq.connect(
+        connection = aiormq.Connection(
             f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
         )
+        await connection.connect()
         channel = await connection.channel()
         await channel.basic_qos(prefetch_count=1)
-
-        # Declare an exchange
-        await channel.exchange_declare(exchange="logs", exchange_type="direct")
-
-        # Declaring random queue
-        declare_ok = await channel.queue_declare(durable=True, auto_delete=True)
-
-        for severity in "info":
-            await channel.queue_bind(declare_ok.queue, "logs", routing_key=severity)
-
-        # Start listening the random queue
+        await channel.exchange_declare(exchange="auction_house", exchange_type="fanout")
+        declare_ok = await channel.queue_declare(exclusive=True)
+        await channel.queue_bind(declare_ok.queue, "auction_house")
         await channel.basic_consume(declare_ok.queue, on_queue_message)
-        # await channel.exchange_declare(exchange="auction_house", exchange_type="fanout")
-        # declareAuctionHouseQueue = await channel.queue_declare(exclusive=True)
-        # await channel.queue_bind(declareAuctionHouseQueue.queue, "auction_house")
-        # await channel.basic_consume(declareAuctionHouseQueue.queue, on_queue_message)
 
 
 class InitRabbitMQConsumer(commands.Cog):
