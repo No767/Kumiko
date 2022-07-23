@@ -37,10 +37,22 @@ class RabbitMQConsumerProcess:
         )
         channel = await connection.channel()
         await channel.basic_qos(prefetch_count=1)
-        await channel.exchange_declare(exchange="auction_house", exchange_type="fanout")
-        declareAuctionHouseQueue = await channel.queue_declare(exclusive=True)
-        await channel.queue_bind(declareAuctionHouseQueue.queue, "auction_house")
-        await channel.basic_consume(declareAuctionHouseQueue.queue, on_queue_message)
+
+        # Declare an exchange
+        await channel.exchange_declare(exchange="logs", exchange_type="direct")
+
+        # Declaring random queue
+        declare_ok = await channel.queue_declare(durable=True, auto_delete=True)
+
+        for severity in "info":
+            await channel.queue_bind(declare_ok.queue, "logs", routing_key=severity)
+
+        # Start listening the random queue
+        await channel.basic_consume(declare_ok.queue, on_queue_message)
+        # await channel.exchange_declare(exchange="auction_house", exchange_type="fanout")
+        # declareAuctionHouseQueue = await channel.queue_declare(exclusive=True)
+        # await channel.queue_bind(declareAuctionHouseQueue.queue, "auction_house")
+        # await channel.basic_consume(declareAuctionHouseQueue.queue, on_queue_message)
 
 
 class InitRabbitMQConsumer(commands.Cog):

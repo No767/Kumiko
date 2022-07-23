@@ -28,3 +28,7 @@ class InvalidToken(Error):
 
 class ItemNotFound(Error):
     pass
+
+
+class SusEveryonePing(Error):
+    pass
