@@ -8,7 +8,7 @@ from discord.ext import commands
 
 def pickColor():
     colors = [0x8B77BE, 0xA189E2, 0xCF91D1, 0x5665AA, 0xA3A3D2]
-    return random.choice(colors)
+    return random.choice(colors)  # nosec B311
 
 
 class Utility(commands.Cog):
