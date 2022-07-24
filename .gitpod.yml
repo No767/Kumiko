@@ -12,3 +12,9 @@ tasks:
       poetry env use 3.10
       poetry install
       poetry run pre-commit install
+github:
+  prebuilds:
+      master: false
+      branches: false
+      pullRequests: false
+      addCheck: false
