@@ -17,6 +17,7 @@ logging.basicConfig(
     format="[%(levelname)s] | %(asctime)s >> %(message)s",
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
+logging.getLogger("asyncio_redis").setLevel(logging.WARNING)
 
 # Loads in all extensions
 initial_extensions = [

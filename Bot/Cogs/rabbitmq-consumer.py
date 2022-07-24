@@ -27,7 +27,7 @@ async def on_queue_message(message: aiormq.abc.DeliveredMessage) -> None:
     mainMessage = message.body
     decodedMainMessage = mainMessage.decode("utf-8")
     splitMessage = decodedMainMessage.split(":")
-    await ahUtils.setItemKey(key=str(splitMessage[0]), value=int(splitMessage[1]))
+    await ahUtils.updateAHItem(splitMessage[0], int(splitMessage[1]))
 
     await message.channel.basic_ack(message.delivery.delivery_tag)
 

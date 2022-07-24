@@ -45,14 +45,15 @@ class KumikoAuctionHouseUtils:
     def __init__(self):
         self.self = self
 
-    async def getItemKey(self, key: str):
+    async def getItemKey(self, key: str, db: int):
         """Gets the keys for an item within Redis
 
         Args:
             key (str): The key to get
+            db (int): The database to get the key from
         """
         conn = await asyncio_redis.Pool.create(
-            host=REDIS_SERVER_IP, port=int(REDIS_SERVER_PORT)
+            host=REDIS_SERVER_IP, port=int(REDIS_SERVER_PORT), db=db
         )
         getKey = await conn.get(key)
         conn.close()
@@ -60,17 +61,34 @@ class KumikoAuctionHouseUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def setItemKey(self, key: str, value: int):
+    async def scanKeys(self, match: str, db: int):
+        """Scans all of the values from the Redis database
+
+        Args:
+            match (str): Filter for keys by pattern
+            db (int): The database to scan
+
+        """
+        conn = await asyncio_redis.Pool.create(
+            host=REDIS_SERVER_IP, port=int(REDIS_SERVER_PORT), db=db
+        )
+        scanKeys = await conn.keys_aslist(pattern=match)
+        conn.close()
+        return scanKeys
+
+    async def setItemKey(self, key: str, value: int, db: int, ttl: int):
         """Sets that key within Redis
 
         Args:
             key (str): The key to set
             value (int): The value to set
+            db (int): The database to set the key in
+            ttl (int): The TTL or expire time of the key
         """
         conn = await asyncio_redis.Pool.create(
-            host=REDIS_SERVER_IP, port=int(REDIS_SERVER_PORT)
+            host=REDIS_SERVER_IP, port=int(REDIS_SERVER_PORT), db=db
         )
-        await conn.set(key, str(value))
+        await conn.set(key, str(value), expire=ttl)
         conn.close()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -218,6 +236,29 @@ class KumikoAuctionHouseUtils:
             async with session.begin():
                 selectItem = select(AuctionHouseItem.uuid).filter(
                     AuctionHouseItem.name == name
+                )
+                res = await session.execute(selectItem)
+                return [row for row in res.scalars()]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def selectAHItemPrice(self, uuid: str):
+        """Just grabs the price of the AH Item given
+
+        Args:
+            uuid (str): AH Item UUID
+        """
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+        )
+
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selectItem = select(AuctionHouseItem.price).filter(
+                    AuctionHouseItem.uuid == uuid
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]

@@ -36,29 +36,40 @@ class AuctionHouseV1(commands.Cog):
         selectMainItem = await auctionHouseUtils.selectAHItemUUID(name)
         for item in selectMainItem:
             ahItemUUID = item
-        await auctionHouseUtils.setItemKey(str(ctx.user.id), ahItemUUID)
+        await auctionHouseUtils.setItemKey(
+            str(ctx.user.id), ahItemUUID, db=1, ttl=21660
+        )
         await ctx.respond("Item selected")
 
     @auctionHouse.command(name="bid")
     async def bindForPrice(self, ctx, *, price: Option(int, "The price to bid")):
         """Bid for a higher price for an item"""
         try:
-            selectedItem = await auctionHouseUtils.getItemKey(str(ctx.user.id))
-            selectItemPrice = await auctionHouseUtils.getItemKey(selectedItem)
-            if price < int(selectItemPrice):
-                raise ValueError
+            selectedItem = await auctionHouseUtils.getItemKey(str(ctx.user.id), db=1)
+            if selectedItem is None:
+                await ctx.respond(
+                    "You have not selected an item yet. Please run the command to select an item first."
+                )
             else:
-                connection = await aiormq.connect(
-                    f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
+                selectItemPriceRes = await auctionHouseUtils.selectAHItemPrice(
+                    selectedItem
                 )
-                channel = await connection.channel()
-                await channel.exchange_declare(
-                    exchange="auction_house", exchange_type="fanout"
-                )
-                body = bytes(f"{selectedItem}:{price}", "utf-8")
-                await channel.basic_publish(body, exchange="auction_house")
-                await connection.close()
-                await ctx.respond(f"bid placed ({price})")
+                for mainItems in selectItemPriceRes:
+                    selectItemPrice = mainItems
+                if price < int(selectItemPrice):
+                    raise ValueError
+                else:
+                    connection = await aiormq.connect(
+                        f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
+                    )
+                    channel = await connection.channel()
+                    await channel.exchange_declare(
+                        exchange="auction_house", exchange_type="fanout"
+                    )
+                    body = bytes(f"{selectedItem}:{price}", "utf-8")
+                    await channel.basic_publish(body, exchange="auction_house")
+                    await connection.close()
+                    await ctx.respond(f"bid placed ({price})")
         except ValueError:  # THIS NEEDS TO BE CHANGED OUT WITH A CUSTOM EXCEPTION LATER
             await ctx.respond(
                 "It seems like the price given is lower than the one set. Please try again."
@@ -100,7 +111,9 @@ class AuctionHouseV1(commands.Cog):
                         dateAdded,
                         price,
                     )
-                    await auctionHouseUtils.setItemKey(auctionHouseItemUUID, price)
+                    await auctionHouseUtils.setItemKey(
+                        auctionHouseItemUUID, price, db=0, ttl=86400
+                    )
                     await ctx.respond("Item added to the auction house")
                 except yaml.YAMLError:
                     await ctx.respond(
