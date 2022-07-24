@@ -10,7 +10,7 @@
 
 [![Required Python Version](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE)
 
-The Multipurpose version of [Rin](https://github.com/No767/Rin) built with freedom and choice in mind
+A multipurpose Discord bot built with freedom and choice in mind
 
 <div align=left>
 
