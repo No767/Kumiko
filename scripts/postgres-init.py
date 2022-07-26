@@ -13,8 +13,8 @@ ahUtils = KumikoAuctionHouseUtils()
 
 
 async def main():
-    # await utils.initTables()
-    # await utils.initInvTables()
+    await utils.initUserTables()
+    await utils.initInvTables()
     await ahUtils.initAHTables()
 
 

@@ -67,3 +67,4 @@ docker-compose.yml
 docker-compose
 docker-compose2.yml
 redis-cache.py
+eco_user_tester.py
