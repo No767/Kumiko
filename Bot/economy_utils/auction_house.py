@@ -445,3 +445,20 @@ class KumikoAuctionHouseUtils:
                 return [row for row in res.scalars()]
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def selectAllItemsUUID(self):
+        """Selects all of the UUID's on the DB"""
+        engine = create_async_engine(
+            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+        )
+
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selItem = select(AuctionHouseItem.uuid)
+                res = await session.execute(selItem)
+                return [row for row in res.scalars()]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

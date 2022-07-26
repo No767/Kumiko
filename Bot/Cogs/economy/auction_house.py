@@ -12,16 +12,21 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from economy_utils import KumikoAuctionHouseUtils
-from rin_exceptions import ItemNotFound
+from economy_utils import KumikoAuctionHouseUtils, KumikoEcoUserUtils
+from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
 RABBITMQ_USER = os.getenv("RabbitMQ_Username_Dev")
 RABBITMQ_PASSWORD = os.getenv("RabbitMQ_Password_Dev")
 RABBITMQ_SERVER_IP = os.getenv("RabbitMQ_Server_IP_Dev")
-
+POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
+POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
+POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
+CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
 
 auctionHouseUtils = KumikoAuctionHouseUtils()
+userUtils = KumikoEcoUserUtils()
 
 
 class View(discord.ui.View):
@@ -36,18 +41,39 @@ class View(discord.ui.View):
         emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
     )
     async def button_callback(self, button, interaction):
-        itemUUIDAuth = await auctionHouseUtils.obtainItemUUIDAuth(interaction.user.id)
         try:
-            if len(itemUUIDAuth) == 0:
-                raise ItemNotFound
+            getUserInfo = await userUtils.selectUserRank(
+                interaction.user.id, CONNECTION_URI
+            )
+            if len(getUserInfo) == 0:
+                raise NoItemsError
             else:
-                await auctionHouseUtils.purgeUserAHItems(interaction.user.id)
-                await interaction.response.send_message(
-                    "Confirmed. All Auction House Listings have now been completely purged from your account. This is permanent and irreversible."
-                )
-        except ItemNotFound:
+                for items in getUserInfo:
+                    if items < 25:
+                        await interaction.response.send_message(
+                            f"Sorry, but your current rank is {items}. You need at the very least rank 25 or higher to use this command."
+                        )
+                    else:
+                        itemUUIDAuth = await auctionHouseUtils.obtainItemUUIDAuth(
+                            interaction.user.id
+                        )
+                        try:
+                            if len(itemUUIDAuth) == 0:
+                                raise ItemNotFound
+                            else:
+                                await auctionHouseUtils.purgeUserAHItems(
+                                    interaction.user.id
+                                )
+                                await interaction.response.send_message(
+                                    "Confirmed. All Auction House Listings have now been completely purged from your account. This is permanent and irreversible."
+                                )
+                        except ItemNotFound:
+                            await interaction.response.send_message(
+                                "It seems like you don't have any to delete from at all..."
+                            )
+        except NoItemsError:
             await interaction.response.send_message(
-                "It seems like you don't have any to delete from at all..."
+                "It seems like you don't even have an account to begin with. Go ahead and create one first."
             )
 
     @discord.ui.button(
@@ -76,13 +102,28 @@ class AuctionHouseV1(commands.Cog):
         self, ctx, *, name: Option(str, "The name of the item you wish to select")
     ):
         """Selects an item on the Auction House before to bid for"""
-        selectMainItem = await auctionHouseUtils.selectAHItemUUID(name)
-        for item in selectMainItem:
-            ahItemUUID = item
-        await auctionHouseUtils.setItemKey(
-            str(ctx.user.id), ahItemUUID, db=1, ttl=21660
-        )
-        await ctx.respond("Item selected")
+        try:
+            getUserInfo = await userUtils.selectUserRank(ctx.author.id, CONNECTION_URI)
+            if len(getUserInfo) == 0:
+                raise ItemNotFound
+            else:
+                for items in getUserInfo:
+                    if items < 25:
+                        await ctx.respond(
+                            f"Sorry, but your current rank is {items}. You need at the very least rank 25 in order to use this command."
+                        )
+                    else:
+                        selectMainItem = await auctionHouseUtils.selectAHItemUUID(name)
+                        for item in selectMainItem:
+                            ahItemUUID = item
+                        await auctionHouseUtils.setItemKey(
+                            str(ctx.user.id), ahItemUUID, db=1, ttl=21660
+                        )
+                        await ctx.respond("Item selected")
+        except ItemNotFound:
+            await ctx.respond(
+                "It seems like you don't even have an account to begin with. Go ahead and create one first."
+            )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -90,31 +131,54 @@ class AuctionHouseV1(commands.Cog):
     async def bindForPrice(self, ctx, *, price: Option(int, "The price to bid")):
         """Bid for a higher price for an item"""
         try:
-            selectedItem = await auctionHouseUtils.getItemKey(str(ctx.user.id), db=1)
-            if selectedItem is None:
-                await ctx.respond(
-                    "You have not selected an item yet. Please run the command to select an item first."
+            try:
+                getUserInfo = await userUtils.selectUserRank(
+                    ctx.author.id, CONNECTION_URI
                 )
-            else:
-                selectItemPriceRes = await auctionHouseUtils.selectAHItemPrice(
-                    selectedItem
-                )
-                for mainItems in selectItemPriceRes:
-                    selectItemPrice = mainItems
-                if price < int(selectItemPrice):
-                    raise ValueError
+                if len(getUserInfo) == 0:
+                    raise ItemNotFound
                 else:
-                    connection = await aiormq.connect(
-                        f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
-                    )
-                    channel = await connection.channel()
-                    await channel.exchange_declare(
-                        exchange="auction_house", exchange_type="fanout"
-                    )
-                    body = bytes(f"{selectedItem}:{price}", "utf-8")
-                    await channel.basic_publish(body, exchange="auction_house")
-                    await connection.close()
-                    await ctx.respond(f"bid placed ({price})")
+                    for items in getUserInfo:
+                        if items < 25:
+                            await ctx.respond(
+                                f"Sorry, but your current rank is {mainItems['rank']}. You need at the very least rank 25 in order to use this command."
+                            )
+                        else:
+                            selectedItem = await auctionHouseUtils.getItemKey(
+                                str(ctx.user.id), db=1
+                            )
+                            if selectedItem is None:
+                                await ctx.respond(
+                                    "You have not selected an item yet. Please run the command to select an item first."
+                                )
+                            else:
+                                selectItemPriceRes = (
+                                    await auctionHouseUtils.selectAHItemPrice(
+                                        selectedItem
+                                    )
+                                )
+                                for mainItems in selectItemPriceRes:
+                                    selectItemPrice = mainItems
+                                if price < int(selectItemPrice):
+                                    raise ValueError
+                                else:
+                                    connection = await aiormq.connect(
+                                        f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_SERVER_IP}/"
+                                    )
+                                    channel = await connection.channel()
+                                    await channel.exchange_declare(
+                                        exchange="auction_house", exchange_type="fanout"
+                                    )
+                                    body = bytes(f"{selectedItem}:{price}", "utf-8")
+                                    await channel.basic_publish(
+                                        body, exchange="auction_house"
+                                    )
+                                    await connection.close()
+                                    await ctx.respond(f"bid placed ({price})")
+            except ItemNotFound:
+                await ctx.respond(
+                    "It seems like you don't even have an account to begin with. Go ahead and create one first."
+                )
         except ValueError:  # THIS NEEDS TO BE CHANGED OUT WITH A CUSTOM EXCEPTION LATER
             await ctx.respond(
                 "It seems like the price given is lower than the one set. Please try again."
@@ -139,34 +203,60 @@ class AuctionHouseV1(commands.Cog):
             os.path.dirname(__file__), "config", "marketplace_filters.yml"
         )
         try:
-            with open(filterFile, "r") as stream:
-                try:
-                    filterList = yaml.safe_load(stream)
-                    mainFilterList = filterList["filters"]
-                    mainFilter = re.compile(
-                        "|".join([str(item) for item in mainFilterList]), re.IGNORECASE
-                    )
-                    filteredItemName = re.sub(mainFilter, "item", str(name))
-                    filteredItemDescription = re.sub(
-                        mainFilter, "item", str(description)
-                    )
-                    await auctionHouseUtils.addAuctionHouseItem(
-                        auctionHouseItemUUID,
-                        userID,
-                        filteredItemName,
-                        filteredItemDescription,
-                        dateAdded,
-                        price,
-                        False,
-                    )
-                    await auctionHouseUtils.setItemKey(
-                        auctionHouseItemUUID, price, db=0, ttl=86400
-                    )
-                    await ctx.respond("Item added to the auction house")
-                except yaml.YAMLError:
-                    await ctx.respond(
-                        "Oops, something went wrong with the yaml file! Please try again."
-                    )
+            try:
+                getUserInfo = await userUtils.obtainUserData(
+                    ctx.author.id, CONNECTION_URI
+                )
+                if len(getUserInfo) == 0:
+                    raise ItemNotFound
+                else:
+                    for items in getUserInfo:
+                        mainItems = dict(items)
+                    if mainItems["rank"] < 25:
+                        await ctx.respond(
+                            f"Sorry, but your current rank is {mainItems['rank']}. You need at the very least rank 25 in order to use this command."
+                        )
+                    elif mainItems["rank"] > 25 and mainItems["lavender_petals"] < 1500:
+                        await ctx.respond(
+                            "It seems like you don't have enough money to list. You need at the very least 1500 Petals to list"
+                        )
+                    elif (
+                        mainItems["rank"] > 25 and mainItems["lavender_petals"] >= 1500
+                    ):
+                        with open(filterFile, "r") as stream:
+                            try:
+                                filterList = yaml.safe_load(stream)
+                                mainFilterList = filterList["filters"]
+                                mainFilter = re.compile(
+                                    "|".join([str(item) for item in mainFilterList]),
+                                    re.IGNORECASE,
+                                )
+                                filteredItemName = re.sub(mainFilter, "item", str(name))
+                                filteredItemDescription = re.sub(
+                                    mainFilter, "item", str(description)
+                                )
+                                await auctionHouseUtils.addAuctionHouseItem(
+                                    auctionHouseItemUUID,
+                                    userID,
+                                    filteredItemName,
+                                    filteredItemDescription,
+                                    dateAdded,
+                                    price,
+                                    False,
+                                )
+                                await auctionHouseUtils.setItemKey(
+                                    auctionHouseItemUUID, price, db=0, ttl=86400
+                                )
+                                await ctx.respond("Item added to the auction house")
+                            except yaml.YAMLError:
+                                await ctx.respond(
+                                    "Oops, something went wrong with the yaml file! Please try again."
+                                )
+
+            except ItemNotFound:
+                await ctx.respond(
+                    "It seems like you don't even have an account to begin with. Go ahead and create one first."
+                )
         except Exception:
             await ctx.respond(
                 embed=discord.Embed(
@@ -179,36 +269,55 @@ class AuctionHouseV1(commands.Cog):
     @auctionHouse.command(name="view")
     async def viewAHItems(self, ctx):
         """Views all of the items on the AH for bidding"""
-        mainRes = await auctionHouseUtils.selectItemNotPassed(False)
         try:
-            if len(mainRes) == 0:
-                raise ItemNotFound
+            getUserInfo = await userUtils.selectUserRank(ctx.author.id, CONNECTION_URI)
+            if len(getUserInfo) == 0:
+                raise NoItemsError
             else:
-                mainPages = pages.Paginator(
-                    pages=[
-                        discord.Embed(
-                            title=dict(items)["name"],
-                            description=dict(items)["description"],
+                for items in getUserInfo:
+                    if items < 25:
+                        await ctx.respond(
+                            f"Sorry, but your current rank is {items}. You need at the very least rank 25 or higher to use this command."
                         )
-                        .add_field(
-                            name="Date Added",
-                            value=parser.isoparse(dict(items)["date_added"]).strftime(
-                                "%Y-%m-%d %H:%M:%S"
-                            ),
-                            inline=True,
-                        )
-                        .add_field(
-                            name="Price", value=dict(items)["price"], inline=True
-                        )
-                        for items in mainRes
-                    ],
-                    loop_pages=True,
-                )
-                await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "There are no items to be seen on the Auction House. Come back later for more!"
-            await ctx.respond(embed=embedError)
+                    else:
+                        mainRes = await auctionHouseUtils.selectItemNotPassed(False)
+                        try:
+                            if len(mainRes) == 0:
+                                raise ItemNotFound
+                            else:
+                                mainPages = pages.Paginator(
+                                    pages=[
+                                        discord.Embed(
+                                            title=dict(items)["name"],
+                                            description=dict(items)["description"],
+                                        )
+                                        .add_field(
+                                            name="Date Added",
+                                            value=parser.isoparse(
+                                                dict(items)["date_added"]
+                                            ).strftime("%Y-%m-%d %H:%M:%S"),
+                                            inline=True,
+                                        )
+                                        .add_field(
+                                            name="Price",
+                                            value=dict(items)["price"],
+                                            inline=True,
+                                        )
+                                        for items in mainRes
+                                    ],
+                                    loop_pages=True,
+                                )
+                                await mainPages.respond(
+                                    ctx.interaction, ephemeral=False
+                                )
+                        except ItemNotFound:
+                            embedError = discord.Embed()
+                            embedError.description = "There are no items to be seen on the Auction House. Come back later for more!"
+                            await ctx.respond(embed=embedError)
+        except NoItemsError:
+            await ctx.respond(
+                "It seems like you don't even have an account to begin with. Go ahead and create one first."
+            )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -217,20 +326,39 @@ class AuctionHouseV1(commands.Cog):
         self, ctx, *, name: Option(str, "The name of the item to delete")
     ):
         """Deletes one user from the user for the Auction House"""
-        userSelRes = await auctionHouseUtils.selectUserItemViaName(ctx.author.id, name)
         try:
-            if len(userSelRes) == 0:
-                raise ItemNotFound
+            getUserInfo = await userUtils.selectUserRank(ctx.author.id, CONNECTION_URI)
+            if len(getUserInfo) == 0:
+                raise NoItemsError
             else:
-                for items in userSelRes:
-                    mainItems = dict(items)
-                    itemUUID = mainItems["uuid"]
-                    await auctionHouseUtils.deleteUserAHItem(ctx.author.id, itemUUID)
-                await ctx.respond("Item deleted")
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = f"There are no items within the Auction House that has the name of {name}. Please try again."
-            await ctx.respond(embed=embedError)
+                for items in getUserInfo:
+                    if items < 25:
+                        await ctx.respond(
+                            f"Sorry, but your current rank is {items}. You need at the very least rank 25 or higher to use this command."
+                        )
+                    else:
+                        userSelRes = await auctionHouseUtils.selectUserItemViaName(
+                            ctx.author.id, name
+                        )
+                        try:
+                            if len(userSelRes) == 0:
+                                raise ItemNotFound
+                            else:
+                                for items in userSelRes:
+                                    mainItems = dict(items)
+                                    itemUUID = mainItems["uuid"]
+                                    await auctionHouseUtils.deleteUserAHItem(
+                                        ctx.author.id, itemUUID
+                                    )
+                                await ctx.respond("Item deleted")
+                        except ItemNotFound:
+                            embedError = discord.Embed()
+                            embedError.description = f"There are no items within the Auction House that has the name of {name}. Please try again."
+                            await ctx.respond(embed=embedError)
+        except NoItemsError:
+            await ctx.respond(
+                "It seems like you don't even have an account to begin with. Go ahead and create one first."
+            )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
