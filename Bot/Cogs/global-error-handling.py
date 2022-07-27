@@ -70,7 +70,7 @@ class cooldownChecker(commands.Cog):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.respond(
                 embed=discord.Embed(
-                    description=f"This command is currently on cooldown."
+                    description=f"This command is currently on cooldown. Try again in {error.retry_after} seconds."
                 )
             )
 

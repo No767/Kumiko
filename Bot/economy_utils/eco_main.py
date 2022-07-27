@@ -23,6 +23,7 @@ class Marketplace(Document):
     date_added: str
     owner: int
     uuid: str
+    updated_price: bool
 
 
 class ProjectOnlyID(BaseModel):
@@ -55,6 +56,7 @@ class KumikoEcoUtils:
         description: Optional[str] = None,
         amount: Optional[int] = None,
         price: Optional[int] = None,
+        updatedPrice: Optional[bool] = False,
     ):
         """Inserts an item into the MongoDB database
 
@@ -66,6 +68,7 @@ class KumikoEcoUtils:
             description (Optional[str], optional): The description of the item. Defaults to None.
             amount (Optional[int], optional): The amount that the user has. Defaults to None.
             price (Optional[int], optional): The price set by the user. Defaults to None.
+            updatedPrice (Optional[bool], optional): Whether the price has been updated. Defaults to False.
         """
         client = motor.motor_asyncio.AsyncIOMotorClient(
             f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
@@ -81,6 +84,7 @@ class KumikoEcoUtils:
             date_added=date_added,
             owner=owner,
             uuid=uuid,
+            updated_price=updatedPrice,
         )
         await entry.create()
 
@@ -206,6 +210,24 @@ class KumikoEcoUtils:
         return resMain2
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def getUserItem(self, name: str, user_id: int):
+        """Gets a item based on the user's item storage in the Marketplace
+
+        Args:
+            name (str): The name of the item
+            user_id (int): Discord User ID
+        """
+        clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
+        )
+        await init_beanie(
+            database=clientGetItem.kumiko_marketplace, document_models=[Marketplace]
+        )
+        resMain3 = await Marketplace.find(
+            Marketplace.owner == user_id, Marketplace.name == name
+        ).to_list()
+        return resMain3
 
     async def edit(
         self,
@@ -386,5 +408,31 @@ class KumikoEcoUtils:
         await Marketplace.find(Marketplace.uuid == uuid).set(
             {Marketplace.amount: amount}
         )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def updateItemPrice(
+        self, user_id: int, uuid: str, price: int, updated_price: bool
+    ):
+        """Updates the Item's Price on the Marketplace
+
+        Args:
+            user_id (int): Discord User ID
+            uuid (str): Marketplace Item UUId
+            price (int): New price to update to
+            updated_price (boolean): Whether the price has been updated before
+        """
+        clientUpdateItemPrice = motor.motor_asyncio.AsyncIOMotorClient(
+            f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:27017"
+        )
+        await init_beanie(
+            database=clientUpdateItemPrice.kumiko_marketplace,
+            document_models=[Marketplace],
+        )
+        mainItem = Marketplace.find(
+            Marketplace.uuid == uuid, Marketplace.owner == user_id
+        )
+        await mainItem.set({Marketplace.price: price})
+        await mainItem.set({Marketplace.updated_price: updated_price})
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
