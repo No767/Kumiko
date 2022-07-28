@@ -22,7 +22,7 @@ utilsUser = KumikoEcoUserUtils()
 inv = UsersInv()
 
 
-class CoinEarnV1(commands.Cog):
+class PetalEarnV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -46,22 +46,37 @@ class CoinEarnV1(commands.Cog):
         ]
         if amountOfPetals > 100:
             petalRandomMessage = random.choice(petalsMessages)  # nosec B311
-        author_id = ctx.author.id
-        userInfo = await utilsUser.obtainUserData(user_id=author_id, uri=CONNECTION_URI)
-        for items in userInfo:
-            mainItems = dict(items)
-        totalAmountOfPetals = mainItems["lavender_petals"] + amountOfPetals
-        await utilsUser.updateUserLavenderPetals(
-            author_id, totalAmountOfPetals, CONNECTION_URI
-        )
-        embedMain = discord.Embed()
-        embedMain.description = (
-            f"You were able to earn {amountOfPetals} Petals! {petalRandomMessage}"
-        )
-        await ctx.respond(embed=embedMain)
+            author_id = ctx.author.id
+            userInfo = await utilsUser.obtainUserData(
+                user_id=author_id, uri=CONNECTION_URI
+            )
+            for items in userInfo:
+                mainItems = dict(items)
+            totalAmountOfPetals = mainItems["lavender_petals"] + amountOfPetals
+            await utilsUser.updateUserLavenderPetals(
+                author_id, totalAmountOfPetals, CONNECTION_URI
+            )
+            embedMain = discord.Embed()
+            embedMain.description = (
+                f"You were able to earn {amountOfPetals} Petals! {petalRandomMessage}"
+            )
+            await ctx.respond(embed=embedMain)
+        else:
+            userInfo = await utilsUser.obtainUserData(
+                user_id=author_id, uri=CONNECTION_URI
+            )
+            for items in userInfo:
+                mainItems = dict(items)
+            totalAmountOfPetals = mainItems["lavender_petals"] + amountOfPetals
+            await utilsUser.updateUserLavenderPetals(
+                author_id, totalAmountOfPetals, CONNECTION_URI
+            )
+            embedMain = discord.Embed()
+            embedMain.description = f"You were able to earn {amountOfPetals} Petals!"
+            await ctx.respond(embed=embedMain)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
-    bot.add_cog(CoinEarnV1(bot))
+    bot.add_cog(PetalEarnV1(bot))

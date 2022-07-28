@@ -46,8 +46,11 @@ class ecoMarketplace(commands.Cog):
         description="Commands for deleting items on the marketplace",
         guild_ids=[970159505390325842],
     )
+    ecoMarketplaceAdd = eco_marketplace.create_subgroup(
+        "add", "Adds items into the marketplace", guild_ids=[970159505390325842]
+    )
 
-    @eco_marketplace.command(name="add-item")
+    @ecoMarketplaceAdd.command(name="item")
     @commands.cooldown(1, 43200, commands.BucketType.user)
     async def ecoAddItem(
         self,

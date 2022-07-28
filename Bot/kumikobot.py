@@ -49,7 +49,7 @@ initial_extensions = [
     "Cogs.discord-bots",
     "Cogs.economy.marketplace",
     "Cogs.economy.users",
-    "Cogs.economy.coins",
+    "Cogs.economy.petals",
     "Cogs.platform",
     "Cogs.pages",
     "Cogs.first-frc-events",

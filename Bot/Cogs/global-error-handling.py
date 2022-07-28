@@ -68,9 +68,14 @@ class cooldownChecker(commands.Cog):
         self, ctx: discord.ApplicationContext, error: discord.DiscordException
     ):
         if isinstance(error, commands.CommandOnCooldown):
+            seconds = int(error.retry_after) % (24 * 3600)
+            hours = seconds // 3600
+            seconds %= 3600
+            minutes = seconds // 60
+            seconds %= 60
             await ctx.respond(
                 embed=discord.Embed(
-                    description=f"This command is currently on cooldown. Try again in {error.retry_after} seconds."
+                    description=f"This command is currently on cooldown. Try again in {hours} hour(s), {minutes} minute(s), and {seconds} second(s)."
                 )
             )
 
