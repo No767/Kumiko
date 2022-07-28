@@ -222,6 +222,8 @@ class KumikoEcoUserUtils:
 
     ### ------ OLD COROUTINES ------ ###
 
+    # All other methods on here (except for the initInvTable methods)
+    # are deprecated. Will be removed soon.
     async def updateUser(self, owner_id: int, coins: int):
         """Updates the amount of coins a user has
 
@@ -265,6 +267,7 @@ class KumikoEcoUserUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+    # This is not deprecated...
     async def initInvTables(self):
         """Initializes the user inv tables for the economy system. This is used for the Postgres-Init script."""
         meta4 = MetaData()
