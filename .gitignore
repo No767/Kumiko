@@ -68,3 +68,4 @@ docker-compose
 docker-compose2.yml
 redis-cache.py
 eco_user_tester.py
+quests-test.py

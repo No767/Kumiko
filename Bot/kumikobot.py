@@ -63,6 +63,7 @@ initial_extensions = [
     "Cogs.avatar",
     "Cogs.uwu",
     "Cogs.ah-checker",
+    "Cogs.economy.quests",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
