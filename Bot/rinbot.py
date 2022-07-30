@@ -1,3 +1,4 @@
+import logging
 import os
 
 import discord
@@ -10,6 +11,12 @@ TOKEN = os.getenv("Hanako_Token")
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)s] | %(asctime)s >> %(message)s",
+    datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
+)
 
 # Loads in all extensions
 initial_extensions = [
