@@ -64,14 +64,14 @@ class TwitterV1(commands.Cog):
                                     name="Created At (UTC, 24hr)",
                                     value=parser.isoparse(
                                         mainItem["created_at"]
-                                    ).strftime("%B %d, %Y %H:%M:%S"),
+                                    ).strftime("%Y-%m-%d %H:%M:%S"),
                                     inline=True,
                                 )
                                 .add_field(
                                     name="Created At (UTC, 12hr)",
                                     value=parser.isoparse(
                                         mainItem["created_at"]
-                                    ).strftime("%B %d, %Y %I:%M:%S %p"),
+                                    ).strftime("%Y-%m-%d %I:%M:%S %p"),
                                     inline=True,
                                 )
                                 .add_field(
