@@ -47,13 +47,12 @@ Rin's prefix is `/`.
 
 Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.com/No767/Rin#bot-discovery-network-links) section. You can invite Rin by clicking [here](https://top.gg/bot/865883525932253184/invite). Note that previously (before v2.0.0), the prefix was `.`. Versions beyond v2.0.0 will only support the slash (`/`) prefix.
 
-# Licensing
+# Getting Started
 
-All of Rin's code is licensed under Apache-2.0
+if you would like to get started, here are some links to help you with that:
 
-# Contributing
-
-See [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
+- [Getting Started (For Developers)]()
+- [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
 
 # Links 
 
@@ -67,8 +66,9 @@ See [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.
 - [Discords.com](https://discords.com/bots/bot/865883525932253184)
 - [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184)
 
+[![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
+[![Top.gg](https://top.gg/api/widget/865883525932253184.svg)](https://top.gg/bot/865883525932253184)
 
-<div align=center>
- [![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
- [![Top.gg](https://top.gg/api/widget/865883525932253184.svg)](https://top.gg/bot/865883525932253184)
-</div>
+# Licensing
+
+All of Rin's code is licensed under Apache-2.0
