@@ -1,5 +1,6 @@
 import asyncio
 import os
+from datetime import datetime
 
 import aiohttp
 import discord
@@ -76,22 +77,57 @@ class BlueAllianceV1(commands.Cog):
             ) as r:
                 data2 = await r.content.read()
                 dataMain2 = parser.parse(data2, recursive=True)
-                embed = discord.Embed()
-
-                filterMain = ["gmaps_place_id", "name", "webcasts"]
                 try:
                     if "Error" in dataMain2:
                         raise ValueError
                     else:
-                        for dictItem2 in dataMain2:
-                            for key, value in dictItem2.items():
-                                if key not in filterMain:
-                                    embed.add_field(
-                                        name=key, value=f"[{value}]", inline=True
-                                    )
-                                    embed.remove_field(-24)
-                            embed.title = dictItem2["name"]
-                            await ctx.respond(embed=embed)
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(title=mainItem["name"])
+                                .add_field(
+                                    name="Event Location Address",
+                                    value=mainItem["address"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Event Location Name",
+                                    value=mainItem["location_name"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Event Key", value=mainItem["key"], inline=True
+                                )
+                                .add_field(
+                                    name="Event Type",
+                                    value=mainItem["event_type_string"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Start Date",
+                                    value=mainItem["start_date"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="End Date",
+                                    value=mainItem["end_date"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Timezone",
+                                    value=mainItem["timezone"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Week", value=mainItem["week"], inline=True
+                                )
+                                .add_field(
+                                    name="Year", value=mainItem["year"], inline=True
+                                )
+                                for mainItem in dataMain2
+                            ],
+                            loop_pages=True,
+                        )
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
                 except ValueError:
                     embedError = discord.Embed()
                     embedError.description = "It seems like there are no teams named like that. Please try again"
@@ -116,61 +152,71 @@ class BlueAllianceV1(commands.Cog):
             ) as r:
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
-                embed = discord.Embed()
-
-                filter5 = ["score_breakdown", "alliances", "videos", "match_number"]
                 try:
                     if "Error" in dataMain:
                         raise ValueError
                     else:
-                        for dictItem in dataMain:
-                            for key, value in dictItem.items():
-                                if key not in filter5:
-                                    embed.add_field(name=key, value=value, inline=True)
-                            for k, v in dictItem["alliances"]["blue"].items():
-                                embed.add_field(name=k, value=v, inline=True)
-                            for item, res in dictItem["alliances"]["red"].items():
-                                embed.add_field(name=item, value=res, inline=True)
-                            embed.title = f"Match {dictItem['match_number']}"
-                            await ctx.respond(embed=embed)
-                except ValueError:
-                    embedError = discord.Embed()
-                    embedError.description = "It seems like there are no teams and/or event keys named like that. Please try again"
-                    await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @blueAllianceMatches.command(name="breakdown")
-    async def blueAllianceBreakdownV2(
-        self,
-        ctx,
-        *,
-        frc_team: Option(int, "The FRC team number"),
-        event_key: Option(str, "The event key"),
-    ):
-        """Returns the breakdown of a team's match"""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            headers = {"X-TBA-Auth-Key": apiKey}
-            async with session.get(
-                f"https://www.thebluealliance.com/api/v3/team/frc{frc_team}/event/{event_key}/matches",
-                headers=headers,
-            ) as r:
-                data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
-                embed = discord.Embed()
-                try:
-                    if "Error" in dataMain:
-                        raise ValueError
-                    else:
-                        for dictItem in dataMain:
-                            for keys, value in dictItem["score_breakdown"][
-                                "blue"
-                            ].items():
-                                embed.add_field(name=keys, value=value, inline=True)
-                            for k, v in dictItem["score_breakdown"]["red"].items():
-                                embed.add_field(name=k, value=v, inline=True)
-                            embed.title = f"Match {dictItem['match_number']}"
-                            await ctx.respond(embed=embed)
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(title=f'Match {mainItem["match_number"]}')
+                                .add_field(
+                                    name="Blue Alliance Teams",
+                                    value=mainItem["alliances"]["blue"]["team_keys"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Blue Alliance Total Points",
+                                    value=mainItem["score_breakdown"]["blue"][
+                                        "totalPoints"
+                                    ],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Blue Alliance Total Score",
+                                    value=mainItem["alliances"]["blue"]["score"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Red Alliance Teams",
+                                    value=mainItem["alliances"]["red"]["team_keys"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Red Alliance Total Points",
+                                    value=mainItem["score_breakdown"]["red"][
+                                        "totalPoints"
+                                    ],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Red Alliance Total Score",
+                                    value=mainItem["alliances"]["red"]["score"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Predicted Time",
+                                    value=datetime.fromtimestamp(
+                                        mainItem["predicted_time"]
+                                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Actual Time",
+                                    value=datetime.fromtimestamp(
+                                        mainItem["actual_time"]
+                                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Winning Alliance",
+                                    value=mainItem["winning_alliance"],
+                                    inline=True,
+                                )
+                                for mainItem in dataMain
+                            ],
+                            loop_pages=True,
+                        )
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
                 except ValueError:
                     embedError = discord.Embed()
                     embedError.description = "It seems like there are no teams and/or event keys named like that. Please try again"
