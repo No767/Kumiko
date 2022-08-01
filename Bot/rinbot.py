@@ -18,6 +18,7 @@ logging.basicConfig(
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
 logging.getLogger("gql").setLevel(logging.WARNING)
+
 # Loads in all extensions
 initial_extensions = [
     "Cogs.rininfo",
@@ -50,7 +51,6 @@ initial_extensions = [
     "Cogs.legacy-help",
     "Cogs.github",
     "Cogs.anilist",
-    "Cogs.test",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
