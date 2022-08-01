@@ -6,13 +6,15 @@ import discord
 import orjson
 import simdjson
 import uvloop
+from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 from dotenv import load_dotenv
+from rin_exceptions import NoItemsError
 
 load_dotenv()
 apiKey = os.getenv("Discord_Bots_API_Key")
-parser = simdjson.Parser()
+jsonParser = simdjson.Parser()
 
 
 class DiscordBots(commands.Cog):
@@ -32,34 +34,75 @@ class DiscordBots(commands.Cog):
         """Searches for up to 1 of any Discord Bots listed on discord.bots.gg"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": apiKey}
-            params = {"q": search, "limit": 1}
+            params = {"q": search, "limit": 25}
             async with session.get(
                 "https://discord.bots.gg/api/v1/bots", headers=headers, params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
-                filterMain = [
-                    "avatarURL",
-                    "coOwners",
-                    "shortDescription",
-                    "owner",
-                    "username",
-                ]
-                embedVar = discord.Embed()
+                dataMain = jsonParser.parse(data, recursive=True)
                 try:
                     if len(dataMain["bots"]) == 0:
-                        raise ValueError
+                        raise NoItemsError
                     else:
-                        for dictItem in dataMain["bots"]:
-                            for k, v in dictItem.items():
-                                if k not in filterMain:
-                                    embedVar.add_field(name=k, value=v, inline=True)
-                                    embedVar.remove_field(-18)
-                            embedVar.title = dictItem["username"]
-                            embedVar.description = dictItem["shortDescription"]
-                            embedVar.set_thumbnail(url=dictItem["avatarURL"])
-                            await ctx.respond(embed=embedVar)
-                except ValueError:
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=mainItem["username"],
+                                    description=mainItem["shortDescription"],
+                                )
+                                .add_field(
+                                    name="Bot ID", value=mainItem["userId"], inline=True
+                                )
+                                .add_field(
+                                    name="Prefix", value=mainItem["prefix"], inline=True
+                                )
+                                .add_field(
+                                    name="Help Command",
+                                    value=mainItem["helpCommand"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Discord Libary Name",
+                                    value=mainItem["libraryName"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Website",
+                                    value=mainItem["website"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Support Invite",
+                                    value=mainItem["supportInvite"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Guild Count",
+                                    value=mainItem["guildCount"],
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Online", value=mainItem["online"], inline=True
+                                )
+                                .add_field(
+                                    name="Added Date",
+                                    value=parser.isoparse(
+                                        mainItem["addedDate"]
+                                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Owner",
+                                    value=mainItem["owner"]["username"],
+                                    inline=True,
+                                )
+                                .set_thumbnail(url=mainItem["avatarURL"])
+                                for mainItem in dataMain["bots"]
+                            ],
+                            loop_pages=True,
+                        )
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
+                except NoItemsError:
                     embedValueError = discord.Embed()
                     embedValueError.description = "Oh no, it seems like there are no bots that matches your search. Please try again"
                     await ctx.respond(embed=embedValueError)
