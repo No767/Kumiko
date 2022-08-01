@@ -26,9 +26,7 @@ class rinhelp(commands.Cog):
             choices=[
                 "AdviceSlip",
                 "AniList",
-                "Anime",
                 "Blue-Alliance",
-                "DeviantArt",
                 "Discord.bots.gg",
                 "First-FRC",
                 "GitHub",
@@ -44,6 +42,7 @@ class rinhelp(commands.Cog):
                 "Tenor",
                 "Top.gg",
                 "Twitter",
+                "Waifu",
                 "YouTube",
             ],
             required=False,
@@ -63,9 +62,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(name="Anime", value="`/rinhelp Anime`", inline=True)
                 embedVar.add_field(
                     name="Blue Alliance", value="`/rinhelp Blue-Alliance`", inline=True
-                )
-                embedVar.add_field(
-                    name="DeviantArt", value="`/rinhelp DeviantArt`", inline=True
                 )
                 embedVar.add_field(
                     name="First FRC", value="`/rinhelp First-FRC`", inline=True
@@ -101,6 +97,7 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="Twitter", value="`/rinhelp Twitter`", inline=True
                 )
+                embedVar.add_field(name="Waifu", value="`/rinhelp Waifu`", inline=True)
                 embedVar.add_field(
                     name="YouTube", value="`/rinhelp YouTube`", inline=True
                 )
@@ -178,16 +175,6 @@ class rinhelp(commands.Cog):
                     value="Searches up to 25 actors on AniList",
                     inline=True,
                 )
-                embedVar.add_field(
-                    name="`recommendations`",
-                    value="Returns up to 25 recommendations for an anime or manga",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`reviews`",
-                    value="Returns up to 25 reviews of the given anime/manga ID",
-                    inline=True,
-                )
                 embedVar.set_author(
                     name="Rin Help - AniList", icon_url=bot.user.display_avatar
                 )
@@ -221,11 +208,6 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`matches breakdown`",
-                    value="Returns all of the matches for an FRC event",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`matches all`",
                     value="Returns all of the matches for an FRC event",
                     inline=True,
@@ -248,38 +230,6 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
-            if category in ["DeviantArt"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.description = "**Note that the DeviantArt service has been disabled for now**\n\nBase command: `deviantart`"
-                embedVar.add_field(
-                    name="`item`",
-                    value="Returns info about a deviantion on DeviantArt",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`newest`",
-                    value="returns up to 50 new art from DeviantArt based on the given search result",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`popular`",
-                    value="Returns up to 50 popular art from DeviantArt based on the given search result",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`tags`",
-                    value="Returns up to 50 art with the given tag from DeviantArt",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`users`", value="Returns the user's profile info"
-                )
-                embedVar.set_author(
-                    name="Rin Help - DeviantArt", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
             if category in ["Discord.bots.gg"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -288,10 +238,6 @@ class rinhelp(commands.Cog):
                     name="`search bots`",
                     value="Searches for any Discord bots listed on discord.bots.gg",
                     inline=True,
-                )
-                embedVar.add_field(
-                    name="`search id`",
-                    value="Searches for any Discord bots listed on discord.bots.gg via the Discord bot's ID",
                 )
                 embedVar.set_author(
                     name="Rin Help - Discord.bots.gg", icon_url=bot.user.display_avatar
@@ -335,11 +281,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`results`",
                     value="Returns the FRc team's results for a given event",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`awards`",
-                    value="Returns a list of awards that the given team has gotten",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -387,11 +328,6 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`commit`",
-                    value="Gets info about a commit based on commit hash",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`repo`",
                     value="Gets info about a repo based on repo name",
                     inline=True,
@@ -405,16 +341,6 @@ class rinhelp(commands.Cog):
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = "Base command: `hypixel`"
-                embedVar.add_field(
-                    name="`player info`",
-                    value="Returns info about a minecraft player on Hypixel",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`player status`",
-                    value="Shows the current status of the player given",
-                    inline=True,
-                )
                 embedVar.add_field(
                     name="`count`",
                     value="Returns the amount of players in each game server",
@@ -453,11 +379,6 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`scanlation id`",
-                    value="Returns the scanlation group with the ID given",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`search`",
                     value="Searches for up to 5 manga on MangaDex",
                     inline=True,
@@ -465,11 +386,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`random`",
                     value="Returns an random manga from MangaDex",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`user`",
-                    value="Returns the user's profile on MangaDex",
                     inline=True,
                 )
                 embedVar.add_field(
@@ -558,11 +474,6 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`versions id`",
-                    value="Returns info on the given mod version ID",
-                    inline=True,
-                )
-                embedVar.add_field(
                     name="`users search`",
                     value="Returns info on the given user",
                     inline=True,
@@ -570,16 +481,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`users projects`",
                     value="Returns info on the given user's projects",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`team project`",
-                    value="Returns the projects within a team",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`team members`",
-                    value="Returns the team members of a project",
                     inline=True,
                 )
                 embedVar.add_field(
@@ -646,23 +547,8 @@ class rinhelp(commands.Cog):
                     name="`search`", value="Searches on reddit for content", inline=True
                 )
                 embedVar.add_field(
-                    name="`new`",
-                    value="Returns up to 5 new posts from any given subreddit",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="comments",
-                    value="Returns up to 10 comments from a given post ID",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`hot`",
-                    value="Returns up to 5 hot posts from any subreddit",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`top`",
-                    value="Returns 5 top posts from any subreddit",
+                    name="`feed`",
+                    value="Returns up to 25 reddit posts based on the current filter",
                     inline=True,
                 )
                 embedVar.add_field(
@@ -681,17 +567,7 @@ class rinhelp(commands.Cog):
                 embedVar.description = "Base command: `spigot`"
                 embedVar.add_field(
                     name="`search`",
-                    value="Finds up to 5 plugins matching the name of the given plugin",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`author`",
-                    value="Returns some info about a plugin author",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`status`",
-                    value="Returns the status of Spigot (HTTP Status)",
+                    value="Finds up to 25 plugins matching the name of the given plugin",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -719,18 +595,13 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`trending gif`",
-                    value="Returns up to 25 trending gifs",
+                    name="`featured`",
+                    value="Returns up to 25 featured gifs from Tenor",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`trending terms`",
                     value="Returns a list of trending search terms",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`gif`",
-                    value="Gives a gif based on the given GIF ID",
                     inline=True,
                 )
                 embedVar.add_field(
@@ -750,11 +621,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`search bot`",
                     value="Searches for a bot on Top.gg",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`search user`",
-                    value="Searches for a user on Top.gg",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -781,6 +647,29 @@ class rinhelp(commands.Cog):
                 )
                 await ctx.respond(embed=embedVar)
 
+            if category in ["Waifu"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `waifu`"
+                embedVar.add_field(
+                    name="`random one`",
+                    value="Gets one random waifu pics",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`random many`",
+                    value="Returns many random waifu pics",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`pics`",
+                    value="Returns a random image of a waifu from waifu.pics",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - Waifu", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
             if category in ["YouTube"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
@@ -798,11 +687,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`playlist`",
                     value="Returns up to 5 youtube playlists based on the given YT channel",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`comments`",
-                    value="Returns up to 5 comments from a given video ID",
                     inline=True,
                 )
                 embedVar.add_field(
