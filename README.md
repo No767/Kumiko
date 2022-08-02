@@ -78,6 +78,10 @@ If you would like to get started, here are some links to help you with that:
 
 Kumiko being a direct upstream fork of Rin, is licensed under the same license as Rin, which is [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
 
+# FOSSA Status
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_large)
+
 # Name Inspiration
 
 Kumiko's name comes from the anime character [Kumiko Oumae](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae) from the anime [Hibike! Euphonium](https://anilist.co/anime/20912/Hibike-Euphonium/).
