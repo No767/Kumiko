@@ -8,13 +8,10 @@ python-dotenv = "*"
 aiodns = "*"
 brotli = "*"
 orjson = "*"
-lxml = "*"
 asyncpraw = "*"
 uvloop = "*"
 aiohttp = "*"
-qrcode = {extras = ["pil"], version = "*"}
 cchardet = "*"
-beautifulsoup4 = "*"
 py-cord = {version = "==2.0.0", extras = ["voice"]}
 pysimdjson = "*"
 gql = {extras = ["aiohttp"], version = "*"}
