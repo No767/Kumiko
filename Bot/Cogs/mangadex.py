@@ -54,28 +54,14 @@ class MangaDexV1(commands.Cog):
                         mainPages = pages.Paginator(
                             pages=[
                                 discord.Embed(
-                                    title=str(
-                                        [
-                                            v
-                                            for _, v in mainItem["attributes"][
-                                                "title"
-                                            ].items()
-                                        ]
-                                    )
-                                    .replace("'", "")
-                                    .replace("[", "")
-                                    .replace("]", ""),
-                                    description=str(
-                                        [
-                                            f"{v}"
-                                            for _, v in mainItem["attributes"][
-                                                "description"
-                                            ].items()
-                                        ]
-                                    )
-                                    .replace("'", "")
-                                    .replace("[", "")
-                                    .replace("]", ""),
+                                    title=mainItem["attributes"]["title"]["en"]
+                                    if "en" in mainItem["attributes"]["title"]
+                                    else mainItem["attributes"]["title"],
+                                    description=mainItem["attributes"]["description"][
+                                        "en"
+                                    ]
+                                    if "en" in mainItem["attributes"]["description"]
+                                    else mainItem["attributes"]["description"],
                                 )
                                 .add_field(
                                     name="Original Language",
@@ -144,16 +130,6 @@ class MangaDexV1(commands.Cog):
                                             for items in mainItem["attributes"]["tags"]
                                         ]
                                     ).replace("'", ""),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="AniList URL",
-                                    value=f'https://anilist.co/manga/{mainItem["attributes"]["links"]["al"]}',
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Anime Planet URL",
-                                    value=f'https://anime-planet.com/manga/{mainItem["attributes"]["links"]["ap"]}',
                                     inline=True,
                                 )
                                 .add_field(
@@ -303,10 +279,10 @@ class MangaDexV1(commands.Cog):
     async def scanlation_search(
         self, ctx, *, name: Option(str, "The name of the scanlation group")
     ):
-        """Returns up to 5 scanlation groups via the name given"""
+        """Returns up to 25 scanlation groups via the name given"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "limit": 5,
+                "limit": 25,
                 "name": name,
                 "order[name]": "asc",
                 "order[relevance]": "desc",
@@ -381,9 +357,9 @@ class MangaDexV1(commands.Cog):
 
     @md.command(name="author")
     async def author(self, ctx, *, author_name: Option(str, "The name of the author")):
-        """Returns up to 5 authors and their info"""
+        """Returns up to 25 authors and their info"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {"limit": 5, "name": author_name, "order[name]": "asc"}
+            params = {"limit": 25, "name": author_name, "order[name]": "asc"}
             async with session.get(
                 "https://api.mangadex.org/author", params=params
             ) as author_response:
