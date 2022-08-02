@@ -12,18 +12,18 @@ jobs:
     steps:
       - name: Checkout Repository  
         uses: actions/checkout@v3
-      - name: Set up Python 3.10.4
+      - name: Set up Python 3.10
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10.4
+          python-version: 3.10
       - name: Set up Node.js 18
         uses: actions/setup-node@v3.4.1
         with:
           node-version: '18'
       - name: Install Snyk CLI
         run: |
-          npm install snyk@latest -g
+          npm install --location=global snyk@latest 
       - name: Upgrade Pip + Install Pipenv + Install Colorama
         run: |
           pip install --upgrade pip pipenv colorama
