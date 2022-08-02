@@ -51,6 +51,7 @@ initial_extensions = [
     "Cogs.legacy-help",
     "Cogs.github",
     "Cogs.anilist",
+    "Cogs.twitch",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)
