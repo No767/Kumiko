@@ -35,7 +35,7 @@ class View(discord.ui.View):
         emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
     )
     async def button_callback(self, button, interaction):
-        await utilsUser.initUserAcct(interaction.user.id, CONNECTION_URI)
+        await utilsUser.initUserAcct(interaction.user.id, uri=CONNECTION_URI)
         await interaction.response.send_message(
             "Confirmed. Now you have access to the marketplace!"
         )
