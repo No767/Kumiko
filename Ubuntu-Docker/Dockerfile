@@ -33,7 +33,7 @@ RUN source $NVM_DIR/nvm.sh \
     && nvm use default
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-RUN npm install -g npm pm2@latest
+RUN npm install --location=global npm pm2@latest
 
 FROM install_node AS install_poetry
 ENV PYTHONDONTWRITEBYTECODE 1

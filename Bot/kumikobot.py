@@ -17,7 +17,10 @@ logging.basicConfig(
     format="[%(levelname)s] | %(asctime)s >> %(message)s",
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
+
+# Literally prevent these modules from attempting to log info stuff
 logging.getLogger("asyncio_redis").setLevel(logging.WARNING)
+logging.getLogger("gql").setLevel(logging.WARNING)
 
 # Loads in all extensions
 initial_extensions = [
@@ -64,6 +67,7 @@ initial_extensions = [
     "Cogs.uwu",
     "Cogs.ah-checker",
     "Cogs.economy.quests",
+    "Cogs.twitch",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

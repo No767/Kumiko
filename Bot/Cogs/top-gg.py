@@ -6,15 +6,16 @@ import discord
 import orjson
 import simdjson
 import uvloop
+from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
 from dotenv import load_dotenv
 from rin_exceptions import NoItemsError
 
 load_dotenv()
 
 apiKey = os.getenv("Top_GG_API_Key")
-parser = simdjson.Parser()
+jsonParser = simdjson.Parser()
 
 
 class TopGGV1(commands.Cog):
@@ -36,45 +37,53 @@ class TopGGV1(commands.Cog):
                 "https://top.gg/api/bots", headers=headers, params=params
             ) as r:
                 getOneBotInfo = await r.content.read()
-                getOneBotInfoMain = parser.parse(getOneBotInfo, recursive=True)
+                getOneBotInfoMain = jsonParser.parse(getOneBotInfo, recursive=True)
                 try:
-                    try:
-                        if "error" in getOneBotInfoMain:
-                            raise NoItemsError
-                        else:
-                            embedVar = discord.Embed(
-                                title=getOneBotInfoMain["username"],
-                                color=discord.Color.from_rgb(191, 242, 255),
-                            )
-                            embedVar.description = (
-                                str(getOneBotInfoMain["longdesc"])
-                                .replace("\r", "")
-                                .replace("<div align=center>", "")
-                                .replace("<div align=left>", "")
-                                .replace("<div align=right>", "")
-                            )
-                            excludedKeys = {"longdesc", "lib"}
-                            for key, val in getOneBotInfoMain.items():
-                                if key not in excludedKeys:
-                                    embedVar.add_field(
-                                        name=key,
-                                        value=str(val).replace("'", ""),
-                                        inline=True,
-                                    )
-                            await ctx.respond(embed=embedVar)
-                    except NoItemsError:
-                        embedError = discord.Embed(
-                            color=discord.Color.from_rgb(231, 74, 255)
+                    if "error" in getOneBotInfoMain:
+                        raise NoItemsError
+                    else:
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=mainItem["username"],
+                                    description=mainItem["shortdesc"],
+                                )
+                                .add_field(
+                                    name="Invite", value=mainItem["invite"], inline=True
+                                )
+                                .add_field(
+                                    name="Website",
+                                    value=f"[{mainItem['website']}]",
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="GitHub",
+                                    value=f'{mainItem["github"]}',
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Prefix", value=mainItem["prefix"], inline=True
+                                )
+                                .add_field(
+                                    name="Date Added",
+                                    value=parser.isoparse(
+                                        mainItem["dateAdded"]
+                                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    inline=True,
+                                )
+                                for mainItem in getOneBotInfoMain["results"]
+                            ],
+                            loop_pages=True,
                         )
-                        embedError.description = (
-                            "Sorry, but that bot doesn't exist. So please try again..."
-                        )
-                        await ctx.respond(embed=embedError)
-                except Exception as e:
-                    embedVar = discord.Embed(color=discord.Color.from_rgb(231, 74, 255))
-                    embedVar.description = f"The query failed. Please try again."
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
+                except NoItemsError:
+                    embedError = discord.Embed(
+                        color=discord.Color.from_rgb(231, 74, 255)
+                    )
+                    embedError.description = (
+                        "Sorry, but that bot doesn't exist. So please try again..."
+                    )
+                    await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

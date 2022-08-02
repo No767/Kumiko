@@ -51,11 +51,6 @@ class SpigetV1(commands.Cog):
                                     inline=True,
                                 )
                                 .add_field(
-                                    name="Premium?",
-                                    value=mainItem["premium"],
-                                    inline=True,
-                                )
-                                .add_field(
                                     name="Average Rating",
                                     value=mainItem["rating"]["average"],
                                     inline=True,
