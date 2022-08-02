@@ -24,7 +24,7 @@ RUN apt-get update --no-install-recommends  \
   && apt-get install -y curl --no-install-recommends \
   && apt-get -y autoclean
 ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION lts
+ENV NODE_VERSION 16.16.0
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 RUN source $NVM_DIR/nvm.sh \
   && nvm install $NODE_VERSION \
@@ -32,7 +32,7 @@ RUN source $NVM_DIR/nvm.sh \
   && nvm use default
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
-RUN npm install -g npm pm2@latest
+RUN npm install --location=global npm pm2@latest
 
 FROM install_node AS prod_deployment
 WORKDIR /
