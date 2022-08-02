@@ -4,7 +4,8 @@
 
 # Kumiko (久美子)
 
-![Kumiko](./assets/kumiko-resized.jpg)
+![Kumiko](./assets/kumiko-resized.jpg)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_shield)
+
 
 <br>
 
@@ -77,6 +78,9 @@ If you would like to get started, here are some links to help you with that:
 # Licensing
 
 Kumiko being a direct upstream fork of Rin, is licensed under the same license as Rin, which is [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_large)
 
 # Name Inspiration
 
