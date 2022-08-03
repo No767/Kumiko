@@ -34,7 +34,6 @@ jobs:
           elif [ ${{ steps.branch-name.outputs.current_branch }} == dev ]; then
             if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\-(dev)$ ]]; then
               TAGS="$TAGS-${SHORTREF}"
-          fi
 
           # Allow for the semver to be appended by the commit sha. 
           # this is the preffered way to tag dev builds
