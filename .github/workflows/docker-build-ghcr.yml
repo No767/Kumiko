@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  rin:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,7 +19,7 @@ jobs:
         id: prep
         run: |
           DOCKER_IMAGE=ghcr.io/no767/rin
-          VERSION=latest
+          VERSION=v2.2.0-dev
           SHORTREF=${GITHUB_SHA::8}
           
           # If this is git tag, use the tag name as a docker tag
