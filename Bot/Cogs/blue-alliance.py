@@ -10,6 +10,7 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
+from rin_exceptions import NoItemsError
 
 load_dotenv()
 
@@ -47,7 +48,7 @@ class BlueAllianceV1(commands.Cog):
                 mainFilter = ["nickname", "team_number"]
                 try:
                     if "Error" in dataMain:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         for key, value in dataMain.items():
                             if key not in mainFilter:
@@ -57,7 +58,7 @@ class BlueAllianceV1(commands.Cog):
                             f"{dataMain['team_number']} - {dataMain['nickname']}"
                         )
                         await ctx.respond(embed=embed)
-                except ValueError:
+                except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = "It seems like there are no teams named like that. Please try again"
                     await ctx.respond(embed=embedError)
@@ -79,7 +80,7 @@ class BlueAllianceV1(commands.Cog):
                 dataMain2 = parser.parse(data2, recursive=True)
                 try:
                     if "Error" in dataMain2:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         mainPages = pages.Paginator(
                             pages=[
@@ -128,7 +129,7 @@ class BlueAllianceV1(commands.Cog):
                             loop_pages=True,
                         )
                         await mainPages.respond(ctx.interaction, ephemeral=False)
-                except ValueError:
+                except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = "It seems like there are no teams named like that. Please try again"
                     await ctx.respond(embed=embedError)
@@ -154,7 +155,7 @@ class BlueAllianceV1(commands.Cog):
                 dataMain = parser.parse(data, recursive=True)
                 try:
                     if "Error" in dataMain:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         mainPages = pages.Paginator(
                             pages=[
@@ -217,7 +218,7 @@ class BlueAllianceV1(commands.Cog):
                             loop_pages=True,
                         )
                         await mainPages.respond(ctx.interaction, ephemeral=False)
-                except ValueError:
+                except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = "It seems like there are no teams and/or event keys named like that. Please try again"
                     await ctx.respond(embed=embedError)
@@ -285,7 +286,7 @@ class BlueAllianceV1(commands.Cog):
                 dataMain = parser.parse(data, recursive=True)
                 try:
                     if "Error" in dataMain:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         mainPages = pages.Paginator(
                             pages=[
@@ -334,7 +335,7 @@ class BlueAllianceV1(commands.Cog):
                             loop_pages=True,
                         )
                         await mainPages.respond(ctx.interaction, ephemeral=False)
-                except ValueError:
+                except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = (
                         "It seems like there are no records available. Please try again"

@@ -70,7 +70,6 @@ class RedditV1(commands.Cog):
                         )
                         reddit_embed.title = submission.title
                         reddit_embed.description = submission.selftext
-                        # reddit_embed.description = f"{self.bot.user.name} found this post in r/{submission.subreddit.display_name} by {submission.author.name} when searching {original_search}"
                         reddit_embed.set_image(url=submission.url)
                         reddit_embed.add_field(
                             name="Author", value=submission.author.name, inline=True

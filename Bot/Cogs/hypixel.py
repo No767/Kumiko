@@ -9,6 +9,7 @@ import uvloop
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
+from rin_exceptions import NotFoundHTTPException
 
 load_dotenv()
 
@@ -33,18 +34,22 @@ class HypixelV1(commands.Cog):
                 status = await response.content.read()
                 statusMain = parser.parse(status, recursive=True)
                 try:
-                    embedVar = discord.Embed(
-                        title="Games Player Count",
-                        color=discord.Color.from_rgb(186, 193, 255),
+                    if statusMain["success"] is False or response.status == 400:
+                        raise NotFoundHTTPException
+                    else:
+                        embedVar = discord.Embed(
+                            title="Games Player Count",
+                            color=discord.Color.from_rgb(186, 193, 255),
+                        )
+                        for k, v in statusMain["games"].items():
+                            embedVar.add_field(name=k, value=v["players"], inline=True)
+                        await ctx.respond(embed=embedVar)
+                except NotFoundHTTPException:
+                    await ctx.respond(
+                        embed=discord.Embed(
+                            description="Oops, it seems like there was an error. Please try again"
+                        )
                     )
-                    for k, v in statusMain["games"].items():
-                        embedVar.add_field(name=k, value=v["players"], inline=True)
-                    await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedVar = discord.Embed()
-                    embedVar.description = "The command broke. Please try again."
-                    embedVar.add_field(name="Reason", value=str(e), inline=False)
-                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -58,17 +63,13 @@ class HypixelV1(commands.Cog):
             ) as r:
                 stats = await r.content.read()
                 statsMain = parser.parse(stats, recursive=True)
+                embedVar = discord.Embed(
+                    title="Total Amounts of Punishments Given",
+                    color=discord.Color.from_rgb(186, 193, 255),
+                )
                 try:
-                    embedVar = discord.Embed(
-                        title="Total Amounts of Punishments Given",
-                        color=discord.Color.from_rgb(186, 193, 255),
-                    )
-                    if str(statsMain["success"]) == "True":
-                        filterMain4 = ["success"]
-                        for keys, value in statsMain.items():
-                            if keys not in filterMain4:
-                                embedVar.add_field(name=keys, value=value, inline=True)
-                        await ctx.respond(embed=embedVar)
+                    if statsMain["success"] is False or r.status == 400:
+                        raise NotFoundHTTPException
                     else:
                         embedVar.description = "The results didn't come through..."
                         embedVar.add_field(
@@ -81,14 +82,12 @@ class HypixelV1(commands.Cog):
                             name="HTTP Response Status", value=r.status, inline=True
                         )
                         await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedException = discord.Embed()
-                    embedException.description = "The query failed..."
-                    embedException.add_field(name="Reason", value=e, inline=True)
-                    embedException.add_field(
-                        name="HTTP Response Status", value=r.status, inline=True
+                except NotFoundHTTPException:
+                    embedError = discord.Embed()
+                    embedError.description = (
+                        "There seems to be an error... Please try again"
                     )
-                    await ctx.respond(embed=embedException)
+                    await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
