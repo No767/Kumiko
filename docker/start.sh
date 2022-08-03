@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Note that this won't be used on Kumiko. Kumiko uses a different system instead
+
 set -euo pipefail
 
 if [[ -v TOKEN ]]; then
