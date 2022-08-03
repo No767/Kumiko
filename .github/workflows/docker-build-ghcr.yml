@@ -33,7 +33,7 @@ jobs:
             fi
           elif [ ${{ steps.branch-name.outputs.current_branch }} == dev ]; then
             if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\-(dev)$ ]]; then
-              TAGS="${TAGS}-${SHORTREF}"
+              TAGS="${VERSION}-${SHORTREF}"
             fi
           fi
 
