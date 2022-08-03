@@ -30,10 +30,12 @@ jobs:
             if [[ $GITHUB_REF == refs/tags/* ]]; then
               VERSION=${GITHUB_REF#refs/tags/v}
               TAGS="${DOCKER_IMAGE}:${VERSION}"
-
+            fi
           elif [ ${{ steps.branch-name.outputs.current_branch }} == dev ]; then
             if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\-(dev)$ ]]; then
               TAGS="$TAGS-${SHORTREF}"
+            fi
+          fi
 
           # Allow for the semver to be appended by the commit sha. 
           # this is the preffered way to tag dev builds
