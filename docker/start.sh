@@ -5,7 +5,7 @@
 set -euo pipefail
 
 if [[ -v TOKEN ]]; then
-    sed -i "s@bot_token@$TOKEN@g" /Rin/Bot/.env
+    echo "TOKEN=${TOKEN}" >> /Rin/Bot/.env
 else
     echo "Missing bot token! TOKEN environment variable is not set."
     exit 1;

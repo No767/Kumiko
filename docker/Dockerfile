@@ -35,7 +35,6 @@ COPY /Bot/Cogs/ /Rin/Bot/Cogs
 COPY --from=builder /Rin/wheels /Rin/wheels
 COPY --from=builder /Rin/requirements.txt /Rin/requirements.txt
 
-COPY /docker/.env.example /Rin/Bot/.env
 COPY /docker/start.sh /Rin/start.sh
 
 RUN pip install --upgrade pip
