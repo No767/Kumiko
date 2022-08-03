@@ -9,8 +9,7 @@ if [[ -v TOKEN ]]; then
 else
     echo "Missing bot token! TOKEN environment variable is not set."
     exit 1;
-fi 
-
+fi
 
 # API Keys
 # Blue Alliance
