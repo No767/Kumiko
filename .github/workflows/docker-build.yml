@@ -6,6 +6,7 @@ on:
       - "**.md"
     branches:
       - dev
+      - improve-docker
   workflow_dispatch:
 
 jobs:
