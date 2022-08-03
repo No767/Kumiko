@@ -16,7 +16,7 @@ A Discord bot focused on obtaining data from third-party services with lighting 
 # Info
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
-or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, DeviantArt, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
+or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
 hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. On top on that, Rin is powered by the fatest JSON parser in the world, SIMDJSON. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
 ## Modularity
@@ -51,7 +51,7 @@ Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.co
 
 if you would like to get started, here are some links to help you with that:
 
-- [Getting Started (For Developers)]()
+- [Getting Started (For Developers)](https://github.com/No767/Rin/blob/dev/Community/getting-started-rin.md)
 - [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
 
 # Links 
