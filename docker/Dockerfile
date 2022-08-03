@@ -11,7 +11,7 @@ WORKDIR /Rin
 
 COPY /Pipfile* /Rin/
 
-# Create wheels
+# Create dependency wheels
 RUN pip install --upgrade pip wheel setuptools pipenv \
     && pipenv lock -r > requirements.txt \
     && pip wheel --wheel-dir=/Rin/wheels -r requirements.txt
@@ -23,25 +23,27 @@ FROM python:3.10.5-alpine3.16
 
 RUN apk add --no-cache \
     ca-certificates \
-    tini
+    tini \
+    bash
 
 WORKDIR /Rin
 
 COPY /Bot/rinbot.py /Rin/Bot/
 COPY /Bot/Cogs/ /Rin/Bot/Cogs
-# TODO: this file contains a secret. Maybe better to echo from environment at runtime?
-# not sure if this is required might be redundant becuase of $Hanako_Token
-# COPY /Bot/.env /Rin/Bot
 
 # Copy dependency wheels from builder stage
 COPY --from=builder /Rin/wheels /Rin/wheels
 COPY --from=builder /Rin/requirements.txt /Rin/requirements.txt
 
+COPY /docker/.env.template /Rin/Bot/.env
+COPY /docker/start.sh /Rin/start.sh
+
 RUN pip install --upgrade pip
 
 # Add an unprivileged user and set directory permissions
 RUN adduser --disabled-password --gecos "" rin \
-    && chown -R rin:rin /Rin 
+    && chown -R rin:rin /Rin \
+    && chmod +x /Rin/start.sh
 
 USER rin
 
@@ -50,7 +52,7 @@ RUN pip install --user --no-index --find-links=/Rin/wheels -r requirements.txt
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["python3", "/Rin/Bot/rinbot.py"]
+CMD ["/Rin/start.sh"]
 
 STOPSIGNAL SIGTERM
 
