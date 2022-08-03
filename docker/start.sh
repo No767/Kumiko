@@ -9,12 +9,6 @@ else
     exit 1;
 fi 
 
-if [[ -v HANAKO_TOKEN ]]; then
-    sed -i "s@hanako_token@$HANAKO_TOKEN@g" /Rin/Bot/.env
-else
-    echo "Missing Hanako token! HANAKO_TOKEN environment variable is not set."
-    exit 1;
-fi 
 
 # API Keys
 # Blue Alliance
