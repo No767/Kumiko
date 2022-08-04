@@ -1,4 +1,4 @@
-name: Docker Build + Deploy (GHCR, Dev + Prod)
+name: Docker Build (GHCR, Dev + Prod)
 
 on:
   push:
@@ -44,15 +44,15 @@ jobs:
             VERSION=${GITHUB_REF#refs/tags/}
           fi
 
+          # Tag the Latest Build to allow for easier pulling
+          # This will be the latest dev build on GHCR, and latest production build on Docker Hub
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
+
           # If the BRANCH is dev, tag the image as 'dev-shortref'.
           # The shortref is to be able to determine which commit the build came from
           if [[ $BRANCH == dev ]]; then
             TAGS="$TAGS,${DOCKER_IMAGE}:${{ env.DEV_TAGGED_VERSION }}-${COMMIT_SHORTREF}"
           fi
-
-          # Tag the Latest Build to allow for easier pulling
-          # This will be the latest dev build on GHCR, and latest production build on Docker Hub
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
 
           # Set output parameters
           echo ::set-output name=tags::${TAGS}
