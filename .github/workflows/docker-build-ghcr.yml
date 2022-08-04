@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - "**.md"
     branches:
+      - master
       - dev # mainly for testing rn
 
 env:
@@ -26,22 +27,6 @@ jobs:
       - name: Prepare
         id: prep
         run: |
-          # DOCKER_IMAGE=${{ env.IMAGE }}
-          # VERSION=${{ env.VERSION }}
-          # SHORTREF=${GITHUB_SHA::8}
-        
-          # if [ ${{ steps.branch-name.outputs.current_branch }} == master ]; then
-          #   # If this is git tag, use the tag name as a docker tag
-          #   if [[ $GITHUB_REF == refs/tags/* ]]; then
-          #     VERSION=${GITHUB_REF#refs/tags/v}
-          #     TAGS="${DOCKER_IMAGE}:${VERSION}"
-          #   fi
-          # elif [ ${{ steps.branch-name.outputs.current_branch }} == dev ]; then
-          #   if [[ ${{ env.TAGGED_VERSION }} =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\-(dev)$ ]]; then
-          #     TAGS="${{ env.TAGGED_VERSION }}-${SHORTREF}"
-          #   fi
-          # fi
-
           DOCKER_IMAGE=${{ env.IMAGE }}
           VERSION=${{ env.VERSION }}
           SHORTREF=${GITHUB_SHA::8}
