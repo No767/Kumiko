@@ -37,7 +37,7 @@ jobs:
               TAGS="${DOCKER_IMAGE}:${VERSION}"
             fi
           elif [ ${{ steps.branch-name.outputs.current_branch }} == dev ]; then
-            if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\-(dev)$ ]]; then
+            if [[ ${{ env.TAGGED_VERSION }} =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\-(dev)$ ]]; then
               TAGS="${{ env.TAGGED_VERSION }}-${SHORTREF}"
             fi
           fi
