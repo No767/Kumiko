@@ -36,7 +36,7 @@ jobs:
           
           DOCKER_IMAGE=${{ env.IMAGE }}
           VERSION=${{ env.VERSION }}
-          COMMMIT_SHORTREF=${GITHUB_SHA::8}
+          COMMIT_SHORTREF=${GITHUB_SHA::8}
           BRANCH=${GITHUB_REF#refs/heads/}
           
           # If Git tags are used, tag the docker's tag with the git tag
