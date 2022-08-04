@@ -510,7 +510,6 @@ class AniListV1(commands.Cog):
                 if len(data["Page"]["characters"]) == 0:
                     raise NoItemsError
                 else:
-                    print(data)
                     pagesMain2 = pages.Paginator(
                         pages=[
                             discord.Embed(

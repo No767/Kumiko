@@ -10,7 +10,7 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from rin_exceptions import NoItemsError
+from rin_exceptions import NoItemsError, NotFoundHTTPException
 
 load_dotenv()
 
@@ -36,27 +36,28 @@ class FirstFRCV1(commands.Cog):
                 f"https://frc-api.firstinspires.org/v3.0/{season}", headers=headers
             ) as r:
                 try:
-                    data = await r.content.read()
-                    dataMain = jsonParser.parse(data, recursive=True)
-                    filterSeason = ["frcChampionships", "gameName", "kickoff"]
-                    embedVar = discord.Embed()
-                    for k, v in dataMain.items():
-                        if k not in filterSeason:
-                            embedVar.add_field(name=k, value=v, inline=True)
-                    embedVar.add_field(
-                        name="Kickoff",
-                        value=parser.isoparse(dataMain["kickoff"]).strftime(
-                            "%Y-%m-%d %H:%M:%S"
-                        ),
-                        inline=True,
-                    )
-                    embedVar.title = dataMain["gameName"]
-                    await ctx.respond(embed=embedVar)
-                except ValueError:
+                    if r.status == 400:
+                        raise NotFoundHTTPException
+                    else:
+                        data = await r.content.read()
+                        dataMain = jsonParser.parse(data, recursive=True)
+                        filterSeason = ["frcChampionships", "gameName", "kickoff"]
+                        embedVar = discord.Embed()
+                        for k, v in dataMain.items():
+                            if k not in filterSeason:
+                                embedVar.add_field(name=k, value=v, inline=True)
+                        embedVar.add_field(
+                            name="Kickoff",
+                            value=parser.isoparse(dataMain["kickoff"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
+                        embedVar.title = dataMain["gameName"]
+                        await ctx.respond(embed=embedVar)
+                except NotFoundHTTPException:
                     embedError = discord.Embed()
-                    embedError.description = (
-                        "You may have incorrectly put in data here. Please try again"
-                    )
+                    embedError.description = "Oops, but there seem to be no data for that season. Please try again."
                     await ctx.respond(embed=embedError)
         asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -84,51 +85,56 @@ class FirstFRCV1(commands.Cog):
                 params=params,
             ) as re:
                 data = await re.content.read()
-                dataMain = jsonParser.parse(data, recursive=True)
                 try:
-                    if len(dataMain["MatchScores"]) == 0:
-                        raise NoItemsError
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=f'{dictItem["matchLevel"]} {dictItem["matchNumber"]}'
-                                )
-                                .add_field(
-                                    name="Total Points",
-                                    value=[
-                                        f'{items["alliance"]}: {items["totalPoints"]}'
-                                        for items in dictItem["alliances"]
-                                    ],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Ranking Points",
-                                    value=[
-                                        f'{items["alliance"]}: {items["rp"]}'
-                                        for items in dictItem["alliances"]
-                                    ],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Foul Points",
-                                    value=[
-                                        f'{items["alliance"]}: {items["foulPoints"]}'
-                                        for items in dictItem["alliances"]
-                                    ],
-                                    inline=True,
-                                )
-                                for dictItem in dataMain["MatchScores"]
-                            ],
-                            loop_pages=True,
+                    dataMain = jsonParser.parse(data, recursive=True)
+                    try:
+                        if len(dataMain["MatchScores"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=f'{dictItem["matchLevel"]} {dictItem["matchNumber"]}'
+                                    )
+                                    .add_field(
+                                        name="Total Points",
+                                        value=[
+                                            f'{items["alliance"]}: {items["totalPoints"]}'
+                                            for items in dictItem["alliances"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Ranking Points",
+                                        value=[
+                                            f'{items["alliance"]}: {items["rp"]}'
+                                            for items in dictItem["alliances"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Foul Points",
+                                        value=[
+                                            f'{items["alliance"]}: {items["foulPoints"]}'
+                                            for items in dictItem["alliances"]
+                                        ],
+                                        inline=True,
+                                    )
+                                    for dictItem in dataMain["MatchScores"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "It seems like there are no scores... Please try again"
                         )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-                except NoItemsError:
-                    embedNoItemsError = discord.Embed()
-                    embedNoItemsError.description = (
-                        "It seems like there are no scores... Please try again"
-                    )
-                    await ctx.respond(embed=embedNoItemsError)
+                        await ctx.respond(embed=embedNoItemsError)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = "It seems like there wasn't any found based on the search results. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -156,79 +162,84 @@ class FirstFRCV1(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = jsonParser.parse(data, recursive=True)
                 try:
-                    if len(dataMain) == 0:
-                        raise NoItemsError
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(title=mainItem["description"])
-                                .add_field(
-                                    name="Red Alliance Final",
-                                    value=mainItem["scoreRedFinal"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Red Alliance Foul",
-                                    value=mainItem["scoreRedFoul"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Red Alliance Auto",
-                                    value=mainItem["scoreRedAuto"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Blue Alliance Final",
-                                    value=mainItem["scoreBlueFinal"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Blue Alliance Foul",
-                                    value=mainItem["scoreBlueFoul"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Blue Alliance Auto",
-                                    value=mainItem["scoreBlueAuto"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Start Time",
-                                    value=parser.isoparse(
-                                        mainItem["actualStartTime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Post Results Time",
-                                    value=parser.isoparse(
-                                        mainItem["postResultTime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Teams",
-                                    value=str(
-                                        [
-                                            f'{items["station"]}:{items["teamNumber"]}'
-                                            for items in mainItem["teams"]
-                                        ]
-                                    ).replace("'", ""),
-                                    inline=True,
-                                )
-                                for mainItem in dataMain["Matches"]
-                            ],
-                            loop_pages=True,
+                    dataMain = jsonParser.parse(data, recursive=True)
+                    try:
+                        if len(dataMain) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(title=mainItem["description"])
+                                    .add_field(
+                                        name="Red Alliance Final",
+                                        value=mainItem["scoreRedFinal"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Red Alliance Foul",
+                                        value=mainItem["scoreRedFoul"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Red Alliance Auto",
+                                        value=mainItem["scoreRedAuto"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Blue Alliance Final",
+                                        value=mainItem["scoreBlueFinal"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Blue Alliance Foul",
+                                        value=mainItem["scoreBlueFoul"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Blue Alliance Auto",
+                                        value=mainItem["scoreBlueAuto"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Start Time",
+                                        value=parser.isoparse(
+                                            mainItem["actualStartTime"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Post Results Time",
+                                        value=parser.isoparse(
+                                            mainItem["postResultTime"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Teams",
+                                        value=str(
+                                            [
+                                                f'{items["station"]}:{items["teamNumber"]}'
+                                                for items in mainItem["teams"]
+                                            ]
+                                        ).replace("'", ""),
+                                        inline=True,
+                                    )
+                                    for mainItem in dataMain["Matches"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "It seems like there are no results... Please try again"
                         )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-                except NoItemsError:
-                    embedNoItemsError = discord.Embed()
-                    embedNoItemsError.description = (
-                        "It seems like there are no results... Please try again"
-                    )
-                    await ctx.respond(embed=embedNoItemsError)
+                        await ctx.respond(embed=embedNoItemsError)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = "It seems like there wasn't any found based on the search results. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -278,60 +289,65 @@ class FirstFRCV1(commands.Cog):
                 params=params,
             ) as res:
                 data = await res.content.read()
-                dataMain2 = jsonParser.parse(data, recursive=True)
                 try:
-                    if len(dataMain2["Events"]) == 0:
-                        raise NoItemsError
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(title=mainItem["name"])
-                                .add_field(
-                                    name="Code", value=mainItem["code"], inline=True
-                                )
-                                .add_field(
-                                    name="Division Code",
-                                    value=mainItem["divisionCode"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Location",
-                                    value=f'{mainItem["city"]}, {mainItem["stateprov"]}, {mainItem["country"]}',
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Timezone",
-                                    value=mainItem["timezone"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Start Date",
-                                    value=parser.isoparse(
-                                        mainItem["dateStart"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="End Date",
-                                    value=parser.isoparse(mainItem["dateEnd"]).strftime(
-                                        "%Y-%m-%d %H:%M:%S"
-                                    ),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Webcasts",
-                                    value=mainItem["webcasts"],
-                                    inline=True,
-                                )
-                                for mainItem in dataMain2["Events"]
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-                except NoItemsError:
-                    embedNoItemsError = discord.Embed()
-                    embedNoItemsError.description = "Sorry, it seems like there is no events during those times! Please try again"
-                    await ctx.respond(embed=embedNoItemsError)
+                    dataMain2 = jsonParser.parse(data, recursive=True)
+                    try:
+                        if len(dataMain2["Events"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(title=mainItem["name"])
+                                    .add_field(
+                                        name="Code", value=mainItem["code"], inline=True
+                                    )
+                                    .add_field(
+                                        name="Division Code",
+                                        value=mainItem["divisionCode"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Location",
+                                        value=f'{mainItem["city"]}, {mainItem["stateprov"]}, {mainItem["country"]}',
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Timezone",
+                                        value=mainItem["timezone"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Start Date",
+                                        value=parser.isoparse(
+                                            mainItem["dateStart"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="End Date",
+                                        value=parser.isoparse(
+                                            mainItem["dateEnd"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Webcasts",
+                                        value=mainItem["webcasts"],
+                                        inline=True,
+                                    )
+                                    for mainItem in dataMain2["Events"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = "Sorry, it seems like there is no events during those times! Please try again"
+                        await ctx.respond(embed=embedNoItemsError)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = "It seems like there wasn't any found based on the search results. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -353,46 +369,53 @@ class FirstFRCV1(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = jsonParser.parse(data, recursive=True)
                 try:
-                    if len(dataMain["Rankings"]) == 0:
-                        raise NoItemsError
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=f'Rank {mainItem["rank"]} - {mainItem["teamNumber"]}'
-                                )
-                                .add_field(
-                                    name="Wins", value=mainItem["wins"], inline=True
-                                )
-                                .add_field(
-                                    name="Losses", value=mainItem["losses"], inline=True
-                                )
-                                .add_field(
-                                    name="Ties", value=mainItem["ties"], inline=True
-                                )
-                                .add_field(
-                                    name="Qual Average",
-                                    value=mainItem["qualAverage"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Matches Played",
-                                    value=mainItem["matchesPlayed"],
-                                    inline=True,
-                                )
-                                for mainItem in dataMain["Rankings"]
-                            ],
-                            loop_pages=True,
+                    dataMain = jsonParser.parse(data, recursive=True)
+                    try:
+                        if len(dataMain["Rankings"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(
+                                        title=f'Rank {mainItem["rank"]} - {mainItem["teamNumber"]}'
+                                    )
+                                    .add_field(
+                                        name="Wins", value=mainItem["wins"], inline=True
+                                    )
+                                    .add_field(
+                                        name="Losses",
+                                        value=mainItem["losses"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Ties", value=mainItem["ties"], inline=True
+                                    )
+                                    .add_field(
+                                        name="Qual Average",
+                                        value=mainItem["qualAverage"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Matches Played",
+                                        value=mainItem["matchesPlayed"],
+                                        inline=True,
+                                    )
+                                    for mainItem in dataMain["Rankings"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedNoItemsError = discord.Embed()
+                        embedNoItemsError.description = (
+                            "It seems like there are no teams... Please try again"
                         )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-                except NoItemsError:
-                    embedNoItemsError = discord.Embed()
-                    embedNoItemsError.description = (
-                        "It seems like there are no teams... Please try again"
-                    )
-                    await ctx.respond(embed=embedNoItemsError)
+                        await ctx.respond(embed=embedNoItemsError)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = "It seems like there wasn't any found based on the search results. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -420,45 +443,50 @@ class FirstFRCV1(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = jsonParser.parse(data, recursive=True)
                 try:
-                    if len(dataMain["Schedule"]) == 0:
-                        raise NoItemsError
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(title=mainItem["description"])
-                                .add_field(
-                                    name="TournamentLevel",
-                                    value=mainItem["tournamentLevel"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Start Time",
-                                    value=parser.isoparse(
-                                        mainItem["startTime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Teams",
-                                    value=str(
-                                        [
-                                            f'{items["station"]}:{items["teamNumber"]}'
-                                            for items in mainItem["teams"]
-                                        ]
-                                    ).replace("'", ""),
-                                    inline=True,
-                                )
-                                for mainItem in dataMain["Schedule"]
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-                except NoItemsError:
-                    embedValueError = discord.Embed()
-                    embedValueError.description = "There seems to be no seasons, event codes, or teams... Please try again"
-                    await ctx.respond(embed=embedValueError)
+                    dataMain = jsonParser.parse(data, recursive=True)
+                    try:
+                        if len(dataMain["Schedule"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(title=mainItem["description"])
+                                    .add_field(
+                                        name="TournamentLevel",
+                                        value=mainItem["tournamentLevel"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Start Time",
+                                        value=parser.isoparse(
+                                            mainItem["startTime"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Teams",
+                                        value=str(
+                                            [
+                                                f'{items["station"]}:{items["teamNumber"]}'
+                                                for items in mainItem["teams"]
+                                            ]
+                                        ).replace("'", ""),
+                                        inline=True,
+                                    )
+                                    for mainItem in dataMain["Schedule"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except NoItemsError:
+                        embedValueError = discord.Embed()
+                        embedValueError.description = "There seems to be no seasons, event codes, or teams... Please try again"
+                        await ctx.respond(embed=embedValueError)
+                except ValueError:
+                    embedValError = discord.Embed()
+                    embedValError.description = "It seems like there wasn't any found based on the search results. Please try again."
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -479,48 +507,53 @@ class FirstFRCV1(commands.Cog):
             ) as r:
                 try:
                     data = await r.content.read()
-                    dataMain = jsonParser.parse(data, recursive=True)
-                    if len(dataMain["Alliances"]) == 0:
-                        raise NoItemsError
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(title=mainItem["name"])
-                                .add_field(
-                                    name="Captain Team",
-                                    value=mainItem["captain"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="First Pick",
-                                    value=mainItem["round1"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Second Pick",
-                                    value=mainItem["round2"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Third Pick",
-                                    value=mainItem["round3"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Backup Team",
-                                    value=mainItem["backup"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Backup Replaced",
-                                    value=mainItem["backupReplaced"],
-                                    inline=True,
-                                )
-                                for mainItem in dataMain["Alliances"]
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
+                    try:
+                        dataMain = jsonParser.parse(data, recursive=True)
+                        if len(dataMain["Alliances"]) == 0:
+                            raise NoItemsError
+                        else:
+                            mainPages = pages.Paginator(
+                                pages=[
+                                    discord.Embed(title=mainItem["name"])
+                                    .add_field(
+                                        name="Captain Team",
+                                        value=mainItem["captain"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="First Pick",
+                                        value=mainItem["round1"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Second Pick",
+                                        value=mainItem["round2"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Third Pick",
+                                        value=mainItem["round3"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Backup Team",
+                                        value=mainItem["backup"],
+                                        inline=True,
+                                    )
+                                    .add_field(
+                                        name="Backup Replaced",
+                                        value=mainItem["backupReplaced"],
+                                        inline=True,
+                                    )
+                                    for mainItem in dataMain["Alliances"]
+                                ],
+                                loop_pages=True,
+                            )
+                            await mainPages.respond(ctx.interaction, ephemeral=False)
+                    except ValueError:
+                        embedValError = discord.Embed()
+                        embedValError.description = "It seems like there wasn't any found based on the search results. Please try again."
+                        await ctx.respond(embed=embedValError)
                 except NoItemsError:
                     embedError = discord.Embed()
                     embedError.description = "It seems like there were no alliances... Probably due to bad data input. Please try again"

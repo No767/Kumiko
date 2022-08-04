@@ -13,7 +13,7 @@ class rinhelp(commands.Cog):
         self.last_member = None
 
     @slash_command(
-        name="rinhelp",
+        name="help",
         description="The Help Page for Rin",
     )
     async def rinHelp(
@@ -59,7 +59,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="AniList", value="`/rinhelp AniList`", inline=True
                 )
-                embedVar.add_field(name="Anime", value="`/rinhelp Anime`", inline=True)
                 embedVar.add_field(
                     name="Blue Alliance", value="`/rinhelp Blue-Alliance`", inline=True
                 )
@@ -177,24 +176,6 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.set_author(
                     name="Rin Help - AniList", icon_url=bot.user.display_avatar
-                )
-                await ctx.respond(embed=embedVar)
-
-            if category in ["Anime"]:
-                bot = self.bot
-                embedVar = discord.Embed(color=14414079)
-                embedVar.add_field(
-                    name="`waifu`",
-                    value="Gives some advice from AdviceSlip",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`waifupics`",
-                    value="Returns a random image of a waifu from waifu.pics",
-                    inline=True,
-                )
-                embedVar.set_author(
-                    name="Rin Help - Anime", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
