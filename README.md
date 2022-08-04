@@ -7,7 +7,7 @@
 <br/>
 
 ![GitHub Pipenv locked Python version (branch)](https://img.shields.io/github/pipenv/locked/python-version/No767/Rin/dev?label=Python&logo=python&logoColor=white) 
-[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Rin/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/snyk.yml) [![Docker Build (GHCR)](https://github.com/No767/Rin/actions/workflows/docker-build-ghcr.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/docker-build-ghcr.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2cf4ceacc746b3a4570d324c843a4b)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Open in GitPod](https://img.shields.io/badge/Open%20in%20-GitPod-blue?logo=gitpod)](https://gitpod.io/#https://github.com/No767/Rin) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin?label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
+[![CodeQL](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Rin/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/snyk.yml) [![Docker Build (GHCR)](https://github.com/No767/Rin/actions/workflows/docker-build-ghcr.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/docker-build-ghcr.yml) [![Docker Build (Docker Hub)](https://github.com/No767/Rin/actions/workflows/docker-build-hub.yml/badge.svg?branch=dev)](https://github.com/No767/Rin/actions/workflows/docker-build-hub.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2cf4ceacc746b3a4570d324c843a4b)](https://www.codacy.com/gh/No767/Rin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Rin&amp;utm_campaign=Badge_Grade) [![Open in GitPod](https://img.shields.io/badge/Open%20in%20-GitPod-blue?logo=gitpod)](https://gitpod.io/#https://github.com/No767/Rin) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Rin?label=Release&logo=github) ![GitHub](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)
 
 A Discord bot focused on obtaining data from third-party services with lighting performance in mind
 
@@ -54,6 +54,7 @@ if you would like to get started, here are some links to help you with that:
 
 - [Getting Started (For Developers)](https://github.com/No767/Rin/blob/dev/Community/getting-started-rin.md)
 - [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
+- [Documentation](https://docs.rinbot.live)
 
 # Links 
 

@@ -76,7 +76,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./Alpine-Docker/Dockerfile
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
