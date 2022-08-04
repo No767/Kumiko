@@ -18,3 +18,6 @@ run:
 
 deploy: 
 	sudo docker build -t no767/kumiko:$(DOCKER_TAG_VERSION) --build-arg PM2_PUBLIC_KEY_INGEST=$(PM2_PUBLIC_KEY_INGEST) --build-arg PM2_SECRET_KEY_INGEST=$(PM2_SECRET_KEY_INGEST) -f ./Ubuntu-Docker/Dockerfile .
+
+deploy-alpine: 
+	sudo docker build -t no767/kumiko:$(DOCKER_TAG_VERSION) -f ./Alpine-Docker/Dockerfile .

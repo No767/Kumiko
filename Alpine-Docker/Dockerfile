@@ -5,16 +5,24 @@ FROM python:3.10.5-alpine3.16 AS builder
 
 RUN apk add --no-cache \
     ca-certificates \
-    build-base 
+    build-base \
+    curl
 
-WORKDIR /Rin
+# Add Poetry locally
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+RUN python -m pip install --upgrade pip setuptools
+RUN curl -sSL https://install.python-poetry.org | python -
+ENV PATH="${PATH}:/root/.local/bin"
 
-COPY /Pipfile* /Rin/
+WORKDIR /Kumiko
+
+COPY /pyproject.toml /Kumiko/
+COPY /poetry.lock /Kumiko/
 
 # Create dependency wheels
-RUN pip install --upgrade pip wheel setuptools pipenv \
-    && pipenv lock -r > requirements.txt \
-    && pip wheel --wheel-dir=/Rin/wheels -r requirements.txt
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes \
+    && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
 
 ####################################################################################################
 ## Final image
@@ -26,38 +34,37 @@ RUN apk add --no-cache \
     tini \
     bash
 
-WORKDIR /Rin
-
-COPY /Bot/rinbot.py /Rin/Bot/
-COPY /Bot/Cogs/ /Rin/Bot/Cogs
+WORKDIR /Kumiko
+COPY /Bot/kumikobot.py /Kumiko/Bot/
+COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
+COPY /Bot/.env /Kumiko/Bot/
+COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
+COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
+COPY /Bot/exceptions /Kumiko/Bot/exceptions
 
 # Copy dependency wheels from builder stage
-COPY --from=builder /Rin/wheels /Rin/wheels
-COPY --from=builder /Rin/requirements.txt /Rin/requirements.txt
+COPY --from=builder /Kumiko/wheels /Kumiko/wheels
+COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
 
-COPY /Alpine-Docker/start.sh /Rin/start.sh
-
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools
 
 # Add an unprivileged user and set directory permissions
-RUN adduser --disabled-password --gecos "" rin \
-    && chown -R rin:rin /Rin \
-    && chmod +x /Rin/start.sh
+RUN adduser --disabled-password --gecos "" kumiko \
+    && chown -R kumiko:kumiko /Kumiko 
 
-USER rin
+USER kumiko
 
 # Install dependencies
-RUN pip install --user --no-index --find-links=/Rin/wheels -r requirements.txt
+RUN pip install --user --no-index --find-links=/Kumiko/wheels -r requirements.txt
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["/Rin/start.sh"]
+CMD ["python", "/Kumiko/Bot/kumikobot.py"]
 
 STOPSIGNAL SIGTERM
 
 # Image metadata
-LABEL org.opencontainers.image.title="Rin"
-LABEL org.opencontainers.image.description="Discord bot focused on obtaining data from third-party services with lighting performance in mind"
-LABEL org.opencontainers.image.url="https://rinbot.live"
+LABEL org.opencontainers.image.title="Kumiko"
+LABEL org.opencontainers.image.description="A multipurpose Discord bot built with freedom and choice in mind"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
-LABEL org.opencontainers.image.source="https://github.com/No767/Rin"
+LABEL org.opencontainers.image.source="https://github.com/No767/Kumiko"
