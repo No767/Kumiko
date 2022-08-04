@@ -71,7 +71,6 @@ For Developers and Contributors:
 - [Discords.com](https://discords.com/bots/bot/865883525932253184)
 - [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184)
 
-[![Bots for Discord](https://discords.com/bots/api/bot/865883525932253184/widget)](https://discords.com/bots/bots/865883525932253184)
 [![Top.gg](https://top.gg/api/widget/865883525932253184.svg)](https://top.gg/bot/865883525932253184)
 
 # Licensing
