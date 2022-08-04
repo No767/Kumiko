@@ -35,8 +35,6 @@ Rin comes with integration from 15+ services. Some of these services that are fu
 - Waifu.IM
 - MyAnimeList
 - MangaDex
-- Reddit
-- Twitch
 
 And many more!
 
@@ -52,6 +50,11 @@ Via Top.gg, or any of the links in the [Bot Discovery Network](https://github.co
 
 if you would like to get started, here are some links to help you with that:
 
+For end-users:
+- [Getting Started Guide](./Community/getting-started-guide.md)
+- [Documentation](https://docs.rinbot.live)
+
+For Developers and Contributors:
 - [Getting Started (For Developers)](https://github.com/No767/Rin/blob/dev/Community/getting-started-rin.md)
 - [Contributing](https://github.com/No767/Rin/blob/dev/Community/contributing.md)
 - [Documentation](https://docs.rinbot.live)
@@ -61,9 +64,9 @@ if you would like to get started, here are some links to help you with that:
 - [Documentation](https://docs.rinbot.live)
 - [Website](https://rinbot.live)
 - [Status Tracker](https://status.rinbot.live)
-    
+
 ## Bot Discovery Network Links
-    
+
 - [Top.gg](https://top.gg/bot/865883525932253184)
 - [Discords.com](https://discords.com/bots/bot/865883525932253184)
 - [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184)

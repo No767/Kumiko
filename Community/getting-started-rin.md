@@ -362,3 +362,13 @@ Some of the API's that Rin uses requires an API key. Here's the list of all of t
 - Twitch
 
 *Note: DeviantArt is officially unsupported due to the process of handling the access tokens and refreshing them.
+
+## Docker Tagging Styles
+
+Rin does have in fact a style of tagging docker images. Here it is:
+
+- If deploying to master or production (NOTE: DO NOT DEPLOY TO PRODUCTION UNLESS IT IS FULLY TESTED AND APPROVED):
+    `<image>:<github_release_tag>`
+    
+- If deploying to dev:
+    `<image>:<next_minor_version>-dev-<short_commit_sha>`

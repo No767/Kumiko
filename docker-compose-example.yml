@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  rin:
+    # Use cloudflare's DNS server. This is what Discord uses as well
+    # May have issues...
+    dns: 
+      - 1.1.1.1
+      - 1.0.0.1
+    container_name: Rin
+    restart: always
+    image: no767/rin-prod:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 0s
+        max_attempts: 3
+        window: 120s
+      mode: replicated
+    environment:
+      # Replace these values with the correct values
+      - TOKEN=botToken 
+      - BLUE_ALLIANCE_API_KEY=apiKey 
+      - DISCORD_BOTS_API_KEY=apiKey 
+      - FIRST_EVENTS_FINAL_KEY=apiKey 
+      - GITHUB_API_ACCESS_TOKEN=apiKey 
+      - HYPIXEL_API_KEY=apiKey 
+      - REDDIT_ID=apiKey 
+      - REDDIT_SECRET=apiKey 
+      - TENOR_API_KEY=apiKey 
+      - TOP_GG_API_KEY=apiKey 
+      - TWITCH_API_ACCESS_TOKEN=apiKey 
+      - TWITCH_API_CLIENT_ID=apiKey 
+      - TWITTER_BEARER_TOKEN=apiKey 
+      - YOUTUBE_API_KEY=apiKey 
