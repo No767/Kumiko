@@ -1,4 +1,4 @@
-name: Docker Build (Docker Hub)
+name: Docker Build + Deploy (Docker Hub, Prod)
 
 on:
   push:
@@ -27,33 +27,32 @@ jobs:
       - name: Prepare
         id: prep
         run: |
+          # Docker Tagging Syntax:
+          # If deploying to master or production (NOTE: DO NOT DEPLOY TO PRODUCTION UNLESS IT IS FULLY TESTED AND APPROVED):
+          # <image>:<tagged_version>
+          # 
+          # If deploying to dev:
+          # <image>:<next_minor_version>-dev-<short_commit_sha>
+          
           DOCKER_IMAGE=${{ env.IMAGE }}
           VERSION=${{ env.VERSION }}
-          SHORTREF=${GITHUB_SHA::8}
+          COMMMIT_SHORTREF=${GITHUB_SHA::8}
           BRANCH=${GITHUB_REF#refs/heads/}
           
-          # If this is git tag, use the tag name as a docker tag
+          # If Git tags are used, tag the docker's tag with the git tag
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
           fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-          
-          # If the VERSION looks like a version number, assume that
-          # this is the most recent version of the image and also
-          # tag it 'latest'.
-          # if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-          #   TAGS="$TAGS,${DOCKER_IMAGE}:latest"
-          # fi
-          
-          # If the BRANCH is dev, tag the image 'dev'.
+
+          # If the BRANCH is dev, tag the image 'dev' + add commit shortref.
           if [[ $BRANCH == dev ]]; then
-            TAGS="$TAGS,${DOCKER_IMAGE}:${{ env.DEV_TAGGED_VERSION }}-${SHORTREF}"
+            TAGS="$TAGS,${DOCKER_IMAGE}:${{ env.DEV_TAGGED_VERSION }}-${COMMIT_SHORTREF}"
           fi
 
+          # Tag the Latest Build to allow for easier pulling
+          # This will be the latest dev build on GHCR, and latest production build on Docker Hub
+          TAGS="${DOCKER_IMAGE}:${VERSION}"
 
-          # Allow for the semver to be appended by the commit sha. 
-          # this is the preffered way to tag dev builds
-          
           # Set output parameters
           echo ::set-output name=tags::${TAGS}
           echo ::set-output name=docker_image::${DOCKER_IMAGE}
