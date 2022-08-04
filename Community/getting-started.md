@@ -379,3 +379,17 @@ MongoDB_Server_IP_Dev = "127.0.0.1" # also could use ipv4 address if localhost d
 Now connect to the MongoDB server with MongoDBCompass or Mongosh and create a database called `kumiko_marketplace`. There is no need to create any collections, since beanie will create them when needed. 
 
 
+<<<<<<< HEAD:Community/getting-started.md
+=======
+*Note: DeviantArt is officially unsupported due to the process of handling the access tokens and refreshing them.
+
+## Docker Tagging Styles
+
+Rin does have in fact a style of tagging docker images. Here it is:
+
+- If deploying to master or production (NOTE: DO NOT DEPLOY TO PRODUCTION UNLESS IT IS FULLY TESTED AND APPROVED):
+    `<image>:<github_release_tag>`
+    
+- If deploying to dev:
+    `<image>:<next_minor_version>-dev-<short_commit_sha>`
+>>>>>>> 56a60b37a0373bf540ada78402dd609906a3e040:Community/getting-started-rin.md

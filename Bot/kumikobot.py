@@ -34,7 +34,7 @@ initial_extensions = [
     "Cogs.advice",
     "Cogs.qrcode-maker",
     "Cogs.spiget",
-    "Cogs.jikan",
+    "Cogs.myanimelist",
     "Cogs.top-gg",
     "Cogs.global-error-handling",
     "Cogs.kumikoinvite",
