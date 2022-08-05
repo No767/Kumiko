@@ -28,15 +28,17 @@ class ModrinthV1(commands.Cog):
         ctx,
         *,
         mod: Option(str, "The name of the mod"),
-        modloader: Option(str, "Forge or Fabric"),
+        modloader: Option(
+            str, "Forge or Fabric", default="Forge", choices=["Forge", "Fabric"]
+        ),
     ):
-        """Searches for up to 5 mods on Modrinth"""
+        """Searches for up to 25 mods on Modrinth"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "query": mod,
                 "index": "relevance",
-                "limit": 5,
-                "facets": f'[["categories:{modloader}"]]',
+                "limit": 25,
+                "facets": f'[["categories:{str(modloader).lower()}"]]',
             }
             async with session.get(
                 "https://api.modrinth.com/v2/search", params=params
@@ -45,7 +47,7 @@ class ModrinthV1(commands.Cog):
                 dataMain = jsonParser.parse(data, recursive=True)
                 try:
                     if len(dataMain["hits"]) == 0:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         mainPages = pages.Paginator(
                             pages=[
@@ -106,7 +108,7 @@ class ModrinthV1(commands.Cog):
                             loop_pages=True,
                         )
                         await mainPages.respond(ctx.interaction, ephemeral=False)
-                except ValueError:
+                except NoItemsError:
                     embedErrorMain = discord.Embed()
                     embedErrorMain.description = (
                         f"Sorry, but there are no mods named {mod}. Please try again"
@@ -121,7 +123,9 @@ class ModrinthV1(commands.Cog):
         ctx,
         *,
         name: Option(str, "The name of the mod"),
-        modloader: Option(str, "Forge or Fabric"),
+        modloader: Option(
+            str, "Forge or Fabric", default="Forge", choices=["Forge", "Fabric"]
+        ),
     ):
         """Gets info about the mod requested"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -228,7 +232,7 @@ class ModrinthV1(commands.Cog):
         loaders: Option(
             str,
             "The types of modloaders to filter out - Forge or Fabric",
-            required=True,
+            default="Forge",
             choices=["Forge", "Fabric"],
         ),
         game_version: Option(str, "The version of Minecraft", required=True),

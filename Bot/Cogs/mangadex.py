@@ -8,7 +8,7 @@ import uvloop
 from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
-from rin_exceptions import NoItemsError, NotFoundHTTPException
+from rin_exceptions import NoItemsError
 
 jsonParser = simdjson.Parser()
 
@@ -26,11 +26,12 @@ class MangaDexV1(commands.Cog):
         self.bot = bot
 
     md = SlashCommandGroup("mangadex", "Commmands for the MangaDex service")
+    mdSearch = md.create_subgroup("search", "Search for stuff on MangaDex")
     mdScanlation = md.create_subgroup(
         "scanlation", "Commands for the scanlation section"
     )
 
-    @md.command(name="search")
+    @mdSearch.command(name="manga")
     async def manga(self, ctx, *, manga: Option(str, "Name of Manga")):
         """Searches for up to 25 manga on MangaDex"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -109,7 +110,9 @@ class MangaDexV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Available Translated Language",
-                                    value=f'[{mainItem["attributes"]["availableTranslatedLanguages"]}]',
+                                    value=f'{mainItem["attributes"]["availableTranslatedLanguages"]}'.replace(
+                                        "'", ""
+                                    ),
                                     inline=True,
                                 )
                                 .add_field(
@@ -193,31 +196,22 @@ class MangaDexV1(commands.Cog):
                         elif len(dataMain2["data"]) == 0:
                             raise ValueError
                         else:
-                            mangaTitle2 = [
-                                val8
-                                for _, val8 in dataMain2["data"]["attributes"][
-                                    "title"
-                                ].items()
-                            ]
-                            mainDesc2 = [
-                                val9
-                                for _, val9 in dataMain2["data"]["attributes"][
-                                    "description"
-                                ].items()
-                            ]
-                            for titles in dataMain2["data"]["attributes"]["altTitles"]:
-                                allAltTitles = [value for _, value in titles.items()]
+                            mangaTitle2 = (
+                                dataMain2["data"]["attributes"]["title"]["en"]
+                                if "en" in dataMain2["data"]["attributes"]["title"]
+                                else dataMain2["data"]["attributes"]["title"]
+                            )
+                            mainDesc2 = (
+                                dataMain2["data"]["attributes"]["description"]["en"]
+                                if "en"
+                                in dataMain2["data"]["attributes"]["description"]
+                                else dataMain2["data"]["attributes"]["description"]
+                            )
                             for k, v in dataMain2["data"]["attributes"].items():
                                 if k not in mangaFilter2:
                                     embedVar.add_field(
                                         name=k, value=f"[{v}]", inline=True
                                     )
-                            for keys, value in dataMain2["data"]["attributes"][
-                                "links"
-                            ].items():
-                                embedVar.add_field(
-                                    name=keys, value=f"[{value}]", inline=True
-                                )
                             for tagItem in dataMain2["data"]["attributes"]["tags"]:
                                 mainTags = [
                                     v["name"]["en"]
@@ -254,12 +248,25 @@ class MangaDexV1(commands.Cog):
                             )
                             embedVar.add_field(
                                 name="Alt Titles",
-                                value=str(allAltTitles).replace("'", ""),
+                                value=str(
+                                    [
+                                        v
+                                        for items in dataMain2["data"]["attributes"][
+                                            "altTitles"
+                                        ]
+                                        for k, v in items.items()
+                                    ]
+                                ).replace("'", ""),
                                 inline=True,
                             )
                             embedVar.add_field(
                                 name="Tags",
                                 value=str(mainTags).replace("'", ""),
+                                inline=True,
+                            )
+                            embedVar.add_field(
+                                name="MangaDex URL",
+                                value=f'https://mangadex.org/title/{dataMain2["data"]["id"]}',
                                 inline=True,
                             )
                             await ctx.respond(embed=embedVar)
@@ -275,7 +282,7 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @mdScanlation.command(name="search")
+    @mdSearch.command(name="scanlation")
     async def scanlation_search(
         self, ctx, *, name: Option(str, "The name of the scanlation group")
     ):
@@ -314,12 +321,16 @@ class MangaDexV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Discord",
-                                    value=f'https://discord.gg/{mainItem["attributes"]["discord"]}',
+                                    value=f'https://discord.gg/{mainItem["attributes"]["discord"]}'
+                                    if mainItem["attributes"]["discord"] is not None
+                                    else "None",
                                     inline=True,
                                 )
                                 .add_field(
                                     name="Twitter",
-                                    value=f'https://twitter.com/{mainItem["attributes"]["twitter"]}',
+                                    value=f'https://twitter.com/{mainItem["attributes"]["twitter"]}'
+                                    if mainItem["attributes"]["twitter"] is not None
+                                    else "None",
                                     inline=True,
                                 )
                                 .add_field(
@@ -355,7 +366,7 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @md.command(name="author")
+    @mdSearch.command(name="author")
     async def author(self, ctx, *, author_name: Option(str, "The name of the author")):
         """Returns up to 25 authors and their info"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -391,17 +402,23 @@ class MangaDexV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Twitter",
-                                    value=f'https://twitter.com/{mainItem["attributes"]["twitter"]}',
+                                    value=mainItem["attributes"]["twitter"]
+                                    if mainItem["attributes"]["twitter"] is not None
+                                    else "None",
                                     inline=True,
                                 )
                                 .add_field(
                                     name="Pixiv",
-                                    value=f'https://pixiv.net/{mainItem["attributes"]["pixiv"]}',
+                                    value=mainItem["attributes"]["pixiv"]
+                                    if mainItem["attributes"]["pixiv"] is not None
+                                    else "None",
                                     inline=True,
                                 )
                                 .add_field(
                                     name="YouTube",
-                                    value=f'https://www.youtube.com/{mainItem["attributes"]["youtube"]}',
+                                    value=mainItem["attributes"]["youtube"]
+                                    if mainItem["attributes"]["youtube"] is not None
+                                    else "None",
                                     inline=True,
                                 )
                                 .add_field(
@@ -423,74 +440,78 @@ class MangaDexV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @md.command(name="read")
-    async def manga_read(
-        self,
-        ctx,
-        *,
-        manga_id: Option(str, "The Manga's ID"),
-        chapter_number: Option(int, "The chapter number of the manga"),
-    ):
-        """Reads a chapter out of the manga provided on MangaDex"""
-        try:
-            async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-                params = {
-                    "contentRating[]": "safe",
-                    "includeFutureUpdates": 1,
-                    "order[createdAt]": "asc",
-                    "order[updatedAt]": "asc",
-                    "order[publishAt]": "asc",
-                    "order[readableAt]": "asc",
-                    "order[volume]": "asc",
-                    "order[chapter]": "asc",
-                }
-                async with session.get(
-                    f"https://api.mangadex.org/manga/{manga_id}/feed", params=params
-                ) as r:
-                    data = await r.content.read()
-                    dataMain = jsonParser.parse(data, recursive=True)
-                    if "error" in dataMain["result"]:
-                        raise NotFoundHTTPException
-                    else:
-                        chapterIndexID = List(dataMain["data"])[chapter_number]["id"]
-                        chapterTitle = List(dataMain["data"])[chapter_number][
-                            "attributes"
-                        ]["title"]
-                        chapterPos = List(dataMain["data"])[chapter_number][
-                            "attributes"
-                        ]["chapter"]
-                        async with aiohttp.ClientSession(
-                            json_serialize=orjson.dumps
-                        ) as session:
-                            async with session.get(
-                                f"https://api.mangadex.org/at-home/server/{chapterIndexID}"
-                            ) as r:
-                                data2 = await r.content.read()
-                                dataMain2 = jsonParser.parse(data2, recursive=True)
-                                if "error" in dataMain2["result"]:
-                                    raise NotFoundHTTPException
-                                else:
-                                    chapter_hash = dataMain2["chapter"]["hash"]
-                                    paginator = pages.Paginator(
-                                        pages=[
-                                            discord.Embed()
-                                            .set_footer(
-                                                text=f"{chapterTitle} - Chapter {chapterPos}"
-                                            )
-                                            .set_image(
-                                                url=f"https://uploads.mangadex.org/data/{chapter_hash}/{item}"
-                                            )
-                                            for item in dataMain2["chapter"]["data"]
-                                        ],
-                                        loop_pages=True,
-                                    )
-                                    await paginator.respond(
-                                        ctx.interaction, ephemeral=False
-                                    )
-        except NotFoundHTTPException:
-            embedError = discord.Embed()
-            embedError.description = "It seems like the manga's id is invalid or cannot be found. Please try again"
-            await ctx.respond(embed=embedError)
+    # This will be disabled on production releases, since
+    # this requires an ID input, and is not finished yet.
+    # discord labs would definitely complain about this command...
+
+    # @md.command(name="read")
+    # async def manga_read(
+    #     self,
+    #     ctx,
+    #     *,
+    #     manga_id: Option(str, "The Manga's ID"),
+    #     chapter_number: Option(int, "The chapter number of the manga"),
+    # ):
+    #     """Reads a chapter out of the manga provided on MangaDex"""
+    #     try:
+    #         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+    #             params = {
+    #                 "contentRating[]": "safe",
+    #                 "includeFutureUpdates": 1,
+    #                 "order[createdAt]": "asc",
+    #                 "order[updatedAt]": "asc",
+    #                 "order[publishAt]": "asc",
+    #                 "order[readableAt]": "asc",
+    #                 "order[volume]": "asc",
+    #                 "order[chapter]": "asc",
+    #             }
+    #             async with session.get(
+    #                 f"https://api.mangadex.org/manga/{manga_id}/feed", params=params
+    #             ) as r:
+    #                 data = await r.content.read()
+    #                 dataMain = jsonParser.parse(data, recursive=True)
+    #                 if "error" in dataMain["result"]:
+    #                     raise NotFoundHTTPException
+    #                 else:
+    #                     chapterIndexID = List(dataMain["data"])[chapter_number]["id"]
+    #                     chapterTitle = List(dataMain["data"])[chapter_number][
+    #                         "attributes"
+    #                     ]["title"]
+    #                     chapterPos = List(dataMain["data"])[chapter_number][
+    #                         "attributes"
+    #                     ]["chapter"]
+    #                     async with aiohttp.ClientSession(
+    #                         json_serialize=orjson.dumps
+    #                     ) as session:
+    #                         async with session.get(
+    #                             f"https://api.mangadex.org/at-home/server/{chapterIndexID}"
+    #                         ) as r:
+    #                             data2 = await r.content.read()
+    #                             dataMain2 = jsonParser.parse(data2, recursive=True)
+    #                             if "error" in dataMain2["result"]:
+    #                                 raise NotFoundHTTPException
+    #                             else:
+    #                                 chapter_hash = dataMain2["chapter"]["hash"]
+    #                                 paginator = pages.Paginator(
+    #                                     pages=[
+    #                                         discord.Embed()
+    #                                         .set_footer(
+    #                                             text=f"{chapterTitle} - Chapter {chapterPos}"
+    #                                         )
+    #                                         .set_image(
+    #                                             url=f"https://uploads.mangadex.org/data/{chapter_hash}/{item}"
+    #                                         )
+    #                                         for item in dataMain2["chapter"]["data"]
+    #                                     ],
+    #                                     loop_pages=True,
+    #                                 )
+    #                                 await paginator.respond(
+    #                                     ctx.interaction, ephemeral=False
+    #                                 )
+    #     except NotFoundHTTPException:
+    #         embedError = discord.Embed()
+    #         embedError.description = "It seems like the manga's id is invalid or cannot be found. Please try again"
+    #         await ctx.respond(embed=embedError)
 
 
 def setup(bot):

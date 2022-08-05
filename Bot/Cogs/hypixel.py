@@ -71,16 +71,9 @@ class HypixelV1(commands.Cog):
                     if statsMain["success"] is False or r.status == 400:
                         raise NotFoundHTTPException
                     else:
-                        embedVar.description = "The results didn't come through..."
-                        embedVar.add_field(
-                            name="Success", value=statsMain["success"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="Cause", value=statsMain["cause"], inline=True
-                        )
-                        embedVar.add_field(
-                            name="HTTP Response Status", value=r.status, inline=True
-                        )
+                        for k, v in statsMain.items():
+                            if k not in ["success"]:
+                                embedVar.add_field(name=k, value=v, inline=True)
                         await ctx.respond(embed=embedVar)
                 except NotFoundHTTPException:
                     embedError = discord.Embed()
