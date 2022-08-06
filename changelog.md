@@ -1,55 +1,48 @@
-# ✨ Rin V2.1.0 ✨
+# ✨ Rin V2.2.0 (LTS) ✨
 
-This update mainly focuses on properly handling exceptions (eg when a user puts in random data), and includes new services as well. 
+**This will be the last version of Rin to have new features. Rin v2.2.0 is considered an LTS release, and will be supported for the next 3-6 months from the release date. For more info, please see the gist linked [here](https://gist.github.com/No767/de27c61dc471ac331a45ea7c2bda62c0)**
 
 ## Changes
 
-- Use Pysimdjson for handling JSON processing instead of Orjson
-- Finished Blue Alliance API support
-- Swap from Python docker images to process management with PM2 within an Ubuntu docker image
-- Organize all commands into groups and subgroups
-- Changed Jisho and other cogs to use a paginated embed instead
-- Switched Pyenv to use 3.10.5 instead of 3.10.4
-- Make Rin's logo trans (in support of pride month)
-- Actually use pre-commit hooks instead of format workflow
-- Update Help Command
-- Actually specify which exceptions to handle 
+- Swap to completely using paginators instead of just spamming with embeds
+- Completely audit all 65+ service commands
+- Replace Twitter Search with Twitter API v2
+- Removed all commands that required ID input
+- Switch to using Rin-Exceptions package
 
 ## Additions
-- GitHub API Support
-- Full Blue Alliance API Support
-- Full AniList API Support
-- MangaDex Reader
-- Custom exceptions package  
-- /reddit egg_irl command (just feeds u with posts from r/egg_irl)
-- Use Makefile for easier and faster setup + development
-- Proper exception handling for all service cogs
-- Guides for setup + development for Rin
-- Task template 
-- Actually use pre-commit hooks instead of format workflow
+
+- Alpine-based Dockerfile + Start.sh (allowing Rin to be deployed anywhere and self-hosted. Thanks Ellie. (@TheSilkky))  
+- Docker Build + Deploy Workflow for GHCR + Docker Hub (Thanks Ellie. (@TheSilkky))
+- Twitch API Support
+- Waifu.IM API Support
+- Logging for Rin
 
 ## Removals
+- Removed all commands that required ID input
+- MyWaifuList Support
+- Removed DeviantArt API Support
+- QRCode Maker Cog
+- Any old libs
 
-- OpenAI API Support + Cog
-- Format workflow (replaced with pre-commit hooks)
-- Arch-Docker Dockerfile (Use Ubuntu-Docker instead)
-- DeviantArt-Token-Refresher Cog
-- All of the old patches (they apparently never worked...)
 
 ## Dependency Updates
-
-- Bump py-cord from 2.0.0b5 to 2.0.0b7 (@dependabot[bot])
-- Bump actions/setup-node from 3.1.0 to 3.1.1  (@dependabot[bot])
-- Bump github/codeql-action from 1 to 2  (@dependabot[bot])
-- Bump sqlalchemy from 1.4.35 to 1.4.36  (@dependabot[bot])
-- Bump py-cord from 2.0.0b7 to 2.0.0rc1  (@dependabot[bot])
-- Bump ujson from 5.2.0 to 5.3.0  (@dependabot[bot])
-- Bump pysimdjson from 4.0.3 to 5.0.1  (@dependabot[bot])
-- Bump lxml from 4.8.0 to 4.9.0  (@dependabot[bot])
-- Bump sqlalchemy from 1.4.36 to 1.4.37  (@dependabot[bot])
-- Bump orjson from 3.6.8 to 3.6.9  (@dependabot[bot])
-- Bump orjson from 3.6.9 to 3.7.0  (@dependabot[bot])
-- Bump orjson from 3.7.0 to 3.7.1   (@dependabot[bot])
-- Bump actions/setup-node from 3.2.0 to 3.3.0  (@dependabot[bot])
-- Bump orjson from 3.7.1 to 3.7.2  (@dependabot[bot])
-- Bump actions/setup-python from 3 to 4 (@dependabot[bot])
+- [pip](deps): Bump orjson from 3.7.2 to 3.7.3 (@dependabot)
+- [pip](deps): Bump sqlalchemy from 1.4.37 to 1.4.38 (@dependabot)
+- [pip](deps): Bump orjson from 3.7.3 to 3.7.5 (@dependabot)
+- [pip](deps): Bump lxml from 4.9.0 to 4.9.1 (@dependabot)
+- [pip](deps): Bump orjson from 3.7.5 to 3.7.6 (@dependabot)
+- [pip](deps): Bump rin-exceptions from 1.0.0 to 1.0.1 (@dependabot)
+- [pip](deps): Bump ujson from 5.3.0 to 5.4.0 (@dependabot)
+- [pip](deps): Bump asyncpg from 0.25.0 to 0.26.0 (@dependabot)
+- [pip](deps): Bump orjson from 3.7.6 to 3.7.7 (@dependabot)
+- [Actions](deps): Bump actions/setup-node from 3.3.0 to 3.4.0 (@dependabot)
+- [pip](deps): Bump py-cord from 2.0.0rc1 to 2.0.0 (@dependabot)
+- [pip](deps-dev): Bump pre-commit from 2.19.0 to 2.20.0 (@dependabot)
+- [Actions](deps): Bump actions/setup-node from 3.4.0 to 3.4.1 (@dependabot)
+- [pip](deps): Bump gql from 3.3.0 to 3.4.0 (@dependabot)
+- [pip](deps): Bump rin-exceptions from 1.0.1 to 1.0.2 (@dependabot)
+- [pip](deps): Bump orjson from 3.7.7 to 3.7.8 (@dependabot)
+- [Actions](deps): Bump docker/setup-buildx-action from 1 to 2 (@dependabot)
+- [Actions](deps): Bump docker/login-action from 1 to 2 (@dependabot)
+- [Actions](deps): Bump docker/build-push-action from 2 to 3 (@dependabot)
