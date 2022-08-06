@@ -15,7 +15,7 @@ from rin_exceptions import NoItemsError
 load_dotenv()
 
 Bearer_Token = os.getenv("Twitter_Bearer_Token")
-JSONparser = simdjson.Parser()
+jsonParser = simdjson.Parser()
 
 
 class TwitterV1(commands.Cog):
@@ -32,7 +32,7 @@ class TwitterV1(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
             params = {
-                "query": f"from:{user}",
+                "query": f'from:{user.replace("@", "")}',
                 "expansions": "author_id,attachments.media_keys",
                 "tweet.fields": "created_at,public_metrics,id",
                 "user.fields": "name,profile_image_url,username",
@@ -45,9 +45,9 @@ class TwitterV1(commands.Cog):
                 params=params,
             ) as r:
                 data = await r.content.read()
-                dataMain = JSONparser.parse(data, recursive=True)
+                dataMain = jsonParser.parse(data, recursive=True)
                 try:
-                    if len(dataMain["data"]) == 0:
+                    if dataMain["meta"]["result_count"] == 0:
                         raise NoItemsError
                     else:
                         mainPages = pages.Paginator(
@@ -130,14 +130,14 @@ class TwitterV1(commands.Cog):
         """Returns Info about the given Twitter user"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             headers = {"Authorization": f"Bearer {Bearer_Token}"}
-            params = {"q": user, "count": 1}
+            params = {"q": user.replace("@", ""), "count": 1}
             async with session.get(
                 "https://api.twitter.com/1.1/users/search.json",
                 headers=headers,
                 params=params,
             ) as resp:
                 data2 = await resp.content.read()
-                dataMain2 = JSONparser.parse(data2, recursive=True)
+                dataMain2 = jsonParser.parse(data2, recursive=True)
                 itemFilter = {
                     "profile_image_url_https",
                     "id",
@@ -166,11 +166,18 @@ class TwitterV1(commands.Cog):
                     "url",
                     "profile_banner_url",
                     "withheld_in_countries",
+                    "is_translation_enabled",
+                    "is_translator",
+                    "contributors_enabled",
+                    "geo_enabled",
+                    "time_zone",
+                    "protected",
+                    "utf_offset",
                 }
                 embedVar = discord.Embed()
                 try:
                     if len(dataMain2) == 0:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         for userItem in dataMain2:
                             if "profile_banner_url" in userItem:
@@ -213,7 +220,7 @@ class TwitterV1(commands.Cog):
                                 )
                                 await ctx.respond(embed=embedVar)
 
-                except ValueError:
+                except NoItemsError:
                     embedErrorMain = discord.Embed()
                     embedErrorMain.description = "Sorry, but the user that you searched for doesn't exist. Please try again"
                     await ctx.respond(embed=embedErrorMain)

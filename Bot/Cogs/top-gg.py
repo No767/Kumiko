@@ -57,18 +57,13 @@ class TopGGV1(commands.Cog):
                                     inline=True,
                                 )
                                 .add_field(
-                                    name="GitHub",
-                                    value=f'{mainItem["github"]}',
-                                    inline=True,
-                                )
-                                .add_field(
                                     name="Prefix", value=mainItem["prefix"], inline=True
                                 )
                                 .add_field(
                                     name="Date Added",
-                                    value=parser.isoparse(
-                                        mainItem["dateAdded"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    value=parser.isoparse(mainItem["date"]).strftime(
+                                        "%Y-%m-%d %H:%M:%S"
+                                    ),
                                     inline=True,
                                 )
                                 for mainItem in getOneBotInfoMain["results"]

@@ -126,7 +126,7 @@ class TwitchV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Game Name",
-                                    value=mainItem["game_name"],
+                                    value=f'[{mainItem["game_name"]}]',
                                     inline=True,
                                 )
                                 .add_field(
@@ -136,7 +136,7 @@ class TwitchV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Broadcaster Language",
-                                    value=mainItem["broadcaster_language"],
+                                    value=f'[{mainItem["broadcaster_language"]}]',
                                     inline=True,
                                 )
                                 .set_thumbnail(url=mainItem["thumbnail_url"])

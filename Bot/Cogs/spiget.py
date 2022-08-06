@@ -52,7 +52,7 @@ class SpigetV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Average Rating",
-                                    value=mainItem["rating"]["average"],
+                                    value=round(mainItem["rating"]["average"]),
                                     inline=True,
                                 )
                                 .add_field(
