@@ -8,6 +8,7 @@
 - Replace Twitter Search with Twitter API v2
 - Removed all commands that required ID input
 - Switch to using Rin-Exceptions package
+- Upgraded Tenor Service to API v2
 
 ## Additions
 
