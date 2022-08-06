@@ -53,7 +53,7 @@ initial_extensions = [
     "Cogs.economy.marketplace",
     "Cogs.economy.users",
     "Cogs.economy.petals",
-    "Cogs.platform",
+    "Cogs.kumiko-platform",
     "Cogs.pages",
     "Cogs.first-frc-events",
     "Cogs.blue-alliance",

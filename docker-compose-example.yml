@@ -12,7 +12,7 @@ services:
     container_name: Kumiko
     restart: always
     build:
-      dockerfile: ./Ubuntu-Docker/Dockerfile
+      dockerfile: ./Alpine-Docker/Dockerfile
       context: .
       args:
         # Both fields are optional. These are for if you want to hook up Kumiko to PM2, which natively in the Dockerfile, is supported

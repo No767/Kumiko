@@ -3,10 +3,12 @@
 ####################################################################################################
 FROM python:3.10.5-alpine3.16 AS builder
 
+# Note that some libaries require Linux Kernel C Headers
 RUN apk add --no-cache \
     ca-certificates \
     build-base \
-    curl
+    curl \
+    linux-headers 
 
 # Add Poetry locally
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -53,6 +55,9 @@ RUN adduser --disabled-password --gecos "" kumiko \
     && chown -R kumiko:kumiko /Kumiko 
 
 USER kumiko
+
+# Set up path so pip won't complain again
+ENV PATH="${PATH}:~/.local/bin"
 
 # Install dependencies
 RUN pip install --user --no-index --find-links=/Kumiko/wheels -r requirements.txt

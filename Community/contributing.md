@@ -314,7 +314,7 @@ Once you have the discord bot up, there's a few things that needs to be done bef
    make run
    ```
 
-   To exit out of Rin, hit Ctrl + C to kill the process. 
+   To exit out of Kumiko, hit Ctrl + C to kill the process. 
 
 ### Things to keep in mind
 
@@ -379,18 +379,17 @@ Now connect to the MongoDB server with MongoDBCompass or Mongosh and create a da
 
 Kumiko is built on top of Rin, and Rin requires some API keys. Here's a list of current services that require API keys:
 
-- Twitter (requires bearer token, make sure that the bearer token supports Twitter API V2)
-- Reddit 
-- Hypixel
-- DeviantArt (Use the DA-Token-Refresher script in production for refreshing tokens)
-- Tenor (Use API V2)
-- First FRC
-- Discord.bots.gg
-- Top.gg
-- GitHub
-- YouTube
-- Blue Alliance
-- Twitch
+- [Blue Alliance](https://www.thebluealliance.com/apidocs)
+- [Discord.bots.gg](https://discord.bots.gg/)
+- [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
+- [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
+- [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
+- [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
+- [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
+- [Top.gg](https://docs.top.gg/)
+- [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
+- [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
+- [YouTube](https://developers.google.com/youtube/registering_an_application)
 
 ## Pull Requests and Commits
 
@@ -407,12 +406,12 @@ If there is an issue or a feature you want to be added, use the built-in GitHub 
 - If submitting a issue report, follow the template. Duplicates will not receive support
 - If submitting a feature request, follow the template as well. As with issue reports, duplicate requests will not receive support
 
-# Releasing Tags
-In order to automate the release system, you have to make sure that in order to use it, the git commit message must be done correctly. Only use this if there is a new update that is ready to be released. Rin uses [SemVer](https://semver.org/) as the standard for versioning. Here's a table that should help with explaining this:
+## Releasing Tags
+In order to automate the release system, you have to make sure that in order to use it, the git commit message must be done correctly. Only use this if there is a new update that is ready to be released. Kumiko uses [SemVer](https://semver.org/) as the standard for versioning. Here's a table that should help with explaining this:
 
 | Type of Release, Update, or Patch | Example |
 |              :--:                 | :--:    | 
-| Major Release                     | `Release: v2` | 
+| Major Release                     | `Release: v2.0.0` | 
 | Minor Release                     | `Update: v2.5.0`|
 | Patch Release                     | `Fix: v2.5.1` |
 
@@ -421,4 +420,4 @@ In order to automate the release system, you have to make sure that in order to 
 
 - If updating any other files that aren't project files or not important (stuff like README.md, contributing.md, etc), add the [skip ci] label in the front
 - With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
-- If releasing tags, have it in this style. `Release: [insert what changed here]`, `Update: [insert what changed here]`, and `Fix: [insert what changed here]`. Release is a major release. This means it bumps from 1.0.0 to 2.0.0. Minor means it bumps up the version from 1.4 to 1.5 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.2.
+- If releasing tags, have it in this style. `Release: v[version number]`, `Update: v[version number]`, and `Fix: v[version number]`. Release is a major release. This means it bumps from 1.0.0 to 2.0.0. Minor means it bumps up the version from 1.4 to 1.5 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.2.
