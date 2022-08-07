@@ -89,7 +89,7 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(name="Waifu", value="`/help Waifu`", inline=True)
                 embedVar.add_field(name="YouTube", value="`/help YouTube`", inline=True)
                 embedVar.set_author(
-                    name="Rin Help",
+                    name="Help",
                     url=discord.Embed.Empty,
                     icon_url=bot.user.display_avatar,
                 )
@@ -124,7 +124,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - AdviceSlip", icon_url=bot.user.display_avatar
+                    name="Help - AdviceSlip", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -163,7 +163,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - AniList", icon_url=bot.user.display_avatar
+                    name="Help - AniList", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -195,7 +195,7 @@ class rinhelp(commands.Cog):
                     name="`rankings`", value="Returns the event ranking of an event"
                 )
                 embedVar.set_author(
-                    name="Rin Help - Blue Alliance", icon_url=bot.user.display_avatar
+                    name="Help - Blue Alliance", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -209,7 +209,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Discord.bots.gg", icon_url=bot.user.display_avatar
+                    name="Help - Discord.bots.gg", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -253,7 +253,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - First-FRC", icon_url=bot.user.display_avatar
+                    name="Help - First-FRC", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -302,7 +302,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - GitHub", icon_url=bot.user.display_avatar
+                    name="Help - GitHub", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -321,7 +321,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Hypixel", icon_url=bot.user.display_avatar
+                    name="Help - Hypixel", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -334,7 +334,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Jisho", icon_url=bot.user.display_avatar
+                    name="Help - Jisho", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -363,7 +363,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - MangaDex", icon_url=bot.user.display_avatar
+                    name="Help - MangaDex", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -382,7 +382,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Minecraft", icon_url=bot.user.display_avatar
+                    name="Help - Minecraft", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -409,7 +409,7 @@ class rinhelp(commands.Cog):
                     name="`version`", value="Returns the version of Rin", inline=True
                 )
                 embedVar.set_author(
-                    name="Rin Help - Misc", icon_url=bot.user.display_avatar
+                    name="Help - Misc", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -441,7 +441,7 @@ class rinhelp(commands.Cog):
                     name="`search`", value="Searches for up to 5 mods on Modrinth"
                 )
                 embedVar.set_author(
-                    name="Rin Help - Modrinth", icon_url=bot.user.display_avatar
+                    name="Help - Modrinth", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -483,7 +483,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - MyAnimeList", icon_url=bot.user.display_avatar
+                    name="Help - MyAnimeList", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -515,7 +515,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Reddit", icon_url=bot.user.display_avatar
+                    name="Help - Reddit", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -529,7 +529,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Spigot", icon_url=bot.user.display_avatar
+                    name="Help - Spigot", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -568,7 +568,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Tenor", icon_url=bot.user.display_avatar
+                    name="Help - Tenor", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -582,7 +582,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Top.gg", icon_url=bot.user.display_avatar
+                    name="Help - Top.gg", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -606,7 +606,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Twitch", icon_url=bot.user.display_avatar
+                    name="Help - Twitch", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -625,7 +625,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Twitter", icon_url=bot.user.display_avatar
+                    name="Help - Twitter", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
@@ -649,7 +649,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - Waifu", icon_url=bot.user.display_avatar
+                    name="Help - Waifu", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
             if category in ["YouTube"]:
@@ -672,12 +672,12 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.set_author(
-                    name="Rin Help - YouTube", icon_url=bot.user.display_avatar
+                    name="Help - YouTube", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
         except Exception as e:
             bot = self.bot
-            embedVar = discord.Embed(title="Rin Help", color=14414079)
+            embedVar = discord.Embed(title="Help", color=14414079)
             embedVar.description = "The query failed."
             embedVar.add_field(name="Error", value=e, inline=True)
             embedVar.set_thumbnail(url=bot.user.display_avatar)

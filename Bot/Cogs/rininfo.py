@@ -24,7 +24,7 @@ class info(commands.Cog):
                 label="Invite", url="https://top.gg/bot/865883525932253184/invite"
             )
         )
-        embedVar.set_author(name="Rin Info", icon_url=bot.user.display_avatar)
+        embedVar.set_author(name="Info", icon_url=bot.user.display_avatar)
         embedVar.add_field(
             name="About",
             value="Rin is a Discord bot focused on providing data from third party services such as Hypixel, Reddit, MyAnimeList/Jikan, and many others with lighting speed. Rin allows you to find memes on Reddit with the Reddit service, or get info about your favorite anime with the MAL service.  If you want a multipurpose version of Rin, check out Kumiko.",
