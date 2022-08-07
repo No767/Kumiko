@@ -13,3 +13,10 @@ tasks:
   - init: |
       
     command: make run
+
+github:
+  prebuilds:
+      master: false
+      branches: false
+      pullRequests: false
+      addCheck: false
