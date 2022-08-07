@@ -23,6 +23,7 @@ This update brings in a ton of changes, including swapping to paginators instead
 - Changed activity from `Watching /rinhelp` to `Watching /help` 
 - Also log when Rin is fully ready
 - Prevent GitPod from making Pre-Builds for PRs
+- Bump Python Version on Workflows to the latest version of 3.10
 
 ## Additions
 
