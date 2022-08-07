@@ -2,13 +2,22 @@
 
 **This will be the last version of Rin to have new features. Rin v2.2.0 is considered an LTS release, and will be supported for the next 3-6 months from the release date. For more info, please see the gist linked [here](https://gist.github.com/No767/de27c61dc471ac331a45ea7c2bda62c0)**
 
+This update brings in a ton of changes, including swapping to paginators instead, a new Dockerfile + Docker build system, and generally a ton of improvements. This version is meant to replace the v2.0.3.x versions used in production.
+
 ## Changes
 - Swap to completely using paginators instead of just spamming with embeds
-- Completely audit all 65+ service commands
+- Completely audit all 65-70+ service commands
+- Completely audit all non-service cogs and commands
 - Replace Twitter Search with Twitter API v2
 - Removed all commands that required ID input
 - Switch to using Rin-Exceptions package
 - Upgraded Tenor Service to API v2
+- Return Original URL for that item in service cogs (if applicable)
+- Updated some command names
+- Bump Alpine Python version to 3.10.6
+- Bump supported Python version to 3.10.6
+- Bump GitPod default python version to 3.10.6
+- Defer Docker Build workflows by 45 seconds (to allow for tagging to happen first)
 
 ## Additions
 
@@ -18,6 +27,7 @@
 - Waifu.IM API Support
 - Logging for Rin
 - Docker Compose Support
+- Environment variable for testing discord bot on dev docker builds
 
 ## Removals
 - Removed all commands that required ID input
@@ -25,7 +35,6 @@
 - Removed DeviantArt API Support
 - QRCode Maker Cog
 - Any old libs
-
 
 ## Dependency Updates
 - \[pip](deps)\: Bump orjson from 3.7.2 to 3.7.3 (@dependabot)
