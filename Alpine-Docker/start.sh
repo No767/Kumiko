@@ -9,6 +9,12 @@ else
     exit 1;
 fi
 
+# Testing bot token
+# Not needed in production
+if [[ -v TESTING_BOT_TOKEN ]]; then
+    echo "Testing_Bot_Token=${TESTING_BOT_TOKEN}" >> /Rin/Bot/.env
+fi 
+
 # API Keys
 # Blue Alliance
 if [[ -v BLUE_ALLIANCE_API_KEY ]]; then
