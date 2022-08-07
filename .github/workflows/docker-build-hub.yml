@@ -19,6 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Defer workflow for 60 seconds
+        run: sleep 60s
+        shell: bash
+
       - name: Prepare
         id: prep
         run: |
