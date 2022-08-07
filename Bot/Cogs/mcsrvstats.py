@@ -27,14 +27,14 @@ class MCSrvStatsV1(commands.Cog):
             async with session.get(f"https://api.mcsrvstat.us/2/{server}") as r:
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
-                filter = ["motd", "debug", "icon", "players", "hostname"]
+                filterJava = ["motd", "debug", "icon", "players", "hostname"]
                 embed = discord.Embed()
                 try:
                     if dataMain["online"] is False or r.status == 404:
                         raise NotFoundHTTPException
                     else:
                         for key, val in dataMain.items():
-                            if key not in filter:
+                            if key not in filterJava:
                                 embed.add_field(name=key, value=val, inline=True)
                         for k, v in dataMain["players"].items():
                             embed.add_field(name=k, value=v, inline=True)
@@ -63,13 +63,13 @@ class MCSrvStatsV1(commands.Cog):
                 data = await r.content.read()
                 dataMain = parser.parse(data, recursive=True)
                 embed = discord.Embed()
-                filter = ["motd", "debug", "players", "hostname"]
+                filterBedrock = ["motd", "debug", "players", "hostname"]
                 try:
                     if dataMain["online"] is False or r.status == 404:
                         raise NotFoundHTTPException
                     else:
                         for key, val in dataMain.items():
-                            if key not in filter:
+                            if key not in filterBedrock:
                                 embed.add_field(name=key, value=val, inline=True)
                         for k, v in dataMain["players"].items():
                             embed.add_field(name=k, value=v, inline=True)
