@@ -2,7 +2,7 @@
 
 # Rin
 
-![Rin's Logo](./assets/Rin%20Logo%20V4%20(GitHub).png)
+![Rin's Logo](./assets/rin-logo.png)
 
 <br/>
 
