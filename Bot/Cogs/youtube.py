@@ -283,6 +283,11 @@ class YoutubeV1(commands.Cog):
                                                 ).strftime("%Y-%m-%d %I:%M:%S %p"),
                                                 inline=True,
                                             )
+                                            .add_field(
+                                                name="YT Playlist URL",
+                                                value=f'https://youtube.com/playlist?list={mainItems["id"]}',
+                                                inline=True,
+                                            )
                                             .set_image(
                                                 url=mainItems["snippet"]["thumbnails"][
                                                     "maxres"
