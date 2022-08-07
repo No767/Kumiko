@@ -48,7 +48,7 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
     - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
     - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-3. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-rin.md#getting-the-discord-bot).
+3. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-guide.md#getting-the-discord-bot).
 
 
 4. Invite your bot into your server of choice
@@ -106,7 +106,7 @@ git clone https://github.com/No767/Rin
     - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
     - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-4. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-rin.md#getting-the-discord-bot).
+4. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-guide.md#getting-the-discord-bot).
 
 5. Invite your bot into your server of choice
 
