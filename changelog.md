@@ -22,6 +22,7 @@ This update brings in a ton of changes, including swapping to paginators instead
 - Use an more efficient way to load all cogs
 - Changed activity from `Watching /rinhelp` to `Watching /help` 
 - Also log when Rin is fully ready
+- Prevent GitPod from making Pre-Builds for PRs
 
 ## Additions
 
