@@ -18,6 +18,7 @@ This update brings in a ton of changes, including swapping to paginators instead
 - Bump supported Python version to 3.10.6
 - Bump GitPod default python version to 3.10.6
 - Defer Docker Build workflows by 45 seconds (to allow for tagging to happen first)
+- Update Help command with the latest commands
 
 ## Additions
 
@@ -35,6 +36,7 @@ This update brings in a ton of changes, including swapping to paginators instead
 - Removed DeviantArt API Support
 - QRCode Maker Cog
 - Any old libs
+- Rinhelp command (replaced by a standard `/help` command)
 
 ## Dependency Updates
 - \[pip](deps)\: Bump orjson from 3.7.2 to 3.7.3 (@dependabot)

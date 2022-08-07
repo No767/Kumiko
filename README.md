@@ -24,17 +24,22 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 
 Rin is designed to be modular, where you can remove cogs, or add new ones. In fact, you can build your entire bot on top of Rin, and [Kumiko](https://github.com/No767/Kumiko) basically does that. However, if you want to build your bot on top of Rin, you have to cite the bot as a fork of Rin (you are essentially using a fork of Rin if you decide to do so), link back the GitHub repo in somewhere that people will notice, and give credit to the original developer (which is me, No767).
 
+## Self Hosting
+
+In fact, you can self host your own version of Rin. For more information, please check out the [Getting Started Guide](./Community/getting-started-guide.md) for more info.
 ## Features
 
 Rin comes with integration from 15+ services. Some of these services that are fully supported and integrated include:
 
 - AniList
+- MyAnimeList
 - Twitter
 - Modrinth
 - YouTube
 - Waifu.IM
-- MyAnimeList
 - MangaDex
+- Twitch
+- GitHub
 
 And many more!
 
@@ -63,13 +68,13 @@ For Developers and Contributors:
 
 - [Documentation](https://docs.rinbot.live)
 - [Website](https://rinbot.live)
-- [Status Tracker](https://status.rinbot.live)
 
 ## Bot Discovery Network Links
 
 - [Top.gg](https://top.gg/bot/865883525932253184)
 - [Discords.com](https://discords.com/bots/bot/865883525932253184)
-- [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184)
+- [Discord.bots.gg](https://discord.bots.gg/bots/865883525932253184) (Unverified)
+- [Discord Labs](https://bots.discordlabs.org/bot/865883525932253184) (Unverified)
 
 [![Top.gg](https://top.gg/api/widget/865883525932253184.svg)](https://top.gg/bot/865883525932253184)
 
