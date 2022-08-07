@@ -1,6 +1,6 @@
 # ✨ Rin V2.2.0 (LTS) ✨
 
-**This will be the last version of Rin to have new features. Rin v2.2.0 is considered an LTS release, and will be supported for the next 3-6 months from the release date. For more info, please see the gist linked [here](https://gist.github.com/No767/de27c61dc471ac331a45ea7c2bda62c0)**
+**This will be the last version of Rin to contain new features. Rin v2.2.0 is considered an LTS release, and will be supported for the next 3-6 months from the release date. Within the next patch versions, slight changes and modifications will be made to Rin. For more info, please see the gist linked [here](https://gist.github.com/No767/de27c61dc471ac331a45ea7c2bda62c0)**
 
 This update brings in a ton of changes, including swapping to paginators instead, a new Dockerfile + Docker build system, and generally a ton of improvements. This version is meant to replace the v2.0.3.x versions used in production.
 
@@ -17,8 +17,11 @@ This update brings in a ton of changes, including swapping to paginators instead
 - Bump Alpine Python version to 3.10.6
 - Bump supported Python version to 3.10.6
 - Bump GitPod default python version to 3.10.6
-- Defer Docker Build workflows by 45 seconds (to allow for tagging to happen first)
+- Defer Docker Build workflows by 60 seconds (to allow for tagging to happen first)
 - Update Help command with the latest commands
+- Use an more efficient way to load all cogs
+- Changed activity from `Watching /rinhelp` to `Watching /help` 
+- Also log when Rin is fully ready
 
 ## Additions
 

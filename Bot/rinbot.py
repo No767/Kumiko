@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 import discord
 from discord.ext import commands
@@ -19,49 +20,19 @@ logging.basicConfig(
 )
 logging.getLogger("gql").setLevel(logging.WARNING)
 
-# Loads in all extensions
-initial_extensions = [
-    "Cogs.rininfo",
-    "Cogs.rinping",
-    "Cogs.rinhelp",
-    "Cogs.reddit",
-    "Cogs.mcsrvstats",
-    "Cogs.waifu",
-    "Cogs.hypixel",
-    "Cogs.advice",
-    "Cogs.qrcode-maker",
-    "Cogs.spiget",
-    "Cogs.myanimelist",
-    "Cogs.top-gg",
-    "Cogs.global-error-handling",
-    "Cogs.rininvite",
-    "Cogs.version",
-    "Cogs.twitter",
-    "Cogs.youtube",
-    "Cogs.jisho",
-    "Cogs.tenor",
-    "Cogs.uptime",
-    "Cogs.mangadex",
-    "Cogs.bot-info",
-    "Cogs.help",
-    "Cogs.modrinth",
-    "Cogs.discord-bots",
-    "Cogs.first-frc-events",
-    "Cogs.blue-alliance",
-    "Cogs.legacy-help",
-    "Cogs.github",
-    "Cogs.anilist",
-    "Cogs.twitch",
-]
-for extension in initial_extensions:
-    bot.load_extension(extension)
-
+# Loads all Cogs from the Cogs folder
+path = Path(__file__).parent.resolve()
+cogsList = os.listdir(os.path.join(path, "Cogs"))
+for items in cogsList:
+    if items.endswith(".py"):
+        bot.load_extension(f"Cogs.{items[:-3]}")
 
 # Adds in the bot presence
 @bot.event
 async def on_ready():
+    logging.info("Rin is ready to go!")
     await bot.change_presence(
-        activity=discord.Activity(type=discord.ActivityType.watching, name="/rinhelp")
+        activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
     )
 
 

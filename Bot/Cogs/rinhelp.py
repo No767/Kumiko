@@ -41,6 +41,7 @@ class rinhelp(commands.Cog):
                 "Spigot",
                 "Tenor",
                 "Top.gg",
+                "Twitch",
                 "Twitter",
                 "Waifu",
                 "YouTube",
@@ -83,6 +84,7 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(name="Spigot", value="`/help Spigot`", inline=True)
                 embedVar.add_field(name="Tenor", value="`/help Tenor`", inline=True)
                 embedVar.add_field(name="Top.gg", value="`/help Topgg`", inline=True)
+                embedVar.add_field(name="Twitter", value="`/help Twitch`", inline=True)
                 embedVar.add_field(name="Twitter", value="`/help Twitter`", inline=True)
                 embedVar.add_field(name="Waifu", value="`/help Waifu`", inline=True)
                 embedVar.add_field(name="YouTube", value="`/help YouTube`", inline=True)
@@ -581,6 +583,30 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.set_author(
                     name="Rin Help - Top.gg", icon_url=bot.user.display_avatar
+                )
+                await ctx.respond(embed=embedVar)
+
+            if category in ["Twitch"]:
+                bot = self.bot
+                embedVar = discord.Embed(color=14414079)
+                embedVar.description = "Base command: `twitch`"
+                embedVar.add_field(
+                    name="`search channels`",
+                    value="Returns up to 25 streams from the given channel",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`streams`",
+                    value="Gets up to 25 active streams on Twitch",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`top games`",
+                    value="Gets the top 100 games on Twitch",
+                    inline=True,
+                )
+                embedVar.set_author(
+                    name="Rin Help - Twitch", icon_url=bot.user.display_avatar
                 )
                 await ctx.respond(embed=embedVar)
 
