@@ -10,7 +10,7 @@ class InviteV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="rininvite", description="Invite links for Rin")
+    @slash_command(name="invite", description="Invite links for Rin")
     async def invite(self, ctx):
         bot = self.bot
         embedVar = discord.Embed()

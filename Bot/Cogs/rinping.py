@@ -15,7 +15,7 @@ class rinping(commands.Cog):
         try:
             ping_embed = discord.Embed()
             ping_embed.description = f"Ping >> {round(self.bot.latency * 1000)} ms"
-            await ctx.send(embed=ping_embed)
+            await ctx.respond(embed=ping_embed)
         except Exception as e:
             ping_embed = discord.Embed()
             ping_embed.description = "The command was not successful"

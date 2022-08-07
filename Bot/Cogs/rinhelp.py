@@ -54,52 +54,38 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(color=14414079)
                 view = discord.ui.View(timeout=None)
                 embedVar.add_field(
-                    name="AdviceSlip", value="`/rinhelp AdviceSlip`", inline=True
+                    name="AdviceSlip", value="`/help AdviceSlip`", inline=True
+                )
+                embedVar.add_field(name="AniList", value="`/help AniList`", inline=True)
+                embedVar.add_field(
+                    name="Blue Alliance", value="`/help Blue-Alliance`", inline=True
                 )
                 embedVar.add_field(
-                    name="AniList", value="`/rinhelp AniList`", inline=True
+                    name="First FRC", value="`/help First-FRC`", inline=True
+                )
+                embedVar.add_field(name="GitHub", value="`/help GitHub`", inline=True)
+                embedVar.add_field(name="Hypixel", value="`/help Hypixel`", inline=True)
+                embedVar.add_field(name="Jisho", value="`/help Jisho`", inline=True)
+                embedVar.add_field(
+                    name="MangaDex", value="`/help MangaDex`", inline=True
                 )
                 embedVar.add_field(
-                    name="Blue Alliance", value="`/rinhelp Blue-Alliance`", inline=True
+                    name="Minecraft", value="`/help Minecraft`", inline=True
+                )
+                embedVar.add_field(name="Misc", value="`/help Misc`", inline=True)
+                embedVar.add_field(
+                    name="Modrinth", value="`/help Modrinth`", inline=True
                 )
                 embedVar.add_field(
-                    name="First FRC", value="`/rinhelp First-FRC`", inline=True
+                    name="MyAnimeList", value="`/help MyAnimeList`", inline=True
                 )
-                embedVar.add_field(
-                    name="GitHub", value="`/rinhelp GitHub`", inline=True
-                )
-                embedVar.add_field(
-                    name="Hypixel", value="`/rinhelp Hypixel`", inline=True
-                )
-                embedVar.add_field(name="Jisho", value="`/rinhelp Jisho`", inline=True)
-                embedVar.add_field(
-                    name="MangaDex", value="`/rinhelp MangaDex`", inline=True
-                )
-                embedVar.add_field(
-                    name="Minecraft", value="`/rinhelp Minecraft`", inline=True
-                )
-                embedVar.add_field(name="Misc", value="`/rinhelp Misc`", inline=True)
-                embedVar.add_field(
-                    name="Modrinth", value="`/rinhelp Modrinth`", inline=True
-                )
-                embedVar.add_field(
-                    name="MyAnimeList", value="`/rinhelp MyAnimeList`", inline=True
-                )
-                embedVar.add_field(
-                    name="Reddit", value="`/rinhelp Reddit`", inline=True
-                )
-                embedVar.add_field(
-                    name="Spigot", value="`/rinhelp Spigot`", inline=True
-                )
-                embedVar.add_field(name="Tenor", value="`/rinhelp Tenor`", inline=True)
-                embedVar.add_field(name="Top.gg", value="`/rinhelp Topgg`", inline=True)
-                embedVar.add_field(
-                    name="Twitter", value="`/rinhelp Twitter`", inline=True
-                )
-                embedVar.add_field(name="Waifu", value="`/rinhelp Waifu`", inline=True)
-                embedVar.add_field(
-                    name="YouTube", value="`/rinhelp YouTube`", inline=True
-                )
+                embedVar.add_field(name="Reddit", value="`/help Reddit`", inline=True)
+                embedVar.add_field(name="Spigot", value="`/help Spigot`", inline=True)
+                embedVar.add_field(name="Tenor", value="`/help Tenor`", inline=True)
+                embedVar.add_field(name="Top.gg", value="`/help Topgg`", inline=True)
+                embedVar.add_field(name="Twitter", value="`/help Twitter`", inline=True)
+                embedVar.add_field(name="Waifu", value="`/help Waifu`", inline=True)
+                embedVar.add_field(name="YouTube", value="`/help YouTube`", inline=True)
                 embedVar.set_author(
                     name="Rin Help",
                     url=discord.Embed.Empty,
@@ -170,7 +156,7 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`search actor`",
+                    name="`search actors`",
                     value="Searches up to 25 actors on AniList",
                     inline=True,
                 )
@@ -355,28 +341,23 @@ class rinhelp(commands.Cog):
                 embedVar = discord.Embed(color=14414079)
                 embedVar.description = "Base command: `mangadex`"
                 embedVar.add_field(
-                    name="`scanlation search`",
+                    name="`search scanlation`",
                     value="Returns up to 5 scanlation groups via the name given",
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`search`",
+                    name="`search manga`",
                     value="Searches for up to 5 manga on MangaDex",
+                    inline=True,
+                )
+                embedVar.add_field(
+                    name="`search author`",
+                    value="Returns up to 5 authors and their info",
                     inline=True,
                 )
                 embedVar.add_field(
                     name="`random`",
                     value="Returns an random manga from MangaDex",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`author`",
-                    value="Returns up to 5 authors and their info",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`read`",
-                    value="Reads a chapter out of a manga provided on MangaDex",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -415,19 +396,9 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`ping`", value="Returns the ping of Rin", inline=True
                 )
+                embedVar.add_field(name="`info`", value="Info about Rin", inline=True)
                 embedVar.add_field(
-                    name="`qrcode`",
-                    value="Creates a QR Code based on given input",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`rinhelp`", value="Returns the help page for Rin", inline=True
-                )
-                embedVar.add_field(
-                    name="`rininfo`", value="Info about Rin", inline=True
-                )
-                embedVar.add_field(
-                    name="`rininvite`", value="Invite links for Rin", inline=True
+                    name="`invite`", value="Invite links for Rin", inline=True
                 )
                 embedVar.add_field(
                     name="`uptime`", value="Returns the uptime of Rin", inline=True
@@ -495,10 +466,14 @@ class rinhelp(commands.Cog):
                     inline=True,
                 )
                 embedVar.add_field(
-                    name="`anime`", value="Fetches up to 5 anime from MAL", inline=True
+                    name="`search anime`",
+                    value="Fetches up to 5 anime from MAL",
+                    inline=True,
                 )
                 embedVar.add_field(
-                    name="`manga`", value="Fetches up to 5 manga from MAL", inline=True
+                    name="`search manga`",
+                    value="Fetches up to 5 manga from MAL",
+                    inline=True,
                 )
                 embedVar.add_field(
                     name="`user`",
@@ -534,7 +509,7 @@ class rinhelp(commands.Cog):
                 )
                 embedVar.add_field(
                     name="`egg_irl`",
-                    value="Literally just shows you r/egg_irl posts",
+                    value="Literally just shows you r/egg_irl posts. This was made just for fun.",
                     inline=True,
                 )
                 embedVar.set_author(
@@ -598,7 +573,7 @@ class rinhelp(commands.Cog):
             if category in ["Top.gg"]:
                 bot = self.bot
                 embedVar = discord.Embed(color=14414079)
-                embedVar.description = "Base command: `top.gg`"
+                embedVar.description = "Base command: `topgg`"
                 embedVar.add_field(
                     name="`search bot`",
                     value="Searches for a bot on Top.gg",
@@ -668,11 +643,6 @@ class rinhelp(commands.Cog):
                 embedVar.add_field(
                     name="`playlist`",
                     value="Returns up to 5 youtube playlists based on the given YT channel",
-                    inline=True,
-                )
-                embedVar.add_field(
-                    name="`video`",
-                    value="Returns some info on the given YouTube video",
                     inline=True,
                 )
                 embedVar.set_author(
