@@ -31,8 +31,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -72,8 +72,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -109,8 +109,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -153,8 +153,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -188,8 +188,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -231,8 +231,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
     ```sh
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -364,6 +364,16 @@ Some of the API's that Rin uses requires an API key. Here's the list of all of t
 ## Naming Conventions
 
 For Rin, the main naming convention is camelCasing. Python's naming convention is snake_casing, but I personally find it easier to use camelCasing. All classes for any cogs should be in PascalCase. And yes camelCase all variables. You'll get used to it...
+
+## Docker Tagging Styles
+
+Rin does have in fact a style of tagging docker images. Here it is:
+
+- If deploying to master or production (NOTE: DO NOT DEPLOY TO PRODUCTION UNLESS IT IS FULLY TESTED AND APPROVED):
+    `<image>:<github_release_tag>`
+    
+- If deploying to dev:
+    `<image>:<next_minor_version>-dev-<short_commit_sha>`
 
 ## Pull Requests and Commits
 

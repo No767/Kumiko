@@ -11,6 +11,7 @@ To get started, you'll need these things installed:
 - [Pipenv](https://pipenv.pypa.io/en/latest/)
 - [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
 - Discord Account + Discord App
+
 ## Installing Dependencies
 
 Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
@@ -31,8 +32,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -72,8 +73,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -109,8 +110,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -153,8 +154,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -188,8 +189,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -231,8 +232,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
     ```sh
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
