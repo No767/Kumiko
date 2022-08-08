@@ -58,6 +58,7 @@ class AniListV1(commands.Cog):
                             name
                         }
                         synonyms
+                        id
                         
                     }
                 }
@@ -121,6 +122,11 @@ class AniListV1(commands.Cog):
                                 value=[tagItem["name"] for tagItem in mainItem["tags"]],
                                 inline=True,
                             )
+                            .add_field(
+                                name="AniList URL",
+                                value=f"https://anilist.co/anime/{mainItem['id']}",
+                                inline=True,
+                            )
                             .set_image(url=mainItem["coverImage"]["extraLarge"])
                             for mainItem in data["Page"]["media"]
                         ],
@@ -175,6 +181,7 @@ class AniListV1(commands.Cog):
                             name
                         }
                         synonyms
+                        id
                         
                     }
                 }
@@ -233,6 +240,11 @@ class AniListV1(commands.Cog):
                                 value=[tagItem["name"] for tagItem in mainItem["tags"]],
                                 inline=True,
                             )
+                            .add_field(
+                                name="AniList URL",
+                                value=f"https://anilist.co/manga/{mainItem['id']}",
+                                inline=True,
+                            )
                             .set_image(url=mainItem["coverImage"]["extraLarge"])
                             for mainItem in data["Page"]["media"]
                         ],
@@ -289,7 +301,7 @@ class AniListV1(commands.Cog):
                             name
                         }
                         synonyms
-                        
+                        id
                     }
                 }
             }
@@ -346,6 +358,13 @@ class AniListV1(commands.Cog):
                             .add_field(
                                 name="Tags",
                                 value=[tagItem["name"] for tagItem in mainItem["tags"]],
+                                inline=True,
+                            )
+                            .add_field(
+                                name="AniList URL",
+                                value=f"https://anilist.co/anime/{mainItem['id']}"
+                                if str(mainItem["type"]) == "ANIME"
+                                else f"https://anilist.co/manga/{mainItem['id']}",
                                 inline=True,
                             )
                             .set_image(url=mainItem["coverImage"]["extraLarge"])
@@ -498,6 +517,7 @@ class AniListV1(commands.Cog):
                                     }
                                 }
                             }
+                            id
 
                         }
                     }
@@ -510,7 +530,6 @@ class AniListV1(commands.Cog):
                 if len(data["Page"]["characters"]) == 0:
                     raise NoItemsError
                 else:
-                    print(data)
                     pagesMain2 = pages.Paginator(
                         pages=[
                             discord.Embed(
@@ -536,6 +555,11 @@ class AniListV1(commands.Cog):
                                         for mediaMain in mainItem3["media"]["nodes"]
                                     ]
                                 ).replace("'", ""),
+                            )
+                            .add_field(
+                                name="AniList URL",
+                                value=f"https://anilist.co/character/{mainItem3['id']}",
+                                inline=True,
                             )
                             .set_image(url=mainItem3["image"]["large"])
                             for mainItem3 in data["Page"]["characters"]
@@ -595,6 +619,7 @@ class AniListV1(commands.Cog):
                                     }
                                 }
                             }
+                            id
                         }
                     }
                 }
@@ -651,6 +676,11 @@ class AniListV1(commands.Cog):
                                         ]
                                     ]
                                 ).replace("'", ""),
+                                inline=True,
+                            )
+                            .add_field(
+                                name="AniList URL",
+                                value=f"https://anilist.co/staff/{mainItem5['id']}",
                                 inline=True,
                             )
                             .set_image(url=mainItem5["image"]["large"])

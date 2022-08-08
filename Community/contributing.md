@@ -31,8 +31,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -72,8 +72,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -109,8 +109,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -153,8 +153,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -188,8 +188,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -231,8 +231,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
     ```sh
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -390,6 +390,16 @@ Kumiko is built on top of Rin, and Rin requires some API keys. Here's a list of 
 - [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
 - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
 - [YouTube](https://developers.google.com/youtube/registering_an_application)
+
+## Docker Tagging Styles
+
+Rin does have in fact a style of tagging docker images. Here it is:
+
+- If deploying to master or production (NOTE: DO NOT DEPLOY TO PRODUCTION UNLESS IT IS FULLY TESTED AND APPROVED):
+    `<image>:<github_release_tag>`
+    
+- If deploying to dev:
+    `<image>:<next_minor_version>-dev-<short_commit_sha>`
 
 ## Pull Requests and Commits
 

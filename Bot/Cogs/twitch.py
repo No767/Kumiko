@@ -25,15 +25,9 @@ class TwitchV1(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    twitch = SlashCommandGroup(
-        "twitch", "Twitch commands", guild_ids=[866199405090308116]
-    )
-    twitchSearch = twitch.create_subgroup(
-        "search", "Search for stuff on Twitch", guild_ids=[866199405090308116]
-    )
-    twitchTop = twitch.create_subgroup(
-        "top", "Top stuff on Twitch", guild_ids=[866199405090308116]
-    )
+    twitch = SlashCommandGroup("twitch", "Twitch commands")
+    twitchSearch = twitch.create_subgroup("search", "Search for stuff on Twitch")
+    twitchTop = twitch.create_subgroup("top", "Top stuff on Twitch")
 
     @twitch.command(name="streams")
     async def getActiveStreams(self, ctx):
@@ -132,7 +126,7 @@ class TwitchV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Game Name",
-                                    value=mainItem["game_name"],
+                                    value=f'[{mainItem["game_name"]}]',
                                     inline=True,
                                 )
                                 .add_field(
@@ -142,7 +136,7 @@ class TwitchV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Broadcaster Language",
-                                    value=mainItem["broadcaster_language"],
+                                    value=f'[{mainItem["broadcaster_language"]}]',
                                     inline=True,
                                 )
                                 .set_thumbnail(url=mainItem["thumbnail_url"])

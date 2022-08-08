@@ -45,59 +45,53 @@ class YoutubeV1(commands.Cog):
                 data = await r.content.read()
                 dataMain = jsonParser.parse(data, recursive=True)
                 try:
-                    try:
-                        if len(dataMain["items"]) == 0:
-                            raise ValueError
-                        else:
-                            mainPages = pages.Paginator(
-                                pages=[
-                                    discord.Embed(
-                                        title=dictItem["snippet"]["title"],
-                                        description=dictItem["snippet"]["description"],
-                                        color=discord.Color.from_rgb(212, 255, 223),
-                                    )
-                                    .add_field(
-                                        name="Channel",
-                                        value=dictItem["snippet"]["channelTitle"],
-                                    )
-                                    .add_field(
-                                        name="Published At (24hr)",
-                                        value=parser.isoparse(
-                                            dictItem["snippet"]["publishedAt"]
-                                        ).strftime("%Y-%m-%d %H:%M:%S"),
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="Published At (12 hr)",
-                                        value=parser.isoparse(
-                                            dictItem["snippet"]["publishedAt"]
-                                        ).strftime("%Y-%m-%d %I:%M:%S %p"),
-                                        inline=True,
-                                    )
-                                    .set_image(
-                                        url=dictItem["snippet"]["thumbnails"]["high"][
-                                            "url"
-                                        ]
-                                    )
-                                    for dictItem in dataMain["items"]
-                                ],
-                                loop_pages=True,
-                            )
-                            await mainPages.respond(ctx.interaction, ephemeral=False)
-                    except ValueError:
-                        embedValError = discord.Embed()
-                        embedValError.description = (
-                            "It seems like that search term didn't work.... 😭"
+                    if len(dataMain["items"]) == 0:
+                        raise NoItemsError
+                    else:
+                        mainPages = pages.Paginator(
+                            pages=[
+                                discord.Embed(
+                                    title=dictItem["snippet"]["title"],
+                                    description=dictItem["snippet"]["description"],
+                                    color=discord.Color.from_rgb(212, 255, 223),
+                                )
+                                .add_field(
+                                    name="Channel",
+                                    value=dictItem["snippet"]["channelTitle"],
+                                )
+                                .add_field(
+                                    name="Published At (24hr)",
+                                    value=parser.isoparse(
+                                        dictItem["snippet"]["publishedAt"]
+                                    ).strftime("%Y-%m-%d %H:%M:%S"),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="Published At (12 hr)",
+                                    value=parser.isoparse(
+                                        dictItem["snippet"]["publishedAt"]
+                                    ).strftime("%Y-%m-%d %I:%M:%S %p"),
+                                    inline=True,
+                                )
+                                .add_field(
+                                    name="YouTube Video Link",
+                                    value=f'https://youtube.com/watch?v={dictItem["id"]["videoId"]}',
+                                    inline=True,
+                                )
+                                .set_image(
+                                    url=dictItem["snippet"]["thumbnails"]["high"]["url"]
+                                )
+                                for dictItem in dataMain["items"]
+                            ],
+                            loop_pages=True,
                         )
-                        await ctx.respond(embed=embedValError)
-
-                except Exception as e:
-                    embedError = discord.Embed()
-                    embedError.description = (
-                        f"No results found for {search}. Please try again..."
+                        await mainPages.respond(ctx.interaction, ephemeral=False)
+                except NoItemsError:
+                    embedValError = discord.Embed()
+                    embedValError.description = (
+                        "It seems like that search term didn't work.... 😭"
                     )
-                    embedError.add_field(name="Error", value=e, inline=True)
-                    await ctx.respond(embed=embedError)
+                    await ctx.respond(embed=embedValError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -146,12 +140,15 @@ class YoutubeV1(commands.Cog):
                                     "snippet",
                                     "statistics",
                                     "localized",
+                                    "id",
                                 }
                                 snippetFilter = [
                                     "title",
                                     "description",
                                     "thumbnails",
                                     "localized",
+                                    "id",
+                                    "publishedAt",
                                 ]
                                 if len(dataMain3["items"]) == 0:
                                     raise ValueError
@@ -173,6 +170,18 @@ class YoutubeV1(commands.Cog):
                                             embedVar.add_field(
                                                 name=keys, value=value, inline=True
                                             )
+                                        embedVar.add_field(
+                                            name="publishedAt",
+                                            value=parser.isoparse(
+                                                dictItem["snippet"]["publishedAt"]
+                                            ).strftime("%Y-%m-%d %H:%M:%S"),
+                                            inline=True,
+                                        )
+                                        embedVar.add_field(
+                                            name="channel_url",
+                                            value=f'https://youtube.com/channel/{dictItem["id"]}',
+                                            inline=True,
+                                        )
                                         embedVar.title = dictItem["snippet"]["title"]
                                         embedVar.description = dictItem["snippet"][
                                             "description"
@@ -274,6 +283,11 @@ class YoutubeV1(commands.Cog):
                                                 ).strftime("%Y-%m-%d %I:%M:%S %p"),
                                                 inline=True,
                                             )
+                                            .add_field(
+                                                name="YT Playlist URL",
+                                                value=f'https://youtube.com/playlist?list={mainItems["id"]}',
+                                                inline=True,
+                                            )
                                             .set_image(
                                                 url=mainItems["snippet"]["thumbnails"][
                                                     "maxres"
@@ -299,47 +313,51 @@ class YoutubeV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @yt.command(name="video")
-    async def youtube_video(self, ctx, *, video_id: Option(str, "YT Video ID")):
-        """Returns some info on the given YouTube video."""
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
-            params = {
-                "key": YouTube_API_Key,
-                "part": "snippet,status,statistics",
-                "id": video_id,
-                "maxResults": 1,
-            }
-            async with session.get(
-                "https://www.googleapis.com/youtube/v3/videos", params=params
-            ) as another_response:
-                data = await another_response.content.read()
-                dataMain5 = jsonParser.parse(data, recursive=True)
-                try:
+    # This command will stay commented out since this command
+    # has been tested to work, but would kinda annoy folks
+    # who would want to use it. And probably would annoy discord labs
 
-                    embed = discord.Embed(color=discord.Color.from_rgb(255, 0, 0))
-                    snippetFilter = ["title", "description", "thumbnails", "localized"]
-                    picFilter = ["default", "medium", "high", "standard"]
-                    if len(dataMain5["items"]) == 0:
-                        raise ValueError
-                    else:
-                        for items in dataMain5["items"]:
-                            for keys, val in items["snippet"].items():
-                                if keys not in snippetFilter:
-                                    embed.add_field(name=keys, value=val, inline=True)
-                            embed.title = items["snippet"]["title"]
-                            embed.description = items["snippet"]["description"]
-                            for key, value in items["statistics"].items():
-                                embed.add_field(name=key, value=value, inline=True)
-                            for k, v in items["snippet"]["thumbnails"].items():
-                                if k not in picFilter:
-                                    embed.set_image(url=v["url"])
-                        await ctx.respond(embed=embed)
-                except ValueError:
-                    embedError = discord.Embed()
-                    embedError.description = "Sorry, it seems like there wasn't any results... Please try again"
-                    await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    # @yt.command(name="video")
+    # async def youtube_video(self, ctx, *, video_id: Option(str, "YT Video ID")):
+    #     """Returns some info on the given YouTube video."""
+    #     async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
+    #         params = {
+    #             "key": YouTube_API_Key,
+    #             "part": "snippet,status,statistics",
+    #             "id": video_id,
+    #             "maxResults": 1,
+    #         }
+    #         async with session.get(
+    #             "https://www.googleapis.com/youtube/v3/videos", params=params
+    #         ) as another_response:
+    #             data = await another_response.content.read()
+    #             dataMain5 = jsonParser.parse(data, recursive=True)
+    #             try:
+    #
+    #                 embed = discord.Embed(color=discord.Color.from_rgb(255, 0, 0))
+    #                 snippetFilter = ["title", "description", "thumbnails", "localized"]
+    #                 picFilter = ["default", "medium", "high", "standard"]
+    #                 if len(dataMain5["items"]) == 0:
+    #                     raise ValueError
+    #                 else:
+    #                     for items in dataMain5["items"]:
+    #                         for keys, val in items["snippet"].items():
+    #                             if keys not in snippetFilter:
+    #                                 embed.add_field(name=keys, value=val, inline=True)
+    #                         embed.title = items["snippet"]["title"]
+    #                         embed.description = items["snippet"]["description"]
+    #                         for key, value in items["statistics"].items():
+    #                             embed.add_field(name=key, value=value, inline=True)
+    #                         for k, v in items["snippet"]["thumbnails"].items():
+    #                             if k not in picFilter:
+    #                                 embed.set_image(url=v["url"])
+    #                     await ctx.respond(embed=embed)
+    #             except ValueError:
+    #                 embedError = discord.Embed()
+    #                 embedError.description = "Sorry, it seems like there wasn't any results... Please try again"
+    #                 await ctx.respond(embed=embedError)
+    #
+    # asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):

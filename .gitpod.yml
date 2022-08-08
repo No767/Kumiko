@@ -1,20 +1,24 @@
 tasks:
-  - before: |
-      sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
-      libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-      libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev libffi-dev -y 
-      cd /home/gitpod/.pyenv/plugins/python-build/../.. && git pull && cd -
-      pyenv install 3.10.5 
-      pyenv local 3.10.5
-      pip install --upgrade pip setuptools wheel
-      curl -sSL https://install.python-poetry.org | python -
-      export PATH="$HOME/.local/bin:$PATH"
-      poetry env use 3.10
-      poetry install
-      poetry run pre-commit install
+      - before: |
+            sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
+            libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+            libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3-dev libffi-dev -y 
+            cd /home/gitpod/.pyenv/plugins/python-build/../.. && git pull && cd -
+            pyenv install 3.10.6
+            pyenv local 3.10.6
+            pip install --upgrade pip setuptools wheel
+            curl -sSL https://install.python-poetry.org | python -
+            export PATH="$HOME/.local/bin:$PATH"
+            poetry env use 3.10
+            poetry install
+            poetry run pre-commit install
+
+      - init: |
+            command: make run
+
 github:
-  prebuilds:
-      master: false
-      branches: false
-      pullRequests: false
-      addCheck: false
+      prebuilds:
+            master: false
+            branches: false
+            pullRequests: false
+            addCheck: false

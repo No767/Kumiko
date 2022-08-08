@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.10.5-alpine3.16 AS builder
+FROM python:3.10.6-alpine3.16 AS builder
 
 # Note that some libaries require Linux Kernel C Headers
 RUN apk add --no-cache \
@@ -29,7 +29,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.10.5-alpine3.16
+FROM python:3.10.6-alpine3.16
 
 RUN apk add --no-cache \
     ca-certificates \

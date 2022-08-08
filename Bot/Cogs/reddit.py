@@ -38,7 +38,7 @@ class RedditV1(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v2.1.0 (by /u/No767)",
+            user_agent="alpine:rin:v2.2.0 (by /u/No767)",
         ) as api:
             original_search = search
             try:
@@ -142,7 +142,7 @@ class RedditV1(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v2.1.0 (by /u/No767)",
+            user_agent="alpine:rin:v2.2.0 (by /u/No767)",
         ) as redditapi:
             try:
                 try:
@@ -219,7 +219,7 @@ class RedditV1(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v2.1.0 (by /u/No767)",
+            user_agent="alpine:rin:v2.2.0 (by /u/No767)",
         ) as redditorApi:
             try:
                 user = await redditorApi.redditor(redditor)
@@ -264,7 +264,7 @@ class RedditV1(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v2.1.0 (by /u/No767)",
+            user_agent="alpine:rin:v2.2.0 (by /u/No767)",
         ) as redditorCommentsAPI:
             try:
                 userComment = await redditorCommentsAPI.redditor(redditor)
@@ -323,7 +323,7 @@ class RedditV1(commands.Cog):
         async with asyncpraw.Reddit(
             client_id=Reddit_ID,
             client_secret=Reddit_Secret,
-            user_agent="ubuntu:rin:v2.1.0 (by /u/No767)",
+            user_agent="alpine:rin:v2.2.0 (by /u/No767)",
         ) as redditapi:
             try:
                 mainSub = await redditapi.subreddit("egg_irl")

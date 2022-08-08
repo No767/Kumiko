@@ -10,7 +10,7 @@ class info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="rininfo", description="Info about Rin")
+    @slash_command(name="info", description="Info about Rin")
     async def rinInfo(self, ctx):
         bot = self.bot
         embedVar = discord.Embed(color=14414079)
@@ -24,15 +24,15 @@ class info(commands.Cog):
                 label="Invite", url="https://top.gg/bot/865883525932253184/invite"
             )
         )
-        embedVar.set_author(name="Rin Info", icon_url=bot.user.display_avatar)
+        embedVar.set_author(name="Info", icon_url=bot.user.display_avatar)
         embedVar.add_field(
             name="About",
-            value="Rin is a Discord bot focused on providing data from third party services such as DeviantArt, Hypixel, Reddit, MyAnimeList/Jikan, and many others with lighting speed. Rin allows you to find memes on Reddit with the Reddit service, or get info about your favorite anime with the MAL service.  If you want a multipurpose version of Rin, check out Kumiko.",
+            value="Rin is a Discord bot focused on providing data from third party services such as Hypixel, Reddit, MyAnimeList/Jikan, and many others with lighting speed. Rin allows you to find memes on Reddit with the Reddit service, or get info about your favorite anime with the MAL service.  If you want a multipurpose version of Rin, check out Kumiko.",
             inline=False,
         )
         embedVar.add_field(
             name="Getting Started",
-            value="To help you get started, type in `/rinhelp` in order to access the help page. This will provide you with all of the commands that is available to use as of now.",
+            value="To help you get started, type in `/help` in order to access the help page. This will provide you with all of the commands that is available to use as of now.",
             inline=False,
         )
         embedVar.add_field(

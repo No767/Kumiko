@@ -28,15 +28,17 @@ class ModrinthV1(commands.Cog):
         ctx,
         *,
         mod: Option(str, "The name of the mod"),
-        modloader: Option(str, "Forge or Fabric"),
+        modloader: Option(
+            str, "Forge or Fabric", choices=["Forge", "Fabric"], default="Forge"
+        ),
     ):
-        """Searches for up to 5 mods on Modrinth"""
+        """Searches for up to 25 mods on Modrinth"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
                 "query": mod,
                 "index": "relevance",
-                "limit": 5,
-                "facets": f'[["categories:{modloader}"]]',
+                "limit": 25,
+                "facets": f'[["categories:{str(modloader).lower()}"]]',
             }
             async with session.get(
                 "https://api.modrinth.com/v2/search", params=params
@@ -45,7 +47,7 @@ class ModrinthV1(commands.Cog):
                 dataMain = jsonParser.parse(data, recursive=True)
                 try:
                     if len(dataMain["hits"]) == 0:
-                        raise ValueError
+                        raise NoItemsError
                     else:
                         mainPages = pages.Paginator(
                             pages=[
@@ -106,7 +108,7 @@ class ModrinthV1(commands.Cog):
                             loop_pages=True,
                         )
                         await mainPages.respond(ctx.interaction, ephemeral=False)
-                except ValueError:
+                except NoItemsError:
                     embedErrorMain = discord.Embed()
                     embedErrorMain.description = (
                         f"Sorry, but there are no mods named {mod}. Please try again"
@@ -121,7 +123,9 @@ class ModrinthV1(commands.Cog):
         ctx,
         *,
         name: Option(str, "The name of the mod"),
-        modloader: Option(str, "Forge or Fabric"),
+        modloader: Option(
+            str, "Forge or Fabric", choices=["Forge", "Fabric"], default="Forge"
+        ),
     ):
         """Gets info about the mod requested"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -137,7 +141,7 @@ class ModrinthV1(commands.Cog):
                 try:
                     data = await r.content.read()
                     dataMain = jsonParser.parse(data, recursive=True)
-                    if len(dataMain) == 0:
+                    if len(dataMain["hits"]) == 0:
                         raise NoItemsError
                     else:
                         projectID = dataMain["hits"][0]["project_id"]
@@ -170,6 +174,7 @@ class ModrinthV1(commands.Cog):
                                         "slug",
                                         "project_type",
                                         "team",
+                                        "approved",
                                     ]
                                     embedVar = discord.Embed()
                                     for keys, value in modDataMain.items():
@@ -225,13 +230,13 @@ class ModrinthV1(commands.Cog):
         ctx,
         *,
         name: Option(str, "The name of the mod or project"),
+        game_version: Option(str, "The version of Minecraft"),
         loaders: Option(
             str,
             "The types of modloaders to filter out - Forge or Fabric",
-            required=True,
             choices=["Forge", "Fabric"],
+            default="Forge",
         ),
-        game_version: Option(str, "The version of Minecraft", required=True),
     ):
         """Lists out all of the versions for a mod"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -247,7 +252,7 @@ class ModrinthV1(commands.Cog):
                 try:
                     data = await r.content.read()
                     dataMain = jsonParser.parse(data, recursive=True)
-                    if len(dataMain) == 0:
+                    if len(dataMain["hits"]) == 0:
                         raise ItemNotFound
                     else:
                         modID = dataMain["hits"][0]["project_id"]
@@ -281,9 +286,9 @@ class ModrinthV1(commands.Cog):
                                                     )
                                                     .add_field(
                                                         name="Version Number",
-                                                        value=mainItem[
-                                                            "version_number"
-                                                        ],
+                                                        value=str(
+                                                            mainItem["version_number"]
+                                                        ).replace("'", ""),
                                                         inline=True,
                                                     )
                                                     .add_field(
@@ -305,47 +310,67 @@ class ModrinthV1(commands.Cog):
                                                     )
                                                     .add_field(
                                                         name="Game Versions",
-                                                        value=mainItem["game_versions"],
+                                                        value=str(
+                                                            mainItem["game_versions"]
+                                                        ).replace("'", ""),
                                                         inline=True,
                                                     )
                                                     .add_field(
                                                         name="Dependencies",
-                                                        value=mainItem["dependencies"],
+                                                        value=[
+                                                            items["file_name"]
+                                                            for items in mainItem[
+                                                                "dependencies"
+                                                            ]
+                                                        ]
+                                                        if len(mainItem["dependencies"])
+                                                        > 0
+                                                        else "None",
                                                         inline=True,
                                                     )
                                                     .add_field(
                                                         name="Loaders",
-                                                        value=mainItem["loaders"],
+                                                        value=str(
+                                                            mainItem["loaders"]
+                                                        ).replace("'", ""),
                                                         inline=True,
                                                     )
                                                     .add_field(
                                                         name="Download URL",
-                                                        value=[
-                                                            items["url"]
-                                                            for items in mainItem[
-                                                                "files"
+                                                        value=str(
+                                                            [
+                                                                items["url"]
+                                                                for items in mainItem[
+                                                                    "files"
+                                                                ]
                                                             ]
-                                                        ],
+                                                        ).replace("'", ""),
                                                         inline=True,
                                                     )
                                                     .add_field(
                                                         name="Download SHA1 Hash",
-                                                        value=[
-                                                            items["hashes"]["sha1"]
-                                                            for items in mainItem[
-                                                                "files"
+                                                        value=str(
+                                                            [
+                                                                items["hashes"]["sha1"]
+                                                                for items in mainItem[
+                                                                    "files"
+                                                                ]
                                                             ]
-                                                        ],
+                                                        ).replace("'", ""),
                                                         inline=True,
                                                     )
                                                     .add_field(
                                                         name="Download SHA512 Hash",
-                                                        value=[
-                                                            items["hashes"]["sha512"]
-                                                            for items in mainItem[
-                                                                "files"
+                                                        value=str(
+                                                            [
+                                                                items["hashes"][
+                                                                    "sha512"
+                                                                ]
+                                                                for items in mainItem[
+                                                                    "files"
+                                                                ]
                                                             ]
-                                                        ],
+                                                        ).replace("'", ""),
                                                         inline=True,
                                                     )
                                                     for mainItem in versionDataMain

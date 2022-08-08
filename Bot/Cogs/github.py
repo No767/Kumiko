@@ -6,12 +6,13 @@ import discord
 import orjson
 import simdjson
 import uvloop
+from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from rin_exceptions import HTTPException, NoItemsError
 
-parser = simdjson.Parser()
+jsonParser = simdjson.Parser()
 
 load_dotenv()
 
@@ -44,7 +45,7 @@ class GitHubV1(commands.Cog):
             ) as r:
                 try:
                     data = await r.content.read()
-                    dataMain = parser.parse(data, recursive=True)
+                    dataMain = jsonParser.parse(data, recursive=True)
                     try:
                         if len(dataMain["items"]) == 0:
                             raise NoItemsError
@@ -70,7 +71,9 @@ class GitHubV1(commands.Cog):
                                     )
                                     .add_field(
                                         name="Creation Date",
-                                        value=mainItem["created_at"],
+                                        value=parser.isoparse(
+                                            mainItem["created_at"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
                                         inline=True,
                                     )
                                     .add_field(
@@ -129,21 +132,10 @@ class GitHubV1(commands.Cog):
                 try:
                     try:
                         data = await response.content.read()
-                        dataMain = parser.parse(data, recursive=True)
+                        dataMain = jsonParser.parse(data, recursive=True)
                         if len(dataMain["items"]) == 0:
                             raise NoItemsError
                         else:
-                            mainFilters = [
-                                "login",
-                                "id",
-                                "node_id",
-                                "avatar_url",
-                                "html_url",
-                                "gravatar_id",
-                                "type",
-                                "site_admin",
-                                "score",
-                            ]
                             mainPages = pages.Paginator(
                                 pages=[
                                     discord.Embed(title=dictItem["login"])
@@ -153,17 +145,6 @@ class GitHubV1(commands.Cog):
                                     .add_field(
                                         name="URL",
                                         value=dictItem["html_url"],
-                                        inline=True,
-                                    )
-                                    .add_field(
-                                        name="User URLS",
-                                        value=str(
-                                            [
-                                                v
-                                                for k, v in dictItem.items()
-                                                if k not in mainFilters
-                                            ]
-                                        ).replace("'", ""),
                                         inline=True,
                                     )
                                     .set_thumbnail(url=dictItem["avatar_url"])
@@ -180,6 +161,9 @@ class GitHubV1(commands.Cog):
                     embedError = discord.Embed()
                     embedError.description = (
                         "Sorry, but something went wrong. Please try again"
+                    )
+                    embedError.set_footer(
+                        text="Sometimes this may be the description of the repo being too big."
                     )
                     await ctx.respond(embed=embedError)
 
@@ -217,7 +201,7 @@ class GitHubV1(commands.Cog):
             ) as r:
                 try:
                     data = await r.content.read()
-                    dataMain = parser.parse(data, recursive=True)
+                    dataMain = jsonParser.parse(data, recursive=True)
                     try:
                         try:
                             if len(dataMain) == 0:
@@ -249,12 +233,16 @@ class GitHubV1(commands.Cog):
                                         )
                                         .add_field(
                                             name="Issue Created",
-                                            value=mainItem3["created_at"],
+                                            value=parser.isoparse(
+                                                mainItem3["created_at"]
+                                            ).strftime("%Y-%m-%d %H:%M:%S"),
                                             inline=True,
                                         )
                                         .add_field(
                                             name="Issue Updated",
-                                            value=mainItem3["updated_at"],
+                                            value=parser.isoparse(
+                                                mainItem3["updated_at"]
+                                            ).strftime("%Y-%m-%d %H:%M:%S"),
                                             inline=True,
                                         )
                                         .add_field(
@@ -333,7 +321,7 @@ class GitHubV1(commands.Cog):
                         raise HTTPException
                     else:
                         data = await r.content.read()
-                        dataMain = parser.parse(data, recursive=True)
+                        dataMain = jsonParser.parse(data, recursive=True)
                         embed = discord.Embed()
                         filter54 = [
                             "user",
@@ -352,15 +340,14 @@ class GitHubV1(commands.Cog):
                             "events_url",
                             "assignees",
                             "reactions",
+                            "created_at",
+                            "updated_at",
+                            "id",
+                            "node_id",
                         ]
                         for k, v in dict(dataMain).items():
                             if k not in filter54:
                                 embed.add_field(name=k, value=v, inline=True)
-                        for itemMain in dataMain["labels"]:
-                            for k, v in itemMain.items():
-                                embed.add_field(
-                                    name=f"{k} (Labels)", value=v, inline=True
-                                )
                         embed.add_field(
                             name="Assignees",
                             value=[
@@ -376,6 +363,20 @@ class GitHubV1(commands.Cog):
                         )
                         embed.title = dataMain["title"]
                         embed.description = dataMain["body"]
+                        embed.add_field(
+                            name="created at",
+                            value=parser.isoparse(dataMain["created_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
+                        embed.add_field(
+                            name="updated at",
+                            value=parser.isoparse(dataMain["updated_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
                         await ctx.respond(embed=embed)
                 except HTTPException:
                     embedHTTPExceptionError = discord.Embed()
@@ -407,7 +408,7 @@ class GitHubV1(commands.Cog):
                 try:
 
                     data = await r.content.read()
-                    dataMain = parser.parse(data, recursive=True)
+                    dataMain = jsonParser.parse(data, recursive=True)
                     try:
                         if r.status == 404:
                             raise HTTPException
@@ -427,12 +428,16 @@ class GitHubV1(commands.Cog):
                                     )
                                     .add_field(
                                         name="Created At",
-                                        value=dictItem5["created_at"],
+                                        value=parser.isoparse(
+                                            dictItem5["created_at"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
                                         inline=True,
                                     )
                                     .add_field(
                                         name="Published At",
-                                        value=dictItem5["published_at"],
+                                        value=parser.isoparse(
+                                            dictItem5["published_at"]
+                                        ).strftime("%Y-%m-%d %H:%M:%S"),
                                         inline=True,
                                     )
                                     .add_field(
@@ -509,8 +514,21 @@ class GitHubV1(commands.Cog):
                 headers=headers,
             ) as r:
                 data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
-                mainFilter = ["author", "assets", "body", "name"]
+                dataMain = jsonParser.parse(data, recursive=True)
+                mainFilter = [
+                    "author",
+                    "assets",
+                    "body",
+                    "name",
+                    "url",
+                    "assets_url",
+                    "upload_url",
+                    "id",
+                    "node_id",
+                    "created_at",
+                    "published_at",
+                    "reactions",
+                ]
                 embed = discord.Embed()
                 try:
                     if r.status == 404:
@@ -529,6 +547,20 @@ class GitHubV1(commands.Cog):
                         embed.title = dataMain["name"]
                         embed.description = dataMain["body"]
                         embed.set_thumbnail(url=dataMain["author"]["avatar_url"])
+                        embed.add_field(
+                            name="created_at",
+                            value=parser.isoparse(dataMain["created_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
+                        embed.add_field(
+                            name="published_at",
+                            value=parser.isoparse(dataMain["published_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
                         await ctx.respond(embed=embed)
                 except HTTPException:
                     embedHTTPExceptionError = discord.Embed()
@@ -555,7 +587,7 @@ class GitHubV1(commands.Cog):
                 f"https://api.github.com/repos/{owner}/{repo}", headers=headers
             ) as r:
                 data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
+                dataMain = jsonParser.parse(data, recursive=True)
                 embedMain = discord.Embed()
                 embedFilter = [
                     "permissions",
@@ -607,8 +639,39 @@ class GitHubV1(commands.Cog):
                     "svn_url",
                     "contents_url",
                     "description",
+                    "id",
+                    "node_id",
+                    "name",
+                    "created_at",
+                    "updated_at",
+                    "pushed_at",
+                    "stargazers_url",
+                    "has_issues",
+                    "has_projects",
+                    "has_downloads",
+                    "has_wiki",
+                    "has_pages",
+                    "temp_clone_token",
+                    "allow_squash_merge",
+                    "is_template",
+                    "web_commit_signoff_required",
+                    "size",
+                    "archived",
+                    "disabled",
+                    "allow_forking",
+                    "allow_merge_commit",
+                    "allow_rebase_merge",
+                    "allow_auto_merge",
+                    "delete_branch_on_merge",
+                    "allow_update_branch",
+                    "default_branch",
+                    "visibility",
+                    "ssh_url",
+                    "fork",
+                    "private",
+                    "use_squash_pr_title_as_default",
                 ]
-                licenseFilter = ["key, url", "spdx_id", "node_id", "html_url"]
+                licenseFilter = ["key", "url", "spdx_id", "node_id", "html_url"]
                 try:
                     if r.status == 404:
                         raise HTTPException
@@ -623,10 +686,27 @@ class GitHubV1(commands.Cog):
                                 embedMain.add_field(
                                     name=f"License {k}", value=f"[{v}]", inline=True
                                 )
-                        for k1, v1 in dataMain["permissions"].items():
-                            embedMain.add_field(
-                                name=f"Permissions {k1}", value=f"[{v1}]", inline=True
-                            )
+                        embedMain.add_field(
+                            name="created_at",
+                            value=parser.isoparse(dataMain["created_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
+                        embedMain.add_field(
+                            name="updated_at",
+                            value=parser.isoparse(dataMain["updated_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
+                        embedMain.add_field(
+                            name="pushed_at",
+                            value=parser.isoparse(dataMain["pushed_at"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
                         embedMain.title = dataMain["name"]
                         embedMain.description = dataMain["description"]
                         embedMain.set_thumbnail(url=dataMain["owner"]["avatar_url"])
@@ -652,7 +732,7 @@ class GitHubV1(commands.Cog):
                 f"https://api.github.com/users/{username}", headers=headers
             ) as r:
                 data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
+                dataMain = jsonParser.parse(data, recursive=True)
                 embedMain = discord.Embed()
                 mainFilterEmbed = [
                     "url",

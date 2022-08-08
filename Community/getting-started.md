@@ -33,8 +33,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -74,8 +74,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -111,8 +111,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -155,8 +155,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -190,8 +190,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 
@@ -233,8 +233,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
 
     ```sh
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.6
+    pyenv global 3.10.6
     pyenv rehash
     ```
 

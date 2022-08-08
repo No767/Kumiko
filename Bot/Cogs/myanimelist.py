@@ -5,11 +5,12 @@ import discord
 import orjson
 import simdjson
 import uvloop
+from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
-from rin_exceptions import HTTPException, NoItemsError
+from rin_exceptions import HTTPException, NoItemsError, NotFoundHTTPException
 
-parser = simdjson.Parser()
+jsonParser = simdjson.Parser()
 
 
 class MALV1(commands.Cog):
@@ -17,10 +18,11 @@ class MALV1(commands.Cog):
         self.bot = bot
 
     mal = SlashCommandGroup("mal", "Commands for the MyAnimeList/Jikan service")
+    malSearch = mal.create_subgroup("search", "Search for anime/manga on MyAnimeList")
     malSeasons = mal.create_subgroup("seasons", "Sub commands for anime seasons")
     malRandom = mal.create_subgroup("random", "Random Anime/Manga Commands")
 
-    @mal.command(name="anime")
+    @malSearch.command(name="anime")
     async def anime(self, ctx, *, anime_name: Option(str, "Name of the anime")):
         """Fetches up to 25 anime from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -29,7 +31,7 @@ class MALV1(commands.Cog):
                 "https://api.jikan.moe/v4/anime/", params=params
             ) as r:
                 data = await r.content.read()
-                dataMain = parser.parse(data, recursive=True)
+                dataMain = jsonParser.parse(data, recursive=True)
                 try:
                     if len(dataMain["data"]) == 0:
                         raise NoItemsError
@@ -43,6 +45,7 @@ class MALV1(commands.Cog):
                                 .add_field(
                                     name="Japanese Title",
                                     value=mainItem["title_japanese"],
+                                    inline=True,
                                 )
                                 .add_field(
                                     name="Score", value=mainItem["score"], inline=True
@@ -68,6 +71,17 @@ class MALV1(commands.Cog):
                                 )
                                 .add_field(
                                     name="Year", value=mainItem["year"], inline=True
+                                )
+                                .add_field(
+                                    name="Alternative Titles",
+                                    value=str(
+                                        [
+                                            titleItems["title"]
+                                            for titleItems in mainItem["titles"]
+                                        ]
+                                        if len(mainItem["title"]) > 0
+                                        else ["None"]
+                                    ).replace("'", ""),
                                 )
                                 .add_field(
                                     name="Genres",
@@ -101,7 +115,7 @@ class MALV1(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @mal.command(name="manga")
+    @malSearch.command(name="manga")
     async def manga(self, ctx, *, manga_name: Option(str, "Name of the manga")):
         """Fetches up to 25 mangas from MAL"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
@@ -110,7 +124,7 @@ class MALV1(commands.Cog):
                 "https://api.jikan.moe/v4/manga", params=params
             ) as response:
                 data = await response.content.read()
-                dataMain2 = parser.parse(data, recursive=True)
+                dataMain2 = jsonParser.parse(data, recursive=True)
                 try:
                     if len(dataMain2["data"]) == 0:
                         raise NoItemsError
@@ -153,6 +167,18 @@ class MALV1(commands.Cog):
                                     name="MAL Rank", value=dataItem["rank"], inline=True
                                 )
                                 .add_field(
+                                    name="Alternative Titles",
+                                    value=str(
+                                        [
+                                            titleItems["title"]
+                                            for titleItems in dataItem["titles"]
+                                        ]
+                                        if len(dataItem["title"]) > 0
+                                        else ["None"]
+                                    ).replace("'", ""),
+                                    inline=True,
+                                )
+                                .add_field(
                                     name="Genres",
                                     value=str(
                                         [items["name"] for items in dataItem["genres"]]
@@ -190,7 +216,7 @@ class MALV1(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/anime") as response:
                 data = await response.content.read()
-                dataMain = parser.parse(data, recursive=True)
+                dataMain = jsonParser.parse(data, recursive=True)
                 mainFilter = [
                     "images",
                     "trailer",
@@ -206,6 +232,10 @@ class MALV1(commands.Cog):
                     "title",
                     "broadcast",
                     "background",
+                    "titles",
+                    "title_synonyms",
+                    "mal_id",
+                    "approved",
                 ]
                 try:
                     if len(dataMain["data"]) == 0:
@@ -221,6 +251,13 @@ class MALV1(commands.Cog):
                                     value=value,
                                     inline=True,
                                 )
+                        embedVar.add_field(
+                            name="Titles",
+                            value=str(
+                                [items["title"] for items in dataMain["data"]["titles"]]
+                            ).replace("'", ""),
+                            inline=True,
+                        )
                         embedVar.set_image(
                             url=dataMain["data"]["images"]["jpg"]["large_image_url"]
                         )
@@ -241,7 +278,7 @@ class MALV1(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get("https://api.jikan.moe/v4/random/manga") as r:
                 data = await r.content.read()
-                dataMain3 = parser.parse(data, recursive=True)
+                dataMain3 = jsonParser.parse(data, recursive=True)
                 mangaFilter = [
                     "title",
                     "published",
@@ -255,6 +292,10 @@ class MALV1(commands.Cog):
                     "images",
                     "background",
                     "synopsis",
+                    "titles",
+                    "mal_id",
+                    "approved",
+                    "title_synonyms",
                 ]
                 embedVar = discord.Embed()
                 try:
@@ -270,6 +311,16 @@ class MALV1(commands.Cog):
                                     value=value,
                                     inline=True,
                                 )
+                        embedVar.add_field(
+                            name="Titles",
+                            value=str(
+                                [
+                                    items["title"]
+                                    for items in dataMain3["data"]["titles"]
+                                ]
+                            ).replace("'", ""),
+                            inline=True,
+                        )
                         embedVar.set_image(
                             url=dataMain3["data"]["images"]["jpg"]["large_image_url"]
                         )
@@ -288,15 +339,20 @@ class MALV1(commands.Cog):
         ctx,
         year: Option(int, "Which year for the season"),
         *,
-        season: Option(str, "Anime Season - Winter, Spring, Summer or Fall"),
+        season: Option(
+            str,
+            "Anime Season - Winter, Spring, Summer or Fall",
+            choices=["Winter", "Spring", "Summer", "Fall"],
+            default="winter",
+        ),
     ):
         """Returns animes for the given season and year"""
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(
-                f"https://api.jikan.moe/v4/seasons/{year}/{season}"
+                f"https://api.jikan.moe/v4/seasons/{year}/{str(season).lower()}"
             ) as response:
                 seasons = await response.content.read()
-                seasonsMain = parser.parse(seasons, recursive=True)
+                seasonsMain = jsonParser.parse(seasons, recursive=True)
                 try:
                     try:
                         if response.status == 400:
@@ -397,7 +453,7 @@ class MALV1(commands.Cog):
             ) as full_response:
                 try:
                     data = await full_response.content.read()
-                    dataMain5 = parser.parse(data, recursive=True)
+                    dataMain5 = jsonParser.parse(data, recursive=True)
                     mainPages = pages.Paginator(
                         pages=[
                             discord.Embed(
@@ -462,25 +518,57 @@ class MALV1(commands.Cog):
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.jikan.moe/v4/users/{username}") as r:
                 data = await r.content.read()
-                dataMain6 = parser.parse(data, recursive=True)
-                userFilter = ["username", "images"]
+                dataMain6 = jsonParser.parse(data, recursive=True)
+                userFilter = [
+                    "username",
+                    "images",
+                    "mal_id",
+                    "joined",
+                    "last_online",
+                    "birthday",
+                ]
                 try:
-                    embedVar = discord.Embed()
-                    embedVar.title = dataMain6["data"]["username"]
-                    embedVar.set_thumbnail(
-                        url=dataMain6["data"]["images"]["jpg"]["image_url"]
+                    if r.status == 404 or r.status == 400:
+                        raise NotFoundHTTPException
+                    else:
+                        embedVar = discord.Embed()
+                        embedVar.title = dataMain6["data"]["username"]
+                        embedVar.set_thumbnail(
+                            url=dataMain6["data"]["images"]["jpg"]["image_url"]
+                        )
+                        for key, value in dataMain6["data"].items():
+                            if key not in userFilter:
+                                embedVar.add_field(name=key, value=value, inline=True)
+                        embedVar.add_field(
+                            name="birthday",
+                            value=parser.isoparse(
+                                dataMain6["data"]["birthday"]
+                            ).strftime("%Y-%m-%d %H:%M:%S")
+                            if dataMain6["data"]["birthday"] is not None
+                            else "None",
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="joined",
+                            value=parser.isoparse(dataMain6["data"]["joined"]).strftime(
+                                "%Y-%m-%d %H:%M:%S"
+                            ),
+                            inline=True,
+                        )
+                        embedVar.add_field(
+                            name="last_online",
+                            value=parser.isoparse(
+                                dataMain6["data"]["last_online"]
+                            ).strftime("%Y-%m-%d %H:%M:%S"),
+                            inline=True,
+                        )
+                        await ctx.respond(embed=embedVar)
+                except NotFoundHTTPException:
+                    await ctx.respond(
+                        embed=discord.Embed(
+                            description="Sadly the requested user can't be found. Please try again"
+                        )
                     )
-                    for key, value in dataMain6["data"].items():
-                        if key not in userFilter:
-                            embedVar.add_field(name=key, value=value, inline=True)
-
-                    await ctx.respond(embed=embedVar)
-                except Exception as e:
-                    embedVar.description = (
-                        "The query could not be done. Please try again"
-                    )
-                    embedVar.add_field(name="Reason", value=e, inline=True)
-                    await ctx.respond(embed=embedVar)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

@@ -3,7 +3,6 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct.svg)](https://stand-with-ukraine.pp.ua)
 
 # Kumiko (久美子)
-
 ![Kumiko](./assets/kumiko-resized.jpg)
 
 <br>
@@ -40,18 +39,19 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 - All of the services from upstream Rin
-
 ## Rin's Supported Services
 
 Kumiko comes with integration from 15+ services. Some of these services that are fully supported and integrated include:
 
 - AniList
+- MyAnimeList
 - Twitter
 - Modrinth
 - YouTube
 - Waifu.IM
-- MyAnimeList
 - MangaDex
+- Twitch
+- GitHub
 
 And many more! For a full list, see the [Supported Services](https://docs.rinbot.live/docs/about/supported-services) page.
 
