@@ -7,23 +7,27 @@ import uvloop
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "Bot"))
 
 from economy_utils import (KumikoAuctionHouseUtils, KumikoEcoUserUtils,
-                           KumikoQuestsUtils)
+                           KumikoQuestsUtils, KumikoUserInvUtils)
 
 POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
 POSTGRES_QUESTS_DATABASE = os.getenv("Postgres_Quests_Database")
+POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
 POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
 QUESTS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_QUESTS_DATABASE}"
+CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
 
 utils = KumikoEcoUserUtils()
 ahUtils = KumikoAuctionHouseUtils()
 questsUtils = KumikoQuestsUtils()
+userInvUtils = KumikoUserInvUtils()
 
 
 async def main():
     await utils.initUserTables()
     await utils.initInvTables()
     await ahUtils.initAHTables()
+    await userInvUtils.initUserInvTables(uri=CONNECTION_URI)
     await questsUtils.initQuestsTables(uri=QUESTS_CONNECTION_URI)
 
 
