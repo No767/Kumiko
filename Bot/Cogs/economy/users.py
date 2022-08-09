@@ -8,7 +8,7 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from economy_utils import KumikoEcoUserUtils, UsersInv
+from economy_utils import KumikoEcoUserUtils, KumikoUserInvUtils
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
@@ -20,7 +20,7 @@ POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
 CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
 
 utilsUser = KumikoEcoUserUtils()
-inv = UsersInv()
+inv = KumikoUserInvUtils()
 
 
 class View(discord.ui.View):
@@ -198,21 +198,27 @@ class ecoUsers(commands.Cog):
     async def ecoUserInv(self, ctx):
         """Access your inventory"""
         try:
-            userInv = await inv.obtainUserInv(ctx.user.id)
+            userInv = await inv.getUserInv(user_id=ctx.user.id, uri=CONNECTION_URI)
             if len(userInv) == 0:
                 raise NoItemsError
             else:
                 mainPages = pages.Paginator(
                     pages=[
                         discord.Embed(
-                            title=dict(dictItem)["items"]["name"],
-                            description=dict(dictItem)["items"]["description"],
-                        ).add_field(
-                            name="Amount",
-                            value=dict(dictItem)["items"]["amount"],
+                            title=dict(items)["name"],
+                            description=dict(items)["description"],
+                        )
+                        .add_field(
+                            name="Date First Acquired",
+                            value=parser.isoparse(
+                                dict(items)["date_acquired"]
+                            ).strftime("%Y-%m-%d %H:%M:%S"),
                             inline=True,
                         )
-                        for dictItem in userInv
+                        .add_field(
+                            name="Amount", value=dict(items)["amount"], inline=True
+                        )
+                        for items in userInv
                     ],
                     loop_pages=True,
                 )

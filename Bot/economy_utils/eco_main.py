@@ -324,6 +324,7 @@ class KumikoEcoUtils:
                 Marketplace.name == item_name, Marketplace.owner == owner_id
             )
             .project(PurchaseProject)
+            .limit(1)
             .to_list()
         )
         return entryPurchaseInit
