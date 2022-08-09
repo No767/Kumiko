@@ -1,11 +1,18 @@
 import asyncio
 import logging
+import os
 from datetime import datetime
 
 from dateutil import parser
 from discord.ext import commands
 from economy_utils import KumikoAuctionHouseUtils
 from rin_exceptions import ItemNotFound
+
+POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
+POSTGRES_AH_DATABASE = os.getenv("Postgres_Database_AH_Dev")
+POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
+AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_AH_DATABASE}"
 
 ahUtils = KumikoAuctionHouseUtils()
 
@@ -25,7 +32,9 @@ class InitAHItemPurger:
         logging.info("Successfully started Kumiko's AH Item Checker")
         while True:
             await asyncio.sleep(86400)
-            mainRes = await ahUtils.obtainAHItemPassed(False)
+            mainRes = await ahUtils.obtainAHItemPassed(
+                passed=False, uri=AH_CONNECTION_URI
+            )
             try:
                 if len(mainRes) == 0:
                     raise ItemNotFound
@@ -35,9 +44,17 @@ class InitAHItemPurger:
                         today = datetime.now()
                         parsedDate = parser.isoparse(dict(mainItem)["date_added"])
                         if parsedDate < today:
-                            await ahUtils.setAHItemBoolean(dict(mainItem)["uuid"], True)
+                            await ahUtils.setAHItemBoolean(
+                                uuid=dict(mainItem)["uuid"],
+                                passed=True,
+                                uri=AH_CONNECTION_URI,
+                            )
                         elif parsedDate == today:
-                            await ahUtils.setAHItemBoolean(dict(mainItem)["uuid"], True)
+                            await ahUtils.setAHItemBoolean(
+                                uuid=dict(mainItem)["uuid"],
+                                passed=True,
+                                uri=AH_CONNECTION_URI,
+                            )
                         elif parsedDate > today:
                             continue
             except ItemNotFound:

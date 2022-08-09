@@ -16,14 +16,19 @@ from economy_utils import KumikoAuctionHouseUtils, KumikoEcoUserUtils
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
+
 RABBITMQ_USER = os.getenv("RabbitMQ_Username_Dev")
 RABBITMQ_PASSWORD = os.getenv("RabbitMQ_Password_Dev")
+REDIS_SERVER_IP = os.getenv("Redis_Server_IP_Dev")
+REDIS_SERVER_PORT = os.getenv("Redis_Port_Dev")
 RABBITMQ_SERVER_IP = os.getenv("RabbitMQ_Server_IP_Dev")
 POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
+POSTGRES_USER_DATABASE = os.getenv("Postgres_Database_Dev")
+POSTGRES_AH_DATABASE = os.getenv("Postgres_Database_AH_Dev")
 POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_USER_DATABASE}"
+AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_AH_DATABASE}"
 
 auctionHouseUtils = KumikoAuctionHouseUtils()
 userUtils = KumikoEcoUserUtils()
@@ -55,14 +60,14 @@ class View(discord.ui.View):
                         )
                     else:
                         itemUUIDAuth = await auctionHouseUtils.obtainItemUUIDAuth(
-                            interaction.user.id
+                            user_id=interaction.user.id, uri=AH_CONNECTION_URI
                         )
                         try:
                             if len(itemUUIDAuth) == 0:
                                 raise ItemNotFound
                             else:
                                 await auctionHouseUtils.purgeUserAHItems(
-                                    interaction.user.id
+                                    user_id=interaction.user.id, uri=AH_CONNECTION_URI
                                 )
                                 await interaction.response.send_message(
                                     "Confirmed. All Auction House Listings have now been completely purged from your account. This is permanent and irreversible."
@@ -113,11 +118,18 @@ class AuctionHouseV1(commands.Cog):
                             f"Sorry, but your current rank is {items}. You need at the very least rank 25 in order to use this command."
                         )
                     else:
-                        selectMainItem = await auctionHouseUtils.selectAHItemUUID(name)
+                        selectMainItem = await auctionHouseUtils.selectAHItemUUID(
+                            name=name, uri=AH_CONNECTION_URI
+                        )
                         for item in selectMainItem:
                             ahItemUUID = item
                         await auctionHouseUtils.setItemKey(
-                            str(ctx.user.id), ahItemUUID, db=1, ttl=21660
+                            str(ctx.user.id),
+                            ahItemUUID,
+                            db=1,
+                            ttl=21660,
+                            redis_server_ip=REDIS_SERVER_IP,
+                            redis_port=REDIS_SERVER_PORT,
                         )
                         await ctx.respond("Item selected")
         except ItemNotFound:
@@ -145,7 +157,10 @@ class AuctionHouseV1(commands.Cog):
                             )
                         else:
                             selectedItem = await auctionHouseUtils.getItemKey(
-                                str(ctx.user.id), db=1
+                                str(ctx.user.id),
+                                db=1,
+                                redis_server_ip=REDIS_SERVER_IP,
+                                redis_port=REDIS_SERVER_PORT,
                             )
                             if selectedItem is None:
                                 await ctx.respond(
@@ -154,7 +169,7 @@ class AuctionHouseV1(commands.Cog):
                             else:
                                 selectItemPriceRes = (
                                     await auctionHouseUtils.selectAHItemPrice(
-                                        selectedItem
+                                        uuid=selectedItem, uri=AH_CONNECTION_URI
                                     )
                                 )
                                 for mainItems in selectItemPriceRes:
@@ -243,9 +258,15 @@ class AuctionHouseV1(commands.Cog):
                                     dateAdded,
                                     price,
                                     False,
+                                    AH_CONNECTION_URI,
                                 )
                                 await auctionHouseUtils.setItemKey(
-                                    auctionHouseItemUUID, price, db=0, ttl=86400
+                                    auctionHouseItemUUID,
+                                    price,
+                                    db=0,
+                                    ttl=86400,
+                                    redis_server_ip=REDIS_SERVER_IP,
+                                    redis_port=REDIS_SERVER_PORT,
                                 )
                                 await ctx.respond("Item added to the auction house")
                             except yaml.YAMLError:
@@ -280,7 +301,9 @@ class AuctionHouseV1(commands.Cog):
                             f"Sorry, but your current rank is {items}. You need at the very least rank 25 or higher to use this command."
                         )
                     else:
-                        mainRes = await auctionHouseUtils.selectItemNotPassed(False)
+                        mainRes = await auctionHouseUtils.selectItemNotPassed(
+                            False, AH_CONNECTION_URI
+                        )
                         try:
                             if len(mainRes) == 0:
                                 raise ItemNotFound
@@ -338,7 +361,7 @@ class AuctionHouseV1(commands.Cog):
                         )
                     else:
                         userSelRes = await auctionHouseUtils.selectUserItemViaName(
-                            ctx.author.id, name
+                            ctx.author.id, name, AH_CONNECTION_URI
                         )
                         try:
                             if len(userSelRes) == 0:
@@ -348,7 +371,7 @@ class AuctionHouseV1(commands.Cog):
                                     mainItems = dict(items)
                                     itemUUID = mainItems["uuid"]
                                     await auctionHouseUtils.deleteUserAHItem(
-                                        ctx.author.id, itemUUID
+                                        ctx.author.id, itemUUID, AH_CONNECTION_URI
                                     )
                                 await ctx.respond("Item deleted")
                         except ItemNotFound:

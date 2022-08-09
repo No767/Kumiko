@@ -73,11 +73,9 @@ for extension in initial_extensions:
 # Adds in the bot presence
 @bot.event
 async def on_ready():
-    logging.info("Kumiko is ready to go!")
+    logging.info("Kumiko is ready to go! All events are ready to go")
     await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching, name="/kumikohelp"
-        )
+        activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
     )
 
 

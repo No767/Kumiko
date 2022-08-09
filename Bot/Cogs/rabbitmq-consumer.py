@@ -13,6 +13,11 @@ load_dotenv()
 RABBITMQ_USER = os.getenv("RabbitMQ_Username_Dev")
 RABBITMQ_PASSWORD = os.getenv("RabbitMQ_Password_Dev")
 RABBITMQ_SERVER_IP = os.getenv("RabbitMQ_Server_IP_Dev")
+POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
+POSTGRES_AH_DATABASE = os.getenv("Postgres_Database_AH_Dev")
+POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
+AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_AH_DATABASE}"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,7 +32,9 @@ async def on_queue_message(message: aiormq.abc.DeliveredMessage) -> None:
     mainMessage = message.body
     decodedMainMessage = mainMessage.decode("utf-8")
     splitMessage = decodedMainMessage.split(":")
-    await ahUtils.updateAHItem(splitMessage[0], int(splitMessage[1]))
+    await ahUtils.updateAHItem(
+        uuid=splitMessage[0], price=int(splitMessage[1]), uri=AH_CONNECTION_URI
+    )
 
     await message.channel.basic_ack(message.delivery.delivery_tag)
 
