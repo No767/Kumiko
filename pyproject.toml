@@ -26,7 +26,7 @@ rin-exceptions = "^1.0.2"
 beanie = "^1.11.7"
 numpy = "^1.23.1"
 PyYAML = "^6.0"
-aiormq = "^6.4.0"
+aiormq = "^6.4.1"
 py-cord = {version = "2.0.0", extras = ["voice"]}
 hiredis = "^2.0.0"
 redis = "^4.3.4"
