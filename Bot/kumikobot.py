@@ -66,6 +66,7 @@ initial_extensions = [
     "Cogs.ah-checker",
     "Cogs.economy.quests",
     "Cogs.twitch",
+    "Cogs.quests-checker",
 ]
 for extension in initial_extensions:
     bot.load_extension(extension)

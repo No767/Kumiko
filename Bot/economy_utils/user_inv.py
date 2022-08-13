@@ -57,7 +57,7 @@ class KumikoUserInvUtils:
         amount: int,
         uri: str,
     ) -> None:
-        """_summary_
+        """Adds the item into the user's inventory
 
         Args:
             user_id (int): Discord User ID

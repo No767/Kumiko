@@ -5,7 +5,6 @@ import uvloop
 from dotenv import load_dotenv
 from sqlalchemy import (BigInteger, Column, Integer, MetaData, String, Table,
                         delete, select, update)
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
@@ -41,10 +40,14 @@ class KumikoEcoUserUtils:
     def __init__(self):
         self.self = self
 
-    async def initUserTables(self):
-        """Creates the tables needed for each user"""
+    async def initUserTables(self, uri: str):
+        """Creates the tables needed for each user
+
+        Args:
+            uri (str): Connection URI
+        """
         engine = create_async_engine(
-            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}",
+            uri,
             echo=True,
         )
         async with engine.begin() as conn:
@@ -268,23 +271,6 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     # This is not deprecated...
-    async def initInvTables(self):
-        """Initializes the user inv tables for the economy system. This is used for the Postgres-Init script."""
-        meta4 = MetaData()
-        engine4 = create_async_engine(
-            f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}",
-            echo=True,
-        )
-        Table(
-            "users_inventory",
-            meta4,
-            Column("user_id", BigInteger),
-            Column("items", JSONB),
-        )
-        async with engine4.begin() as conn4:
-            await conn4.run_sync(meta4.create_all)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def getUser(self, user_id: int):
         """Obtains the amount of coins a user has

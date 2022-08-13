@@ -26,8 +26,7 @@ userInvUtils = KumikoUserInvUtils()
 
 
 async def main():
-    await utils.initUserTables()
-    await utils.initInvTables()
+    await utils.initUserTables(uri=CONNECTION_URI)
     await ahUtils.initAHTables(uri=AH_CONNECTION_URI)
     await userInvUtils.initUserInvTables(uri=CONNECTION_URI)
     await questsUtils.initQuestsTables(uri=QUESTS_CONNECTION_URI)
