@@ -218,8 +218,8 @@ python-versions = ">=3.6.0"
 soupsieve = ">1.2"
 
 [package.extras]
-html5lib = ["html5lib"]
 lxml = ["lxml"]
+html5lib = ["html5lib"]
 
 [[package]]
 name = "brotli"
@@ -306,7 +306,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 wrapt = ">=1.10,<2"
 
 [package.extras]
-dev = ["tox", "bump2version (<1)", "sphinx (<2)", "importlib-metadata (<3)", "importlib-resources (<4)", "configparser (<5)", "sphinxcontrib-websupport (<2)", "zipp (<2)", "PyTest (<5)", "PyTest-Cov (<2.6)", "pytest", "pytest-cov"]
+dev = ["pytest-cov", "pytest", "PyTest-Cov (<2.6)", "PyTest (<5)", "zipp (<2)", "sphinxcontrib-websupport (<2)", "configparser (<5)", "importlib-resources (<4)", "importlib-metadata (<3)", "sphinx (<2)", "bump2version (<1)", "tox"]
 
 [[package]]
 name = "distlib"
@@ -325,8 +325,8 @@ optional = false
 python-versions = ">=3.7"
 
 [package.extras]
-docs = ["furo (>=2021.8.17b43)", "sphinx (>=4.1)", "sphinx-autodoc-typehints (>=1.12)"]
-testing = ["covdefaults (>=1.2.0)", "coverage (>=4)", "pytest (>=4)", "pytest-cov", "pytest-timeout (>=1.4.2)"]
+testing = ["pytest-timeout (>=1.4.2)", "pytest-cov", "pytest (>=4)", "coverage (>=4)", "covdefaults (>=1.2.0)"]
+docs = ["sphinx-autodoc-typehints (>=1.12)", "sphinx (>=4.1)", "furo (>=2021.8.17b43)"]
 
 [[package]]
 name = "frozenlist"
@@ -530,8 +530,8 @@ optional = false
 python-versions = ">=3.7"
 
 [package.extras]
-docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-issues (>=3.0.1)", "sphinx-removed-in", "sphinxext-opengraph"]
-tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
+tests = ["pytest-timeout", "pytest-cov", "pytest", "pyroma", "packaging", "olefile", "markdown2", "defusedxml", "coverage", "check-manifest"]
+docs = ["sphinxext-opengraph", "sphinx-removed-in", "sphinx-issues (>=3.0.1)", "sphinx-copybutton", "sphinx (>=2.4)", "olefile", "furo"]
 
 [[package]]
 name = "platformdirs"
@@ -612,8 +612,8 @@ python-versions = ">=3.6.1"
 typing-extensions = ">=3.7.4.3"
 
 [package.extras]
-dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
+dotenv = ["python-dotenv (>=0.10.4)"]
 
 [[package]]
 name = "pymongo"
@@ -733,8 +733,8 @@ deprecated = ">=1.2.3"
 packaging = ">=20.4"
 
 [package.extras]
+ocsp = ["requests (>=2.26.0)", "pyopenssl (==20.0.1)", "cryptography (>=36.0.1)"]
 hiredis = ["hiredis (>=1.0.0)"]
-ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
 
 [[package]]
 name = "requests"
@@ -756,7 +756,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 
 [[package]]
 name = "rin-exceptions"
-version = "1.0.2"
+version = "1.0.3"
 description = "A set of base exceptions for Rin"
 category = "main"
 optional = false
@@ -846,9 +846,9 @@ python-versions = "*"
 requests = ">=2.3.0"
 
 [package.extras]
-dev = ["black", "flake8", "pytest (>=2.7.3)"]
-lint = ["black", "flake8"]
 test = ["pytest (>=2.7.3)"]
+lint = ["flake8", "black"]
+dev = ["pytest (>=2.7.3)", "flake8", "black"]
 
 [[package]]
 name = "urllib3"
@@ -916,7 +916,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "c437d1379a23dc80c305e839ca9a63a05a95ba46133199ba705fe5bc097ef009"
+content-hash = "6e4fa469a770e0ec36c635c8a9315d169fbfe2a89727e0a77bd5b2309ead185b"
 
 [metadata.files]
 aiodns = [
@@ -2056,8 +2056,8 @@ requests = [
     {file = "requests-2.28.1.tar.gz", hash = "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983"},
 ]
 rin-exceptions = [
-    {file = "rin-exceptions-1.0.2.tar.gz", hash = "sha256:d46b0d19647e54a7d2454b0d5a8566d8cab0c1a974df12788dc7eaac280ee963"},
-    {file = "rin_exceptions-1.0.2-py3-none-any.whl", hash = "sha256:043b83c5456fc3bfde7d814d719cb1b869d35ec497fe042af81da6c076f28759"},
+    {file = "rin-exceptions-1.0.3.tar.gz", hash = "sha256:8044e89f50280b0d0e14639e0727405b49a0cf54a73b6993c2dd4cc56d0182c2"},
+    {file = "rin_exceptions-1.0.3-py3-none-any.whl", hash = "sha256:7d0e467a313d208589f1340c6225636ae2325e5b0a7be39e0361f1ab0d986fee"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
