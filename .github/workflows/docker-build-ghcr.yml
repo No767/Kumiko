@@ -26,7 +26,7 @@ jobs:
       #   run: sleep 60s
       #   shell: bash
 
-      - name: Docker meta
+      - name: Prepare Docker Meta
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -34,7 +34,7 @@ jobs:
             ghcr.io/no767/kumiko
           tags: |
             type=semver,pattern={{raw}}
-            type=edge,branch=dev,suffix=${{ env.DEV_TAGGED_VERSION }}-{{branch}}-{{sha}}
+            type=edge,branch=dev,suffix=-{{sha}}
 
       - name: Setup Docker Buildx
         id: buildx
