@@ -31,7 +31,7 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
     - Custom currency (Lavnder Petals)
     - Custom jobs (WIP)
     - Rank system (WIP)
-    - Custom quests (WIP)
+    - Custom quests
 - Wish Sim (WIP, pinned for v1)
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
@@ -71,6 +71,7 @@ If you would like to get started, here are some links to help you with that:
 
 - [Getting Started (For Developers)](./Community/getting-started.md)
 - [Contributing](./Community/contributing.md)
+- [Documentation](https://`docs.kumiko-bot.tech/)
 
 # Licensing
 
