@@ -5,21 +5,8 @@
 version: "3.9"
 services:
   kumiko:
-    # Use cloudflare's DNS server. This is what Discord uses as well
-    dns: 
-      - 1.1.1.1
-      - 1.0.0.1
     container_name: Kumiko
     restart: always
-    build:
-      dockerfile: ./Alpine-Docker/Dockerfile
-      context: .
-      args:
-        # Both fields are optional. These are for if you want to hook up Kumiko to PM2, which natively in the Dockerfile, is supported
-        - PM2_PUBLIC_KEY_INGEST=pub_key # Change this to your own PM2 public key
-        - PM2_SECRET_KEY_INGEST=secret_key # Change this to your own PM2 private key
-    ports:
-      - 4002:4002 # Used by uptime kuma. remove if not needed
     deploy:
       restart_policy:
         condition: on-failure
@@ -27,6 +14,8 @@ services:
         max_attempts: 3
         window: 120s
       mode: replicated
+    env_file:
+      - .env-docker-example # Rename this to .env
     
   postgres:
     container_name: Kumiko-Postgres
@@ -67,7 +56,7 @@ services:
       - RABBITMQ_DEFAULT_VHOST=kumiko
 
   redis:
-    container_name: Kumiko-Redis-Dev
+    container_name: Kumiko-Redis
     image: redis:latest
     ports:
       - 6379:6379

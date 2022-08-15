@@ -11,8 +11,8 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
-from exceptions import SusEveryonePing
 from numpy.random import default_rng
+from rin_exceptions import SusEveryonePing
 
 load_dotenv()
 

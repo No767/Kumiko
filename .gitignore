@@ -73,3 +73,4 @@ test.sh
 user-inv-test.py
 ah-test.py
 gws-test.py
+.env-docker

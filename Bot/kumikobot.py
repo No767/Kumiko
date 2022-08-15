@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-Discord_Bot_Token = os.getenv("Petal")
+Discord_Bot_Token = os.getenv("Dev_Bot_Token")
 intents = discord.Intents.default()
 intents.members = True
 bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)

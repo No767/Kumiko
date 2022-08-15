@@ -39,10 +39,9 @@ RUN apk add --no-cache \
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
-COPY /Bot/.env /Kumiko/Bot/
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
 COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
-COPY /Bot/exceptions /Kumiko/Bot/exceptions
+COPY /Alpine-Docker/start.sh /Kumiko/start.sh
 
 # Copy dependency wheels from builder stage
 COPY --from=builder /Kumiko/wheels /Kumiko/wheels
@@ -52,19 +51,20 @@ RUN pip install --upgrade pip setuptools
 
 # Add an unprivileged user and set directory permissions
 RUN adduser --disabled-password --gecos "" kumiko \
-    && chown -R kumiko:kumiko /Kumiko 
+    && chown -R kumiko:kumiko /Kumiko \
+    && chmod +x /Kumiko/start.sh
 
 USER kumiko
 
 # Set up path so pip won't complain again
-ENV PATH="${PATH}:~/.local/bin"
+ENV PATH="${PATH}:/home/kumiko/.local/bin"
 
 # Install dependencies
 RUN pip install --user --no-index --find-links=/Kumiko/wheels -r requirements.txt
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-CMD ["python", "/Kumiko/Bot/kumikobot.py"]
+CMD ["/Kumiko/start.sh"]
 
 STOPSIGNAL SIGTERM
 
