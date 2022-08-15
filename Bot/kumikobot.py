@@ -32,7 +32,6 @@ initial_extensions = [
     "Cogs.waifu",
     "Cogs.hypixel",
     "Cogs.advice",
-    "Cogs.qrcode-maker",
     "Cogs.spiget",
     "Cogs.myanimelist",
     "Cogs.top-gg",
@@ -51,7 +50,6 @@ initial_extensions = [
     "Cogs.discord-bots",
     "Cogs.economy.marketplace",
     "Cogs.economy.users",
-    "Cogs.economy.petals",
     "Cogs.kumiko-platform",
     "Cogs.first-frc-events",
     "Cogs.blue-alliance",
@@ -69,7 +67,8 @@ initial_extensions = [
     "Cogs.quests-checker",
 ]
 for extension in initial_extensions:
-    bot.load_extension(extension)
+    bot.load_extension(extension, store=False)
+
 
 # Adds in the bot presence
 @bot.event

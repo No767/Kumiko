@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+from pathlib import Path
 
 import uvloop
 
@@ -9,7 +10,10 @@ sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "Bot"))
 from dotenv import load_dotenv
 from genshin_wish_sim_utils import KumikoWSUtils
 
-load_dotenv()
+mainPath = Path(__file__).parents[1]
+envPath = os.path.join(mainPath, "Bot", ".env")
+
+load_dotenv(envPath)
 wsUtils = KumikoWSUtils()
 
 POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
