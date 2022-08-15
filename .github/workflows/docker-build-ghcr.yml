@@ -62,7 +62,7 @@ jobs:
           context: .
           file: ./Alpine-Docker/Dockerfile
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
