@@ -27,7 +27,7 @@ beanie = "^1.11.7"
 numpy = "^1.23.2"
 PyYAML = "^6.0"
 aiormq = "^6.4.1"
-py-cord = {version = "2.0.0", extras = ["voice"]}
+py-cord = {version = "2.0.1", extras = ["voice"]}
 hiredis = "^2.0.0"
 redis = "^4.3.4"
 asyncio-redis = "^0.16.0"
