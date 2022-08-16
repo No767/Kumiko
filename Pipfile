@@ -12,7 +12,7 @@ asyncpraw = "*"
 uvloop = "*"
 aiohttp = "*"
 cchardet = "*"
-py-cord = {version = "==2.0.0", extras = ["voice"]}
+py-cord = {version = "==2.0.1", extras = ["voice"]}
 pysimdjson = "*"
 gql = {extras = ["aiohttp"], version = "*"}
 python-dateutil = "*"
