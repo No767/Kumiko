@@ -33,7 +33,7 @@ jobs:
           images: |
             no767/rin-prod
           tags: |
-            type=semver,pattern={{raw}}
+            type=ref,event=tag
             type=edge,branch=dev
           flavor: |
             latest=true

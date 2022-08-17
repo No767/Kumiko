@@ -7,6 +7,8 @@ on:
     branches:
       - master
       - dev
+    tags:
+      - 'v*'
 
 env:
   IMAGE: ghcr.io/no767/rin
@@ -31,7 +33,7 @@ jobs:
           images: |
             ghcr.io/no767/rin
           tags: |
-            type=semver,pattern={{raw}}
+            type=ref,event=tag
             type=edge,branch=dev,suffix=-{{sha}}
           flavor: |
             latest=true
