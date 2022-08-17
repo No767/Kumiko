@@ -3,6 +3,7 @@ import random
 
 import numpy as np
 import uvloop
+from numpy.random import default_rng
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -172,11 +173,12 @@ class KumikoWSUtils:
                 )
                 res = await session.execute(selItem)
                 npArray = np.array([row for row in res.scalars()])
-                return np.random.choice(npArray)
+                rng = default_rng()
+                return rng.choice(npArray)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def getRandomWSArrayLooped(
+    async def getRandomWSItemMultiple(
         self, amount: int, star_rank: int, uri: str
     ) -> np.array:
         """Loops over a random selection for a certain amount of times.
@@ -199,6 +201,7 @@ class KumikoWSUtils:
                 )
                 res = await session.execute(selItem)
                 npArray = np.array([row for row in res.scalars()])
-                return [np.random.choice(npArray) for _ in range(amount)]
+                rng = default_rng()
+                return rng.choice(a=npArray, size=amount, replace=False)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

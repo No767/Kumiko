@@ -2,7 +2,7 @@ import asyncio
 
 import numpy as np
 import uvloop
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -25,6 +25,7 @@ class KumikoWSUserInvUtils:
         description: str,
         star_rank: int,
         type: str,
+        amount: int,
         uri: str,
     ) -> None:
         """Inserts an item into the WS user inv
@@ -37,6 +38,7 @@ class KumikoWSUserInvUtils:
             description (str): Description of the item
             star_rank (int): Star Rank of the item
             type (str): The type of the item
+            amount (int): The amount of the item
             uri (str): Connection URI
         """
         engine = create_async_engine(uri)
@@ -54,6 +56,7 @@ class KumikoWSUserInvUtils:
                     description=description,
                     star_rank=star_rank,
                     type=type,
+                    amount=amount,
                 )
                 session.add_all([insertItemMain])
                 await session.commit()
@@ -153,5 +156,30 @@ class KumikoWSUserInvUtils:
                 )
                 itemSelected = await session.scalars(selItem)
                 return [itemSelected.first()]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def updateWSItemAmount(
+        self, user_id: int, uuid: str, amount: int, uri: str
+    ) -> None:
+        """Updates the amount of an item in the user's inv
+
+        Args:
+            user_id (int): Discord User ID
+            uuid (str): GWS Item UUID
+            amount (int): The amount of the item
+            uri (str): Connection URI
+        """
+        engine = create_async_engine(uri)
+        asyncSession = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+        async with asyncSession() as session:
+            async with session.begin():
+                updateItem = (
+                    update(models.UserWSInv, values={models.UserWSInv.amount: amount})
+                    .filter(models.UserWSInv.item_uuid == uuid)
+                    .filter(models.UserWSInv.user_id == user_id)
+                )
+                await session.execute(updateItem)
+                await session.commit()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

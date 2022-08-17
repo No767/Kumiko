@@ -116,30 +116,50 @@ class KumikoGWSBanners(commands.Cog):
             star_rank=starRank, uri=WS_CONNECTION_URI
         )
         mainResDict = dict(mainRes)
-        await wsUserInvUtils.insertWSItemToUserInv(
-            uuid=mainResDict["uuid"],
-            user_id=ctx.author.id,
-            date_obtained=datetime.now().isoformat(),
-            name=mainResDict["name"],
-            description=mainResDict["description"],
-            star_rank=mainResDict["star_rank"],
-            type=mainResDict["type"],
-            uri=WS_CONNECTION_URI,
+        embed = discord.Embed()
+
+        checkUserInv = await wsUserInvUtils.getUserInv(
+            user_id=ctx.author.id, uri=WS_CONNECTION_URI
         )
         getUserProfile = await wsUserUtils.getUserProfile(
             user_id=ctx.author.id, uri=WS_CONNECTION_URI
         )
-        for items in getUserProfile:
-            totalAmount = int(dict(items)["pulls"]) + 1
+        for itemsMain in getUserProfile:
+            totalAmount = int(dict(itemsMain)["pulls"]) + 1
             await wsUserUtils.updateUserPullCount(
                 user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
             )
-        embed = discord.Embed()
+        if len(checkUserInv) == 0:
+            await wsUserInvUtils.insertWSItemToUserInv(
+                uuid=mainResDict["uuid"],
+                user_id=ctx.author.id,
+                date_obtained=datetime.now().isoformat(),
+                name=mainResDict["name"],
+                description=mainResDict["description"],
+                star_rank=mainResDict["star_rank"],
+                type=mainResDict["type"],
+                amount=1,
+                uri=WS_CONNECTION_URI,
+            )
+        else:
+            for items in checkUserInv:
+                if dict(items)["item_uuid"] == mainResDict["uuid"]:
+                    totalAmount = dict(items)["amount"] + 1
+                    await wsUserInvUtils.updateWSItemAmount(
+                        user_id=ctx.author.id,
+                        uuid=dict(items)["item_uuid"],
+                        amount=totalAmount,
+                        uri=WS_CONNECTION_URI,
+                    )
+                    await ctx.respond(
+                        f"It seems like you pulled another {mainResDict['name']} from the wish sim."
+                    )
+
         embed.title = mainResDict["name"]
         embed.description = mainResDict["description"]
         embed.add_field(name="Star Rank", value=mainResDict["star_rank"], inline=True)
         embed.add_field(name="Type", value=mainResDict["type"], inline=True)
-        await ctx.respond(embed=embed)
+        await ctx.respond("another test")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -173,6 +193,9 @@ class KumikoGWSBanners(commands.Cog):
                         )
                         .add_field(
                             name="Type", value=dict(mainItem)["type"], inline=True
+                        )
+                        .add_field(
+                            name="Amount", value=dict(mainItem)["amount"], inline=True
                         )
                         for mainItem in userInv
                     ],

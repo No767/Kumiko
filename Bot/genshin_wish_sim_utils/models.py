@@ -13,6 +13,7 @@ class UserWSInv(Base):
     description = Column(Text)
     star_rank = Column(Integer)
     type = Column(String)
+    amount = Column(Integer)
 
     def __iter__(self):
         yield "item_uuid", self.item_uuid
@@ -22,9 +23,10 @@ class UserWSInv(Base):
         yield "description", self.description
         yield "star_rank", self.star_rank
         yield "type", self.type
+        yield "amount", self.amount
 
     def __repr__(self):
-        return f"UserWSInv(item_uuid={self.item_uuid!r}, user_id={self.user_id!r}, date_obtained={self.date_obtained!r}, name={self.name!r}, description={self.description!r}, star_rank={self.star_rank!r}, type={self.type!r})"
+        return f"UserWSInv(item_uuid={self.item_uuid!r}, user_id={self.user_id!r}, date_obtained={self.date_obtained!r}, name={self.name!r}, description={self.description!r}, star_rank={self.star_rank!r}, type={self.type!r}, amount={self.amount!r})"
 
 
 class UserWS(Base):
