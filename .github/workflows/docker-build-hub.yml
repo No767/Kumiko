@@ -6,6 +6,9 @@ on:
       - "**.md"
     branches:
       - master
+      - dev
+    tags:
+      - 'v*'
 
 env:
   IMAGE: no767/rin-prod
@@ -22,39 +25,18 @@ jobs:
       - name: Defer workflow for 60 seconds
         run: sleep 60s
         shell: bash
-
-      - name: Prepare
-        id: prep
-        run: |
-          # Docker Tagging Syntax:
-          # If deploying to master or production (NOTE: DO NOT DEPLOY TO PRODUCTION UNLESS IT IS FULLY TESTED AND APPROVED):
-          # <image>:<tagged_version>
-          # 
-          # If deploying to dev:
-          # <image>:<next_minor_version>-dev-<short_commit_sha>
-          
-          DOCKER_IMAGE=${{ env.IMAGE }}
-          VERSION=${{ env.VERSION }}
-          COMMIT_SHORTREF=${GITHUB_SHA::8}
-          BRANCH=${GITHUB_REF#refs/heads/}
-          
-          # If Git tags are used, tag the docker's tag with the git tag
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-          fi
-
-          # Tag the Latest Build to allow for easier pulling
-          # This will be the latest dev build on GHCR, and latest production build on Docker Hub
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-
-          # If the BRANCH is dev, tag the image 'dev' + add commit shortref.
-          if [[ $BRANCH == dev ]]; then
-            TAGS="$TAGS,${DOCKER_IMAGE}:${{ env.DEV_TAGGED_VERSION }}-${COMMIT_SHORTREF}"
-          fi
-
-          # Set output parameters
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=docker_image::${DOCKER_IMAGE}
+    
+      - name: Prepare Docker Meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            no767/rin-prod
+          tags: |
+            type=semver,pattern={{raw}}
+            type=edge,branch=dev,suffix=-{{sha}}
+          flavor: |
+            latest=true
 
       - name: Setup Docker Buildx
         id: buildx
@@ -82,7 +64,7 @@ jobs:
           context: .
           file: ./Alpine-Docker/Dockerfile
           push: true
-          tags: ${{ steps.prep.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
