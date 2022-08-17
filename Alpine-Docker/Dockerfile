@@ -12,8 +12,8 @@ WORKDIR /Rin
 COPY /Pipfile* /Rin/
 
 # Create dependency wheels
-RUN pip install --upgrade pip wheel setuptools pipenv \
-    && pipenv lock -r > requirements.txt \
+RUN pip install --upgrade pip setuptools pipenv \
+    && pipenv requirements > requirements.txt \
     && pip wheel --wheel-dir=/Rin/wheels -r requirements.txt
 
 ####################################################################################################
