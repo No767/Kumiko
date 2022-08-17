@@ -33,7 +33,7 @@ jobs:
           images: |
             ghcr.io/no767/rin
           tags: |
-            type=ref,event=tag
+            type=raw,value=v2.2.3
             type=edge,branch=dev,suffix=-{{sha}}
           flavor: |
             latest=true

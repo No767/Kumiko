@@ -1,9 +1,9 @@
-# ✨ Rin V2.2.2 (LTS) ✨
+# ✨ Rin V2.2.3 (LTS) ✨
 
-A very small fix since the Docker Build commands failed
+A very small fix since the Docker Build commands failed again
 
 ## Changes
-- Use ref type and tag event to capture proper tag
+- Just use raw values instead
 ## Additions
 
 
