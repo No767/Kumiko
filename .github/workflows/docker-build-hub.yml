@@ -34,7 +34,7 @@ jobs:
             no767/rin-prod
           tags: |
             type=semver,pattern={{raw}}
-            type=edge,branch=dev,suffix=-{{sha}}
+            type=edge,branch=dev
           flavor: |
             latest=true
 
