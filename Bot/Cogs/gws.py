@@ -121,14 +121,6 @@ class KumikoGWSBanners(commands.Cog):
         checkUserInv = await wsUserInvUtils.getUserInv(
             user_id=ctx.author.id, uri=WS_CONNECTION_URI
         )
-        getUserProfile = await wsUserUtils.getUserProfile(
-            user_id=ctx.author.id, uri=WS_CONNECTION_URI
-        )
-        for itemsMain in getUserProfile:
-            totalAmount = int(dict(itemsMain)["pulls"]) + 1
-            await wsUserUtils.updateUserPullCount(
-                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
-            )
         if len(checkUserInv) == 0:
             await wsUserInvUtils.insertWSItemToUserInv(
                 uuid=mainResDict["uuid"],
@@ -142,26 +134,136 @@ class KumikoGWSBanners(commands.Cog):
                 uri=WS_CONNECTION_URI,
             )
         else:
-            for items in checkUserInv:
-                if dict(items)["item_uuid"] == mainResDict["uuid"]:
-                    totalAmount = dict(items)["amount"] + 1
-                    await wsUserInvUtils.updateWSItemAmount(
-                        user_id=ctx.author.id,
-                        uuid=dict(items)["item_uuid"],
-                        amount=totalAmount,
-                        uri=WS_CONNECTION_URI,
-                    )
-                    await ctx.respond(
-                        f"It seems like you pulled another {mainResDict['name']} from the wish sim."
-                    )
+            doesItemExistInUserInv = await wsUserInvUtils.getIfItemExistsInUserInv(
+                user_id=454357482102587393,
+                uuid=mainResDict["uuid"],
+                uri=WS_CONNECTION_URI,
+            )
+            getItem = await wsUserInvUtils.searchItemUUIDInInv(
+                user_id=ctx.author.id, uuid=mainResDict["uuid"], uri=WS_CONNECTION_URI
+            )
+            if doesItemExistInUserInv is True:
+                totalAmount = dict(getItem)["amount"] + 1
+                await wsUserInvUtils.updateWSItemAmount(
+                    user_id=ctx.author.id,
+                    uuid=mainResDict["uuid"],
+                    amount=totalAmount,
+                    uri=WS_CONNECTION_URI,
+                )
+            else:
+                await wsUserInvUtils.insertWSItemToUserInv(
+                    uuid=mainResDict["uuid"],
+                    user_id=ctx.author.id,
+                    date_obtained=datetime.now().isoformat(),
+                    name=mainResDict["name"],
+                    description=mainResDict["description"],
+                    star_rank=mainResDict["star_rank"],
+                    type=mainResDict["type"],
+                    amount=1,
+                    uri=WS_CONNECTION_URI,
+                )
+
+        getUserProfile = await wsUserUtils.getUserProfile(
+            user_id=ctx.author.id, uri=WS_CONNECTION_URI
+        )
+        for itemsMain in getUserProfile:
+            totalAmount = int(dict(itemsMain)["pulls"]) + 1
+            await wsUserUtils.updateUserPullCount(
+                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+            )
 
         embed.title = mainResDict["name"]
         embed.description = mainResDict["description"]
         embed.add_field(name="Star Rank", value=mainResDict["star_rank"], inline=True)
         embed.add_field(name="Type", value=mainResDict["type"], inline=True)
-        await ctx.respond("another test")
+        await ctx.respond(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @gwsWish.command(name="multiple")
+    async def gwsWishMultiple(
+        self,
+        ctx,
+        *,
+        num_of_wishes: Option(
+            int, "The number of wishes to perform", min_value=1, max_value=3
+        ),
+    ):
+        """Allows you to wish for up to 3 items at once"""
+        starRank = npRand.randint(low=3, high=5)
+        mainRes = await wsUtils.getRandomWSItemMultiple(
+            amount=num_of_wishes, star_rank=starRank, uri=WS_CONNECTION_URI
+        )
+        checkUserInv = await wsUserInvUtils.getUserInv(
+            user_id=ctx.author.id, uri=WS_CONNECTION_URI
+        )
+        if len(checkUserInv) == 0:
+            for items in mainRes:
+                await wsUserInvUtils.insertWSItemToUserInv(
+                    uuid=dict(items)["uuid"],
+                    user_id=ctx.author.id,
+                    date_obtained=datetime.now().isoformat(),
+                    name=dict(items)["name"],
+                    description=dict(items)["description"],
+                    star_rank=dict(items)["star_rank"],
+                    type=dict(items)["type"],
+                    amount=1,
+                    uri=WS_CONNECTION_URI,
+                )
+        else:
+            for mainItems in mainRes:
+                itemExistsInUserInv = await wsUserInvUtils.getIfItemExistsInUserInv(
+                    user_id=ctx.author.id,
+                    uuid=dict(mainItems)["uuid"],
+                    uri=WS_CONNECTION_URI,
+                )
+                if itemExistsInUserInv is True:
+                    getItem = await wsUserInvUtils.searchItemUUIDInInv(
+                        user_id=ctx.author.id,
+                        uuid=dict(mainItems)["uuid"],
+                        uri=WS_CONNECTION_URI,
+                    )
+                    totalAmount = dict(getItem)["amount"] + 1
+                    await wsUserInvUtils.updateWSItemAmount(
+                        user_id=ctx.author.id,
+                        uuid=dict(mainItems)["uuid"],
+                        amount=totalAmount,
+                        uri=WS_CONNECTION_URI,
+                    )
+                else:
+                    await wsUserInvUtils.insertWSItemToUserInv(
+                        uuid=dict(mainItems)["uuid"],
+                        user_id=ctx.author.id,
+                        date_obtained=datetime.now().isoformat(),
+                        name=dict(mainItems)["name"],
+                        description=dict(mainItems)["description"],
+                        star_rank=dict(mainItems)["star_rank"],
+                        type=dict(mainItems)["type"],
+                        amount=1,
+                        uri=WS_CONNECTION_URI,
+                    )
+        getUserProfile = await wsUserUtils.getUserProfile(
+            user_id=ctx.author.id, uri=WS_CONNECTION_URI
+        )
+        for itemsMain in getUserProfile:
+            totalAmount = int(dict(itemsMain)["pulls"]) + num_of_wishes
+            await wsUserUtils.updateUserPullCount(
+                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+            )
+        mainPages = pages.Paginator(
+            pages=[
+                discord.Embed(
+                    title=dict(item2)["name"], description=dict(item2)["description"]
+                )
+                .add_field(
+                    name="Star Rank", value=dict(item2)["star_rank"], inline=True
+                )
+                .add_field(name="Type", value=dict(item2)["type"], inline=True)
+                for item2 in mainRes
+            ],
+            loop_pages=True,
+        )
+        await mainPages.respond(ctx.interaction, ephemeral=False)
 
     @gws.command(name="inv")
     async def accessUserInv(self, ctx):

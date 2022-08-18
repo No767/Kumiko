@@ -183,3 +183,62 @@ class KumikoWSUserInvUtils:
                 await session.commit()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def getIfItemExistsInUserInv(self, user_id: int, uuid: str, uri: str) -> bool:
+        """Searches for that item, and if the user has that item, return True.
+        Else return False. This should be a simpler way of doing things.
+
+        Args:
+            user_id (int): Discord User ID
+            uuid (str): GWS Item UUID to search
+            uri (str): Connection URI
+
+        Returns:
+            bool: Whether or not the user has it in their inv or not
+        """
+        engine = create_async_engine(uri)
+        asyncSession = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+        async with asyncSession() as session:
+            async with session.begin():
+                selItem = (
+                    select(models.UserWSInv)
+                    .filter(models.UserWSInv.item_uuid == uuid)
+                    .filter(models.UserWSInv.user_id == user_id)
+                )
+                res = await session.execute(selItem)
+                npArray = np.array([row for row in res.scalars()])
+                doesItemExist = False
+                if len(npArray) == 0:
+                    doesItemExist = False
+                else:
+                    doesItemExist = True
+                return doesItemExist
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def searchItemUUIDInInv(
+        self, user_id: int, uuid: str, uri: str
+    ) -> models.UserWSInv:
+        """Searches the user's inv for that item and only returns the first one found
+        Args:
+            user_id (int): Discord User ID
+            uuid (str): GWS Item UUID to search
+            uri (str): Connection URI
+
+        Returns:
+            models.UserWSInv: A object of models.UserWSInv containing all of the data needed
+        """
+        engine = create_async_engine(uri)
+        asyncSession = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+        async with asyncSession() as session:
+            async with session.begin():
+                selItem = (
+                    select(models.UserWSInv)
+                    .filter(models.UserWSInv.item_uuid == uuid)
+                    .filter(models.UserWSInv.user_id == user_id)
+                )
+                itemSelected = await session.scalars(selItem)
+                itemSelectedFirst = itemSelected.first()
+                return itemSelectedFirst
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
