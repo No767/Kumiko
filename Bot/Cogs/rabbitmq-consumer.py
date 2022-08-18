@@ -5,10 +5,7 @@ import os
 import aiormq
 import aiormq.abc
 from discord.ext import commands
-from dotenv import load_dotenv
 from economy_utils import KumikoAuctionHouseUtils
-
-load_dotenv()
 
 RABBITMQ_USER = os.getenv("RabbitMQ_Username_Dev")
 RABBITMQ_PASSWORD = os.getenv("RabbitMQ_Password_Dev")
