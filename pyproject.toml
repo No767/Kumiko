@@ -36,6 +36,7 @@ asyncio-redis = "^0.16.0"
 pre-commit = "^2.20.0"
 mypy = "^0.971"
 pyinstrument = "^4.2.0"
+asyncmy = "^0.2.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
