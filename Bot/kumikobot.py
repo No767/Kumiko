@@ -56,7 +56,7 @@ initial_extensions = [
     "Cogs.legacy-help",
     "Cogs.github",
     "Cogs.anilist",
-    # "Cogs.rabbitmq-consumer", # Has issues running in GitPod for some reason
+    "Cogs.rabbitmq-consumer",  # Has issues running in GitPod for some reason
     "Cogs.economy.auction_house",
     "Cogs.gws",
     "Cogs.avatar",

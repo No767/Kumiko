@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 
 import discord
-import numpy.random as npRand
 import uvloop
 from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
@@ -111,7 +110,21 @@ class KumikoGWSBanners(commands.Cog):
     @gwsWish.command(name="one")
     async def gwsWishOne(self, ctx):
         """Allows you to wish for one item"""
-        starRank = npRand.randint(low=3, high=5)
+        getUserProfile = await wsUserUtils.getUserProfile(
+            user_id=ctx.author.id, uri=WS_CONNECTION_URI
+        )
+        for itemsMain in getUserProfile:
+            if int(dict(itemsMain)["pulls"]) % 10 == 0:
+                starRank = 4
+            elif int(dict(itemsMain)["pulls"]) % 90 == 0:
+                starRank = 5
+            else:
+                starRank = await wsUtils.determineStarRank()
+            totalAmount = int(dict(itemsMain)["pulls"]) + 1
+            await wsUserUtils.updateUserPullCount(
+                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+            )
+
         mainRes = await wsUtils.getRandomWSArray(
             star_rank=starRank, uri=WS_CONNECTION_URI
         )
@@ -135,7 +148,7 @@ class KumikoGWSBanners(commands.Cog):
             )
         else:
             doesItemExistInUserInv = await wsUserInvUtils.getIfItemExistsInUserInv(
-                user_id=454357482102587393,
+                user_id=ctx.author.id,
                 uuid=mainResDict["uuid"],
                 uri=WS_CONNECTION_URI,
             )
@@ -163,15 +176,6 @@ class KumikoGWSBanners(commands.Cog):
                     uri=WS_CONNECTION_URI,
                 )
 
-        getUserProfile = await wsUserUtils.getUserProfile(
-            user_id=ctx.author.id, uri=WS_CONNECTION_URI
-        )
-        for itemsMain in getUserProfile:
-            totalAmount = int(dict(itemsMain)["pulls"]) + 1
-            await wsUserUtils.updateUserPullCount(
-                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
-            )
-
         embed.title = mainResDict["name"]
         embed.description = mainResDict["description"]
         embed.add_field(name="Star Rank", value=mainResDict["star_rank"], inline=True)
@@ -190,7 +194,20 @@ class KumikoGWSBanners(commands.Cog):
         ),
     ):
         """Allows you to wish for up to 3 items at once"""
-        starRank = npRand.randint(low=3, high=5)
+        getUserProfile = await wsUserUtils.getUserProfile(
+            user_id=ctx.author.id, uri=WS_CONNECTION_URI
+        )
+        for itemsMain in getUserProfile:
+            if int(dict(itemsMain)["pulls"]) % 10 == 0:
+                starRank = 4
+            elif int(dict(itemsMain)["pulls"]) % 90 == 0:
+                starRank = 5
+            else:
+                starRank = await wsUtils.determineStarRank()
+            totalAmount = int(dict(itemsMain)["pulls"]) + num_of_wishes
+            await wsUserUtils.updateUserPullCount(
+                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+            )
         mainRes = await wsUtils.getRandomWSItemMultiple(
             amount=num_of_wishes, star_rank=starRank, uri=WS_CONNECTION_URI
         )
@@ -242,14 +259,7 @@ class KumikoGWSBanners(commands.Cog):
                         amount=1,
                         uri=WS_CONNECTION_URI,
                     )
-        getUserProfile = await wsUserUtils.getUserProfile(
-            user_id=ctx.author.id, uri=WS_CONNECTION_URI
-        )
-        for itemsMain in getUserProfile:
-            totalAmount = int(dict(itemsMain)["pulls"]) + num_of_wishes
-            await wsUserUtils.updateUserPullCount(
-                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
-            )
+
         mainPages = pages.Paginator(
             pages=[
                 discord.Embed(
