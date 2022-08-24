@@ -28,11 +28,11 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
 
 - An **Opt-In** Economy System with jobs system and marketplace (WIP, pinned for v1)
     - Includes a marketplace and an auction house 
-    - Custom currency (Lavnder Petals)
+    - Custom currency (Lavender Petals)
     - Custom jobs (WIP)
     - Rank system (WIP)
     - Custom quests
-- Wish Sim (WIP, pinned for v1)
+- Genshin-Based Wish Sim (GWS)
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
