@@ -80,32 +80,10 @@ class KumikoGWSBanners(commands.Cog):
     gwsWish = gws.create_subgroup(
         "wish", "Wish for some items", guild_ids=[970159505390325842]
     )
-    gwsEvents = gws.create_subgroup(
-        "events",
-        "Commands for Kumiko's Genshin Wish Sim",
-        guild_ids=[970159505390325842],
-    )
+
     gwsUserInvDelete = gws.create_subgroup(
         "delete", "Deletes some stuff from your inv", guild_ids=[970159505390325842]
     )
-
-    @gwsEvents.command(name="available")
-    async def getGWSEventsBanner(self, ctx):
-        """Lists out all available events"""
-        curPath = os.path.dirname(__file__)
-        listDirItems = os.listdir(os.path.join(curPath, "Kumiko-GWS-Banners"))
-        mainPages = pages.Paginator(
-            pages=[
-                discord.Embed().set_image(
-                    url=f'https://raw.githubusercontent.com/No767/Kumiko/dev/Bot/Cogs/Kumiko-GWS-Banners/{str(items).replace("[", "").replace("]", "")}'
-                )
-                for items in listDirItems
-            ],
-            loop_pages=True,
-        )
-        await mainPages.respond(ctx.interaction, ephemeral=False)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @gwsWish.command(name="one")
     async def gwsWishOne(self, ctx):
@@ -180,6 +158,9 @@ class KumikoGWSBanners(commands.Cog):
         embed.description = mainResDict["description"]
         embed.add_field(name="Star Rank", value=mainResDict["star_rank"], inline=True)
         embed.add_field(name="Type", value=mainResDict["type"], inline=True)
+        embed.set_image(
+            url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{mainResDict['uuid']}.png"
+        )
         await ctx.respond(embed=embed)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -269,6 +250,9 @@ class KumikoGWSBanners(commands.Cog):
                     name="Star Rank", value=dict(item2)["star_rank"], inline=True
                 )
                 .add_field(name="Type", value=dict(item2)["type"], inline=True)
+                .set_image(
+                    url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{dict(item2)['uuid']}.png"
+                )
                 for item2 in mainRes
             ],
             loop_pages=True,
@@ -308,6 +292,9 @@ class KumikoGWSBanners(commands.Cog):
                         )
                         .add_field(
                             name="Amount", value=dict(mainItem)["amount"], inline=True
+                        )
+                        .set_image(
+                            url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{dict(mainItem)['item_uuid']}.png"
                         )
                         for mainItem in userInv
                     ],
