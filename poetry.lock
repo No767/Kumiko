@@ -571,7 +571,7 @@ virtualenv = ">=20.0.8"
 
 [[package]]
 name = "py-cord"
-version = "2.1.0"
+version = "2.1.1"
 description = "A Python wrapper for the Discord API"
 category = "main"
 optional = false
@@ -935,7 +935,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "59c07a6cb6d069813003916a02b1b0c107e4e9ef1a6b993c139e3b94322356d8"
+content-hash = "a1f8a86a4ef452580335a4f9d8b577a8d6b1e60cc9651374f8dcbb7746db3f27"
 
 [metadata.files]
 aiodns = [
@@ -1804,8 +1804,8 @@ pre-commit = [
     {file = "pre_commit-2.20.0.tar.gz", hash = "sha256:a978dac7bc9ec0bcee55c18a277d553b0f419d259dadb4b9418ff2d00eb43959"},
 ]
 py-cord = [
-    {file = "py-cord-2.1.0.tar.gz", hash = "sha256:115036cd3ae7d1269fa4767326894ad7f54e041900d2601b4c855a5926b132a0"},
-    {file = "py_cord-2.1.0-py3-none-any.whl", hash = "sha256:5e80094aa699232df775acbb40448bc09fd8018230904a29305656a4d8db9be2"},
+    {file = "py-cord-2.1.1.tar.gz", hash = "sha256:1f50c14f76b1d0f011d68cc0eac3783ee50d44d93a64685d68ee0a1337e44908"},
+    {file = "py_cord-2.1.1-py3-none-any.whl", hash = "sha256:f22e407dad40c4dfeee20daf2e6dff8b3eb60b31f4344fdced143fff34418566"},
 ]
 pycares = [
     {file = "pycares-4.2.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d83f193563b42360528167705b1c7bb91e2a09f990b98e3d6378835b72cd5c96"},
