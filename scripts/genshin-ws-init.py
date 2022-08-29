@@ -5,7 +5,8 @@ from pathlib import Path
 
 import uvloop
 
-sys.path.append(os.path.join(os.path.dirname(sys.path[0]), "Bot"))
+path = Path(__file__).parents[1]
+sys.path.append(os.path.join(str(path), "Bot"))
 
 from dotenv import load_dotenv
 from genshin_wish_sim_utils import KumikoWSUtils
