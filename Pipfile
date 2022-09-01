@@ -17,6 +17,7 @@ pysimdjson = "*"
 gql = {extras = ["aiohttp"], version = "*"}
 python-dateutil = "*"
 rin-exceptions = "*"
+numpy = "*"
 
 [dev-packages]
 pre-commit = "*"
