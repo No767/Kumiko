@@ -1,6 +1,5 @@
 import asyncio
 import os
-import random
 import re
 
 import discord
@@ -9,8 +8,11 @@ import uvloop
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
-from economy_utils import KumikoEcoUserUtils, UsersInv
+from economy_utils import KumikoEcoUserUtils
+from numpy.random import default_rng
 from rin_exceptions import ItemNotFound
+
+rng = default_rng()
 
 load_dotenv()
 
@@ -21,7 +23,6 @@ POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
 CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
 
 utilsUser = KumikoEcoUserUtils()
-inv = UsersInv()
 
 
 class PetalEarnV1(commands.Cog):
@@ -40,14 +41,16 @@ class PetalEarnV1(commands.Cog):
     async def coinEarnBeg(self, ctx):
         """Earn some Lavender Petals by literally begging for Lavender Petals!"""
         amountOfPetals = np.random.randint(low=0, high=250)
-        petalsMessages = [
-            f"Someone accidentally dropped a sack of Lavender Petals, and inside was {amountOfPetals} Petals inside! You've hit the jackpot!",
-            f"Someone kindly gave you a sack of Lavender Petals, and inside that sack, was {amountOfPetals} Petals inside.",
-            f"Someone dropped a sack of Lavender Petals, and inside that sack, was {amountOfPetals} Petals inside.",
-            f"You were begging for Lavender Petals, and you went ahead to see what that purse inside was missing. Inside, you see a sack of Lavender Petals, and you find {amountOfPetals} Petals inside.",
-        ]
+        petalsMessages = np.array(
+            [
+                f"Someone accidentally dropped a sack of Lavender Petals, and inside was {amountOfPetals} Petals inside! You've hit the jackpot!",
+                f"Someone kindly gave you a sack of Lavender Petals, and inside that sack, was {amountOfPetals} Petals inside.",
+                f"Someone dropped a sack of Lavender Petals, and inside that sack, was {amountOfPetals} Petals inside.",
+                f"You were begging for Lavender Petals, and you went ahead to see what that purse inside was missing. Inside, you see a sack of Lavender Petals, and you find {amountOfPetals} Petals inside.",
+            ]
+        )
         if amountOfPetals > 100:
-            petalRandomMessage = random.choice(petalsMessages)  # nosec B311
+            petalRandomMessage = rng.choice(petalsMessages)  # nosec B311
             author_id = ctx.author.id
             userInfo = await utilsUser.obtainUserData(
                 user_id=author_id, uri=CONNECTION_URI
