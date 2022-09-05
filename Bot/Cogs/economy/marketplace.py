@@ -21,12 +21,66 @@ POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
 POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
 POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+POSTGRES_SERVER_PORT = os.getenv("Postgres_Port_Dev")
+MONGODB_PASSWORD = os.getenv("MongoDB_Password_Dev")
+MONGODB_USERNAME = os.getenv("MongoDB_Username_Dev")
+MONGODB_SERVER_IP = os.getenv("MongoDB_Server_IP_Dev")
+MONGODB_PORT = os.getenv("MongoDB_Server_Port_Dev")
+
+USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+MARKETPLACE_CONNECTION_URI = f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:{MONGODB_PORT}"
 
 utilsMain = KumikoEcoUtils()
 utilsUser = KumikoEcoUserUtils()
 userInvUtils = KumikoUserInvUtils()
-today = datetime.now()
+today = datetime.utcnow()
+
+
+class PurgeAllView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def button_callback(self, button, interaction):
+        mainChecker = await utilsMain.getAllOwnersItems(
+            owner=interaction.user.id, uri=MARKETPLACE_CONNECTION_URI
+        )
+        try:
+            if len(mainChecker) == 0:
+                raise NoItemsError
+            else:
+                for items in mainChecker:
+                    await utilsMain.purgeOwnersItems(
+                        uuid=dict(items)["uuid"],
+                        owner=dict(items)["owner"],
+                        uri=MARKETPLACE_CONNECTION_URI,
+                    )
+                await interaction.response.send_message(
+                    "All of your items listed on the marketplace have been deleted",
+                    ephemeral=True,
+                )
+        except NoItemsError:
+            await interaction.response.send_message(
+                "You don't have any items listed on the marketplace to delete. The transaction has been cancelled.",
+                ephemeral=True,
+            )
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def second_button_callback(self, button, interaction):
+        await interaction.response.send_message(
+            "Welp, you choose not to ig...", ephemeral=True
+        )
 
 
 class ecoMarketplace(commands.Cog):
@@ -72,7 +126,7 @@ class ecoMarketplace(commands.Cog):
         try:
             try:
                 getUserData = await utilsUser.obtainUserData(
-                    ctx.user.id, CONNECTION_URI
+                    ctx.user.id, USERS_CONNECTION_URI
                 )
                 if len(getUserData) == 0:
                     raise ItemNotFound
@@ -83,7 +137,7 @@ class ecoMarketplace(commands.Cog):
                     await utilsUser.updateUserLavenderPetals(
                         user_id=ctx.user.id,
                         lavender_petals=finalBal,
-                        uri=CONNECTION_URI,
+                        uri=USERS_CONNECTION_URI,
                     )
                     with open(filterFile, "r") as stream:
                         try:
@@ -101,6 +155,7 @@ class ecoMarketplace(commands.Cog):
                                 uuidItem,
                                 dateEntry,
                                 owner,
+                                MARKETPLACE_CONNECTION_URI,
                                 filteredItemName,
                                 filteredItemDescription,
                                 amount,
@@ -129,7 +184,7 @@ class ecoMarketplace(commands.Cog):
     async def ecoMarketplaceView(self, ctx):
         """View the marketplace"""
         try:
-            mainObtain = await utilsMain.obtain()
+            mainObtain = await utilsMain.obtain(uri=MARKETPLACE_CONNECTION_URI)
             if len(mainObtain) == 0:
                 raise NoItemsError
             else:
@@ -175,7 +230,9 @@ class ecoMarketplace(commands.Cog):
     ):
         """Search the marketplace"""
         try:
-            mainGetItem = await utilsMain.getItem(name)
+            mainGetItem = await utilsMain.getItem(
+                name=name, uri=MARKETPLACE_CONNECTION_URI
+            )
             if len(mainGetItem) == 0:
                 raise NoItemsError
             else:
@@ -216,14 +273,9 @@ class ecoMarketplace(commands.Cog):
     @ecoMarketplaceDelete.command(name="all")
     async def ecoMarketplaceDeleteAll(self, ctx):
         """Deletes all of your items in the marketplace"""
-        mainCheck = await utilsMain.obtainOnlyID(ctx.user.id)
         embed = discord.Embed()
-        if dict(mainCheck)["owner"] == ctx.user.id:
-            await utilsMain.delAll(ctx.user.id)
-            await ctx.respond("All of your items have been deleted")
-        else:
-            embed.description = "Sorry, but you can't delete all of your items in the marketplace. This is more than likely due to the user not being the owner of said item(s)."
-            await ctx.respond(embed=embed)
+        embed.description = "Do your really want to delete all of your items listed on the marketplace? There is no going back after this."
+        await ctx.respond(embed=embed, view=PurgeAllView())
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -233,11 +285,16 @@ class ecoMarketplace(commands.Cog):
     ):
         """Deletes the specified item within the marketplace"""
         try:
-            mainChecker = await utilsMain.obtainOnlyIDWithName(name, ctx.user.id)
-            if mainChecker is None:
+            mainChecker = await utilsMain.getItemUUIDWithName(
+                name=name, owner=ctx.user.id, uri=MARKETPLACE_CONNECTION_URI
+            )
+            if len(mainChecker) == 0:
                 raise NoItemsError
             else:
-                await utilsMain.delOneItem(name, ctx.user.id)
+                for items in mainChecker:
+                    await utilsMain.delItemUUID(
+                        uuid=dict(items)["uuid"], uri=MARKETPLACE_CONNECTION_URI
+                    )
                 await ctx.respond("Item deleted from the marketplace")
         except NoItemsError:
             await ctx.respond("Sorry, but that item does not exist in the marketplace.")
@@ -256,7 +313,7 @@ class ecoMarketplace(commands.Cog):
         """Purchases an item from the marketplace"""
         try:
             beforePurchasing = await utilsMain.beforePurchase(
-                owner_id=ctx.user.id, item_name=item
+                owner_id=ctx.user.id, item_name=item, uri=MARKETPLACE_CONNECTION_URI
             )
 
             if len(beforePurchasing) == 0:
@@ -265,11 +322,13 @@ class ecoMarketplace(commands.Cog):
                 for mainItems in beforePurchasing:
                     items = dict(mainItems)
                     checkIfUserHasItem = await userInvUtils.checkIfItemInUserInv(
-                        user_id=454357482102587393,
+                        user_id=ctx.author.id,
                         uuid=items["uuid"],
-                        uri=CONNECTION_URI,
+                        uri=USERS_CONNECTION_URI,
                     )
-                    itemAuth = await utilsMain.purchaseAuth(items["uuid"])
+                    itemAuth = await utilsMain.purchaseAuth(
+                        uuid=items["uuid"], uri=MARKETPLACE_CONNECTION_URI
+                    )
 
                     for mainAuthItem in itemAuth:
                         auth = dict(mainAuthItem)
@@ -285,16 +344,19 @@ class ecoMarketplace(commands.Cog):
                                 if len(checkIfUserHasItem) == 0:
                                     totalAmountLeft = int(items["amount"]) - int(amount)
                                     await utilsMain.updateItemAmount(
-                                        items["uuid"], totalAmountLeft
+                                        uuid=items["uuid"],
+                                        amount=totalAmountLeft,
+                                        uri=MARKETPLACE_CONNECTION_URI,
                                     )
                                     await userInvUtils.insertItem(
-                                        user_id=454357482102587393,
-                                        date_acquired=datetime.now().isoformat(),
+                                        user_uuid=str(uuid.uuid4()),
+                                        user_id=ctx.author.id,
+                                        date_acquired=datetime.utcnow().isoformat(),
                                         uuid=items["uuid"],
                                         name=items["name"],
                                         description=items["description"],
                                         amount=amount,
-                                        uri=CONNECTION_URI,
+                                        uri=USERS_CONNECTION_URI,
                                     )
                                     await ctx.respond(
                                         f"Successfully purchased {amount} {items['name']} for {items['price']} coins."
@@ -309,13 +371,15 @@ class ecoMarketplace(commands.Cog):
                                             mainUserInvItem["amount"] + amount
                                         )
                                         await utilsMain.updateItemAmount(
-                                            items["uuid"], totalAmountRemaining
+                                            uuid=items["uuid"],
+                                            amount=totalAmountRemaining,
+                                            uri=MARKETPLACE_CONNECTION_URI,
                                         )
                                         await userInvUtils.updateItemAmount(
                                             user_id=ctx.user.id,
                                             uuid=items["uuid"],
                                             amount=amountAddingToUser,
-                                            uri=CONNECTION_URI,
+                                            uri=USERS_CONNECTION_URI,
                                         )
                                         await ctx.respond(
                                             f"Successfully purchased {amount} {items['name']} for {items['price']} coins. You currently have {amountAddingToUser} {items['name']} in your inventory."
@@ -324,17 +388,22 @@ class ecoMarketplace(commands.Cog):
                             elif int(amount) == int(items["amount"]):
                                 if len(checkIfUserHasItem) == 0:
                                     await userInvUtils.insertItem(
+                                        user_uuid=str(uuid.uuid4()),
                                         user_id=ctx.user.id,
-                                        date_acquired=datetime.now().isoformat(),
+                                        date_acquired=datetime.utcnow().isoformat(),
                                         uuid=items["uuid"],
                                         name=items["name"],
                                         description=items["description"],
                                         amount=amount,
-                                        uri=CONNECTION_URI,
+                                        uri=USERS_CONNECTION_URI,
                                     )
                                     await utilsMain.updateItemAmount(
-                                        items["uuid"],
-                                        int(amount) - int(items["amount"]),
+                                        uuid=items["uuid"],
+                                        amount=int(amount)
+                                        - int(
+                                            items["amount"],
+                                            uri=MARKETPLACE_CONNECTION_URI,
+                                        ),
                                     )
                                     await ctx.respond(
                                         f"Successfully purchased {amount} {items['name']} for {items['price']} coins."
@@ -349,13 +418,15 @@ class ecoMarketplace(commands.Cog):
                                             mainUserInvItem["amount"] + amount
                                         )
                                         await utilsMain.updateItemAmount(
-                                            items["uuid"], totalAmountRemaining
+                                            uuid=items["uuid"],
+                                            amount=totalAmountRemaining,
+                                            uri=MARKETPLACE_CONNECTION_URI,
                                         )
                                         await userInvUtils.updateItemAmount(
                                             user_id=ctx.user.id,
                                             uuid=items["uuid"],
                                             amount=amountAddingToUser,
-                                            uri=CONNECTION_URI,
+                                            uri=USERS_CONNECTION_URI,
                                         )
                                         await ctx.respond(
                                             f"Successfully purchased {amount} {items['name']} for {items['price']} coins. You currently have {amountAddingToUser} {items['name']} in your inventory."
@@ -384,7 +455,9 @@ class ecoMarketplace(commands.Cog):
         amount: Option(int, "The new amount of items you wish to restock with"),
     ):
         """Restocks your current item on the marketplace"""
-        mainRes = await utilsMain.getUserItem(name=name, user_id=ctx.user.id)
+        mainRes = await utilsMain.getUserItem(
+            name=name, user_id=ctx.user.id, uri=MARKETPLACE_CONNECTION_URI
+        )
         try:
             if len(mainRes) == 0:
                 raise ItemNotFound
@@ -392,10 +465,12 @@ class ecoMarketplace(commands.Cog):
                 for item in mainRes:
                     mainItem = dict(item)
                     await utilsMain.updateItemAmount(
-                        uuid=mainItem["uuid"], amount=amount
+                        uuid=mainItem["uuid"],
+                        amount=mainItem["amount"] + amount,
+                        uri=MARKETPLACE_CONNECTION_URI,
                     )
                     await ctx.respond(
-                        f'Successfully updated {mainItem["name"]} to {amount}'
+                        f'Successfully updated {mainItem["name"]} to {mainItem["amount"] + amount}'
                     )
         except ItemNotFound:
             embedError = discord.Embed()
@@ -413,7 +488,9 @@ class ecoMarketplace(commands.Cog):
         price: Option(int, "The new price you wish to set"),
     ):
         """Updates the price of an item on the marketplace (Can only be used once)"""
-        mainRes = await utilsMain.getUserItem(name=name, user_id=ctx.user.id)
+        mainRes = await utilsMain.getUserItem(
+            name=name, user_id=ctx.user.id, uri=MARKETPLACE_CONNECTION_URI
+        )
         try:
             if len(mainRes) == 0:
                 raise ItemNotFound
@@ -426,6 +503,7 @@ class ecoMarketplace(commands.Cog):
                             uuid=mainDictItem["uuid"],
                             price=price,
                             updated_price=True,
+                            uri=MARKETPLACE_CONNECTION_URI,
                         )
                         await ctx.respond(
                             f"Successfully updated the price of the item {name}."

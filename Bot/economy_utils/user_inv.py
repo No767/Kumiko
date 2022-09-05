@@ -12,7 +12,10 @@ Base = declarative_base()
 class UserInv(Base):
     __tablename__ = "user_inv"
 
-    user_id = Column(BigInteger, primary_key=True)
+    user_uuid = Column(String, primary_key=True)
+    user_id = Column(
+        BigInteger,
+    )
     date_acquired = Column(String)
     uuid = Column(String)
     name = Column(String)
@@ -20,6 +23,7 @@ class UserInv(Base):
     amount = Column(Integer)
 
     def __iter__(self):
+        yield "user_uuid", self.user_uuid
         yield "user_id", self.user_id
         yield "date_acquired", self.date_acquired
         yield "uuid", self.uuid
@@ -28,7 +32,7 @@ class UserInv(Base):
         yield "amount", self.amount
 
     def __repr__(self):
-        return f"UserInv(user_id={self.user_id!r}, date_acquired={self.date_acquired!r}, uuid={self.uuid!r}, name={self.name!r}, description={self.description!r}, amount={self.amount!r})"
+        return f"UserInv(user_uuid={self.user_uuid!r}, user_id={self.user_id!r}, date_acquired={self.date_acquired!r}, uuid={self.uuid!r}, name={self.name!r}, description={self.description!r}, amount={self.amount!r})"
 
 
 class KumikoUserInvUtils:
@@ -49,6 +53,7 @@ class KumikoUserInvUtils:
 
     async def insertItem(
         self,
+        user_uuid: str,
         user_id: int,
         date_acquired: str,
         uuid: str,
@@ -60,6 +65,7 @@ class KumikoUserInvUtils:
         """Adds the item into the user's inventory
 
         Args:
+            user_uuid (str): User UUID
             user_id (int): Discord User ID
             date_acquired (str / ISO-8601): Date the item was acquired on or first acquired on
             uuid (str): Item UUID
@@ -75,6 +81,7 @@ class KumikoUserInvUtils:
         async with async_session() as session:
             async with session.begin():
                 insertUserInv = UserInv(
+                    user_uuid=user_uuid,
                     user_id=user_id,
                     date_acquired=date_acquired,
                     uuid=uuid,
