@@ -13,9 +13,6 @@ tasks:
             poetry install
             poetry run pre-commit install
 
-      - init: |
-            command: make run
-
 github:
       prebuilds:
             master: false

@@ -170,6 +170,13 @@ else
     exit 1;
 fi
 
+if [[ -v MONGODB_PORT ]]; then
+    echo "MongoDB_Server_Port_Dev=${MONGODB_PORT}" >> /Kumiko/Bot/.env
+else
+    echo "Missing MongoDB_Server_Port_Dev env var! MongoDB_Server_Port_Dev environment variable is not set."
+    exit 1;
+fi
+
 if [[ -v RABBITMQ_PASSWORD ]]; then
     echo "RabbitMQ_Password_Dev=${RABBITMQ_PASSWORD}" >> /Kumiko/Bot/.env
 else
