@@ -4,25 +4,26 @@
 
 version: "3.9"
 services:
-  kumiko:
-    container_name: Kumiko
-    restart: always
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 0s
-        max_attempts: 3
-        window: 120s
-      mode: replicated
-    env_file:
-      - .env-docker-example # Rename this to .env
+  # kumiko:
+  #   container_name: Kumiko
+  #   image: no767/kumiko:version # Replace version with the latest tagged version from Docker Hub
+  #   restart: always
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #       delay: 0s
+  #       max_attempts: 3
+  #       window: 120s
+  #     mode: replicated
+  #   env_file:
+  #     - .env
     
   postgres:
     container_name: Kumiko-Postgres
     image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD=password # Change this to another password
       - POSTGRES_USER=Kumiko
       - POSTGRES_DB=Kumiko
     volumes:
@@ -36,7 +37,7 @@ services:
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=Kumiko
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_ROOT_PASSWORD=password # Change this to another password
     ports:
       - 27017:27017
     volumes:
@@ -52,7 +53,7 @@ services:
       - 15672:15672
     environment:
       - RABBITMQ_DEFAULT_USER=Kumiko
-      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_PASS=password # Change this to another password
       - RABBITMQ_DEFAULT_VHOST=kumiko
 
   redis:

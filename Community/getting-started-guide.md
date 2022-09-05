@@ -1,21 +1,30 @@
 # Getting Started Guide
 
-This guide is meant for end-users who are willing to set up their own version of Rin. This allows you to self host your own version of Rin, and credits to Ellie (@TheSilkky) for making this all possible.
+This guide is meant for end-users who are willing to set up their own version of Kumiko. This allows you to self host your own version of Kumiko, and credits to Ellie (@TheSilkky) for making this all possible.
 
 ## Requirements
 
-In order to get started self-hosting your own version of Rin, you'll need some of the following installed:
+In order to get started self-hosting your own version of Kumiko, you'll need some of the following installed:
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
+- [Poetry](https://python-poetry.org/)
 - [Git](https://git-scm.com/)
+- psql and mongosh
+
+If running standalone, you'll also need these:
+  - [PostgreSQL](https://www.postgresql.org/)
+  - [MongoDB](https://www.mongodb.com/)
+  - [Redis](https://redis.io/)
+  - [RabbitMQ](https://www.rabbitmq.com/)
+
 
 > **Note**
 > If you are using Docker Desktop, Docker CLI and Docker Compose are already included and installed
 
 ## Installation Instructions
 
-Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) and Docker Hub. You can pull production builds from both, but it is advised to use all production builds from Docker Hub
+Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry) and Docker Hub. You can pull production builds from both, but it is advised to use all production builds from Docker Hub
 
 
 > **Note**
@@ -28,12 +37,12 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
 
     GHCR (Replace `version` with the latest tagged release from GitHub): 
     ```sh
-    docker pull ghcr.io/no767/rin:version
+    docker pull ghcr.io/no767/kumiko:version
     ```
 
-    Docker Hub:
+    Docker Hub (Replace `version` with the latest tagged release from GitHub and/or from Docker Hub):
     ```sh
-    docker pull no767/rin-prod:latest
+    docker pull no767/kumiko:version
     ```
 2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
@@ -48,50 +57,78 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
     - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
     - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-3. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-guide.md#getting-the-discord-bot).
+3. Clone the GitHub repo and `cd` int to the directory
+
+    ```sh
+    git clone https://github.com/No767/Kumiko.git && cd Kumiko
+    ```
+
+4. Rename the `.env-docker-example` file to `.env`
+
+5. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
+
+6. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
+
+    So for example, if I had these 4 set like this:
+
+    ```.env
+    POSTGRES_ECO_USERS_DB="kumiko_users"
+    POSTGRES_WS_DB="kumiko_ws"
+    POSTGRES_AH_DB="kumiko_ah"
+    POSTGRES_QUESTS_DB="kumiko_quests"
+    ```
+
+    then I would have to create the databases like this:
+
+    ```sql
+    CREATE DATABASE kumiko_users;
+    CREATE DATABASE kumiko_ws;
+    CREATE DATABASE kumiko_ah;
+    CREATE DATABASE kumiko_quests;
+    ```
+
+7. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
+
+    ```sh
+    psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
+    ```
+
+    For Dockerized PostgreSQL servers, run this command instead:
+
+    ```sh
+    sudo docker exec -i postgres_docker_container psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
+    ```
+
+8. Now it's time to seed the databases. Create and set up a poetry env, and run the `postgres-init.py` file located in the `scripts` directory. This will basically create the tables needed. Later on, Kumiko will have an automatic system for dealing with this.
+
+    ```sh
+    poetry env use 3.10
+    poetry install
+    poetry run python scripts/postgres-init.py
+    ```
+
+9. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
 
 
-4. Invite your bot into your server of choice
-
-5. Now once you have all of the API keys and Access Tokens, now you can use the `-e` flag to add it in. 
-
-```sh
-sudo docker run -d \
--e TOKEN=botToken \
--e BLUE_ALLIANCE_API_KEY=apiKey \
--e DISCORD_BOTS_API_KEY=apiKey \
--e FIRST_EVENTS_FINAL_KEY=apiKey \
--e GITHUB_API_ACCESS_TOKEN=apiKey \
--e HYPIXEL_API_KEY=apiKey \
--e REDDIT_ID=apiKey \
--e REDDIT_SECRET=apiKey \
--e TENOR_API_KEY=apiKey \
--e TOP_GG_API_KEY=apiKey \
--e TWITCH_API_ACCESS_TOKEN=apiKey \
--e TWITCH_API_CLIENT_ID=apiKey \
--e TWITTER_BEARER_TOKEN=apiKey \
--e YOUTUBE_API_KEY=apiKey \
---restart=always \
---name Rin \
-no767/rin-prod:latest
-```
+    ```sh
+    sudo docker run -d --restart=always --env-file=.env --name Kumiko no767/kumiko:version
+    ```
 
 > **Note**
-> Dev builds require another env var to be set. Set the env var `TESTING_BOT_TOKEN` to the same exact token as the `TOKEN` env var.
+> On windows, you don't need to run it with the `sudo` command. 
 
-Replace `apiKey` with the correct API Keys, Access Tokens, Client IDs and Client Secrets. The `TOKEN` env is the token for the bot. Make sure that this is correct, or else the bot will not launch and function. Also make sure to invite your bot to your server first.
+10. Invite your bot into your server of choice, and have fun!
 
-6. Run the docker container, and check the logs to make sure that you are not missing anything
-
+11. (Optional) Check the logs of the container to make sure that nothing went wrong.
 ### Docker Compose
 
 1. Clone the repo
 
 ```sh
-git clone https://github.com/No767/Rin
+git clone https://github.com/No767/Kumiko
 ```
 
-2. Find the `docker-compose-example.yml` file and rename it to `docker-compose.yml`
+2. Find the `docker-compose-example.yml` file and rename it to `docker-compose.yml` And also rename the `.env-docker-example` file to `.env`.
 
 3. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
@@ -106,54 +143,108 @@ git clone https://github.com/No767/Rin
     - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
     - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-4. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-guide.md#getting-the-discord-bot).
+4. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
 
-5. Invite your bot into your server of choice
+5. Edit the `docker-compose.yml` file to include the credentials of the databases.
 
-6. Now add the correct values into the docker compose file. A reference for the Docker Compose file is provided below:
+6. Notice that the section where Kumiko would normally be started up is commented out. Leave it like so for now, we'll get back to it. Start the Docker Compose stack.
 
-```yaml
-# docker-compose-example.yml
-version: "3.9"
-services:
-  rin:
-    # Use cloudflare's DNS server. This is what Discord uses as well
-    # May have issues...
-    dns: 
-      - 1.1.1.1
-      - 1.0.0.1
-    container_name: Rin
-    restart: always
-    image: no767/rin-prod:latest
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 0s
-        max_attempts: 3
-        window: 120s
-      mode: replicated
-    environment:
-      # Replace these values with the correct values
-      - TOKEN=botToken 
-      - BLUE_ALLIANCE_API_KEY=apiKey 
-      - DISCORD_BOTS_API_KEY=apiKey 
-      - FIRST_EVENTS_FINAL_KEY=apiKey 
-      - GITHUB_API_ACCESS_TOKEN=apiKey 
-      - HYPIXEL_API_KEY=apiKey 
-      - REDDIT_ID=apiKey 
-      - REDDIT_SECRET=apiKey 
-      - TENOR_API_KEY=apiKey 
-      - TOP_GG_API_KEY=apiKey 
-      - TWITCH_API_ACCESS_TOKEN=apiKey 
-      - TWITCH_API_CLIENT_ID=apiKey 
-      - TWITTER_BEARER_TOKEN=apiKey 
-      - YOUTUBE_API_KEY=apiKey 
-```
+    ```sh
+    sudo docker compose up -d
+    ```
 
-> **Note**
-> Dev builds require another env var to be set. Set the env var `TESTING_BOT_TOKEN` to the same exact token as the `TOKEN` env var.
+7. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
 
-7. Run `sudo docker compose up -d` to fire up the docker compose project, and Rin should be running. Use `sudo docker compose stop` to stop Rin as needed. 
+    So for example, if I had these 4 set like this:
+
+    ```.env
+    POSTGRES_ECO_USERS_DB="kumiko_users"
+    POSTGRES_WS_DB="kumiko_ws"
+    POSTGRES_AH_DB="kumiko_ah"
+    POSTGRES_QUESTS_DB="kumiko_quests"
+    ```
+
+    then I would have to create the databases like this:
+
+    ```sql
+    CREATE DATABASE kumiko_users;
+    CREATE DATABASE kumiko_ws;
+    CREATE DATABASE kumiko_ah;
+    CREATE DATABASE kumiko_quests;
+    ```
+
+8. Now it's time to seed the databases. Create and set up a poetry env, and run the `postgres-init.py` file located in the `scripts` directory. This will basically create the tables needed. Later on, Kumiko will have an automatic system for dealing with this.
+
+    ```sh
+    poetry env use 3.10
+    poetry install
+    poetry run python scripts/postgres-init.py
+    ```
+
+
+9. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
+
+    ```sh
+    psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
+    ```
+
+    For Dockerized PostgreSQL servers, run this command instead:
+
+    ```sh
+    sudo docker exec -i Kumiko-Postgres psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
+    ```
+10. Now stop the Docker Compose stack. Comment out the part where Kumiko should start. Since you have all of the databases and tables set up, Kumiko should hopefully work properly now.
+
+    ```sh
+    sudo docker compose stop
+    ```
+
+    If you noticed beforehand, the Docker Compose file had this section commented out:
+
+    ```yaml
+    services:
+      # kumiko:
+      #   container_name: Kumiko
+      #   image: no767/kumiko:version # Replace version with the latest tagged version from Docker Hub
+      #   restart: always
+      #   deploy:
+      #     restart_policy:
+      #       condition: on-failure
+      #       delay: 0s
+      #       max_attempts: 3
+      #       window: 120s
+      #     mode: replicated
+      #   env_file:
+      #     - .env
+    ```
+
+    Now it should look like this:
+    ```yaml
+    services:
+      kumiko:
+      container_name: Kumiko
+      image: no767/kumiko:version # Replace version with the latest tagged version from Docker Hub
+      restart: always
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 0s
+          max_attempts: 3
+          window: 120s
+        mode: replicated
+      env_file:
+        - .env
+    ```
+
+11. Start the Docker Compose stack again. This time, Kumiko is included, and hopefully should run along with all of the other docker containers as well.
+
+    ```sh
+    sudo docker compose up -d
+    ```
+
+12. Invite your bot into your server of choice, and have fun!
+
+13. (Optional) Check the logs of the container to make sure that nothing went wrong.
 
 ## Getting the Discord Bot
 
@@ -173,7 +264,7 @@ You'll more than likely need to get your discord bot up. So these are the setups
 
 ![intents](../assets/getting-started-assets/allow-intents.png)
 
-4. Make sure to have all 3 of the buttons enabled. Rin will need all 3 of them to work.
+4. Make sure to have all 3 of the buttons enabled. Kumiko will need all 3 of them to work.
 
 ![whyyy](../assets/getting-started-assets/reset-token.png)
 
@@ -187,21 +278,14 @@ You'll more than likely need to get your discord bot up. So these are the setups
 
 7. Now click on the copy button and copy the token
 
-8. Now head back the to the docker run command, and switch out the env vars as needed (replace `...` with your discord bot token):
-
-  ```sh
-  TOKEN=...
-  ```
-
-  > **Note**
-  > On dev builds, also add the `TESTING_BOT_TOKEN` env var and use the same exact token for that instead. It'll read it off of that instead
+8. Put the token in the `.env` file you created.
 
 ## Extra Notes
 
 ### Expected Uptimes
 
-Discord bots are generally expected to be running 24/7, and are expected to have an uptime of 90-99% when in production. Make sure that the server you are running does not experience issues, or this can cause Rin to fail. It is recommended to not stop the bot unless for new updates, or critical downtime issues or server maintenance.
+Discord bots are generally expected to be running 24/7, and are expected to have an uptime of 90-99% when in production. Make sure that the server you are running does not experience issues, or this can cause Kumiko to fail. It is recommended to not stop the bot unless for new updates, or critical downtime issues or server maintenance.
 
 ### Cloud Deployment
 
-Rin can also be deployed to the cloud. Rin will work fine in Azure, GCP, or AWS. In fact, it is recommended to deploy Rin to the cloud. Hosts such as PebbleHost will not work here. All you need to do is to pull the image from either GHCR or Docker Hub, and then add the env during setup. Once done, Rin can be ran in the cloud. And also fun fact: Rin v1 was originally deployed to Azure before I started to self-host Rin.
+Kumiko can also be deployed to the cloud. Kumiko will work fine in Azure, GCP, or AWS. In fact, it is recommended to deploy Kumiko to the cloud. Hosts such as PebbleHost will not work here. All you need to do is to pull the image from either GHCR or Docker Hub, and then add the env during setup. Once done, Kumiko can be ran in the cloud.
