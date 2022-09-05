@@ -18,9 +18,11 @@ load_dotenv()
 
 POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
+POSTGRES_USERS_DATABASE = os.getenv("Postgres_Database_Dev")
+POSTGRES_SERVER_PORT = os.getenv("Postgres_Port_Dev")
 POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_DATABASE}"
+
+USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_SERVER_PORT}/{POSTGRES_USERS_DATABASE}"
 
 utilsUser = KumikoEcoUserUtils()
 
@@ -49,36 +51,35 @@ class PetalEarnV1(commands.Cog):
                 f"You were begging for Lavender Petals, and you went ahead to see what that purse inside was missing. Inside, you see a sack of Lavender Petals, and you find {amountOfPetals} Petals inside.",
             ]
         )
-        if amountOfPetals > 100:
-            petalRandomMessage = rng.choice(petalsMessages)  # nosec B311
-            author_id = ctx.author.id
-            userInfo = await utilsUser.obtainUserData(
-                user_id=author_id, uri=CONNECTION_URI
-            )
-            for items in userInfo:
-                mainItems = dict(items)
-            totalAmountOfPetals = mainItems["lavender_petals"] + amountOfPetals
-            await utilsUser.updateUserLavenderPetals(
-                author_id, totalAmountOfPetals, CONNECTION_URI
-            )
-            embedMain = discord.Embed()
-            embedMain.description = (
-                f"You were able to earn {amountOfPetals} Petals! {petalRandomMessage}"
-            )
-            await ctx.respond(embed=embedMain)
-        else:
-            userInfo = await utilsUser.obtainUserData(
-                user_id=author_id, uri=CONNECTION_URI
-            )
-            for items in userInfo:
-                mainItems = dict(items)
-            totalAmountOfPetals = mainItems["lavender_petals"] + amountOfPetals
-            await utilsUser.updateUserLavenderPetals(
-                author_id, totalAmountOfPetals, CONNECTION_URI
-            )
-            embedMain = discord.Embed()
-            embedMain.description = f"You were able to earn {amountOfPetals} Petals!"
-            await ctx.respond(embed=embedMain)
+        getUser = await utilsUser.getFirstUser(
+            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
+        )
+        try:
+            if getUser is None:
+                raise ItemNotFound
+            else:
+                totalAmountOfPetals = dict(getUser)["lavender_petals"] + amountOfPetals
+                await utilsUser.updateUserLavenderPetals(
+                    user_id=ctx.author.id,
+                    lavender_petals=totalAmountOfPetals,
+                    uri=USERS_CONNECTION_URI,
+                )
+                if amountOfPetals > 100:
+                    await ctx.respond(
+                        embed=discord.Embed(
+                            description=f"You were able to earn {amountOfPetals} Petals! {rng.choice(petalsMessages)}"
+                        )
+                    )
+                else:
+                    await ctx.respond(
+                        embed=discord.Embed(
+                            description=f"You were able to earn {amountOfPetals} Petals!"
+                        )
+                    )
+        except ItemNotFound:
+            embedError = discord.Embed()
+            embedError.description = "Apparently you may have not created an economy account first. Please do that first."
+            await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -95,9 +96,11 @@ class PetalEarnV1(commands.Cog):
             await ctx.respond("Sadly you can't transfer that much petals...")
         else:
             sortedReceiverID = int(re.sub("[^a-zA-Z0-9 ]", "", receiver))
-            currentUser = await utilsUser.obtainUserData(ctx.author.id, CONNECTION_URI)
+            currentUser = await utilsUser.obtainUserData(
+                ctx.author.id, USERS_CONNECTION_URI
+            )
             receivingUser = await utilsUser.obtainUserData(
-                sortedReceiverID, CONNECTION_URI
+                sortedReceiverID, USERS_CONNECTION_URI
             )
             try:
                 if len(currentUser) == 0 or len(receivingUser) == 0:
@@ -112,10 +115,10 @@ class PetalEarnV1(commands.Cog):
                     totalAmountSender = currentUserLavenderPetals - amount
                     totalAmountReceiver = receivingUserLavenderPetals + amount
                     await utilsUser.updateUserLavenderPetals(
-                        ctx.author.id, totalAmountSender, CONNECTION_URI
+                        ctx.author.id, totalAmountSender, USERS_CONNECTION_URI
                     )
                     await utilsUser.updateUserLavenderPetals(
-                        sortedReceiverID, totalAmountReceiver, CONNECTION_URI
+                        sortedReceiverID, totalAmountReceiver, USERS_CONNECTION_URI
                     )
                     await ctx.respond("Successfully traded the Lavender Petals!")
             except ItemNotFound:
