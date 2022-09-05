@@ -5,15 +5,10 @@ on:
     paths-ignore:
       - "**.md"
     branches:
-      - master
       - dev
     tags:
       - 'v*'
 
-env:
-  IMAGE: ghcr.io/no767/kumiko
-  VERSION: latest
-  DEV_TAGGED_VERSION: v0.4.0
 
 jobs:
   Build:
@@ -21,10 +16,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      # - name: Defer workflow for 60 seconds
-      #   run: sleep 60s
-      #   shell: bash
 
       - name: Prepare Docker Meta
         id: meta
@@ -34,9 +25,10 @@ jobs:
             ghcr.io/no767/kumiko
           tags: |
             type=semver,pattern={{raw}}
-            type=edge,branch=dev,suffix=-{{sha}}
-          flavor: |
-            latest=true
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=edge,branch=dev
 
       - name: Setup Docker Buildx
         id: buildx
