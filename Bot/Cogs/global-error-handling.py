@@ -78,6 +78,18 @@ class cooldownChecker(commands.Cog):
                     description=f"This command is currently on cooldown. Try again in {hours} hour(s), {minutes} minute(s), and {seconds} second(s)."
                 )
             )
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.respond(
+                embed=discord.Embed(
+                    description=f"You are missing the following permissions: {error.missing_permissions}"
+                )
+            )
+        elif isinstance(error, commands.BotMissingPermissions):
+            await ctx.respond(
+                embed=discord.Embed(
+                    description=f"You are missing the following permissions: {error.missing_permissions}"
+                )
+            )
 
 
 def setup(bot):

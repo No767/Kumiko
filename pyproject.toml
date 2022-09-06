@@ -31,6 +31,7 @@ py-cord = {version = "2.1.1", extras = ["voice"]}
 hiredis = "^2.0.0"
 redis = "^4.3.4"
 asyncio-redis = "^0.16.0"
+pytimeparse = "^1.1.8"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"

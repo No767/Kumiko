@@ -33,6 +33,7 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
     - Rank system (WIP)
     - Custom quests
 - Genshin-Based Wish Sim (GWS)
+- Basic Administration Commands (unfinished)
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
