@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+# Note that this won't be used on Kumiko. Kumiko uses a different system instead
 
 if [[ -v TOKEN ]]; then
     echo "TOKEN=${TOKEN}" >> /Rin/Bot/.env

@@ -1,4 +1,4 @@
-name: Docker Build (Hub, Alpine)
+name: Docker Build (Hub, Debian)
 
 on:
   push:
@@ -24,11 +24,15 @@ jobs:
           images: |
             no767/rin-prod
           tags: |
-            type=semver,pattern={{raw}},suffix=-alpine
-            type=semver,pattern={{version}},suffix=-alpine
-            type=semver,pattern={{major}}.{{minor}},suffix=-alpine
-            type=semver,pattern={{major}},suffix=-alpine
-            type=edge,branch=dev,suffix=-alpine
+            type=semver,pattern={{raw}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=semver,pattern={{raw}},suffix=-bullseye
+            type=semver,pattern={{version}},suffix=-bullseye
+            type=semver,pattern={{major}}.{{minor}},suffix=-bullseye
+            type=semver,pattern={{major}},suffix=-bullseye
+            type=edge,branch=dev,suffix=-bullseye
 
       - name: Setup Docker Buildx
         id: buildx
@@ -39,7 +43,7 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME}}
+          username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Cache Docker layers
@@ -54,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Alpine-Docker/Dockerfile
+          file: ./Debian-Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache

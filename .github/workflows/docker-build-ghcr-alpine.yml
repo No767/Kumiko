@@ -9,10 +9,6 @@ on:
     tags:
       - 'v*'
 
-env:
-  IMAGE: ghcr.io/no767/rin
-  VERSION: latest
-  DEV_TAGGED_VERSION: v2.2.0-dev
 
 jobs:
   Build:
