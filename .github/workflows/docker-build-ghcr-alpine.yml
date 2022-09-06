@@ -1,11 +1,10 @@
-name: Docker Build (GHCR)
+name: Docker Build (GHCR, Alpine)
 
 on:
   push:
     paths-ignore:
       - "**.md"
     branches:
-      - master
       - dev
     tags:
       - 'v*'
@@ -22,10 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Defer workflow for 60 seconds
-        run: sleep 60s
-        shell: bash
-
       - name: Prepare Docker Meta
         id: meta
         uses: docker/metadata-action@v4
@@ -33,10 +28,11 @@ jobs:
           images: |
             ghcr.io/no767/rin
           tags: |
-            type=raw,value=v2.2.3
-            type=edge,branch=dev,suffix=-{{sha}}
-          flavor: |
-            latest=true
+            type=semver,pattern={{raw}},suffix=-alpine
+            type=semver,pattern={{version}},suffix=-alpine
+            type=semver,pattern={{major}}.{{minor}},suffix=-alpine
+            type=semver,pattern={{major}},suffix=-alpine
+            type=edge,branch=dev,suffix=-alpine
 
       - name: Setup Docker Buildx
         id: buildx
