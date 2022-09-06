@@ -50,48 +50,57 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
 
 3. Go ahead and get the token for Rin. Save it instead, and this will be used to authorize the bot. Instructions can be found [here](https://github.com/No767/Rin/blob/dev/Community/getting-started-guide.md#getting-the-discord-bot).
 
+4. Download the example docker env file. You'll put your API keys, bot tokens, and access tokens inside there. 
 
-4. Invite your bot into your server of choice
+    curl:
+    ```sh
+    curl -O https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example
+    ```
 
-5. Now once you have all of the API keys and Access Tokens, now you can use the `-e` flag to add it in. 
+    wget: 
 
-```sh
-sudo docker run -d \
--e TOKEN=botToken \
--e BLUE_ALLIANCE_API_KEY=apiKey \
--e DISCORD_BOTS_API_KEY=apiKey \
--e FIRST_EVENTS_FINAL_KEY=apiKey \
--e GITHUB_API_ACCESS_TOKEN=apiKey \
--e HYPIXEL_API_KEY=apiKey \
--e REDDIT_ID=apiKey \
--e REDDIT_SECRET=apiKey \
--e TENOR_API_KEY=apiKey \
--e TOP_GG_API_KEY=apiKey \
--e TWITCH_API_ACCESS_TOKEN=apiKey \
--e TWITCH_API_CLIENT_ID=apiKey \
--e TWITTER_BEARER_TOKEN=apiKey \
--e YOUTUBE_API_KEY=apiKey \
---restart=always \
---name Rin \
-no767/rin-prod:latest
-```
+    ```sh
+    wget https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example
+    ```
+
+5. Rename the file `.env-docker-example` to `.env`
+
+6. Invite your bot into your server of choice
+
+7. Adjust the values as needed. Replace `apiKey` with the correct API Keys, ACcess Tokens, Client IDs and Client Secrets. The `TOKEN` env is the token for the bot. Make sure that this is correct, or else the bot will not launch and function. Also make sure to invite your bot to your server first.
 
 > **Note**
 > Dev builds require another env var to be set. Set the env var `TESTING_BOT_TOKEN` to the same exact token as the `TOKEN` env var.
 
-Replace `apiKey` with the correct API Keys, Access Tokens, Client IDs and Client Secrets. The `TOKEN` env is the token for the bot. Make sure that this is correct, or else the bot will not launch and function. Also make sure to invite your bot to your server first.
+8. Now once you have everything set, it's time to run the bot. Use the command below to run the bot
 
-6. Run the docker container, and check the logs to make sure that you are not missing anything
+    ```sh
+    sudo docker run -d --restart=always  --env-file=.env --name=Rin no767/rin-prod:latest
+    ```
+
+> **Note**
+> If you are using Windows, then you don't need to use `sudo` with the commands.
+
+9. (Optional) Check the logs of the docker container to make sure that you are not missing anything
 
 ### Docker Compose
 
-1. Clone the repo
+1. Download the `.env-docker-example` file and `docker-compose-example.yml` file
 
-```sh
-git clone https://github.com/No767/Rin
-```
+    curl:
+    ```sh
+    curl -O https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
+    && curl -O https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
+    ```
 
-2. Find the `docker-compose-example.yml` file and rename it to `docker-compose.yml`
+    wget: 
+
+    ```sh
+    wget https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
+    && wget https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
+    ```
+
+2. Rename the `docker-compose-example.yml` file to `docker-compose.yml` and the `.env-docker-example` file to `.env`.
 
 3. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
@@ -110,50 +119,28 @@ git clone https://github.com/No767/Rin
 
 5. Invite your bot into your server of choice
 
-6. Now add the correct values into the docker compose file. A reference for the Docker Compose file is provided below:
-
-```yaml
-# docker-compose-example.yml
-version: "3.9"
-services:
-  rin:
-    # Use cloudflare's DNS server. This is what Discord uses as well
-    # May have issues...
-    dns: 
-      - 1.1.1.1
-      - 1.0.0.1
-    container_name: Rin
-    restart: always
-    image: no767/rin-prod:latest
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 0s
-        max_attempts: 3
-        window: 120s
-      mode: replicated
-    environment:
-      # Replace these values with the correct values
-      - TOKEN=botToken 
-      - BLUE_ALLIANCE_API_KEY=apiKey 
-      - DISCORD_BOTS_API_KEY=apiKey 
-      - FIRST_EVENTS_FINAL_KEY=apiKey 
-      - GITHUB_API_ACCESS_TOKEN=apiKey 
-      - HYPIXEL_API_KEY=apiKey 
-      - REDDIT_ID=apiKey 
-      - REDDIT_SECRET=apiKey 
-      - TENOR_API_KEY=apiKey 
-      - TOP_GG_API_KEY=apiKey 
-      - TWITCH_API_ACCESS_TOKEN=apiKey 
-      - TWITCH_API_CLIENT_ID=apiKey 
-      - TWITTER_BEARER_TOKEN=apiKey 
-      - YOUTUBE_API_KEY=apiKey 
-```
+6. Adjust the values as needed (within the `.env` file). Replace `apiKey` with the correct API Keys, ACcess Tokens, Client IDs and Client Secrets. The `TOKEN` env is the token for the bot. Make sure that this is correct, or else the bot will not launch and function. Also make sure to invite your bot to your server first.
 
 > **Note**
 > Dev builds require another env var to be set. Set the env var `TESTING_BOT_TOKEN` to the same exact token as the `TOKEN` env var.
 
-7. Run `sudo docker compose up -d` to fire up the docker compose project, and Rin should be running. Use `sudo docker compose stop` to stop Rin as needed. 
+7. Now once you have everything set, it's time to run the bot. Use the command below to run the bot
+
+    ```sh
+    sudo docker-compose up -d
+    ```
+
+    To stop the bot, you can just stop the docker compose stack:
+
+    ```sh
+    sudo docker compose stop
+    ```
+
+> **Note**
+> If you are using Windows, then you don't need to use `sudo` with the commands.
+
+8. (Optional) Check the logs of the docker container to make sure that you are not missing anything
+
 
 ## Getting the Discord Bot
 
