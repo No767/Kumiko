@@ -505,6 +505,9 @@ class rinhelp(commands.Cog):
                     name="`search`", value="Searches on reddit for content", inline=True
                 )
                 embedVar.add_field(
+                    name="`memes`", value="Gets some memes from Reddit", inline=True
+                )
+                embedVar.add_field(
                     name="`feed`",
                     value="Returns up to 25 reddit posts based on the current filter",
                     inline=True,
