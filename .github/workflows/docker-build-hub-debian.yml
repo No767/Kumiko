@@ -33,6 +33,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},suffix=-bullseye
             type=semver,pattern={{major}},suffix=-bullseye
             type=edge,branch=dev,suffix=-bullseye
+            type=edge,branch=dev
 
       - name: Setup Docker Buildx
         id: buildx
