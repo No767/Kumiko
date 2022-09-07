@@ -1,4 +1,4 @@
-name: Docker Build (Docker Hub)
+name: Docker Build (Hub, Alpine)
 
 on:
   push:
@@ -23,11 +23,14 @@ jobs:
           images: |
             no767/kumiko
           tags: |
-            type=semver,pattern={{raw}}
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=semver,pattern={{raw}},suffix=-alpine
+            type=semver,pattern={{version}},suffix=-alpine
+            type=semver,pattern={{major}}.{{minor}},suffix=-alpine
+            type=semver,pattern={{major}},suffix=-alpine
+            type=edge,branch=dev,suffix=-alpine
             type=edge,branch=dev
+          flavor: |
+            latest=false
 
       - name: Setup Docker Buildx
         id: buildx
