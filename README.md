@@ -5,12 +5,11 @@
 # Kumiko (久美子)
 ![Kumiko](./assets/kumiko-resized-round.svg)
 
-[![Required Python Version](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Docker Build (GHCR)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr.yml) [![Docker Build (Docker Hub)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_shield) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE)
+[![Required Python Version](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Docker Build (GHCR, Alpine)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-alpine.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-alpine.yml) [![Docker Build (GHCR, Debian)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-debian.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-debian.yml) [![Docker Build (Hub, Alpine)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-alpine.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-alpine.yml) [![Docker Build (Hub, Debian)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-debian.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-debian.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_shield) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE)
 
 A multipurpose Discord bot built with freedom and choice in mind
 
 <div align=left>
-
 
 ## Kumiko (久美子)
 
@@ -72,12 +71,22 @@ If you would like to get started, here are some links to help you with that:
 
 - [Getting Started (For Developers)](./Community/getting-started.md)
 - [Contributing](./Community/contributing.md)
-- [Documentation](https://`docs.kumiko-bot.tech/)
+- [Documentation](https://docs.kumiko-bot.tech/)
 
 # Licensing
 
 Kumiko being a direct upstream fork of Rin, is licensed under the same license as Rin, which is [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
 
+# Docker Tags and Status
+
+[`edge`](https://github.com/No767/Kumiko/blob/dev/Alpine-Docker/Dockerfile), [`edge-alpine`](https://github.com/No767/Kumiko/blob/dev/Alpine-Docker/Dockerfile), [`edge-bullseye`](https://github.com/No767/Kumiko/blob/dev/Debian-Docker/Dockerfile)
+
+## Docker Build Status
+
+|                   | GitHub Container Registry (GHCR) | Docker Hub |
+|    :---:           |          :---:                    |    :---:    |
+| **Alpine (3.16)** | [![Docker Build (GHCR, Alpine)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-alpine.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-alpine.yml) | [![Docker Build (Hub, Alpine)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-alpine.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-alpine.yml) |
+| **Debian (11)** | [![Docker Build (GHCR, Debian)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-debian.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-ghcr-debian.yml) | [![Docker Build (Hub, Debian)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-debian.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build-hub-debian.yml) |
 # FOSSA Status
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_large)
