@@ -24,7 +24,7 @@ gql = { extras = ["aiohttp"], version = "^3.4.0" }
 python-dateutil = "^2.8.2"
 rin-exceptions = "^1.0.3"
 beanie = "^1.11.9"
-numpy = "^1.23.2"
+numpy = "^1.23.3"
 PyYAML = "^6.0"
 aiormq = "^6.4.1"
 py-cord = {version = "2.1.3", extras = ["voice"]}
