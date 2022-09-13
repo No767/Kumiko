@@ -39,14 +39,14 @@ speedups = ["Brotli", "aiodns", "cchardet"]
 
 [[package]]
 name = "aiormq"
-version = "6.4.1"
+version = "6.4.2"
 description = "Pure python AMQP asynchronous client library"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
-pamqp = "3.2.0"
+pamqp = "3.2.1"
 yarl = "*"
 
 [package.extras]
@@ -522,7 +522,7 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
 name = "pamqp"
-version = "3.2.0"
+version = "3.2.1"
 description = "RabbitMQ Focused AMQP low-level library"
 category = "main"
 optional = false
@@ -959,7 +959,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "9649920e5238399935f7f9666aadbcbd6640e344baaba7ee31573b782f4eb00a"
+content-hash = "0bf96b4d4bfd3093281d697f1279a093cd54d648c164e3d3583183a046d22258"
 
 [metadata.files]
 aiodns = [
@@ -1045,7 +1045,8 @@ aiohttp = [
     {file = "aiohttp-3.8.1.tar.gz", hash = "sha256:fc5471e1a54de15ef71c1bc6ebe80d4dc681ea600e68bfd1cbce40427f0b7578"},
 ]
 aiormq = [
-    {file = "aiormq-6.4.1.tar.gz", hash = "sha256:f453b69bbae9d092d023a1727b82ec02ec0582b65b91cc942a895cfe7791c880"},
+    {file = "aiormq-6.4.2-py3-none-any.whl", hash = "sha256:fdbf2efed73a2e07437de3af5e3591165efb155a18394dc7295cac9e80943c62"},
+    {file = "aiormq-6.4.2.tar.gz", hash = "sha256:fd815d2bb9d8c950361697a74c1b067bc078726c3ef3b837e979a68a4986b148"},
 ]
 aiosignal = [
     {file = "aiosignal-1.2.0-py3-none-any.whl", hash = "sha256:26e62109036cd181df6e6ad646f91f0dcfd05fe16d0cb924138ff2ab75d64e3a"},
@@ -1757,7 +1758,8 @@ packaging = [
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
 ]
 pamqp = [
-    {file = "pamqp-3.2.0.tar.gz", hash = "sha256:43b8545ef2d5b8aa0a41b3461bba0b2759da1fc403a3cb73341b3fce0592033d"},
+    {file = "pamqp-3.2.1-py2.py3-none-any.whl", hash = "sha256:15acef752356593ca569d13dfedc8ada9f17deeeb8cec4f7b77825e2b6c7de3e"},
+    {file = "pamqp-3.2.1.tar.gz", hash = "sha256:22550ceb1ca50aafda65873e77e8c1c1b139fb5975e1a09860fae940cf8e970a"},
 ]
 pillow = [
     {file = "Pillow-9.2.0-cp310-cp310-macosx_10_10_x86_64.whl", hash = "sha256:a9c9bc489f8ab30906d7a85afac4b4944a572a7432e00698a7239f44a44e6efb"},
