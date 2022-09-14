@@ -1,4 +1,4 @@
-# 🛠️ Rin V2.2.5 (LTS) 🛠️
+# 🛠️ Rin V2.2.6 (LTS) 🛠️
 
 This update fixes some issues that were present in v2.2.5
 ## 🛠️ Changes
