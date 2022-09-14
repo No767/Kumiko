@@ -28,7 +28,7 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
 
     GHCR (Replace `version` with the latest tagged release from GitHub): 
     ```sh
-    docker pull ghcr.io/no767/rin:version
+    docker pull ghcr.io/no767/rin:latest
     ```
 
     Docker Hub:
@@ -37,7 +37,7 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
     ```
 2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
-    - Discord.bots.gg
+    - [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
     - [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
     - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
     - [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
@@ -54,34 +54,32 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
 
     curl:
     ```sh
-    curl -O https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example
+    curl -o .env https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example
     ```
 
     wget: 
 
     ```sh
-    wget https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example
+    wget -O .env https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example
     ```
 
-5. Rename the file `.env-docker-example` to `.env`
+5. Invite your bot into your server of choice
 
-6. Invite your bot into your server of choice
-
-7. Adjust the values as needed. Replace `apiKey` with the correct API Keys, ACcess Tokens, Client IDs and Client Secrets. The `TOKEN` env is the token for the bot. Make sure that this is correct, or else the bot will not launch and function. Also make sure to invite your bot to your server first.
+6. Adjust the values as needed. Replace `apiKey` with the correct API Keys, ACcess Tokens, Client IDs and Client Secrets. The `TOKEN` env is the token for the bot. Make sure that this is correct, or else the bot will not launch and function. Also make sure to invite your bot to your server first.
 
 > **Note**
 > Dev builds require another env var to be set. Set the env var `TESTING_BOT_TOKEN` to the same exact token as the `TOKEN` env var.
 
-8. Now once you have everything set, it's time to run the bot. Use the command below to run the bot
+7. Now once you have everything set, it's time to run the bot. Use the command below to run the bot
 
     ```sh
-    sudo docker run -d --restart=always  --env-file=.env --name=Rin no767/rin-prod:latest
+    sudo docker run -d --restart=always --env-file=.env --name=Rin no767/rin-prod:latest
     ```
 
 > **Note**
 > If you are using Windows, then you don't need to use `sudo` with the commands.
 
-9. (Optional) Check the logs of the docker container to make sure that you are not missing anything
+8. (Optional) Check the logs of the docker container to make sure that you are not missing anything
 
 ### Docker Compose
 
@@ -89,22 +87,22 @@ Rin builds to 2 different Docker Registries: GHCR (GitHub Container Registry) an
 
     curl:
     ```sh
-    curl -O https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
-    && curl -O https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
+    curl -o .env https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
+    && curl -o docker-compose.yml https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
     ```
 
     wget: 
 
     ```sh
-    wget https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
-    && wget https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
+    wget -O .env https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
+    && wget -O docker-compose.yml https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
     ```
 
 2. Rename the `docker-compose-example.yml` file to `docker-compose.yml` and the `.env-docker-example` file to `.env`.
 
 3. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
-    - Discord.bots.gg
+    - [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
     - [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
     - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
     - [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)

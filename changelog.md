@@ -6,6 +6,7 @@ This update fixes some issues that were present in v2.2.5
 - Condense Docker build workflows (from 4 to 2)
 - Use `github.actor` instead of `github.repository_owner` for Docker GHCR workflow 
 - Update docs (getting started guide)
+- Update `docker-compose-example.yml` file
 
 ## ✨ Additions
 

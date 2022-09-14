@@ -12,4 +12,4 @@ services:
         window: 120s
       mode: replicated
     env_file:
-      - .env-docker-example # Rename this to .env
+      - .env
