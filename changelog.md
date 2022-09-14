@@ -8,6 +8,7 @@ This update fixes some issues that were present in v2.2.5
 - Update docs (getting started guide)
 - Update `docker-compose-example.yml` file
 - Display Pycord version when using `/botinfo` command
+- Update Alpine and Debian Dockerfile to Python 3.10.7
 
 ## ✨ Additions
 

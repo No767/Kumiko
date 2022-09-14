@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.10.6-slim-bullseye AS builder
+FROM python:3.10.7-slim-bullseye AS builder
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt update \
     && apt install -y --no-install-recommends \
@@ -20,7 +20,7 @@ RUN pip install --upgrade pip setuptools pipenv \
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.10.6-slim-bullseye
+FROM python:3.10.7-slim-bullseye
 RUN apt update \
     && apt install -y --no-install-recommends \
     tini \
