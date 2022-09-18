@@ -26,18 +26,17 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 # New system for loading all cogs
 path = Path(__file__).parents[0].absolute()
 cogsPath = os.path.join(str(path), "Cogs")
-ecoCogsPath = os.path.join(str(path), "Cogs", "economy")
 
 cogsList = os.listdir(cogsPath)
-ecoCogsList = os.listdir(ecoCogsPath)
 
 for cogItem in cogsList:
     if cogItem.endswith(".py"):
         bot.load_extension(f"Cogs.{cogItem[:-3]}", store=False)
-
-for ecoCogItem in ecoCogsList:
-    if ecoCogItem.endswith(".py"):
-        bot.load_extension(f"Cogs.economy.{ecoCogItem[:-3]}", store=False)
+    elif not cogItem.endswith(".py") and cogItem not in ["__pycache__"]:
+        subCogsList = os.listdir(os.path.join(cogsPath, cogItem))
+        for subItem in subCogsList:
+            if subItem not in ["config", "__pycache__"]:
+                bot.load_extension(f"Cogs.{cogItem}.{subItem[:-3]}", store=False)
 
 # Adds in the bot presence
 @bot.event
