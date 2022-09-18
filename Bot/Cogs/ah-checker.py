@@ -18,7 +18,7 @@ ahUtils = KumikoAuctionHouseUtils()
 
 logging.basicConfig(
     level=logging.INFO,
-    format="[%(levelname)s] | %(asctime)s >> %(message)s",
+    format="[%(levelname)s] | %(asctime)s [AH Checker] >> %(message)s",
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
 

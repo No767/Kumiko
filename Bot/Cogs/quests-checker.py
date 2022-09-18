@@ -22,7 +22,7 @@ questUtils = KumikoQuestsUtils()
 
 logging.basicConfig(
     level=logging.INFO,
-    format="[%(levelname)s] | %(asctime)s >> %(message)s",
+    format="[%(levelname)s] | %(asctime)s [Quests Checker] >> %(message)s",
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
 

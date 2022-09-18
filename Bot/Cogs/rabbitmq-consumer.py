@@ -21,7 +21,7 @@ AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWOR
 
 logging.basicConfig(
     level=logging.INFO,
-    format="[%(levelname)s] | %(asctime)s >> %(message)s",
+    format="[%(levelname)s] | %(asctime)s [RabbitMQ Consumer] >> %(message)s",
     datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
 )
 

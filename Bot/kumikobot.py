@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 import discord
 from discord.ext import commands
@@ -22,61 +23,26 @@ logging.basicConfig(
 logging.getLogger("asyncio_redis").setLevel(logging.WARNING)
 logging.getLogger("gql").setLevel(logging.WARNING)
 
-# Loads in all extensions
-initial_extensions = [
-    "Cogs.kumikoinfo",
-    "Cogs.kumikoping",
-    "Cogs.kumikohelp",
-    "Cogs.reddit",
-    "Cogs.mcsrvstats",
-    "Cogs.waifu",
-    "Cogs.hypixel",
-    "Cogs.advice",
-    "Cogs.spiget",
-    "Cogs.myanimelist",
-    "Cogs.top-gg",
-    "Cogs.interaction-error-handler",
-    "Cogs.kumikoinvite",
-    "Cogs.mangadex",
-    "Cogs.version",
-    "Cogs.twitter",
-    "Cogs.youtube",
-    "Cogs.bonk",
-    "Cogs.tenor",
-    "Cogs.uptime",
-    "Cogs.jisho",
-    "Cogs.bot-info",
-    "Cogs.modrinth",
-    "Cogs.discord-bots",
-    "Cogs.economy.marketplace",
-    "Cogs.economy.users",
-    "Cogs.kumiko-platform",
-    "Cogs.first-frc-events",
-    "Cogs.blue-alliance",
-    "Cogs.legacy-help",
-    "Cogs.github",
-    "Cogs.anilist",
-    "Cogs.rabbitmq-consumer",  # Has issues running in GitPod for some reason
-    "Cogs.economy.auction_house",
-    "Cogs.gws",
-    "Cogs.avatar",
-    "Cogs.uwu",
-    "Cogs.ah-checker",
-    "Cogs.economy.quests",
-    "Cogs.twitch",
-    "Cogs.quests-checker",
-    "Cogs.economy.petals",
-    "Cogs.info",
-    "Cogs.admin",
-]
-for extension in initial_extensions:
-    bot.load_extension(extension, store=False)
+# New system for loading all cogs
+path = Path(__file__).parents[0].absolute()
+cogsPath = os.path.join(str(path), "Cogs")
+ecoCogsPath = os.path.join(str(path), "Cogs", "economy")
 
+cogsList = os.listdir(cogsPath)
+ecoCogsList = os.listdir(ecoCogsPath)
+
+for cogItem in cogsList:
+    if cogItem.endswith(".py"):
+        bot.load_extension(f"Cogs.{cogItem[:-3]}", store=False)
+
+for ecoCogItem in ecoCogsList:
+    if ecoCogItem.endswith(".py"):
+        bot.load_extension(f"Cogs.economy.{ecoCogItem[:-3]}", store=False)
 
 # Adds in the bot presence
 @bot.event
 async def on_ready():
-    logging.info("Kumiko is ready to go! All events are ready to go")
+    logging.info("Kumiko is ready to go! All checkers are loaded and ready!")
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
     )
