@@ -1,13 +1,14 @@
 import asyncio
-import random
 
 import aiohttp
 import discord
+import numpy as np
 import orjson
 import simdjson
 import uvloop
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
+from numpy.random import default_rng
 from rin_exceptions import NotFoundHTTPException
 
 parser = simdjson.Parser()
@@ -23,18 +24,21 @@ class WaifuCmdsV1(commands.Cog):
     @waifuRandom.command(name="one")
     async def waifuPic(self, ctx):
         """Gets one random waifu pics"""
-        waifuTagList = [
-            "uniform",
-            "maid",
-            "waifu",
-            "marin-kitagawa",
-            "mori-calliope",
-            "raiden-shogun",
-            "selfies",
-        ]
+        waifuTagList = np.array(
+            [
+                "uniform",
+                "maid",
+                "waifu",
+                "marin-kitagawa",
+                "mori-calliope",
+                "raiden-shogun",
+                "selfies",
+            ]
+        )
+        rng = default_rng()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "selected_tags": random.choice(waifuTagList),  # nosec B311
+                "selected_tags": rng.choice(a=waifuTagList),  # nosec B311
                 "is_nsfw": "false",
                 "excluded_tags": "oppai",
             }
@@ -62,18 +66,21 @@ class WaifuCmdsV1(commands.Cog):
     @waifuRandom.command(name="many")
     async def waifuRandomMany(self, ctx):
         """Returns many random waifu pics"""
-        waifuTagList = [
-            "uniform",
-            "maid",
-            "waifu",
-            "marin-kitagawa",
-            "mori-calliope",
-            "raiden-shogun",
-            "selfies",
-        ]
+        waifuTagList = np.array(
+            [
+                "uniform",
+                "maid",
+                "waifu",
+                "marin-kitagawa",
+                "mori-calliope",
+                "raiden-shogun",
+                "selfies",
+            ]
+        )
+        rng = default_rng()
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             params = {
-                "selected_tags": random.choice(waifuTagList),  # nosec B311
+                "selected_tags": rng.choice(a=waifuTagList),  # nosec B311
                 "is_nsfw": "false",
                 "excluded_tags": "oppai",
                 "many": "true",
@@ -106,40 +113,43 @@ class WaifuCmdsV1(commands.Cog):
     @waifu.command(name="pics")
     async def waifuPics(self, ctx):
         """Returns a random image of a waifu from waifu.pics"""
-        waifu_list = [
-            "waifu",
-            "neko",
-            "shinobu",
-            "megumin",
-            "bully",
-            "cuddle",
-            "cry",
-            "hug",
-            "awoo",
-            "kiss",
-            "lick",
-            "pat",
-            "smug",
-            "bonk",
-            "yeet",
-            "blush",
-            "smile",
-            "wave",
-            "highfive",
-            "handhold",
-            "nom",
-            "bite",
-            "glomp",
-            "slap",
-            "kill",
-            "kick",
-            "happy",
-            "wink",
-            "poke",
-            "dance",
-            "cringe",
-        ]
-        searchterm = random.choice(waifu_list)  # nosec B311
+        waifu_list = np.array(
+            [
+                "waifu",
+                "neko",
+                "shinobu",
+                "megumin",
+                "bully",
+                "cuddle",
+                "cry",
+                "hug",
+                "awoo",
+                "kiss",
+                "lick",
+                "pat",
+                "smug",
+                "bonk",
+                "yeet",
+                "blush",
+                "smile",
+                "wave",
+                "highfive",
+                "handhold",
+                "nom",
+                "bite",
+                "glomp",
+                "slap",
+                "kill",
+                "kick",
+                "happy",
+                "wink",
+                "poke",
+                "dance",
+                "cringe",
+            ]
+        )
+        rng = default_rng()
+        searchterm = rng.choice(waifu_list)  # nosec B311
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:
             async with session.get(f"https://api.waifu.pics/sfw/{searchterm}") as r:
                 waifu_pics = await r.content.read()

@@ -35,7 +35,7 @@ initial_extensions = [
     "Cogs.spiget",
     "Cogs.myanimelist",
     "Cogs.top-gg",
-    "Cogs.global-error-handling",
+    "Cogs.interaction-error-handler",
     "Cogs.kumikoinvite",
     "Cogs.mangadex",
     "Cogs.version",

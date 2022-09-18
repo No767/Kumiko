@@ -46,7 +46,7 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     ```
 2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
-    - Discord.bots.gg
+    - [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
     - [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
     - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
     - [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
@@ -109,6 +109,7 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 
 9. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
 
+4. Download the example docker env file. You'll put your API keys, bot tokens, and access tokens inside there. 
 
     ```sh
     sudo docker run -d --restart=always --env-file=.env --name Kumiko no767/kumiko:version
@@ -122,7 +123,7 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 11. (Optional) Check the logs of the container to make sure that nothing went wrong.
 ### Docker Compose
 
-1. Clone the repo
+1. Download the `.env-docker-example` file and `docker-compose-example.yml` file
 
 ```sh
 git clone https://github.com/No767/Kumiko
@@ -130,9 +131,14 @@ git clone https://github.com/No767/Kumiko
 
 2. Find the `docker-compose-example.yml` file and rename it to `docker-compose.yml` And also rename the `.env-docker-example` file to `.env`.
 
-3. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
+    ```sh
+    wget -O .env https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
+    && wget -O docker-compose.yml https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
+    ```
+
+2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
-    - Discord.bots.gg
+    - [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
     - [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
     - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
     - [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)

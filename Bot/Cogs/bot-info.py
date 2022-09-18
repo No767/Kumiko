@@ -51,6 +51,7 @@ class botInfo(commands.Cog):
         embed.add_field(
             name="Python Version", value=platform.python_version(), inline=True
         )
+        embed.add_field(name="Pycord Version", value=discord.__version__, inline=True)
         embed.set_thumbnail(url=bot.user.display_avatar)
         await ctx.respond(embed=embed)
 
