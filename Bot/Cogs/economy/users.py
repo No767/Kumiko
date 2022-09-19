@@ -87,7 +87,7 @@ class ecoUsers(commands.Cog):
         self.bot = bot
 
     eco_users = SlashCommandGroup(
-        name="users",
+        name="eco-users",
         description="Commands for handling user-related data and transactions for Kumiko's economy system",
         guild_ids=[970159505390325842],
     )

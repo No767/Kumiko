@@ -92,7 +92,7 @@ class ServerQuests(commands.Cog):
         self.bot = bot
 
     quests = SlashCommandGroup(
-        "quests",
+        "eco-quests",
         "Commands for the quests feature in Kumiko",
         guild_ids=[970159505390325842],
     )

@@ -88,7 +88,7 @@ class ecoMarketplace(commands.Cog):
         self.bot = bot
 
     eco_marketplace = SlashCommandGroup(
-        name="marketplace",
+        name="eco-marketplace",
         description="Commands for Kumiko's Marketplace",
     )
     ecoMarketplaceUpdate = eco_marketplace.create_subgroup(

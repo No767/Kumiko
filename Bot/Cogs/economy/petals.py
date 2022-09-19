@@ -32,7 +32,7 @@ class PetalEarnV1(commands.Cog):
         self.bot = bot
 
     petals = SlashCommandGroup(
-        "petals", "Base commands for petals", guild_ids=[970159505390325842]
+        "eco-petals", "Base commands for petals", guild_ids=[970159505390325842]
     )
     petalsEarn = petals.create_subgroup(
         "earn", "Earn petals", guild_ids=[970159505390325842]

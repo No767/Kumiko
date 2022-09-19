@@ -96,7 +96,9 @@ class AuctionHouseV1(commands.Cog):
         self.bot = bot
 
     auctionHouse = SlashCommandGroup(
-        "auction", "Auction off your highest items here", guild_ids=[970159505390325842]
+        "eco-auction",
+        "Auction off your highest items here",
+        guild_ids=[970159505390325842],
     )
     auctionHouseDelete = auctionHouse.create_subgroup(
         "delete", "commands to delete stuff", guild_ids=[970159505390325842]
