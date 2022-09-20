@@ -8,7 +8,6 @@ In order to get started self-hosting your own version of Kumiko, you'll need som
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/)
-- [Poetry](https://python-poetry.org/)
 - [Git](https://git-scm.com/)
 - psql and mongosh
 
@@ -36,12 +35,12 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 1. Pull the latest production build from either GHCR or Docker Hub
 
     GHCR (Replace `version` with the latest tagged release from GitHub): 
-    ```sh
+    ```bash
     docker pull ghcr.io/no767/kumiko:version
     ```
 
     Docker Hub (Replace `version` with the latest tagged release from GitHub and/or from Docker Hub):
-    ```sh
+    ```bash
     docker pull no767/kumiko:version
     ```
 2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
@@ -57,17 +56,23 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
     - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-3. Clone the GitHub repo and `cd` int to the directory
+3. Download the example docker env file. This is the file where you'll put all of your env and credentials in
 
-    ```sh
-    git clone https://github.com/No767/Kumiko.git && cd Kumiko
+    curl:
+
+    ```bash
+    curl -o .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example
     ```
 
-4. Rename the `.env-docker-example` file to `.env`
+    wget:
 
-5. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
+    ```bash
+    wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example
+    ```
 
-6. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
+4. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
+
+5. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
 
     So for example, if I had these 4 set like this:
 
@@ -87,7 +92,7 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     CREATE DATABASE kumiko_quests;
     ```
 
-7. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
+6. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
 
     ```sh
     psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
@@ -99,20 +104,12 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     sudo docker exec -i postgres_docker_container psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
     ```
 
-8. Now it's time to seed the databases. Create and set up a poetry env, and run the `postgres-init.py` file located in the `scripts` directory. This will basically create the tables needed. Later on, Kumiko will have an automatic system for dealing with this.
+7. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
 
-    ```sh
-    poetry env use 3.10
-    poetry install
-    poetry run python scripts/postgres-init.py
-    ```
+8. Now it's time to run Kumiko. Just run this command to run the bot:
 
-9. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
-
-4. Download the example docker env file. You'll put your API keys, bot tokens, and access tokens inside there. 
-
-    ```sh
-    sudo docker run -d --restart=always --env-file=.env --name Kumiko no767/kumiko:version
+    ```bash
+    sudo docker run -d --restart=always --env-file=.env --name Kumiko no767/kumiko:latest
     ```
 
 > **Note**
@@ -125,15 +122,17 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 
 1. Download the `.env-docker-example` file and `docker-compose-example.yml` file
 
-```sh
-git clone https://github.com/No767/Kumiko
-```
+    curl:
+    ```bash
+    curl -o .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
+    && curl -o docker-compose.yml https://raw.githubusercontent.com/No767/Kumiko/dev/docker-compose-example.yml
+    ```
 
-2. Find the `docker-compose-example.yml` file and rename it to `docker-compose.yml` And also rename the `.env-docker-example` file to `.env`.
+    wget: 
 
-    ```sh
-    wget -O .env https://raw.githubusercontent.com/No767/Rin/master/.env-docker-example \
-    && wget -O docker-compose.yml https://raw.githubusercontent.com/No767/Rin/master/docker-compose-example.yml
+    ```bash
+    wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
+    && wget -O docker-compose.yml https://raw.githubusercontent.com/No767/Kumiko/dev/docker-compose-example.yml
     ```
 
 2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
@@ -149,17 +148,11 @@ git clone https://github.com/No767/Kumiko
     - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
     - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-4. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
+3. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
 
-5. Edit the `docker-compose.yml` file to include the credentials of the databases.
+4. Edit the `docker-compose.yml` file to include the credentials of the databases.
 
-6. Notice that the section where Kumiko would normally be started up is commented out. Leave it like so for now, we'll get back to it. Start the Docker Compose stack.
-
-    ```sh
-    sudo docker compose up -d
-    ```
-
-7. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
+5. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
 
     So for example, if I had these 4 set like this:
 
@@ -179,78 +172,26 @@ git clone https://github.com/No767/Kumiko
     CREATE DATABASE kumiko_quests;
     ```
 
-8. Now it's time to seed the databases. Create and set up a poetry env, and run the `postgres-init.py` file located in the `scripts` directory. This will basically create the tables needed. Later on, Kumiko will have an automatic system for dealing with this.
+6. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
 
-    ```sh
-    poetry env use 3.10
-    poetry install
-    poetry run python scripts/postgres-init.py
-    ```
-
-
-9. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
-
-    ```sh
+    ```bash
     psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
     ```
 
     For Dockerized PostgreSQL servers, run this command instead:
 
-    ```sh
+    ```bash
     sudo docker exec -i Kumiko-Postgres psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
-    ```
-10. Now stop the Docker Compose stack. Comment out the part where Kumiko should start. Since you have all of the databases and tables set up, Kumiko should hopefully work properly now.
 
-    ```sh
-    sudo docker compose stop
-    ```
+7. Start the Docker Compose stack. Kumiko will automatically create the table when it starts up.
 
-    If you noticed beforehand, the Docker Compose file had this section commented out:
-
-    ```yaml
-    services:
-      # kumiko:
-      #   container_name: Kumiko
-      #   image: no767/kumiko:version # Replace version with the latest tagged version from Docker Hub
-      #   restart: always
-      #   deploy:
-      #     restart_policy:
-      #       condition: on-failure
-      #       delay: 0s
-      #       max_attempts: 3
-      #       window: 120s
-      #     mode: replicated
-      #   env_file:
-      #     - .env
-    ```
-
-    Now it should look like this:
-    ```yaml
-    services:
-      kumiko:
-      container_name: Kumiko
-      image: no767/kumiko:version # Replace version with the latest tagged version from Docker Hub
-      restart: always
-      deploy:
-        restart_policy:
-          condition: on-failure
-          delay: 0s
-          max_attempts: 3
-          window: 120s
-        mode: replicated
-      env_file:
-        - .env
-    ```
-
-11. Start the Docker Compose stack again. This time, Kumiko is included, and hopefully should run along with all of the other docker containers as well.
-
-    ```sh
+    ```bash
     sudo docker compose up -d
     ```
 
-12. Invite your bot into your server of choice, and have fun!
+8. Invite your bot into your server of choice, and have fun!
 
-13. (Optional) Check the logs of the container to make sure that nothing went wrong.
+9. (Optional) Check the logs of the container to make sure that nothing went wrong.
 
 ## Getting the Discord Bot
 

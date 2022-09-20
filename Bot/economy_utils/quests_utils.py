@@ -50,7 +50,7 @@ class KumikoQuestsUtils:
         Args:
             uri (str): Connection URI
         """
-        engine = create_async_engine(uri, echo=True)
+        engine = create_async_engine(uri)
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 

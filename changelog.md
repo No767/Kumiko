@@ -16,6 +16,7 @@ And some backend changes w/ Docker support:
 
 - Switch to a Dockerfile system based off of `tini` and `alpine` instead of PM2 (Credits for @TheSilkky for developing the Alpine Dockerfile)
 - Deploy both Alpine and Debian-based Dockerfiles
+- Automatic DB schema creator (called the "seeder")
 
 ## 🔥 Breaking Changes
 
@@ -43,13 +44,14 @@ And some backend changes w/ Docker support:
 - Display Pycord version w/ bot info command
 - Optimize Dynamic Cog Loader
 - Update Docs
-
+- Don't `echo` database schema creations w/ SQLAlchemy
 
 ## ✨ Additions
 - Kumiko's Quests System
 - Genshin-based Wish Sim (GWS)
 - Kumiko's Auction House (Uses Redis + RabbitMQ)
 - Docker Compose Example + ENV Examples
+- Docker Compose Support
 - Alpine + Debian Dockerfiles w/ `tini` for running Kumiko
 - RabbitMQ Consumer Cog
 - Redis for selecting and caching
@@ -62,6 +64,7 @@ And some backend changes w/ Docker support:
 - Basic info commands
 - Use Dynamic Cog Loader instead of loading cogs from a list
 - Add new self-host guide
+- Automatic DB schema creator (called the "seeder")
 
 ## ➖ Removals
 

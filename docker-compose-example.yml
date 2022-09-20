@@ -4,19 +4,21 @@
 
 version: "3.9"
 services:
-  # kumiko:
-  #   container_name: Kumiko
-  #   image: no767/kumiko:version # Replace version with the latest tagged version from Docker Hub
-  #   restart: always
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #       delay: 0s
-  #       max_attempts: 3
-  #       window: 120s
-  #     mode: replicated
-  #   env_file:
-  #     - .env
+  kumiko:
+    container_name: Kumiko
+    image: no767/kumiko:latest
+    restart: always
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 0s
+        max_attempts: 5
+        window: 120s
+      mode: replicated
+    env_file:
+      - .env
+    depends_on:
+      - postgres
     
   postgres:
     container_name: Kumiko-Postgres

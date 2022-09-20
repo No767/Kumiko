@@ -38,6 +38,7 @@ RUN apk add --no-cache \
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
+COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
 COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
