@@ -22,12 +22,12 @@ services:
     
   postgres:
     container_name: Kumiko-Postgres
-    image: postgres:latest
+    build:
+      context: .
+      dockerfile: ./Postgres-Docker/Dockerfile
     restart: always
-    environment:
-      - POSTGRES_PASSWORD=password # Change this to another password
-      - POSTGRES_USER=Kumiko
-      - POSTGRES_DB=Kumiko
+    env_file:
+      - .env
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     ports:
@@ -37,9 +37,8 @@ services:
     container_name: Kumiko-MongoDB
     image: mongo:latest
     restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=Kumiko
-      - MONGO_INITDB_ROOT_PASSWORD=password # Change this to another password
+    env_file:
+      - .env
     ports:
       - 27017:27017
     volumes:
@@ -53,10 +52,8 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    environment:
-      - RABBITMQ_DEFAULT_USER=Kumiko
-      - RABBITMQ_DEFAULT_PASS=password # Change this to another password
-      - RABBITMQ_DEFAULT_VHOST=kumiko
+    env_file:
+      - .env
 
   redis:
     container_name: Kumiko-Redis

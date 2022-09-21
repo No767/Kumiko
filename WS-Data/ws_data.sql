@@ -33,8 +33,8 @@ CREATE TABLE public.ws_data (
     type character varying
 );
 
-
-ALTER TABLE public.ws_data OWNER TO "Kumiko";
+\set postgres_user `$POSTGRES_USER`;
+ALTER TABLE public.ws_data OWNER TO :'postgres_user';
 
 --
 -- Data for Name: ws_data; Type: TABLE DATA; Schema: public; Owner: Kumiko
