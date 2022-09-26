@@ -6,10 +6,10 @@ FROM python:3.10.7-slim-bullseye AS builder
 ENV DEBIAN_FRONTEND=noninteractive 
 
 RUN apt update \
-    && apt install -y --no-install-recommends \
-    build-essential \
-    ca-certificates \
-    curl
+  && apt install -y --no-install-recommends \
+  build-essential \
+  ca-certificates \
+  curl
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -23,17 +23,17 @@ COPY /pyproject.toml /Kumiko/
 COPY /poetry.lock /Kumiko/
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes \
-    && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
+  && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
 
 ####################################################################################################
 ## Final image
 ####################################################################################################
 FROM python:3.10.7-slim-bullseye
 RUN apt update \
-    && apt install -y --no-install-recommends \
-    tini \
-    ca-certificates \
-    bash
+  && apt install -y --no-install-recommends \
+  tini \
+  ca-certificates \
+  bash
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
@@ -42,6 +42,7 @@ COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
 COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
 COPY /Debian-Docker/start.sh /Kumiko/start.sh
+COPY /Debian-Docker/wait-for /Kumiko/wait-for
 
 COPY --from=builder /Kumiko/wheels /Kumiko/wheels
 COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
@@ -49,8 +50,9 @@ COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
 RUN pip install --upgrade pip setuptools
 
 RUN adduser --disabled-password --gecos "" kumiko \
-    && chown -R kumiko:kumiko /Kumiko \
-    && chmod +x /Kumiko/start.sh
+  && chown -R kumiko:kumiko /Kumiko \
+  && chmod +x /Kumiko/start.sh \
+  && chmod +x /Kumiko/wait-for
 
 USER kumiko
 
