@@ -33,7 +33,8 @@ RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
   ca-certificates \
-  bash
+  bash \
+  netcat
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
