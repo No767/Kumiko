@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+import time
 from pathlib import Path
 
 import uvloop
@@ -49,4 +50,10 @@ async def main():
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"[DB Seeder] Error: {e.__class__.__name__} - {str(e)}")
+        print(f"[DB Seeder] Waiting for 5 seconds before retrying")
+        time.sleep(5)
+        asyncio.run(main())
