@@ -2,9 +2,7 @@ version: "3.9"
 services:
   postgres:
     container_name: Kumiko-Postgres
-    build:
-      context: .
-      dockerfile: ./Postgres-Docker/Dockerfile
+    image: no767/kumiko-postgres:edge
     restart: always
     env_file:
       - .env
