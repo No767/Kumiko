@@ -1,25 +1,5 @@
-# This docker compose file is actually not used by Kumiko, since Kumiko relies on the db and other stuff via a seperate server
-# This is just for example
-# MAKE SURE TO CHANGE THE VALUES FOR KUMIKO
-
 version: "3.9"
 services:
-  kumiko:
-    container_name: Kumiko
-    image: no767/kumiko:latest
-    restart: always
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 0s
-        max_attempts: 5
-        window: 120s
-      mode: replicated
-    env_file:
-      - .env
-    depends_on:
-      - postgres
-    
   postgres:
     container_name: Kumiko-Postgres
     build:
@@ -33,6 +13,35 @@ services:
     ports:
       - 5432:5432
 
+  rabbitmq:
+    container_name: Kumiko-RabbitMQ
+    image: rabbitmq:3-management
+    hostname: kumiko_prod
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file:
+      - .env
+
+  kumiko:
+    container_name: Kumiko
+    image: no767/kumiko:latest
+    restart: always
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 0s
+        max_attempts: 5
+        window: 120s
+      mode: replicated
+    command: sh -c '/Kumiko/wait-for postgres:5432 -- echo "[Wait-for] PostgreSQL is fully up. Waiting for RabbitMQ" && /Kumiko/wait-for rabbitmq:5672 -- echo "[Wait-for] Both PostgreSQL and RabbitMQ are fully ready. Starting up Kumiko" && /Kumiko/start.sh'
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    
   mongodb:
     container_name: Kumiko-MongoDB
     image: mongo:latest
@@ -44,16 +53,6 @@ services:
     volumes:
       - mongodb_volume:/data/db
 
-  rabbitmq:
-    container_name: Kumiko-RabbitMQ
-    image: rabbitmq:3-management
-    hostname: kumiko_prod
-    restart: always
-    ports:
-      - 5672:5672
-      - 15672:15672
-    env_file:
-      - .env
 
   redis:
     container_name: Kumiko-Redis
