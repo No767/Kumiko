@@ -34,29 +34,17 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 
 1. Pull the latest production build from either GHCR or Docker Hub
 
-    GHCR (Replace `version` with the latest tagged release from GitHub): 
+    GHCR: 
     ```bash
-    docker pull ghcr.io/no767/kumiko:version
+    docker pull ghcr.io/no767/kumiko:latest
     ```
 
-    Docker Hub (Replace `version` with the latest tagged release from GitHub and/or from Docker Hub):
+    Docker Hub:
     ```bash
-    docker pull no767/kumiko:version
+    docker pull no767/kumiko:latest
     ```
-2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
-    - [Blue Alliance](https://www.thebluealliance.com/apidocs)
-    - [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
-    - [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
-    - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
-    - [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
-    - [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
-    - [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
-    - [Top.gg](https://docs.top.gg/)
-    - [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
-    - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
-    - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
-3. Download the example docker env file. This is the file where you'll put all of your env and credentials in
+2. Download the example docker env file. This is the file where you'll put all of your env and credentials in
 
     curl:
 
@@ -70,9 +58,9 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example
     ```
 
-4. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
+3. Obtain the API keys, access tokens, discord bot token, and database credentials for Kumiko. Open up the `.env` file with an editor like Vim and add the needed values. Refer to the list of API keys and tokens below.
 
-5. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
+4. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
 
     So for example, if I had these 4 set like this:
 
@@ -92,7 +80,7 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     CREATE DATABASE kumiko_quests;
     ```
 
-6. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
+5. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
 
     ```sh
     psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
@@ -104,9 +92,9 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     sudo docker exec -i postgres_docker_container psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
     ```
 
-7. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
+6. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
 
-8. Now it's time to run Kumiko. Just run this command to run the bot:
+7. Now it's time to run Kumiko. Just run this command to run the bot:
 
     ```bash
     sudo docker run -d --restart=always --env-file=.env --name Kumiko no767/kumiko:latest
@@ -115,9 +103,9 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 > **Note**
 > On windows, you don't need to run it with the `sudo` command. 
 
-10. Invite your bot into your server of choice, and have fun!
+8. Invite your bot into your server of choice, and have fun!
 
-11. (Optional) Check the logs of the container to make sure that nothing went wrong.
+9. (Optional) Check the logs of the container to make sure that nothing went wrong.
 ### Docker Compose
 
 1. Download the `.env` file and `docker-compose.yml` file
@@ -137,64 +125,37 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 
     Alternatively, you can also use the `setup.sh` script to help with that.
 
-2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
-    - [Blue Alliance](https://www.thebluealliance.com/apidocs)
-    - [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
-    - [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
-    - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
-    - [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
-    - [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
-    - [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
-    - [Top.gg](https://docs.top.gg/)
-    - [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
-    - [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
-    - [YouTube](https://developers.google.com/youtube/registering_an_application)
-
-3. Add the API keys, access tokens, and database credentials to the `.env` file. Also make sure to get your bot token as well.
-
-4. Edit the `docker-compose.yml` file to include the credentials of the databases.
-
-5. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
-
-    So for example, if I had these 4 set like this:
-
-    ```.env
-    POSTGRES_ECO_USERS_DB="kumiko_users"
-    POSTGRES_WS_DB="kumiko_ws"
-    POSTGRES_AH_DB="kumiko_ah"
-    POSTGRES_QUESTS_DB="kumiko_quests"
-    ```
-
-    then I would have to create the databases like this:
-
-    ```sql
-    CREATE DATABASE kumiko_users;
-    CREATE DATABASE kumiko_ws;
-    CREATE DATABASE kumiko_ah;
-    CREATE DATABASE kumiko_quests;
-    ```
-
-6. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
-
     ```bash
-    psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
+    curl -s https://raw.githubusercontent.com/No767/Kumiko/dev/setup.sh | sh
     ```
 
-    For Dockerized PostgreSQL servers, run this command instead:
+2. Obtain the API keys, access tokens, discord bot token, and database credentials for Kumiko. Open up the `.env` file with an editor like Vim and add the needed values. Refer to the list of API keys and tokens below.
 
-    ```bash
-    sudo docker exec -i Kumiko-Postgres psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
-
-7. Start the Docker Compose stack. Kumiko will automatically create the table when it starts up.
+3. Once everything is set, literally just fire up the whole entire docker compose stack. All of the database creation, and seeding of the data will be handled automatically
 
     ```bash
     sudo docker compose up -d
     ```
 
-8. Invite your bot into your server of choice, and have fun!
+4. Invite your bot into your server of choice, and have fun!
 
-9. (Optional) Check the logs of the container to make sure that nothing went wrong.
+5. (Optional) Check the logs of the container to make sure that nothing went wrong.
 
+## Reference
+
+### API Keys and Access Tokens
+
+- [Blue Alliance](https://www.thebluealliance.com/apidocs)
+- [Discord.bots.gg](https://discord.bots.gg/) (probably will have to log in first)
+- [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
+- [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
+- [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
+- [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
+- [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
+- [Top.gg](https://docs.top.gg/)
+- [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
+- [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
+- [YouTube](https://developers.google.com/youtube/registering_an_application)
 ## Getting the Discord Bot
 
 You'll more than likely need to get your discord bot up. So these are the setups to how to do that
