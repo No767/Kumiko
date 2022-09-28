@@ -120,7 +120,7 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 11. (Optional) Check the logs of the container to make sure that nothing went wrong.
 ### Docker Compose
 
-1. Download the `.env-docker-example` file and `docker-compose-example.yml` file
+1. Download the `.env` file and `docker-compose.yml` file
 
     curl:
     ```bash
@@ -134,6 +134,8 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
     && wget -O docker-compose.yml https://raw.githubusercontent.com/No767/Kumiko/dev/docker-compose-example.yml
     ```
+
+    Alternatively, you can also use the `setup.sh` script to help with that.
 
 2. Go ahead and get the access tokens and/or API keys for some of the APIs. Here's a list of the services that require API Keys or Access Tokens
     - [Blue Alliance](https://www.thebluealliance.com/apidocs)
