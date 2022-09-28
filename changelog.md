@@ -17,6 +17,7 @@ And some backend changes w/ Docker support:
 - Switch to a Dockerfile system based off of `tini` and `alpine` instead of PM2 (Credits for @TheSilkky for developing the Alpine Dockerfile)
 - Deploy both Alpine and Debian-based Dockerfiles
 - Automatic DB schema creator (called the "seeder")
+- Improved Docker Compose support + Standalone support
 
 ## 🔥 Breaking Changes
 
@@ -45,6 +46,10 @@ And some backend changes w/ Docker support:
 - Optimize Dynamic Cog Loader
 - Update Docs
 - Don't `echo` database schema creations w/ SQLAlchemy
+- Improved Docker Compose setup (literally just download some stuff, set up the env file, and run)
+- Append `eco` to all economy commands
+- Unload RabbitMQ consumer for Kumiko
+
 
 ## ✨ Additions
 - Kumiko's Quests System
@@ -65,6 +70,10 @@ And some backend changes w/ Docker support:
 - Use Dynamic Cog Loader instead of loading cogs from a list
 - Add new self-host guide
 - Automatic DB schema creator (called the "seeder")
+- Database init scripts for Docker Compose 
+- `setup.sh` and `standalone-setup.sh` for both Docker Compose setups and standalone setups
+- `wait-for` script within Docker Compose (to wait until PostgreSQL and RabbitMQ start accepting connections)
+- Custom PostgreSQL docker image for Docker Compose
 
 ## ➖ Removals
 

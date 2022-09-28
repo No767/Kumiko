@@ -44,57 +44,33 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
     docker pull no767/kumiko:latest
     ```
 
-2. Download the example docker env file. This is the file where you'll put all of your env and credentials in
+2. Download the example docker env file and standalone-setup script. This is the file where you'll put all of your env and credentials in
 
     curl:
 
     ```bash
-    curl -o .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example
+    curl -o .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
+    && curl -o standalone-setup.sh https://raw.githubusercontent.com/No767/Kumiko/dev/standalone-setup.sh \
+    && chmod +x standalone-setup.sh
     ```
 
     wget:
 
     ```bash
-    wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example
+    wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
+    && wget -O standalone-setup.sh https://raw.githubusercontent.com/No767/Kumiko/dev/standalone-setup.sh \
+    && chmod +x standalone-setup.sh
     ```
 
 3. Obtain the API keys, access tokens, discord bot token, and database credentials for Kumiko. Open up the `.env` file with an editor like Vim and add the needed values. Refer to the list of API keys and tokens below.
 
-4. Now we need to create the databases needed. Log into your Postgres server and create the databases needed (based on the 4 environment variables in the `.env` file that ask for the database names). Also log on to your MongoDB server and create the database needed. The name of the database is `kumiko_marketplace`. 
+4. To set up all of the data, all we need to do is to run a script to set that up.
 
-    So for example, if I had these 4 set like this:
-
-    ```.env
-    POSTGRES_ECO_USERS_DB="kumiko_users"
-    POSTGRES_WS_DB="kumiko_ws"
-    POSTGRES_AH_DB="kumiko_ah"
-    POSTGRES_QUESTS_DB="kumiko_quests"
+    ```bash
+    env $(grep -v '^#' .env | xargs) ./standalone-setup.sh
     ```
 
-    then I would have to create the databases like this:
-
-    ```sql
-    CREATE DATABASE kumiko_users;
-    CREATE DATABASE kumiko_ws;
-    CREATE DATABASE kumiko_ah;
-    CREATE DATABASE kumiko_quests;
-    ```
-
-5. For some parts of Kumiko to work (most notably the Genshin Wish Sim (GWS) system), you'll need to upload some parts of the pre-made data to the PostgreSQL server. To do this, you'll need to run this command to do so:
-
-    ```sh
-    psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
-    ```
-
-    For Dockerized PostgreSQL servers, run this command instead:
-
-    ```sh
-    sudo docker exec -i postgres_docker_container psql -U Kumiko -d kumiko_ws < ./WS-Data/ws_data.sql
-    ```
-
-6. Once you have everything set, it's finally time to run it. Use this command to run it (replace the image name with the one you pulled from Docker Hub or GHCR):
-
-7. Now it's time to run Kumiko. Just run this command to run the bot:
+5. Now it's time to run Kumiko. Just run this command to run the bot:
 
     ```bash
     sudo docker run -d --restart=always --env-file=.env --name Kumiko no767/kumiko:latest
@@ -103,30 +79,15 @@ Kumiko builds to 2 different Docker Registries: GHCR (GitHub Container Registry)
 > **Note**
 > On windows, you don't need to run it with the `sudo` command. 
 
-8. Invite your bot into your server of choice, and have fun!
+6. Invite your bot into your server of choice, and have fun!
 
-9. (Optional) Check the logs of the container to make sure that nothing went wrong.
+7. (Optional) Check the logs of the container to make sure that nothing went wrong.
 ### Docker Compose
 
-1. Download the `.env` file and `docker-compose.yml` file
-
-    curl:
-    ```bash
-    curl -o .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
-    && curl -o docker-compose.yml https://raw.githubusercontent.com/No767/Kumiko/dev/docker-compose-example.yml
-    ```
-
-    wget: 
+1. Download the `.env` file and `docker-compose.yml` file via the `setup.sh` script
 
     ```bash
-    wget -O .env https://raw.githubusercontent.com/No767/Kumiko/dev/.env-docker-example \
-    && wget -O docker-compose.yml https://raw.githubusercontent.com/No767/Kumiko/dev/docker-compose-example.yml
-    ```
-
-    Alternatively, you can also use the `setup.sh` script to help with that.
-
-    ```bash
-    curl -s https://raw.githubusercontent.com/No767/Kumiko/dev/setup.sh | sh
+    curl -s https://raw.githubusercontent.com/No767/Kumiko/dev/scripts/setup.sh | sh
     ```
 
 2. Obtain the API keys, access tokens, discord bot token, and database credentials for Kumiko. Open up the `.env` file with an editor like Vim and add the needed values. Refer to the list of API keys and tokens below.

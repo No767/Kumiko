@@ -14,13 +14,13 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose fork of [Rin](https://github.com/No767/Rin) built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, and soon a web dashboard (pinned for v2.0). Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that all of Rin's 15+ services are directly integrated into Kumiko.
+Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, and soon a web dashboard (pinned for v2.0). Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that all of Rin's 20 services are directly integrated into Kumiko.
 
 ## Rin (リン)
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
 or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
-hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. On top on that, Rin is powered by the fatest JSON parser in the world, SIMDJSON. For more info, please check out the [Docs](https://docs.rinbot.live/).
+hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. On top on that, Rin is powered by the fastest JSON parser in the world, SIMDJSON. For more info, please check out the [Docs](https://docs.rinbot.live/).
 
 **For the future of Rin, please see this [gist](https://gist.github.com/No767/de27c61dc471ac331a45ea7c2bda62c0).**
 
@@ -34,10 +34,13 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
     - Custom quests
 - Genshin-Based Wish Sim (GWS)
 - Basic Administration Commands (unfinished)
+- All of the services from upstream Rin
+
+And some ones that are planned:
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
-- All of the services from upstream Rin
+
 ## Rin's Supported Services
 
 Kumiko comes with integration from 15+ services. Some of these services that are fully supported and integrated include:
@@ -70,6 +73,7 @@ If you would like to support me with projects like this, please consider starrin
 
 If you would like to get started, here are some links to help you with that:
 
+- [Getting Started Guide](./Community/getting-started-guide.md.md)
 - [Getting Started (For Developers)](./Community/getting-started.md)
 - [Contributing](./Community/contributing.md)
 - [Documentation](https://docs.kumiko-bot.tech/)
