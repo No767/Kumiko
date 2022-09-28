@@ -73,7 +73,7 @@ If you would like to support me with projects like this, please consider starrin
 
 If you would like to get started, here are some links to help you with that:
 
-- [Getting Started Guide](./Community/getting-started-guide.md.md)
+- [Getting Started Guide](./Community/getting-started-guide.md)
 - [Getting Started (For Developers)](./Community/getting-started.md)
 - [Contributing](./Community/contributing.md)
 - [Documentation](https://docs.kumiko-bot.tech/)
