@@ -141,6 +141,7 @@ class AdminCommands(commands.Cog):
             str, "The reason why the timeout should be removed", required=False
         ),
     ):
+        """Removes the timeout from the user"""
         try:
             await user.remove_timeout(reason=reason)
             await ctx.respond(
