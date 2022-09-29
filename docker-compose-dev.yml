@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: Kumiko-Postgres-Dev
+    image: no767/kumiko-postgres:edge
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  rabbitmq:
+    container_name: Kumiko-RabbitMQ-Dev
+    image: rabbitmq:3-management
+    hostname: kumiko_prod
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file:
+      - .env
+
+  mongodb:
+    container_name: Kumiko-MongoDB-Dev
+    image: mongo:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_volume:/data/db
+
+
+  redis:
+    container_name: Kumiko-Redis-Dev
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+
+volumes:
+  postgres_volume:
+  mongodb_volume:
+  redis_volume:
