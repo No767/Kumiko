@@ -42,6 +42,7 @@ COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
 COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
 COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
+COPY /Bot/admin_logs_utils /Kumiko/Bot/admin_logs_utils
 COPY /Debian-Docker/start.sh /Kumiko/start.sh
 COPY /Debian-Docker/wait-for /Kumiko/wait-for
 
