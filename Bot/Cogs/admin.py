@@ -47,13 +47,13 @@ class AdminCommands(commands.Cog):
         self,
         ctx,
         *,
-        user: Option(discord.Member, "The user to unban"),
+        user: Option(discord.User, "The user to unban"),
         reason: Option(str, "The reason for the unban"),
     ):
         """Un-bans the requested user"""
         # This basically doesn't work if the user has been already banned
         try:
-            await user.unban(reason=reason)
+            await ctx.guild.unban(reason=reason)
             await ctx.respond(f"Successfully unbanned {user.name}. Reason: {reason}")
         except Exception as e:
             await ctx.respond(
