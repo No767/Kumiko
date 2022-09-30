@@ -31,13 +31,8 @@ class AdminCommands(commands.Cog):
         reason: Option(str, "The reason for the ban"),
     ):
         """Bans the requested user"""
-        try:
-            await user.ban(delete_message_days=7, reason=reason)
-            await ctx.respond(f"Successfully banned {user.name}. Reason: {reason}")
-        except Exception as e:
-            await ctx.respond(
-                f"An error occured: {type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
-            )
+        await user.ban(delete_message_days=7, reason=reason)
+        await ctx.respond(f"Successfully banned {user.name}. Reason: {reason}")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -51,14 +46,8 @@ class AdminCommands(commands.Cog):
         reason: Option(str, "The reason for the unban"),
     ):
         """Un-bans the requested user"""
-        # This basically doesn't work if the user has been already banned
-        try:
-            await user.unban(reason=reason)
-            await ctx.respond(f"Successfully unbanned {user.name}. Reason: {reason}")
-        except Exception as e:
-            await ctx.respond(
-                f"An error occured: {type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
-            )
+        await ctx.guild.unban(user=user, reason=reason)
+        await ctx.respond(f"Successfully unbanned {user.name}. Reason: {reason}")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -72,13 +61,8 @@ class AdminCommands(commands.Cog):
         reason: Option(str, "The reason for why", required=False),
     ):
         """Kicks the requested user"""
-        try:
-            await user.kick(reason=reason)
-            await ctx.respond(f"Successfully kicked {user.name}. Reason: {reason}")
-        except Exception as e:
-            await ctx.respond(
-                f"An error occured: {type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
-            )
+        await user.kick(reason=reason)
+        await ctx.respond(f"Successfully kicked {user.name}. Reason: {reason}")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -158,17 +142,44 @@ class AdminCommands(commands.Cog):
         self, ctx: discord.ApplicationContext, error: discord.DiscordException
     ):
         if isinstance(error, commands.MissingPermissions):
+            missingPerms = (
+                str(error.missing_permissions)
+                .replace("[", "")
+                .replace("]", "")
+                .replace("'", "")
+            )
             await ctx.respond(
                 embed=discord.Embed(
-                    description=f"You are missing the following permissions: {error.missing_permissions}"
+                    description=f"You are missing the following permissions: {missingPerms}"
                 )
             )
         elif isinstance(error, commands.BotMissingPermissions):
+            missingPerms = (
+                str(error.missing_permissions)
+                .replace("[", "")
+                .replace("]", "")
+                .replace("'", "")
+            )
             await ctx.respond(
                 embed=discord.Embed(
-                    description=f"You are missing the following permissions: {error.missing_permissions}"
+                    description=f"Kumiko is missing the following permissions: {missingPerms}"
                 )
             )
+        elif isinstance(error, discord.ApplicationCommandInvokeError):
+            if isinstance(error, ParserError):
+                await ctx.respond(
+                    "It seems like you probably have inputted the incorrect format for the datetime. Some examples of this include: `August 5, 2022 12:00`, `3-4-2022 13:30`, `2022-08-03 12:00 pm`"
+                )
+            else:
+                errorEmbed = discord.Embed(
+                    title="An error has occured",
+                    color=discord.Color.from_rgb(255, 41, 41),
+                )
+                errorEmbedHeader = "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!"
+                errorEmbed.description = (
+                    f"{errorEmbedHeader}\n\n**Error:** `{error.original}`"
+                )
+                await ctx.respond(embed=errorEmbed)
 
 
 def setup(bot):

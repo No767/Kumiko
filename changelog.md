@@ -49,6 +49,7 @@ And some backend changes w/ Docker support:
 - Improved Docker Compose setup (literally just download some stuff, set up the env file, and run)
 - Append `eco` to all economy commands
 - Unload RabbitMQ consumer for Kumiko
+- Provide a general exception embed for admin commands
 
 
 ## ✨ Additions
@@ -74,6 +75,7 @@ And some backend changes w/ Docker support:
 - `setup.sh` and `standalone-setup.sh` for both Docker Compose setups and standalone setups
 - `wait-for` script within Docker Compose (to wait until PostgreSQL and RabbitMQ start accepting connections)
 - Custom PostgreSQL docker image for Docker Compose
+- Admin Logs
 
 ## ➖ Removals
 
