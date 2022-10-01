@@ -149,6 +149,13 @@ else
     exit 1;
 fi
 
+if [[ -v POSTGRES_AL_DB ]]; then
+    echo "Postgres_Admin_Logs_Database=${POSTGRES_AL_DB}" >> /Kumiko/Bot/.env
+else
+    echo "Missing Postgres_Admin_Logs_Database env var! Postgres_Admin_Logs_Database environment variable is not set."
+    exit 1;
+fi
+
 if [[ -v MONGODB_PASSWORD ]]; then
     echo "MongoDB_Password_Dev=${MONGODB_PASSWORD}" >> /Kumiko/Bot/.env
 else
