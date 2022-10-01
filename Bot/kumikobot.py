@@ -29,14 +29,24 @@ cogsPath = os.path.join(str(path), "Cogs")
 
 cogsList = os.listdir(cogsPath)
 
-for cogItem in cogsList:
-    if cogItem.endswith(".py"):
-        bot.load_extension(f"Cogs.{cogItem[:-3]}", store=False)
-    elif not cogItem.endswith(".py") and cogItem not in ["__pycache__"]:
-        subCogsList = os.listdir(os.path.join(cogsPath, cogItem))
-        for subItem in subCogsList:
-            if subItem not in ["config", "__pycache__"]:
-                bot.load_extension(f"Cogs.{cogItem}.{subItem[:-3]}", store=False)
+for cogDir in cogsList:
+    if cogDir not in ["__pycache__"]:
+        subCogsList = os.listdir(os.path.join(cogsPath, cogDir))
+        for subCogDir in subCogsList:
+            if subCogDir not in [
+                "__pycache__",
+            ] and not subCogDir.endswith(".py"):
+                for lastCog in os.listdir(os.path.join(cogsPath, cogDir, subCogDir)):
+                    if lastCog not in ["__pycache__", "config"]:
+                        logging.debug(
+                            f"Loaded Cog: Cogs.{cogDir}.{subCogDir}.{lastCog[:-3]}"
+                        )
+                        bot.load_extension(
+                            f"Cogs.{cogDir}.{subCogDir}.{lastCog[:-3]}", store=False
+                        )
+            elif subCogDir.endswith(".py"):
+                logging.debug(f"Loaded Cog: Cogs.{cogDir}.{subCogDir[:-3]}")
+                bot.load_extension(f"Cogs.{cogDir}.{subCogDir[:-3]}", store=False)
 
 # Adds in the bot presence
 @bot.event
