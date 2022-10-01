@@ -1,15 +1,29 @@
 import asyncio
 import datetime
+import os
 import traceback
+import uuid
 
 import discord
 import uvloop
+from admin_logs_utils import KumikoAdminLogsUtils
 from dateutil import parser
 from dateutil.parser import ParserError
 from discord.commands import Option, SlashCommandGroup
-from discord.ext import commands
+from discord.ext import commands, pages
+from dotenv import load_dotenv
 from pytimeparse.timeparse import timeparse
 
+load_dotenv()
+
+POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
+POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
+POSTGRES_PORT = os.getenv("Postgres_Port_Dev")
+POSTGRES_AL_DATABASE = os.getenv("Postgres_Admin_Logs_Database")
+AL_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_AL_DATABASE}"
+
+alUtils = KumikoAdminLogsUtils(AL_CONNECTION_URI)
 
 # TODO: Replace the exceptions with meaningful ones
 class AdminCommands(commands.Cog):
@@ -19,6 +33,9 @@ class AdminCommands(commands.Cog):
     admin = SlashCommandGroup("admin", "Admin commands", guild_ids=[970159505390325842])
     adminTimeout = admin.create_subgroup(
         "timeout", "Timeouts commands", guild_ids=[970159505390325842]
+    )
+    adminLogs = admin.create_subgroup(
+        "logs", "Access admin logs", guild_ids=[970159505390325842]
     )
 
     @admin.command(name="ban")
@@ -61,6 +78,17 @@ class AdminCommands(commands.Cog):
         reason: Option(str, "The reason for why", required=False),
     ):
         """Kicks the requested user"""
+        await alUtils.addALRow(
+            uuid=str(uuid.uuid4()),
+            guild_id=ctx.guild.id,
+            action_user_id=ctx.author.id,
+            user_affected_id=user.id,
+            type_of_action="kick",
+            reason=reason,
+            date_issued=datetime.datetime.utcnow().isoformat(),
+            duration=0,
+            resolved=False,
+        )
         await user.kick(reason=reason)
         await ctx.respond(f"Successfully kicked {user.name}. Reason: {reason}")
 
@@ -136,6 +164,58 @@ class AdminCommands(commands.Cog):
             await ctx.respond(
                 f"An error occured: {type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
             )
+
+    @adminLogs.command(name="view")
+    @commands.has_permissions(moderate_members=True)
+    async def viewLogs(
+        self,
+        ctx,
+        *,
+        type_of_action: Option(
+            str,
+            "The type of action to look up",
+            choices=["Ban", "Unban", "Timeout", "Kick"],
+        ),
+    ):
+        typeOfAction = type_of_action.lower()
+        res = await alUtils.selAction(
+            type_of_action=typeOfAction, guild_id=ctx.guild.id
+        )
+        mainPages = pages.Paginator(
+            pages=[
+                discord.Embed(description=dict(mainItems)["reason"])
+                .add_field(
+                    name="Issuer",
+                    value=await self.bot.get_or_fetch_user(
+                        dict(mainItems)["action_user_id"]
+                    ),
+                    inline=True,
+                )
+                .add_field(
+                    name="Affected User",
+                    value=await self.bot.get_or_fetch_user(
+                        dict(mainItems)["user_affected_id"]
+                    ),
+                    inline=True,
+                )
+                .add_field(
+                    name="Date Issued",
+                    value=parser.isoparse(dict(mainItems)["date_issued"]).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),
+                    inline=True,
+                )
+                .add_field(
+                    name="Duration", value=dict(mainItems)["duration"], inline=True
+                )
+                .add_field(
+                    name="Resolved", value=dict(mainItems)["resolved"], inline=True
+                )
+                for mainItems in res
+            ],
+            loop_pages=True,
+        )
+        await mainPages.respond(ctx.interaction, ephemeral=False)
 
     @commands.Cog.listener()
     async def on_application_command_error(
