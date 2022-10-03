@@ -19,7 +19,7 @@ load_dotenv()
 githubAPIKey = os.getenv("GitHub_API_Access_Token")
 
 
-class GitHubV1(commands.Cog):
+class GitHub(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -774,4 +774,4 @@ class GitHubV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(GitHubV1(bot))
+    bot.add_cog(GitHub(bot))

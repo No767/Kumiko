@@ -50,6 +50,8 @@ And some backend changes w/ Docker support:
 - Append `eco` to all economy commands
 - Unload RabbitMQ consumer for Kumiko
 - Provide a general exception embed for admin commands
+- Completely redid Help command
+- Organize Cogs into different directories determined by if the cogs came from Rin or Kumiko
 
 
 ## ✨ Additions
@@ -76,6 +78,7 @@ And some backend changes w/ Docker support:
 - `wait-for` script within Docker Compose (to wait until PostgreSQL and RabbitMQ start accepting connections)
 - Custom PostgreSQL docker image for Docker Compose
 - Admin Logs
+- New Help Command
 
 ## ➖ Removals
 
@@ -85,3 +88,7 @@ And some backend changes w/ Docker support:
 - QRCode Maker Cog
 - GWS Banner Commands
 - Arch + Ubuntu Dockerfile
+- `kumikoinfo.py` Cog
+- `kumikoping.py` Cog
+- `kumiko-platform.py` Cog
+- Unload `advice.py`, `blue-alliance.py`, `discord-bots.py`, `first-frc-events.py`, `hypixel.py`, `spiget.py`, `top-gg.py`, and `twitch.py` Cogs (this is due to the new help system only allowing up to 25 options, and therefore only 25 categories can be shown)

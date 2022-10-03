@@ -83,7 +83,7 @@ class PurgeAllView(discord.ui.View):
         )
 
 
-class ecoMarketplace(commands.Cog):
+class Marketplace(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -519,4 +519,4 @@ class ecoMarketplace(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ecoMarketplace(bot))
+    bot.add_cog(Marketplace(bot))

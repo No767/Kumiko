@@ -70,7 +70,7 @@ class PurgeView(discord.ui.View):
         )
 
 
-class KumikoGWSBanners(commands.Cog):
+class GWS(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -366,4 +366,4 @@ class KumikoGWSBanners(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(KumikoGWSBanners(bot))
+    bot.add_cog(GWS(bot))

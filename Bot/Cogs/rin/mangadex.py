@@ -21,7 +21,7 @@ class List(list):
         return super().__getitem__(id - 1)
 
 
-class MangaDexV1(commands.Cog):
+class MangaDex(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -515,4 +515,4 @@ class MangaDexV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(MangaDexV1(bot))
+    bot.add_cog(MangaDex(bot))

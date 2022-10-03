@@ -9,7 +9,7 @@ from gql.transport.aiohttp import AIOHTTPTransport
 from rin_exceptions import NoItemsError
 
 
-class AniListV1(commands.Cog):
+class AniList(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -698,4 +698,4 @@ class AniListV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(AniListV1(bot))
+    bot.add_cog(AniList(bot))

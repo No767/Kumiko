@@ -19,7 +19,7 @@ YouTube_API_Key = os.getenv("YouTube_API_Key")
 jsonParser = simdjson.Parser()
 
 
-class YoutubeV1(commands.Cog):
+class YouTube(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -361,4 +361,4 @@ class YoutubeV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(YoutubeV1(bot))
+    bot.add_cog(YouTube(bot))

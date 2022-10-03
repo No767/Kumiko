@@ -18,7 +18,7 @@ apiKey = os.getenv("Blue_Alliance_API_Key")
 parser = simdjson.Parser()
 
 
-class BlueAllianceV1(commands.Cog):
+class BlueAlliance(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -346,4 +346,4 @@ class BlueAllianceV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(BlueAllianceV1(bot))
+    bot.add_cog(BlueAlliance(bot))

@@ -26,7 +26,7 @@ AL_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWOR
 alUtils = KumikoAdminLogsUtils(AL_CONNECTION_URI)
 
 # TODO: Replace the exceptions with meaningful ones
-class AdminCommands(commands.Cog):
+class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -177,6 +177,7 @@ class AdminCommands(commands.Cog):
             choices=["Ban", "Unban", "Timeout", "Kick"],
         ),
     ):
+        """Allows admins to view admin logs"""
         typeOfAction = type_of_action.lower()
         res = await alUtils.selAction(
             type_of_action=typeOfAction, guild_id=ctx.guild.id
@@ -217,50 +218,6 @@ class AdminCommands(commands.Cog):
         )
         await mainPages.respond(ctx.interaction, ephemeral=False)
 
-    @commands.Cog.listener()
-    async def on_application_command_error(
-        self, ctx: discord.ApplicationContext, error: discord.DiscordException
-    ):
-        if isinstance(error, commands.MissingPermissions):
-            missingPerms = (
-                str(error.missing_permissions)
-                .replace("[", "")
-                .replace("]", "")
-                .replace("'", "")
-            )
-            await ctx.respond(
-                embed=discord.Embed(
-                    description=f"You are missing the following permissions: {missingPerms}"
-                )
-            )
-        elif isinstance(error, commands.BotMissingPermissions):
-            missingPerms = (
-                str(error.missing_permissions)
-                .replace("[", "")
-                .replace("]", "")
-                .replace("'", "")
-            )
-            await ctx.respond(
-                embed=discord.Embed(
-                    description=f"Kumiko is missing the following permissions: {missingPerms}"
-                )
-            )
-        elif isinstance(error, discord.ApplicationCommandInvokeError):
-            if isinstance(error, ParserError):
-                await ctx.respond(
-                    "It seems like you probably have inputted the incorrect format for the datetime. Some examples of this include: `August 5, 2022 12:00`, `3-4-2022 13:30`, `2022-08-03 12:00 pm`"
-                )
-            else:
-                errorEmbed = discord.Embed(
-                    title="An error has occured",
-                    color=discord.Color.from_rgb(255, 41, 41),
-                )
-                errorEmbedHeader = "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!"
-                errorEmbed.description = (
-                    f"{errorEmbedHeader}\n\n**Error:** `{error.original}`"
-                )
-                await ctx.respond(embed=errorEmbed)
-
 
 def setup(bot):
-    bot.add_cog(AdminCommands(bot))
+    bot.add_cog(Admin(bot))

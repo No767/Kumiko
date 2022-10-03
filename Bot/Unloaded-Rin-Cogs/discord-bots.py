@@ -17,7 +17,7 @@ apiKey = os.getenv("Discord_Bots_API_Key")
 jsonParser = simdjson.Parser()
 
 
-class DiscordBots(commands.Cog):
+class DBots(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -111,4 +111,4 @@ class DiscordBots(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(DiscordBots(bot))
+    bot.add_cog(DBots(bot))

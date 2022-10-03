@@ -18,7 +18,7 @@ Bearer_Token = os.getenv("Twitter_Bearer_Token")
 jsonParser = simdjson.Parser()
 
 
-class TwitterV1(commands.Cog):
+class Twitter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -229,4 +229,4 @@ class TwitterV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(TwitterV1(bot))
+    bot.add_cog(Twitter(bot))

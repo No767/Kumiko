@@ -11,7 +11,7 @@ from discord.ext import commands
 parser = simdjson.Parser()
 
 
-class advice_slip(commands.Cog):
+class AdviceSlip(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -41,4 +41,4 @@ class advice_slip(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(advice_slip(bot))
+    bot.add_cog(AdviceSlip(bot))

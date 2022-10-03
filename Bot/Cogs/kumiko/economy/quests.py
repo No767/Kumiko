@@ -87,7 +87,7 @@ class DeleteAllView(discord.ui.View):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-class ServerQuests(commands.Cog):
+class EcoQuests(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -776,4 +776,4 @@ class ServerQuests(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ServerQuests(bot))
+    bot.add_cog(EcoQuests(bot))

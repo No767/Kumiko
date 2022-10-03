@@ -12,7 +12,7 @@ from rin_exceptions import NotFoundHTTPException
 parser = simdjson.Parser()
 
 
-class MCSrvStatsV1(commands.Cog):
+class Minecraft(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -90,4 +90,4 @@ class MCSrvStatsV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(MCSrvStatsV1(bot))
+    bot.add_cog(Minecraft(bot))

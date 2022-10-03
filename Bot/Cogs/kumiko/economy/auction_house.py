@@ -91,7 +91,7 @@ class View(discord.ui.View):
         await interaction.response.send_message("Well glad you choose not to...")
 
 
-class AuctionHouseV1(commands.Cog):
+class AuctionHouse(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -398,4 +398,4 @@ class AuctionHouseV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(AuctionHouseV1(bot))
+    bot.add_cog(AuctionHouse(bot))

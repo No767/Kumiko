@@ -5,12 +5,17 @@ from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
 
 
-class GeneralInfo(commands.Cog):
+class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     info = SlashCommandGroup(
         "info", "Gets the information needed of the bot", guild_ids=[970159505390325842]
+    )
+    avatar = info.create_subgroup(
+        "avatar",
+        "Commands for getting discord user avatars",
+        guild_ids=[970159505390325842],
     )
 
     @info.command(name="user")
@@ -77,6 +82,24 @@ class GeneralInfo(commands.Cog):
                 f"An error occured: {type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
             )
 
+    @avatar.command(name="user")
+    async def avatarGetUser(
+        self, ctx, *, user: Option(discord.Member, "The username you wish to get")
+    ):
+        """Obtains the given user's avatar"""
+        try:
+            embed = discord.Embed()
+            embed.title = f"{user.display_name}#{user.discriminator}'s avatar"
+            embed.set_image(url=user.display_avatar.url)
+            await ctx.respond(embed=embed)
+        except Exception as e:
+            await ctx.respond(
+                embed=discord.Embed(
+                    title="Oops, an error occurred!",
+                    description=f"{type(e).__name__}: {str(e)}",
+                )
+            )
+
 
 def setup(bot):
-    bot.add_cog(GeneralInfo(bot))
+    bot.add_cog(Info(bot))

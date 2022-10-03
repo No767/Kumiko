@@ -82,7 +82,7 @@ class PurgeView(discord.ui.View):
         await interaction.response.send_message("Welp, you choose not to ig...")
 
 
-class ecoUsers(commands.Cog):
+class EcoUsers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -244,4 +244,4 @@ class ecoUsers(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ecoUsers(bot))
+    bot.add_cog(EcoUsers(bot))

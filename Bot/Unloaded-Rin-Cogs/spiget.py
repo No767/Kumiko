@@ -13,7 +13,7 @@ from rin_exceptions import NoItemsError
 parser = simdjson.Parser()
 
 
-class SpigetV1(commands.Cog):
+class Spigot(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -97,4 +97,4 @@ class SpigetV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(SpigetV1(bot))
+    bot.add_cog(Spigot(bot))

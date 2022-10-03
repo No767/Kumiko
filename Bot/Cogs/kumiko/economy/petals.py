@@ -27,7 +27,7 @@ USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASS
 utilsUser = KumikoEcoUserUtils()
 
 
-class PetalEarnV1(commands.Cog):
+class Petals(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -129,4 +129,4 @@ class PetalEarnV1(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(PetalEarnV1(bot))
+    bot.add_cog(Petals(bot))
