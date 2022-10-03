@@ -16,7 +16,6 @@ lxml = "^4.9.1"
 asyncpraw = "^7.5.0"
 asyncpg = "^0.26.0"
 uvloop = "^0.17.0"
-qrcode = { extras = ["pil"], version = "^7.3.1" }
 cchardet = "^2.1.7"
 beautifulsoup4 = "^4.11.1"
 pysimdjson = "^5.0.2"

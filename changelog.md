@@ -11,6 +11,7 @@ A ton of new features, including:
 - Genshin-based Wish Sim (GWS)
 - Kumiko's Auction House
 - Basic Admin Commands
+- Admin Logs System
 
 And some backend changes w/ Docker support:
 
@@ -92,3 +93,4 @@ And some backend changes w/ Docker support:
 - `kumikoping.py` Cog
 - `kumiko-platform.py` Cog
 - Unload `advice.py`, `blue-alliance.py`, `discord-bots.py`, `first-frc-events.py`, `hypixel.py`, `spiget.py`, `top-gg.py`, and `twitch.py` Cogs (this is due to the new help system only allowing up to 25 options, and therefore only 25 categories can be shown)
+- Remove `BLUE_ALLIANCE_API_KEY`, `DISCORD_BOTS_API_KEY`, `FIRST_EVENTS_FINAL_KEY`, `HYPIXEL_API_KEY`,  `TOP_GG_API_KEY`, `TWITCH_API_ACCESS_TOKEN`, `TWITCH_API_CLIENT_ID` env vars from `start.sh` and `.env-docker-example`
