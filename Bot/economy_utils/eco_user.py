@@ -1,39 +1,12 @@
 import asyncio
-import os
 
 import uvloop
-from dotenv import load_dotenv
-from sqlalchemy import (BigInteger, Column, Integer, String, delete, select,
-                        update)
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
-
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_DATABASE = os.getenv("Postgres_Database_Dev")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-
-Base = declarative_base()
-
-
-class KumikoEcoUser(Base):
-    __tablename__ = "users"
-
-    user_id = Column(BigInteger, primary_key=True)
-    lavender_petals = Column(Integer)
-    rank = Column(Integer)
-    date_joined = Column(String)
-
-    def __iter__(self):
-        yield "user_id", self.user_id
-        yield "lavender_petals", self.lavender_petals
-        yield "rank", self.rank
-        yield "date_joined", self.date_joined
-
-    def __repr__(self):
-        return f"KumikoEcoUser(user_id={self.user_id}, lavender_petals={self.lavender_petals}, rank={self.rank}, date_joined={self.date_joined})"
+from . import models
+from .db_base import Base
 
 
 class KumikoEcoUserUtils:
@@ -69,12 +42,14 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selItem = select(KumikoEcoUser).filter(KumikoEcoUser.user_id == user_id)
+                selItem = select(models.KumikoEcoUser).filter(
+                    models.KumikoEcoUser.user_id == user_id
+                )
                 results = await session.execute(selItem)
                 resFetchedOne = results.one()
                 fullResults = [row for row in resFetchedOne]
                 if len(fullResults) == 0:
-                    insertData = KumikoEcoUser(
+                    insertData = models.KumikoEcoUser(
                         user_id=user_id,
                         lavender_petals=0,
                         rank=0,
@@ -103,7 +78,7 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                insertData = KumikoEcoUser(
+                insertData = models.KumikoEcoUser(
                     user_id=user_id,
                     lavender_petals=lavender_petals,
                     rank=rank,
@@ -127,8 +102,8 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectUser = select(KumikoEcoUser).filter(
-                    KumikoEcoUser.user_id == user_id
+                selectUser = select(models.KumikoEcoUser).filter(
+                    models.KumikoEcoUser.user_id == user_id
                 )
                 res = await session.execute(selectUser)
                 return [row for row in res.scalars()]
@@ -148,8 +123,8 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectUser = select(KumikoEcoUser).filter(
-                    KumikoEcoUser.user_id == user_id
+                selectUser = select(models.KumikoEcoUser).filter(
+                    models.KumikoEcoUser.user_id == user_id
                 )
                 itemSelected = await session.scalars(selectUser)
                 itemSelectedFirst = itemSelected.first()
@@ -170,8 +145,8 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectUser = select(KumikoEcoUser.rank).filter(
-                    KumikoEcoUser.user_id == user_id
+                selectUser = select(models.KumikoEcoUser.rank).filter(
+                    models.KumikoEcoUser.user_id == user_id
                 )
                 res = await session.execute(selectUser)
                 return [row for row in res.scalars()]
@@ -191,8 +166,8 @@ class KumikoEcoUserUtils:
         async with async_session() as session:
             async with session.begin():
                 updateUser = update(
-                    KumikoEcoUser, values={KumikoEcoUser.rank: rank}
-                ).filter(KumikoEcoUser.user_id == user_id)
+                    models.KumikoEcoUser, values={models.KumikoEcoUser.rank: rank}
+                ).filter(models.KumikoEcoUser.user_id == user_id)
                 await session.execute(updateUser)
                 await session.commit()
 
@@ -215,9 +190,9 @@ class KumikoEcoUserUtils:
         async with async_session() as session:
             async with session.begin():
                 updateUser = update(
-                    KumikoEcoUser,
-                    values={KumikoEcoUser.lavender_petals: lavender_petals},
-                ).filter(KumikoEcoUser.user_id == user_id)
+                    models.KumikoEcoUser,
+                    values={models.KumikoEcoUser.lavender_petals: lavender_petals},
+                ).filter(models.KumikoEcoUser.user_id == user_id)
                 await session.execute(updateUser)
                 await session.commit()
 
@@ -236,8 +211,8 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                deleteUser = delete(KumikoEcoUser).filter(
-                    KumikoEcoUser.user_id == user_id
+                deleteUser = delete(models.KumikoEcoUser).filter(
+                    models.KumikoEcoUser.user_id == user_id
                 )
                 await session.execute(deleteUser)
                 await session.commit()

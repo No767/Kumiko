@@ -1,38 +1,12 @@
 import asyncio
 
 import uvloop
-from sqlalchemy import (BigInteger, Column, Integer, String, Text, select,
-                        update)
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
-Base = declarative_base()
-
-
-class UserInv(Base):
-    __tablename__ = "user_inv"
-
-    user_uuid = Column(String, primary_key=True)
-    user_id = Column(
-        BigInteger,
-    )
-    date_acquired = Column(String)
-    uuid = Column(String)
-    name = Column(String)
-    description = Column(Text)
-    amount = Column(Integer)
-
-    def __iter__(self):
-        yield "user_uuid", self.user_uuid
-        yield "user_id", self.user_id
-        yield "date_acquired", self.date_acquired
-        yield "uuid", self.uuid
-        yield "name", self.name
-        yield "description", self.description
-        yield "amount", self.amount
-
-    def __repr__(self):
-        return f"UserInv(user_uuid={self.user_uuid!r}, user_id={self.user_id!r}, date_acquired={self.date_acquired!r}, uuid={self.uuid!r}, name={self.name!r}, description={self.description!r}, amount={self.amount!r})"
+from . import models
+from .db_base import Base
 
 
 class KumikoUserInvUtils:
@@ -80,7 +54,7 @@ class KumikoUserInvUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                insertUserInv = UserInv(
+                insertUserInv = models.UserInv(
                     user_uuid=user_uuid,
                     user_id=user_id,
                     date_acquired=date_acquired,
@@ -112,9 +86,9 @@ class KumikoUserInvUtils:
         async with async_session() as session:
             async with session.begin():
                 updateItem = (
-                    update(UserInv, values={UserInv.amount: amount})
-                    .filter(UserInv.uuid == uuid)
-                    .filter(UserInv.user_id == user_id)
+                    update(models.UserInv, values={models.UserInv.amount: amount})
+                    .filter(models.UserInv.uuid == uuid)
+                    .filter(models.UserInv.user_id == user_id)
                 )
                 await session.execute(updateItem)
                 await session.commit()
@@ -138,7 +112,9 @@ class KumikoUserInvUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectUser = select(UserInv).filter(UserInv.user_id == user_id)
+                selectUser = select(models.UserInv).filter(
+                    models.UserInv.user_id == user_id
+                )
                 selectUserRes = await session.execute(selectUser)
                 return [
                     row for row in selectUserRes.scalars() if dict(row)["uuid"] == uuid
@@ -162,7 +138,9 @@ class KumikoUserInvUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectUser = select(UserInv).filter(UserInv.user_id == user_id)
+                selectUser = select(models.UserInv).filter(
+                    models.UserInv.user_id == user_id
+                )
                 res = await session.execute(selectUser)
                 return [row for row in res.scalars()]
 

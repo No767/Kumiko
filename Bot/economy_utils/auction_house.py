@@ -1,46 +1,13 @@
 import asyncio
-import os
 
 import asyncio_redis
 import uvloop
-from dotenv import load_dotenv
-from sqlalchemy import (BigInteger, Boolean, Column, String, Text, delete,
-                        select, update)
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
-
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-POSTGRES_DATABASE = os.getenv("Postgres_Database_AH_Dev")
-
-Base = declarative_base()
-
-
-class AuctionHouseItem(Base):
-    __tablename__ = "auction_house_items"
-
-    uuid = Column(String, primary_key=True)
-    user_id = Column(BigInteger)
-    name = Column(String)
-    description = Column(Text)
-    date_added = Column(String)
-    price = Column(BigInteger)
-    passed = Column(Boolean)
-
-    def __iter__(self):
-        yield "uuid", self.uuid
-        yield "user_id", self.user_id
-        yield "name", self.name
-        yield "description", self.description
-        yield "date_added", self.date_added
-        yield "price", self.price
-        yield "passed", self.passed
-
-    def __repr__(self):
-        return f"AuctionHouseItem(uuid={self.uuid!r}, user_id={self.user_id!r}, name={self.name!r}, description={self.description!r}, date_added={self.date_added!r}, price={self.price!r}, passed={self.passed!r})"
+from . import models
+from .db_base import Base
 
 
 class KumikoAuctionHouseUtils:
@@ -156,7 +123,7 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                auctionHouseItem = AuctionHouseItem(
+                auctionHouseItem = models.AuctionHouseItem(
                     uuid=uuid,
                     user_id=user_id,
                     name=name,
@@ -186,8 +153,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(AuctionHouseItem).filter(
-                    AuctionHouseItem.user_id == user_id
+                selectItem = select(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.user_id == user_id
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
@@ -212,8 +179,9 @@ class KumikoAuctionHouseUtils:
         async with async_session() as session:
             async with session.begin():
                 updateItem = update(
-                    AuctionHouseItem, values={AuctionHouseItem.price: price}
-                ).filter(AuctionHouseItem.uuid == uuid)
+                    models.AuctionHouseItem,
+                    values={models.AuctionHouseItem.price: price},
+                ).filter(models.AuctionHouseItem.uuid == uuid)
                 await session.execute(updateItem)
                 await session.commit()
 
@@ -235,7 +203,9 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                delItem = delete(AuctionHouseItem).filter(AuctionHouseItem.uuid == uuid)
+                delItem = delete(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.uuid == uuid
+                )
                 await session.execute(delItem)
                 await session.commit()
 
@@ -255,8 +225,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(AuctionHouseItem.uuid).filter(
-                    AuctionHouseItem.name == name
+                selectItem = select(models.AuctionHouseItem.uuid).filter(
+                    models.AuctionHouseItem.name == name
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
@@ -277,8 +247,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(AuctionHouseItem.price).filter(
-                    AuctionHouseItem.uuid == uuid
+                selectItem = select(models.AuctionHouseItem.price).filter(
+                    models.AuctionHouseItem.uuid == uuid
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
@@ -298,8 +268,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(AuctionHouseItem.uuid).filter(
-                    AuctionHouseItem.user_id == user_id
+                selectItem = select(models.AuctionHouseItem.uuid).filter(
+                    models.AuctionHouseItem.user_id == user_id
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
@@ -321,8 +291,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selItem = select(AuctionHouseItem).filter(
-                    AuctionHouseItem.passed == passed
+                selItem = select(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.passed == passed
                 )
                 res = await session.execute(selItem)
                 return [row for row in res.scalars()]
@@ -347,8 +317,9 @@ class KumikoAuctionHouseUtils:
         async with async_session() as session:
             async with session.begin():
                 updateItem = update(
-                    AuctionHouseItem, values={AuctionHouseItem.passed: passed}
-                ).filter(AuctionHouseItem.uuid == uuid)
+                    models.AuctionHouseItem,
+                    values={models.AuctionHouseItem.passed: passed},
+                ).filter(models.AuctionHouseItem.uuid == uuid)
                 await session.execute(updateItem)
                 await session.commit()
 
@@ -369,8 +340,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selItem = select(AuctionHouseItem).filter(
-                    AuctionHouseItem.passed == passed
+                selItem = select(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.passed == passed
                 )
                 res = await session.execute(selItem)
                 return [row for row in res.scalars()]
@@ -394,9 +365,9 @@ class KumikoAuctionHouseUtils:
         async with async_session() as session:
             async with session.begin():
                 selectOneDelete = (
-                    select(AuctionHouseItem)
-                    .filter(AuctionHouseItem.user_id == user_id)
-                    .filter(AuctionHouseItem.uuid == uuid)
+                    select(models.AuctionHouseItem)
+                    .filter(models.AuctionHouseItem.user_id == user_id)
+                    .filter(models.AuctionHouseItem.uuid == uuid)
                 )
                 itemSelected = await session.scalars(selectOneDelete)
                 itemSelectedOne = itemSelected.one()
@@ -419,8 +390,8 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selAllDel = delete(AuctionHouseItem).filter(
-                    AuctionHouseItem.user_id == user_id
+                selAllDel = delete(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.user_id == user_id
                 )
                 await session.execute(selAllDel)
                 await session.commit()
@@ -443,9 +414,9 @@ class KumikoAuctionHouseUtils:
         async with async_session() as session:
             async with session.begin():
                 selectItem = (
-                    select(AuctionHouseItem)
-                    .filter(AuctionHouseItem.name == name)
-                    .filter(AuctionHouseItem.user_id == user_id)
+                    select(models.AuctionHouseItem)
+                    .filter(models.AuctionHouseItem.name == name)
+                    .filter(models.AuctionHouseItem.user_id == user_id)
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
@@ -465,7 +436,7 @@ class KumikoAuctionHouseUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selItem = select(AuctionHouseItem.uuid)
+                selItem = select(models.AuctionHouseItem.uuid)
                 res = await session.execute(selItem)
                 return [row for row in res.scalars()]
 

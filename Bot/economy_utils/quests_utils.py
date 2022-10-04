@@ -2,42 +2,12 @@ import asyncio
 from typing import Union
 
 import uvloop
-from sqlalchemy import (BigInteger, Boolean, Column, String, Text, delete,
-                        select, update)
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
-Base = declarative_base()
-
-
-class KumikoQuests(Base):
-    __tablename__ = "kumiko_quests"
-
-    uuid = Column(String, primary_key=True)
-    creator = Column(BigInteger)
-    claimed_by = Column(BigInteger)
-    date_created = Column(String)
-    end_datetime = Column(String)
-    name = Column(String)
-    description = Column(Text)
-    reward = Column(BigInteger)
-    active = Column(Boolean)
-    claimed = Column(Boolean)
-
-    def __iter__(self):
-        yield "uuid", self.uuid
-        yield "creator", self.creator
-        yield "claimed_by", self.claimed_by
-        yield "date_created", self.date_created
-        yield "end_datetime", self.end_datetime
-        yield "name", self.name
-        yield "description", self.description
-        yield "reward", self.reward
-        yield "active", self.active
-        yield "claimed", self.claimed
-
-    def __repr__(self):
-        return f"KumikoQuests(uuid={self.uuid!r}, creator={self.creator!r}, claimed_by={self.claimed_by!r}, date_created={self.date_created!r}, end_datetime={self.end_datetime!r}, name={self.name!r}, description={self.description!r}, reward={self.reward!r}, active={self.active!r}, claimed={self.claimed!r})"
+from . import models
+from .db_base import Base
 
 
 class KumikoQuestsUtils:
@@ -91,7 +61,7 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                addItemQuests = KumikoQuests(
+                addItemQuests = models.KumikoQuests(
                     uuid=uuid,
                     creator=creator,
                     claimed_by=claimed_by,
@@ -124,7 +94,9 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(KumikoQuests).filter(KumikoQuests.active == active)
+                selectItem = select(models.KumikoQuests).filter(
+                    models.KumikoQuests.active == active
+                )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
 
@@ -146,7 +118,7 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(KumikoQuests)
+                selectItem = select(models.KumikoQuests)
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
 
@@ -170,12 +142,12 @@ class KumikoQuestsUtils:
         async with async_session() as session:
             async with session.begin():
                 updateItem = update(
-                    KumikoQuests,
+                    models.KumikoQuests,
                     values={
-                        KumikoQuests.end_datetime: new_end_datetime,
-                        KumikoQuests.reward: reward,
+                        models.KumikoQuests.end_datetime: new_end_datetime,
+                        models.KumikoQuests.reward: reward,
                     },
-                ).filter(KumikoQuests.uuid == uuid)
+                ).filter(models.KumikoQuests.uuid == uuid)
                 await session.execute(updateItem)
                 await session.commit()
 
@@ -197,7 +169,9 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                getQuest = select(KumikoQuests).filter(KumikoQuests.name == name)
+                getQuest = select(models.KumikoQuests).filter(
+                    models.KumikoQuests.name == name
+                )
                 res = await session.execute(getQuest)
                 return [row for row in res.scalars()]
 
@@ -220,9 +194,9 @@ class KumikoQuestsUtils:
         async with async_session() as session:
             async with session.begin():
                 getQuest = (
-                    select(KumikoQuests)
-                    .filter(KumikoQuests.creator == user_id)
-                    .filter(KumikoQuests.name == name)
+                    select(models.KumikoQuests)
+                    .filter(models.KumikoQuests.creator == user_id)
+                    .filter(models.KumikoQuests.name == name)
                 )
                 getQuestSelected = await session.scalars(getQuest)
                 getQuestSelectedOne = getQuestSelected.first()
@@ -243,9 +217,9 @@ class KumikoQuestsUtils:
         async with async_session() as session:
             async with session.begin():
                 selectOneDelete = (
-                    select(KumikoQuests)
-                    .filter(KumikoQuests.uuid == uuid)
-                    .filter(KumikoQuests.creator == user_id)
+                    select(models.KumikoQuests)
+                    .filter(models.KumikoQuests.uuid == uuid)
+                    .filter(models.KumikoQuests.creator == user_id)
                 )
                 itemSelected = await session.scalars(selectOneDelete)
                 itemSelectedOne = itemSelected.one()
@@ -268,8 +242,8 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                getQuest = select(KumikoQuests.uuid).filter(
-                    KumikoQuests.creator == user_id
+                getQuest = select(models.KumikoQuests.uuid).filter(
+                    models.KumikoQuests.creator == user_id
                 )
                 res = await session.execute(getQuest)
                 return [row for row in res.scalars()]
@@ -292,9 +266,9 @@ class KumikoQuestsUtils:
         async with async_session() as session:
             async with session.begin():
                 selectAllDelete = (
-                    delete(KumikoQuests)
-                    .filter(KumikoQuests.creator == user_id)
-                    .filter(KumikoQuests.uuid == uuid)
+                    delete(models.KumikoQuests)
+                    .filter(models.KumikoQuests.creator == user_id)
+                    .filter(models.KumikoQuests.uuid == uuid)
                 )
                 await session.execute(selectAllDelete)
                 await session.commit()
@@ -320,14 +294,14 @@ class KumikoQuestsUtils:
             async with session.begin():
                 updateQuestItem = (
                     update(
-                        KumikoQuests,
+                        models.KumikoQuests,
                         values={
-                            KumikoQuests.claimed_by: claimer_id,
-                            KumikoQuests.claimed: claimed,
+                            models.KumikoQuests.claimed_by: claimer_id,
+                            models.KumikoQuests.claimed: claimed,
                         },
                     )
-                    .filter(KumikoQuests.creator == user_id)
-                    .filter(KumikoQuests.uuid == uuid)
+                    .filter(models.KumikoQuests.creator == user_id)
+                    .filter(models.KumikoQuests.uuid == uuid)
                 )
                 await session.execute(updateQuestItem)
                 await session.commit()
@@ -347,7 +321,9 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                getQuest = select(KumikoQuests).filter(KumikoQuests.claimed == claimed)
+                getQuest = select(models.KumikoQuests).filter(
+                    models.KumikoQuests.claimed == claimed
+                )
                 res = await session.execute(getQuest)
                 return [row for row in res.scalars()]
 
@@ -369,7 +345,9 @@ class KumikoQuestsUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selectItem = select(KumikoQuests).filter(KumikoQuests.active == active)
+                selectItem = select(models.KumikoQuests).filter(
+                    models.KumikoQuests.active == active
+                )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
 
@@ -391,8 +369,8 @@ class KumikoQuestsUtils:
         async with async_session() as session:
             async with session.begin():
                 updateItem = update(
-                    KumikoQuests, values={KumikoQuests.active: active}
-                ).filter(KumikoQuests.uuid == uuid)
+                    models.KumikoQuests, values={models.KumikoQuests.active: active}
+                ).filter(models.KumikoQuests.uuid == uuid)
                 await session.execute(updateItem)
                 await session.commit()
 
