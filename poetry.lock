@@ -201,7 +201,7 @@ python-versions = ">=3.7,<4.0"
 
 [[package]]
 name = "beanie"
-version = "1.11.12"
+version = "1.12.0"
 description = "Asynchronous Python ODM for MongoDB"
 category = "main"
 optional = false
@@ -928,7 +928,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6fb1f6beb896818490e0e3242319ce5c3371c37c9166034a002d6bb6e629efa2"
+content-hash = "94a36235dda6db07689a3e3a8f7dec3933ef20c2850d517a70c0029daabde318"
 
 [metadata.files]
 aiodns = [
@@ -1101,8 +1101,8 @@ backoff = [
     {file = "backoff-2.1.2.tar.gz", hash = "sha256:407f1bc0f22723648a8880821b935ce5df8475cf04f7b6b5017ae264d30f6069"},
 ]
 beanie = [
-    {file = "beanie-1.11.12-py3-none-any.whl", hash = "sha256:9331e21278a817d6ae854321dbcad80b5002c33af1a4d14b45f0155bc61a4e72"},
-    {file = "beanie-1.11.12.tar.gz", hash = "sha256:9ac237fe2e766f5d282c4776e59dec7c420361f2e23d6ff8bd3abf10fd836d2b"},
+    {file = "beanie-1.12.0-py3-none-any.whl", hash = "sha256:0d27c089fc316fbbe1effe09104f0d1b62185fd8cae766b322a05254f9018eb2"},
+    {file = "beanie-1.12.0.tar.gz", hash = "sha256:740d8479b17bc78b16b9636b274a01878844fc87aef01f8bffa97c967bcecfd9"},
 ]
 beautifulsoup4 = [
     {file = "beautifulsoup4-4.11.1-py3-none-any.whl", hash = "sha256:58d5c3d29f5a36ffeb94f02f0d786cd53014cf9b3b3951d42e0080d8a9498d30"},
