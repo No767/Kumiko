@@ -29,7 +29,7 @@ logging.basicConfig(
 
 async def mainQuestsProc() -> None:
     """The main process of the Quests Checker"""
-    logging.info("Successfully started Kumiko's Quests Checker")
+    logging.info("Successfully started Quests Checker")
     while True:
         await asyncio.sleep(3600)
         activeQuests = await questUtils.getAllActiveQuests(

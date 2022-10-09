@@ -3,7 +3,6 @@ import os
 from pathlib import Path
 
 import discord
-from discord.ext import commands
 from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
@@ -11,7 +10,7 @@ load_dotenv()
 Discord_Bot_Token = os.getenv("Dev_Bot_Token")
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot(command_prefix=".", intents=intents, help_command=None)
+bot = discord.Bot(intents=intents)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +29,7 @@ cogsPath = os.path.join(str(path), "Cogs")
 cogsList = os.listdir(cogsPath)
 
 for cogDir in cogsList:
-    if cogDir not in ["__pycache__"]:
+    if cogDir not in ["__pycache__", "rin"]:
         subCogsList = os.listdir(os.path.join(cogsPath, cogDir))
         for subCogDir in subCogsList:
             if subCogDir not in [
@@ -51,7 +50,8 @@ for cogDir in cogsList:
 # Adds in the bot presence
 @bot.event
 async def on_ready():
-    logging.info("Kumiko is ready to go! All checkers are loaded and ready!")
+    logging.info(f"Logged in as {bot.user.name}")
+    logging.info(f"{bot.user.name} is ready to go! All checkers are loaded and ready!")
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
     )

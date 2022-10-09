@@ -29,7 +29,7 @@ class InitAHItemPurger:
 
     async def mainProc(self):
         """The main proc of the AH Item Checker"""
-        logging.info("Successfully started Kumiko's AH Item Checker")
+        logging.info("Successfully started AH Item Checker")
         while True:
             await asyncio.sleep(86400)
             mainRes = await ahUtils.obtainAHItemPassed(

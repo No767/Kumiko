@@ -33,7 +33,7 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
     - Rank system (WIP)
     - Custom quests
 - Genshin-Based Wish Sim (GWS)
-- Basic Administration Commands (unfinished)
+- Basic Administration Commands + Admin Logs
 - All of the services from upstream Rin
 
 And some ones that are planned:

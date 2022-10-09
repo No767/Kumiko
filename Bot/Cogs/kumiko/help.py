@@ -46,7 +46,6 @@ class Help(commands.Cog):
     @slash_command(
         name="help",
         description="The help command page for Kumiko",
-        guild_ids=[970159505390325842],
     )
     async def akariHelp(self, ctx):
         embed = discord.Embed(title=self.bot.user.name)
