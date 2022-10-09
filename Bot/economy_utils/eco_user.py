@@ -42,21 +42,14 @@ class KumikoEcoUserUtils:
         )
         async with async_session() as session:
             async with session.begin():
-                selItem = select(models.KumikoEcoUser).filter(
-                    models.KumikoEcoUser.user_id == user_id
+                insertData = models.KumikoEcoUser(
+                    user_id=user_id,
+                    lavender_petals=0,
+                    rank=0,
+                    date_joined=date_joined,
                 )
-                results = await session.execute(selItem)
-                resFetchedOne = results.one()
-                fullResults = [row for row in resFetchedOne]
-                if len(fullResults) == 0:
-                    insertData = models.KumikoEcoUser(
-                        user_id=user_id,
-                        lavender_petals=0,
-                        rank=0,
-                        date_joined=date_joined,
-                    )
-                    session.add_all([insertData])
-                    await session.commit()
+                session.add_all([insertData])
+                await session.commit()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

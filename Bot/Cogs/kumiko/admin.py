@@ -16,11 +16,11 @@ from rin_exceptions import ItemNotFound
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-POSTGRES_PORT = os.getenv("Postgres_Port_Dev")
-POSTGRES_AL_DATABASE = os.getenv("Postgres_Admin_Logs_Database")
+POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_USERNAME = os.getenv("Postgres_Username")
+POSTGRES_PORT = os.getenv("Postgres_Port")
+POSTGRES_AL_DATABASE = os.getenv("Postgres_Kumiko_Database")
 AL_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_AL_DATABASE}"
 
 alUtils = KumikoAdminLogsUtils(AL_CONNECTION_URI)

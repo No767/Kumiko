@@ -2,7 +2,7 @@
 
 set -e
 
-psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_WS_DB" <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_KUMIKO_DB" <<-EOSQL
     SET statement_timeout = 0;
     SET lock_timeout = 0;
     SET idle_in_transaction_session_timeout = 0;

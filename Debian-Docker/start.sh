@@ -20,7 +20,7 @@ if [[ -v GITHUB_API_ACCESS_TOKEN ]]; then
 else
     echo "Missing GitHub API token! GITHUB_API_ACCESS_TOKEN environment variable is not set."
 fi 
-
+# Hypixel
 # Reddit ID
 if [[ -v REDDIT_ID ]]; then
     echo "Reddit_ID=${REDDIT_ID}" >> /Kumiko/Bot/.env
@@ -53,135 +53,107 @@ else
 fi
 
 if [[ -v POSTGRES_PASSWORD ]]; then
-    echo "Postgres_Password_Dev=${POSTGRES_PASSWORD}" >> /Kumiko/Bot/.env
+    echo "Postgres_Password=${POSTGRES_PASSWORD}" >> /Kumiko/Bot/.env
 else
     echo "Missing Postgres_Password env var! Postgres_Password environment variable is not set."
     exit 1;
 fi
 
-if [[ -v POSTGRES_USERNAME ]]; then
-    echo "Postgres_Username_Dev=${POSTGRES_USERNAME}" >> /Kumiko/Bot/.env
+if [[ -v POSTGRES_USER ]]; then
+    echo "Postgres_Username=${POSTGRES_USER}" >> /Kumiko/Bot/.env
 else
     echo "Missing Postgres_Username env var! Postgres_Username_Dev environment variable is not set."
     exit 1;
 fi
 
 if [[ -v POSTGRES_IP ]]; then
-    echo "Postgres_Server_IP_Dev=${POSTGRES_IP}" >> /Kumiko/Bot/.env
+    echo "Postgres_Server_IP=${POSTGRES_IP}" >> /Kumiko/Bot/.env
 else
-    echo "Missing Postgres_Server_IP_Dev env var! Postgres_Server_IP_Dev environment variable is not set."
+    echo "Missing Postgres_Server_IP env var! Postgres_Server_IP environment variable is not set."
     exit 1;
 fi
 
 if [[ -v POSTGRES_PORT ]]; then
-    echo "Postgres_Port_Dev=${POSTGRES_PORT}" >> /Kumiko/Bot/.env
+    echo "Postgres_Port=${POSTGRES_PORT}" >> /Kumiko/Bot/.env
 else
-    echo "Missing Postgres_Port_Dev env var! Postgres_Port_Dev environment variable is not set."
+    echo "Missing Postgres_Port env var! Postgres_Port environment variable is not set."
     exit 1;
 fi
 
-if [[ -v POSTGRES_ECO_USERS_DB ]]; then
-    echo "Postgres_Database_Dev=${POSTGRES_ECO_USERS_DB}" >> /Kumiko/Bot/.env
+if [[ -v POSTGRES_KUMIKO_DB ]]; then
+    echo "Postgres_Kumiko_Database=${POSTGRES_KUMIKO_DB}" >> /Kumiko/Bot/.env
 else
-    echo "Missing Postgres_Database_Dev env var! Postgres_Database_Dev environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v POSTGRES_WS_DB ]]; then
-    echo "Postgres_Wish_Sim_Database=${POSTGRES_WS_DB}" >> /Kumiko/Bot/.env
-else
-    echo "Missing Postgres_Wish_Sim_Database env var! Postgres_Wish_Sim_Database environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v POSTGRES_AH_DB ]]; then
-    echo "Postgres_Database_AH_Dev=${POSTGRES_AH_DB}" >> /Kumiko/Bot/.env
-else
-    echo "Missing Postgres_Database_AH_Dev env var! Postgres_Database_AH_Dev environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v POSTGRES_QUESTS_DB ]]; then
-    echo "Postgres_Quests_Database=${POSTGRES_QUESTS_DB}" >> /Kumiko/Bot/.env
-else
-    echo "Missing Postgres_Quests_Database env var! Postgres_Quests_Database environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v POSTGRES_AL_DB ]]; then
-    echo "Postgres_Admin_Logs_Database=${POSTGRES_AL_DB}" >> /Kumiko/Bot/.env
-else
-    echo "Missing Postgres_Admin_Logs_Database env var! Postgres_Admin_Logs_Database environment variable is not set."
+    echo "Missing Postgres_Kumiko_Database env var! Postgres_Kumiko_Database environment variable is not set."
     exit 1;
 fi
 
 if [[ -v MONGODB_PASSWORD ]]; then
-    echo "MongoDB_Password_Dev=${MONGODB_PASSWORD}" >> /Kumiko/Bot/.env
+    echo "MongoDB_Password=${MONGODB_PASSWORD}" >> /Kumiko/Bot/.env
 else
-    echo "Missing MongoDB_Password_Dev env var! MongoDB_Password_Dev environment variable is not set."
+    echo "Missing MongoDB_Password env var! MongoDB_Password environment variable is not set."
     exit 1;
 fi
 
 if [[ -v MONGODB_USER ]]; then
-    echo "MongoDB_Username_Dev=${MONGODB_USER}" >> /Kumiko/Bot/.env
+    echo "MongoDB_Username=${MONGODB_USER}" >> /Kumiko/Bot/.env
 else
-    echo "Missing MongoDB_Username_Dev env var! MongoDB_Username_Dev environment variable is not set."
+    echo "Missing MongoDB_Username env var! MongoDB_Username environment variable is not set."
     exit 1;
 fi
 
 if [[ -v MONGODB_IP ]]; then
-    echo "MongoDB_Server_IP_Dev=${MONGODB_IP}" >> /Kumiko/Bot/.env
+    echo "MongoDB_Server_IP=${MONGODB_IP}" >> /Kumiko/Bot/.env
 else
-    echo "Missing MongoDB_Server_IP_Dev env var! MongoDB_Server_IP_Dev environment variable is not set."
+    echo "Missing MongoDB_Server_IP env var! MongoDB_Server_IP environment variable is not set."
     exit 1;
 fi
 
 if [[ -v MONGODB_PORT ]]; then
-    echo "MongoDB_Server_Port_Dev=${MONGODB_PORT}" >> /Kumiko/Bot/.env
+    echo "MongoDB_Server_Port=${MONGODB_PORT}" >> /Kumiko/Bot/.env
 else
-    echo "Missing MongoDB_Server_Port_Dev env var! MongoDB_Server_Port_Dev environment variable is not set."
+    echo "Missing MongoDB_Server_Port env var! MongoDB_Server_Port environment variable is not set."
     exit 1;
 fi
 
 if [[ -v RABBITMQ_PASSWORD ]]; then
-    echo "RabbitMQ_Password_Dev=${RABBITMQ_PASSWORD}" >> /Kumiko/Bot/.env
+    echo "RabbitMQ_Password=${RABBITMQ_PASSWORD}" >> /Kumiko/Bot/.env
 else
-    echo "Missing RabbitMQ_Password_Dev env var! RabbitMQ_Password_Dev environment variable is not set."
+    echo "Missing RabbitMQ_Password env var! RabbitMQ_Password environment variable is not set."
     exit 1;
 fi
 
 if [[ -v RABBITMQ_USER ]]; then
-    echo "RabbitMQ_Username_Dev=${RABBITMQ_USER}" >> /Kumiko/Bot/.env
+    echo "RabbitMQ_Username=${RABBITMQ_USER}" >> /Kumiko/Bot/.env
 else
-    echo "Missing RabbitMQ_Username_Dev env var! RabbitMQ_Username_Dev environment variable is not set."
+    echo "Missing RabbitMQ_Username env var! RabbitMQ_Username environment variable is not set."
     exit 1;
 fi
 
 if [[ -v RABBITMQ_IP ]]; then
-    echo "RabbitMQ_Server_IP_Dev=${RABBITMQ_IP}" >> /Kumiko/Bot/.env
+    echo "RabbitMQ_Server_IP=${RABBITMQ_IP}" >> /Kumiko/Bot/.env
 else
-    echo "Missing RabbitMQ_Server_IP_Dev env var! RabbitMQ_Server_IP_Dev environment variable is not set."
+    echo "Missing RabbitMQ_Server_IP env var! RabbitMQ_Server_IP environment variable is not set."
     exit 1;
 fi
 
 if [[ -v RABBITMQ_PORT ]]; then
-    echo "RabbitMQ_Port_Dev=${RABBITMQ_PORT}" >> /Kumiko/Bot/.env
+    echo "RabbitMQ_Port=${RABBITMQ_PORT}" >> /Kumiko/Bot/.env
 else
-    echo "Missing RabbitMQ_Port_Dev env var! RabbitMQ_Port_Dev environment variable is not set."
+    echo "Missing RabbitMQ_Port env var! RabbitMQ_Port environment variable is not set."
     exit 1;
 fi
 
 if [[ -v REDIS_IP ]]; then
-    echo "Redis_Server_IP_Dev=${REDIS_IP}" >> /Kumiko/Bot/.env
+    echo "Redis_Server_IP=${REDIS_IP}" >> /Kumiko/Bot/.env
 else
-    echo "Missing Redis_Server_IP_Dev env var! Redis_Server_IP_Dev environment variable is not set."
+    echo "Missing Redis_Server_IP env var! Redis_Server_IP environment variable is not set."
     exit 1;
 fi
 
 if [[ -v REDIS_PORT ]]; then
-    echo "Redis_Port_Dev=${REDIS_PORT}" >> /Kumiko/Bot/.env
+    echo "Redis_Port=${REDIS_PORT}" >> /Kumiko/Bot/.env
 else
-    echo "Missing Redis_Port_Dev env var! Redis_Port_Dev environment variable is not set."
+    echo "Missing Redis_Port env var! Redis_Port environment variable is not set."
     exit 1;
 fi
 
@@ -189,7 +161,7 @@ KUMIKO_FIRST_START_CHECK="KUMIKO_FIRST_START"
 
 if [ ! -f $KUMIKO_FIRST_START_CHECK ]; then
     touch $KUMIKO_FIRST_START_CHECK
-    echo 'DO NOT EDIT OR DELETE THIS FILE! THIS IS USED WHEN YOU FIRST RUN KUMIKO USING DOCKER!' >> $KUMIKO_FIRST_START_CHECK
+    echo 'DO NOT EDIT THIS FILE! THIS IS USED WHEN YOU FIRST RUN KUMIKO USING DOCKER!' >> $KUMIKO_FIRST_START_CHECK
     python3 /Kumiko/seeder.py
 fi
 

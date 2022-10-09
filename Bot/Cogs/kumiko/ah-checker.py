@@ -8,11 +8,12 @@ from discord.ext import commands
 from economy_utils import KumikoAuctionHouseUtils
 from rin_exceptions import ItemNotFound
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_AH_DATABASE = os.getenv("Postgres_Database_AH_Dev")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_AH_DATABASE}"
+POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_PORT = os.getenv("Postgres_Port")
+POSTGRES_AH_DATABASE = os.getenv("Postgres_Kumiko_Database")
+POSTGRES_USERNAME = os.getenv("Postgres_Username")
+AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_AH_DATABASE}"
 
 ahUtils = KumikoAuctionHouseUtils()
 

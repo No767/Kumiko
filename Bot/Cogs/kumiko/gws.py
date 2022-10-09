@@ -8,17 +8,20 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from genshin_wish_sim_utils import (KumikoWSUserInvUtils, KumikoWSUsersUtils,
-                                    KumikoWSUtils)
+from genshin_wish_sim_utils import (
+    KumikoWSUserInvUtils,
+    KumikoWSUsersUtils,
+    KumikoWSUtils,
+)
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_WS_DATABASE = os.getenv("Postgres_Wish_Sim_Database")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-POSTGRES_PORT = os.getenv("Postgres_Port_Dev")
+POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_WS_DATABASE = os.getenv("Postgres_Kumiko_Database")
+POSTGRES_USERNAME = os.getenv("Postgres_Username")
+POSTGRES_PORT = os.getenv("Postgres_Port")
 WS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_WS_DATABASE}"
 
 wsUtils = KumikoWSUtils()

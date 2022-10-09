@@ -14,13 +14,13 @@ from rin_exceptions import ItemNotFound
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_QUESTS_DATABASE = os.getenv("Postgres_Quests_Database")
-POSTGRES_USERS_DATABASE = os.getenv("Postgres_Database_Dev")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_QUESTS_DATABASE}"
-USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_USERS_DATABASE}"
+POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_DB = os.getenv("Postgres_Kumiko_Database")
+POSTGRES_PORT = os.getenv("Postgres_Port")
+POSTGRES_USERNAME = os.getenv("Postgres_Username")
+CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
+USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 questsUtil = KumikoQuestsUtils()
 userUtils = KumikoEcoUserUtils()

@@ -54,6 +54,8 @@ And some backend changes w/ Docker support:
 - Completely redid Help command
 - Organize Cogs into different directories determined by if the cogs came from Rin or Kumiko
 - Display what bot user is being logged into
+- Merged all PostgreSQL DBs into one (instead of having them separated)
+- Updated `ws_data.sql` and `ws_data.csv` files
 
 
 ## ✨ Additions
@@ -81,6 +83,7 @@ And some backend changes w/ Docker support:
 - Custom PostgreSQL docker image for Docker Compose
 - Admin Logs
 - New Help Command
+- `POSTGRES_KUMIKO_DB` env var for `start.sh`
 
 ## ➖ Removals
 
@@ -95,3 +98,4 @@ And some backend changes w/ Docker support:
 - `kumiko-platform.py` Cog
 - Unload `advice.py`, `blue-alliance.py`, `discord-bots.py`, `first-frc-events.py`, `hypixel.py`, `spiget.py`, `top-gg.py`, and `twitch.py` Cogs (this is due to the new help system only allowing up to 25 options, and therefore only 25 categories can be shown)
 - Remove `BLUE_ALLIANCE_API_KEY`, `DISCORD_BOTS_API_KEY`, `FIRST_EVENTS_FINAL_KEY`, `HYPIXEL_API_KEY`,  `TOP_GG_API_KEY`, `TWITCH_API_ACCESS_TOKEN`, `TWITCH_API_CLIENT_ID` env vars from `start.sh` and `.env-docker-example`
+- Remove `POSTGRES_ECO_USERS_DB`, `POSTGRES_WS_DB`, `POSTGRES_AH_DB`, `POSTGRES_QUESTS_DB`, and `POSTGRES_AL_DB` env vars from `start.sh` and `.env-docker-example`

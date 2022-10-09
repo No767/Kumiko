@@ -17,18 +17,18 @@ from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
 
-RABBITMQ_USER = os.getenv("RabbitMQ_Username_Dev")
-RABBITMQ_PASSWORD = os.getenv("RabbitMQ_Password_Dev")
-REDIS_SERVER_IP = os.getenv("Redis_Server_IP_Dev")
+RABBITMQ_USER = os.getenv("RabbitMQ_Username")
+RABBITMQ_PASSWORD = os.getenv("RabbitMQ_Password")
+RABBITMQ_SERVER_IP = os.getenv("RabbitMQ_Server_IP")
+REDIS_SERVER_IP = os.getenv("Redis_Server_IP")
 REDIS_SERVER_PORT = os.getenv("Redis_Port_Dev")
-RABBITMQ_SERVER_IP = os.getenv("RabbitMQ_Server_IP_Dev")
-POSTGRES_PASSWORD = os.getenv("Postgres_Password_Dev")
-POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP_Dev")
-POSTGRES_USER_DATABASE = os.getenv("Postgres_Database_Dev")
-POSTGRES_AH_DATABASE = os.getenv("Postgres_Database_AH_Dev")
-POSTGRES_USERNAME = os.getenv("Postgres_Username_Dev")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_USER_DATABASE}"
-AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:5432/{POSTGRES_AH_DATABASE}"
+POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_DB = os.getenv("Postgres_Kumiko_Database")
+POSTGRES_USERNAME = os.getenv("Postgres_Username")
+POSTGRES_PORT = os.getenv("Postgres_Port")
+CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
+AH_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 auctionHouseUtils = KumikoAuctionHouseUtils()
 userUtils = KumikoEcoUserUtils()
