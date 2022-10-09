@@ -29,7 +29,7 @@ cogsPath = os.path.join(str(path), "Cogs")
 cogsList = os.listdir(cogsPath)
 
 for cogDir in cogsList:
-    if cogDir not in ["__pycache__", "rin"]:
+    if cogDir not in ["__pycache__"]:
         subCogsList = os.listdir(os.path.join(cogsPath, cogDir))
         for subCogDir in subCogsList:
             if subCogDir not in [

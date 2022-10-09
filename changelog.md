@@ -53,6 +53,7 @@ And some backend changes w/ Docker support:
 - Provide a general exception embed for admin commands
 - Completely redid Help command
 - Organize Cogs into different directories determined by if the cogs came from Rin or Kumiko
+- Display what bot user is being logged into
 
 
 ## ✨ Additions
