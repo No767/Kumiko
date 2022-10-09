@@ -78,6 +78,12 @@ If you would like to get started, here are some links to help you with that:
 - [Contributing](./Community/contributing.md)
 - [Documentation](https://docs.kumiko-bot.tech/)
 
+# Resources and Links
+
+- [Documentation](https://docs.kumiko-bot.tech/)
+- [Docker Hub](https://hub.docker.com/repository/docker/no767/kumiko)
+- [GHCR](https://github.com/No767/Kumiko/pkgs/container/kumiko)
+
 # Licensing
 
 Kumiko being a direct upstream fork of Rin, is licensed under the same license as Rin, which is [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
