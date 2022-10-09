@@ -24,7 +24,7 @@ class UwU(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    uwu = SlashCommandGroup("uwu", "uwu", guild_ids=[970159505390325842])
+    uwu = SlashCommandGroup("uwu", "uwu")
 
     @uwu.command(name="cuddle")
     async def getAnimeCuddle(

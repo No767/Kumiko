@@ -15,9 +15,7 @@ class Kumiko(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    kumiko = SlashCommandGroup(
-        "kumiko", "Commands About Kumiko", guild_ids=[970159505390325842]
-    )
+    kumiko = SlashCommandGroup("kumiko", "Commands About Kumiko")
 
     @commands.Cog.listener()
     async def on_ready(self):
