@@ -1,6 +1,6 @@
 #!/bin/bash
 
-curl -s -o ws_data.csv https://raw.githubusercontent.com/No767/Kumiko/dev/Postgres-Docker/ws_data.csv
+curl -s -o ws_data.csv https://raw.githubusercontent.com/No767/Kumiko/dev/Docker/Postgres-Docker/ws_data.csv
 
 set -e
 

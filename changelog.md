@@ -58,6 +58,7 @@ And some backend changes w/ Docker support:
 - Merged all PostgreSQL DBs into one (instead of having them separated)
 - Updated `ws_data.sql` and `ws_data.csv` files
 - Condensed all Dockerfiles into one main directory
+- Move all of the packages into a `Libs` folder within the `Bot` folder (this is to clean things up)
 
 
 ## ✨ Additions
@@ -101,3 +102,6 @@ And some backend changes w/ Docker support:
 - Unload `advice.py`, `blue-alliance.py`, `discord-bots.py`, `first-frc-events.py`, `hypixel.py`, `spiget.py`, `top-gg.py`, and `twitch.py` Cogs (this is due to the new help system only allowing up to 25 options, and therefore only 25 categories can be shown)
 - Remove `BLUE_ALLIANCE_API_KEY`, `DISCORD_BOTS_API_KEY`, `FIRST_EVENTS_FINAL_KEY`, `HYPIXEL_API_KEY`,  `TOP_GG_API_KEY`, `TWITCH_API_ACCESS_TOKEN`, `TWITCH_API_CLIENT_ID` env vars from `start.sh` and `.env-docker-example`
 - Remove `POSTGRES_ECO_USERS_DB`, `POSTGRES_WS_DB`, `POSTGRES_AH_DB`, `POSTGRES_QUESTS_DB`, and `POSTGRES_AL_DB` env vars from `start.sh` and `.env-docker-example`
+- Remove old `exceptions package`
+- Remove old `WS-Data` folder
+- Remove unloaded cogs and moved them to a different repo
