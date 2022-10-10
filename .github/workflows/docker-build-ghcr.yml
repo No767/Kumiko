@@ -57,7 +57,7 @@ jobs:
         uses: docker/build-push-action@v3.1.1
         with:
           context: .
-          file: ./Alpine-Docker/Dockerfile
+          file: ./Docker/Alpine-Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -115,7 +115,7 @@ jobs:
         uses: docker/build-push-action@v3.1.1
         with:
           context: .
-          file: ./Debian-Docker/Dockerfile
+          file: ./Docker/Debian-Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache

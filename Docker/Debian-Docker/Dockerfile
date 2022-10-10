@@ -43,8 +43,8 @@ COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
 COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
 COPY /Bot/admin_logs_utils /Kumiko/Bot/admin_logs_utils
-COPY /Debian-Docker/start.sh /Kumiko/start.sh
-COPY /Debian-Docker/wait-for /Kumiko/wait-for
+COPY /Docker/Debian-Docker/start.sh /Kumiko/start.sh
+COPY /Docker/Debian-Docker/wait-for /Kumiko/wait-for
 
 COPY --from=builder /Kumiko/wheels /Kumiko/wheels
 COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
