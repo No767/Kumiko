@@ -8,7 +8,7 @@ import uvloop
 from admin_logs_utils import KumikoAdminLogsUtils
 from dateutil import parser
 from dateutil.parser import ParserError
-from discord.commands import Option, SlashCommandGroup
+from discord.commands import Option, SlashCommandGroup, default_permissions
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from pytimeparse.timeparse import timeparse
@@ -83,7 +83,7 @@ class Admin(commands.Cog):
     adminLogs = admin.create_subgroup("logs", "Access admin logs")
 
     @admin.command(name="ban")
-    @commands.has_permissions(ban_members=True)
+    @default_permissions(ban_members=True)
     async def banMembers(
         self,
         ctx,
@@ -115,7 +115,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @admin.command(name="unban")
-    @commands.has_permissions(ban_members=True)
+    @default_permissions(ban_members=True)
     async def unbanMembers(
         self,
         ctx,
@@ -147,7 +147,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @admin.command(name="kick")
-    @commands.has_permissions(kick_members=True)
+    @default_permissions(kick_members=True)
     async def kickUser(
         self,
         ctx,
@@ -181,7 +181,7 @@ class Admin(commands.Cog):
     # Note that this command is broken for some unknown reason
     # Was working on older versions of Pycord
     @adminTimeout.command(name="date")
-    @commands.has_permissions(moderate_members=True)
+    @default_permissions(moderate_members=True)
     async def timeoutDate(
         self,
         ctx,
@@ -220,7 +220,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminTimeout.command(name="duration")
-    @commands.has_permissions(moderate_members=True)
+    @default_permissions(moderate_members=True)
     async def timeoutDuration(
         self,
         ctx,
@@ -261,7 +261,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminTimeout.command(name="remove")
-    @commands.has_permissions(moderate_members=True)
+    @default_permissions(moderate_members=True)
     async def removeTimeout(
         self,
         ctx,
@@ -292,7 +292,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminLogs.command(name="view")
-    @commands.has_permissions(moderate_members=True)
+    @default_permissions(moderate_members=True)
     async def viewLogs(
         self,
         ctx,
@@ -373,7 +373,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminLogs.command(name="purge")
-    @commands.has_permissions(moderate_members=True)
+    @default_permissions(moderate_members=True)
     async def purgeALData(self, ctx):
         """Purges all of the AL data for that guild (CAN'T BE UNDONE)"""
         embed = discord.Embed()
