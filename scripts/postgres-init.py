@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 path = Path(__file__).parents[1]
 envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(os.path.join(str(path), "Bot"))
+sys.path.append(os.path.join(str(path), "Bot", "Libs"))
 
 from admin_logs_utils import KumikoAdminLogsUtils
 from economy_utils import (

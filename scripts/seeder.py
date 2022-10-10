@@ -8,10 +8,11 @@ import uvloop
 from dotenv import load_dotenv
 
 path = Path(__file__).parents[0]
-packagePath = os.path.join(str(path), "Bot")
+libsPath = os.path.join(str(path), "Bot", "Libs")
 envPath = os.path.join(str(path), "Bot", ".env")
-sys.path.append(packagePath)
+sys.path.append(libsPath)
 
+from admin_logs_utils import KumikoAdminLogsUtils
 from economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -34,6 +35,7 @@ ahUtils = KumikoAuctionHouseUtils()
 questsUtils = KumikoQuestsUtils()
 userInvUtils = KumikoUserInvUtils()
 wsUtils = KumikoWSUtils()
+alUtils = KumikoAdminLogsUtils(uri=CONNECTION_URI)
 
 
 async def main():
@@ -42,6 +44,7 @@ async def main():
     await userInvUtils.initUserInvTables(uri=CONNECTION_URI)
     await questsUtils.initQuestsTables(uri=CONNECTION_URI)
     await wsUtils.initAllWSTables(uri=CONNECTION_URI)
+    await alUtils.initAllALTables()
     print("[DB Seeder] Successfully created all database tables for Kumiko")
 
 

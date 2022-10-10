@@ -40,9 +40,9 @@ WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
 COPY /scripts/seeder.py /Kumiko/seeder.py
-COPY /Bot/economy_utils/ /Kumiko/Bot/economy_utils
-COPY /Bot/genshin_wish_sim_utils /Kumiko/Bot/genshin_wish_sim_utils
-COPY /Bot/admin_logs_utils /Kumiko/Bot/admin_logs_utils
+COPY /Bot/Libs/economy_utils/ /Kumiko/Bot/Libs/economy_utils
+COPY /Bot/Libs/genshin_wish_sim_utils /Kumiko/Bot/Libs/genshin_wish_sim_utils
+COPY /Bot/Libs/admin_logs_utils /Kumiko/Bot/Libs/admin_logs_utils
 COPY /Docker/Debian-Docker/start.sh /Kumiko/start.sh
 COPY /Docker/Debian-Docker/wait-for /Kumiko/wait-for
 

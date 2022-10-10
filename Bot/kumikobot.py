@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 from pathlib import Path
 
 import discord
@@ -25,6 +26,8 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 # New system for loading all cogs
 path = Path(__file__).parents[0].absolute()
 cogsPath = os.path.join(str(path), "Cogs")
+libsPath = os.path.join(str(path), "Libs")
+sys.path.append(libsPath)
 
 cogsList = os.listdir(cogsPath)
 
