@@ -20,6 +20,8 @@ githubAPIKey = os.getenv("GitHub_API_Access_Token")
 
 
 class GitHub(commands.Cog):
+    """Commands for getting data from GitHub"""
+
     def __init__(self, bot):
         self.bot = bot
 

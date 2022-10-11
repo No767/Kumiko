@@ -88,6 +88,8 @@ class DeleteAllView(discord.ui.View):
 
 
 class EcoQuests(commands.Cog):
+    """Kumiko Quests - A fun way to earn some Petals"""
+
     def __init__(self, bot):
         self.bot = bot
 

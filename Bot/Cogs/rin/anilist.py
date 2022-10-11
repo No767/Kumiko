@@ -10,6 +10,8 @@ from rin_exceptions import NoItemsError
 
 
 class AniList(commands.Cog):
+    """Commands for getting data from AniList"""
+
     def __init__(self, bot):
         self.bot = bot
 

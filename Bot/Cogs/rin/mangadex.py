@@ -22,6 +22,8 @@ class List(list):
 
 
 class MangaDex(commands.Cog):
+    """Commands for getting data from MangaDex"""
+
     def __init__(self, bot):
         self.bot = bot
 

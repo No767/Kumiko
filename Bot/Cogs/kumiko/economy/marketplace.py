@@ -83,6 +83,8 @@ class PurgeAllView(discord.ui.View):
 
 
 class Marketplace(commands.Cog):
+    """The general marketplace"""
+
     def __init__(self, bot):
         self.bot = bot
 

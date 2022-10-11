@@ -13,6 +13,8 @@ parser = simdjson.Parser()
 
 
 class Minecraft(commands.Cog):
+    """Commands for getting data from MCSrvStats"""
+
     def __init__(self, bot):
         self.bot = bot
 

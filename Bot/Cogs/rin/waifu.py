@@ -15,6 +15,8 @@ parser = simdjson.Parser()
 
 
 class Waifu(commands.Cog):
+    """Commands for getting pictures of Waifus from multiple places"""
+
     def __init__(self, bot):
         self.bot = bot
 

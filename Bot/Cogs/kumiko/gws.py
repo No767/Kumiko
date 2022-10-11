@@ -74,6 +74,8 @@ class PurgeView(discord.ui.View):
 
 
 class GWS(commands.Cog):
+    """Kumiko's Genshin Wish Simulator (GWS)"""
+
     def __init__(self, bot):
         self.bot = bot
 

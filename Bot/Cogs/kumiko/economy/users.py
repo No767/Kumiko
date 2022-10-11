@@ -107,6 +107,8 @@ class PurgeView(discord.ui.View):
 
 
 class EcoUsers(commands.Cog):
+    """Commands for checking user's accounts and balances"""
+
     def __init__(self, bot):
         self.bot = bot
 

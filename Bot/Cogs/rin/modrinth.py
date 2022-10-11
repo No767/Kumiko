@@ -14,6 +14,8 @@ jsonParser = simdjson.Parser()
 
 
 class Modrinth(commands.Cog):
+    """Commands for getting data from Modrinth"""
+
     def __init__(self, bot):
         self.bot = bot
 

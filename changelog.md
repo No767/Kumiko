@@ -59,6 +59,7 @@ And some backend changes w/ Docker support:
 - Updated `ws_data.sql` and `ws_data.csv` files
 - Condensed all Dockerfiles into one main directory
 - Move all of the packages into a `Libs` folder within the `Bot` folder (this is to clean things up)
+- Condensed down the `/eco-quests view` commands into one command
 
 
 ## ✨ Additions
@@ -87,6 +88,7 @@ And some backend changes w/ Docker support:
 - Admin Logs
 - New Help Command
 - `POSTGRES_KUMIKO_DB` env var for `start.sh`
+- Class descriptions for all cogs
 
 ## ➖ Removals
 
@@ -105,3 +107,5 @@ And some backend changes w/ Docker support:
 - Remove old `exceptions package`
 - Remove old `WS-Data` folder
 - Remove unloaded cogs and moved them to a different repo
+- `/eco-quests view ...` commands
+- Datetime Timeout command

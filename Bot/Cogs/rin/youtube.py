@@ -20,6 +20,8 @@ jsonParser = simdjson.Parser()
 
 
 class YouTube(commands.Cog):
+    """Commands for getting data from YouTube"""
+
     def __init__(self, bot):
         self.bot = bot
 

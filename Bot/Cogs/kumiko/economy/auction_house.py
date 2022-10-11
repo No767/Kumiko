@@ -92,6 +92,8 @@ class View(discord.ui.View):
 
 
 class AuctionHouse(commands.Cog):
+    """A place reserved for the elites for auctioning high value items"""
+
     def __init__(self, bot):
         self.bot = bot
 

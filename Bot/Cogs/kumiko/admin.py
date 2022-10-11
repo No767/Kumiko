@@ -74,6 +74,8 @@ class ALPurgeDataView(discord.ui.View):
 
 
 class Admin(commands.Cog):
+    """A set of administrative commands"""
+
     def __init__(self, bot):
         self.bot = bot
 

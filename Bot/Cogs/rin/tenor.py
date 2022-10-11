@@ -18,6 +18,8 @@ parser = simdjson.Parser()
 
 
 class Tenor(commands.Cog):
+    """Commands for getting GIFs from Tenor"""
+
     def __init__(self, bot):
         self.bot = bot
 

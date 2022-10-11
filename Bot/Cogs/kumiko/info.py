@@ -4,6 +4,8 @@ from discord.ext import commands
 
 
 class Info(commands.Cog):
+    """General info commands"""
+
     def __init__(self, bot):
         self.bot = bot
 

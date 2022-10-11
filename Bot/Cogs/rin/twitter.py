@@ -19,6 +19,8 @@ jsonParser = simdjson.Parser()
 
 
 class Twitter(commands.Cog):
+    """Commands for getting data from Twitter"""
+
     def __init__(self, bot):
         self.bot = bot
 

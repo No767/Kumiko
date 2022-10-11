@@ -14,6 +14,8 @@ jsonParser = simdjson.Parser()
 
 
 class MAL(commands.Cog):
+    """Commands for getting data from MyAnimeList"""
+
     def __init__(self, bot):
         self.bot = bot
 

@@ -21,6 +21,8 @@ parser = simdjson.Parser()
 
 
 class UwU(commands.Cog):
+    """UwU"""
+
     def __init__(self, bot):
         self.bot = bot
 

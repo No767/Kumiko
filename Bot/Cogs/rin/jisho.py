@@ -12,6 +12,8 @@ parser = simdjson.Parser()
 
 
 class Jisho(commands.Cog):
+    """Commands for getting data from Jisho"""
+
     def __init__(self, bot):
         self.bot = bot
 

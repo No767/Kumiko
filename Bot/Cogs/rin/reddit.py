@@ -24,6 +24,8 @@ jsonParser = simdjson.Parser()
 
 
 class Reddit(commands.Cog):
+    """Commands for getting data from Reddit"""
+
     def __init__(self, bot):
         self.bot = bot
 

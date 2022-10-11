@@ -27,6 +27,8 @@ utilsUser = KumikoEcoUserUtils()
 
 
 class Petals(commands.Cog):
+    """Earn and spend some of your Petals here!"""
+
     def __init__(self, bot):
         self.bot = bot
 

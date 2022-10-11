@@ -40,6 +40,8 @@ class HelpSelect(discord.ui.Select):
 
 
 class Help(commands.Cog):
+    """Commands for getting commands from Kumiko"""
+
     def __init__(self, bot):
         self.bot = bot
 
