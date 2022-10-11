@@ -7,8 +7,7 @@ import discord
 import uvloop
 from admin_logs_utils import KumikoAdminLogsUtils
 from dateutil import parser
-from dateutil.parser import ParserError
-from discord.commands import Option, SlashCommandGroup, default_permissions
+from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from pytimeparse.timeparse import timeparse
@@ -83,7 +82,7 @@ class Admin(commands.Cog):
     adminLogs = admin.create_subgroup("logs", "Access admin logs")
 
     @admin.command(name="ban")
-    @default_permissions(ban_members=True)
+    @commands.has_permissions(ban_members=True)
     async def banMembers(
         self,
         ctx,
@@ -115,7 +114,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @admin.command(name="unban")
-    @default_permissions(ban_members=True)
+    @commands.has_permissions(ban_members=True)
     async def unbanMembers(
         self,
         ctx,
@@ -147,7 +146,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @admin.command(name="kick")
-    @default_permissions(kick_members=True)
+    @commands.has_permissions(kick_members=True)
     async def kickUser(
         self,
         ctx,
@@ -178,49 +177,8 @@ class Admin(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # Note that this command is broken for some unknown reason
-    # Was working on older versions of Pycord
-    @adminTimeout.command(name="date")
-    @default_permissions(moderate_members=True)
-    async def timeoutDate(
-        self,
-        ctx,
-        *,
-        user: Option(discord.Member, "The user to timeout"),
-        date: Option(str, "The date of the timeout duration"),
-        time: Option(str, "The time of the timeout duration", default="00:00:00"),
-        reason: Option(str, "The reason for the timeout", default=None),
-    ):
-        """Applies a timeout to the user for a specified date"""
-        try:
-            parsedDatetime = parser.parse(f"{date} {time}")
-            await alUtils.addALRow(
-                uuid=str(uuid.uuid4()),
-                guild_id=ctx.guild.id,
-                action_user_name=ctx.author.name,
-                user_affected_name=user.name,
-                type_of_action="timeout-date",
-                reason=reason,
-                date_issued=datetime.utcnow().isoformat(),
-                duration=0,
-                datetime_duration=parsedDatetime.isoformat(),
-            )
-            await user.timeout(until=parsedDatetime, reason=reason)
-            embed = discord.Embed(
-                title=f"Timeout applied for {user.name}",
-                color=discord.Color.from_rgb(255, 255, 102),
-            )
-            embed.description = f"The user {user.name} has been successfully timed out until {parsedDatetime}\n\n**Reason:** {reason}"
-            await ctx.respond(embed=embed, ephemeral=True)
-
-        except ParserError:
-            errorDesc = "It seems like you probably have inputted the incorrect format for either the date or time."
-            await ctx.respond(errorDesc, ephemeral=True)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     @adminTimeout.command(name="duration")
-    @default_permissions(moderate_members=True)
+    @commands.has_permissions(moderate_members=True)
     async def timeoutDuration(
         self,
         ctx,
@@ -238,7 +196,7 @@ class Admin(commands.Cog):
                 guild_id=ctx.guild.id,
                 action_user_name=ctx.author.name,
                 user_affected_name=user.name,
-                type_of_action="timeout-duration",
+                type_of_action="timeout",
                 reason=reason,
                 date_issued=datetime.utcnow().isoformat(),
                 duration=timeoutDuration,
@@ -261,7 +219,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminTimeout.command(name="remove")
-    @default_permissions(moderate_members=True)
+    @commands.has_permissions(moderate_members=True)
     async def removeTimeout(
         self,
         ctx,
@@ -292,7 +250,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminLogs.command(name="view")
-    @default_permissions(moderate_members=True)
+    @commands.has_permissions(moderate_members=True)
     async def viewLogs(
         self,
         ctx,
@@ -307,7 +265,6 @@ class Admin(commands.Cog):
                 "Kick",
                 "Timeout-Remove",
                 "Timeout-Duration",
-                "Timeout-Date",
             ],
         ),
     ):
@@ -373,7 +330,7 @@ class Admin(commands.Cog):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminLogs.command(name="purge")
-    @default_permissions(moderate_members=True)
+    @commands.has_permissions(moderate_members=True)
     async def purgeALData(self, ctx):
         """Purges all of the AL data for that guild (CAN'T BE UNDONE)"""
         embed = discord.Embed()

@@ -27,11 +27,14 @@ class KumikoEcoUserUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def initUserAcct(self, user_id: int, date_joined: str, uri: str):
+    async def initUserAcct(
+        self, user_id: int, username: str, date_joined: str, uri: str
+    ):
         """Initializes a user's account
 
         Args:
-            user_id (int): _description_
+            user_id (int): Discord User ID
+            username (str): Discord username
             date_joined (str): The date that the user has joined
             uri (str): The Connection URI needed for connecting to the database
         """
@@ -44,6 +47,7 @@ class KumikoEcoUserUtils:
             async with session.begin():
                 insertData = models.KumikoEcoUser(
                     user_id=user_id,
+                    username=username,
                     lavender_petals=0,
                     rank=0,
                     date_joined=date_joined,
@@ -54,12 +58,19 @@ class KumikoEcoUserUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def insertUserData(
-        self, user_id: int, lavender_petals: int, rank: int, date_joined: str, uri: str
+        self,
+        user_id: int,
+        username: str,
+        lavender_petals: int,
+        rank: int,
+        date_joined: str,
+        uri: str,
     ):
         """Inserts user data into the db
 
         Args:
             user_id (int): Discord User ID
+            username (str): Discord Username
             lavender_petals (int): The amount of Lavender Petals that the user has
             rank (int): The rank of the user
             date_joined (str / ISO-8601): The date that the user joined
@@ -73,6 +84,7 @@ class KumikoEcoUserUtils:
             async with session.begin():
                 insertData = models.KumikoEcoUser(
                     user_id=user_id,
+                    username=username,
                     lavender_petals=lavender_petals,
                     rank=rank,
                     date_joined=date_joined,
@@ -119,9 +131,8 @@ class KumikoEcoUserUtils:
                 selectUser = select(models.KumikoEcoUser).filter(
                     models.KumikoEcoUser.user_id == user_id
                 )
-                itemSelected = await session.scalars(selectUser)
-                itemSelectedFirst = itemSelected.first()
-                return itemSelectedFirst
+                res = await session.scalars(selectUser)
+                return res.first()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

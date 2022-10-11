@@ -31,18 +31,20 @@ class KumikoEcoUser(Base):
     __tablename__ = "eco_users"
 
     user_id = Column(BigInteger, primary_key=True)
+    username = Column(String)
     lavender_petals = Column(Integer)
     rank = Column(Integer)
     date_joined = Column(String)
 
     def __iter__(self):
         yield "user_id", self.user_id
+        yield "username", self.username
         yield "lavender_petals", self.lavender_petals
         yield "rank", self.rank
         yield "date_joined", self.date_joined
 
     def __repr__(self):
-        return f"KumikoEcoUser(user_id={self.user_id}, lavender_petals={self.lavender_petals}, rank={self.rank}, date_joined={self.date_joined})"
+        return f"KumikoEcoUser(user_id={self.user_id!r}, username={self.username!r}, lavender_petals={self.lavender_petals!r}, rank={self.rank!r}, date_joined={self.date_joined!r})"
 
 
 class KumikoQuests(Base):

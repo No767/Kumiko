@@ -99,9 +99,6 @@ class EcoQuests(commands.Cog):
     questsDelete = quests.create_subgroup(
         "delete", "deletes quests", guild_ids=[970159505390325842]
     )
-    questsView = quests.create_subgroup(
-        "view", "views the quests", guild_ids=[970159505390325842]
-    )
 
     @quests.command(name="create")
     @commands.cooldown(1, 7200, commands.BucketType.user)
@@ -116,192 +113,84 @@ class EcoQuests(commands.Cog):
         end_time: Option(str, "The end time for this quest"),
     ):
         """Creates a quest"""
-        mainUserData = await userUtils.obtainUserData(
-            user_id=ctx.user.id, uri=USERS_CONNECTION_URI
-        )
-        for userItem in mainUserData:
-            currentUserPetals = dict(userItem)["lavender_petals"]
-            if int(dict(userItem)["rank"]) < 5:
-                await ctx.respond(
-                    f"Sorry, but you can't use the quests feature since you are current rank is {dict(userItem)['rank']}"
-                )
-            else:
-                questUUIDItem = str(uuid.uuid4())
-                dateCreated = datetime.now().isoformat()
-                endDateFormatted = parser.parse(f"{end_date} {end_time}").isoformat()
-                totalUserPetals = int(currentUserPetals) - int(reward)
-                await userUtils.updateUserLavenderPetals(
-                    user_id=ctx.user.id,
-                    lavender_petals=totalUserPetals,
-                    uri=USERS_CONNECTION_URI,
-                )
-                await questsUtil.createQuests(
-                    uuid=questUUIDItem,
-                    creator=ctx.author.id,
-                    claimed_by=None,
-                    date_created=dateCreated,
-                    end_datetime=endDateFormatted,
-                    name=name,
-                    description=description,
-                    reward=reward,
-                    active=True,
-                    claimed=False,
-                    uri=CONNECTION_URI,
-                )
-                await ctx.respond(f"Created quest: {name}")
+        getUser = await userUtils.getFirstUser(user_id=ctx.user.id, uri=CONNECTION_URI)
+
+        if getUser is None:
+            await ctx.respond("Probably should create an account first...")
+
+        elif int(dict(getUser)["rank"]) < 5:
+            await ctx.respond(
+                f"Sorry, but you can't use the quests feature since you are current rank is {dict(getUser)['rank']}"
+            )
+        else:
+            questUUIDItem = str(uuid.uuid4())
+            dateCreated = datetime.now().isoformat()
+            endDateFormatted = parser.parse(f"{end_date} {end_time}").isoformat()
+            totalUserPetals = int(dict(getUser)["lavender_petals"]) - int(reward)
+            await userUtils.updateUserLavenderPetals(
+                user_id=ctx.user.id,
+                lavender_petals=totalUserPetals,
+                uri=USERS_CONNECTION_URI,
+            )
+            await questsUtil.createQuests(
+                uuid=questUUIDItem,
+                creator=ctx.author.id,
+                claimed_by=None,
+                date_created=dateCreated,
+                end_datetime=endDateFormatted,
+                name=name,
+                description=description,
+                reward=reward,
+                active=True,
+                claimed=False,
+                uri=CONNECTION_URI,
+            )
+            await ctx.respond(f"Created quest: {name}")
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    @questsView.command(name="active")
-    async def viewQuest(self, ctx):
-        """Views all of the quests active as of now"""
-        activeQuests = await questsUtil.getActiveQuests(active=True, uri=CONNECTION_URI)
+    @quests.command(name="view")
+    async def viewQuest(
+        self,
+        ctx,
+        *,
+        filters: Option(
+            str,
+            "Filters for viewing quests",
+            choices=["All", "Active", "Inactive", "Claimed", "Unclaimed"],
+        ),
+    ):
+        """Views quests"""
+        questsData = await questsUtil.getAllQuests(uri=CONNECTION_URI)
         userRank = await userUtils.selectUserRank(
             user_id=ctx.author.id, uri=USERS_CONNECTION_URI
         )
+        if filters in ["All"]:
+            questsData = await questsUtil.getAllQuests(uri=CONNECTION_URI)
+        elif filters in ["Active"]:
+            questsData = await questsUtil.getActiveQuests(
+                active=True, uri=CONNECTION_URI
+            )
+        elif filters in ["Inactive"]:
+            questsData = await questsUtil.getActiveQuests(
+                active=False, uri=CONNECTION_URI
+            )
+        elif filters in ["Claimed"]:
+            questsData = await questsUtil.viewClaimedQuests(
+                claimed=True, uri=CONNECTION_URI
+            )
+        elif filters in ["Unclaimed"]:
+            questsData = await questsUtil.viewClaimedQuests(
+                claimed=False, uri=CONNECTION_URI
+            )
+        else:
+            questsData = await questsUtil.getAllQuests(uri=CONNECTION_URI)
+
         try:
-            if len(activeQuests) == 0:
+            if len(questsData) == 0:
                 raise ItemNotFound
             else:
-                for userItem in userRank:
-                    if int(userItem) < 5:
-                        await ctx.respond(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {userItem}"
-                        )
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=dict(items)["name"],
-                                    description=dict(items)["description"],
-                                )
-                                .add_field(
-                                    name="Reward",
-                                    value=dict(items)["reward"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="End Date",
-                                    value=parser.isoparse(
-                                        dict(items)["end_datetime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Creator",
-                                    value=f'{await self.bot.get_or_fetch_user(dict(items)["creator"])}',
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Date Created",
-                                    value=parser.isoparse(
-                                        dict(items)["date_created"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Claimed by",
-                                    value=await self.bot.get_or_fetch_user(
-                                        dict(items)["claimed_by"]
-                                    )
-                                    if dict(items)["claimed_by"] is not None
-                                    else "None",
-                                    inline=True,
-                                )
-                                for items in activeQuests
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "It seems like there are no active quests on the server yet... Please try again"
-            await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @questsView.command(name="inactive")
-    async def getInactiveQuests(self, ctx):
-        """Gets all of the inactive quests"""
-        inactiveQuests = await questsUtil.getActiveQuests(
-            active=False, uri=CONNECTION_URI
-        )
-        userRank = await userUtils.selectUserRank(
-            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(inactiveQuests) == 0:
-                raise ItemNotFound
-            else:
-                for userItem in userRank:
-                    if int(userItem) < 5:
-                        await ctx.respond(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {userItem}"
-                        )
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=dict(items)["name"],
-                                    description=dict(items)["description"],
-                                )
-                                .add_field(
-                                    name="Reward",
-                                    value=dict(items)["reward"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="End Date",
-                                    value=parser.isoparse(
-                                        dict(items)["end_datetime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Creator",
-                                    value=f'{await self.bot.get_or_fetch_user(dict(items)["creator"])}',
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Date Created",
-                                    value=parser.isoparse(
-                                        dict(items)["date_created"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Claimed by",
-                                    value=await self.bot.get_or_fetch_user(
-                                        dict(items)["claimed_by"]
-                                    )
-                                    if dict(items)["claimed_by"] is not None
-                                    else "None",
-                                    inline=True,
-                                )
-                                for items in inactiveQuests
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "It seems like there are no inactive quests on the server yet... Please try again"
-            await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @questsView.command(name="all")
-    async def getAllQuests(self, ctx):
-        """Gets all of the quests, both active and inactive ones"""
-        allQuests = await questsUtil.getAllQuests(uri=CONNECTION_URI)
-        userRankMain = await userUtils.selectUserRank(
-            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(allQuests) == 0:
-                raise ItemNotFound
-            else:
-                for items in userRankMain:
+                for items in userRank:
                     if int(items) < 5:
                         await ctx.respond(
                             f"Sorry, but you can't use the quests feature since you are current rank is {items}"
@@ -351,7 +240,7 @@ class EcoQuests(commands.Cog):
                                     else "None",
                                     inline=True,
                                 )
-                                for items in allQuests
+                                for items in questsData
                             ],
                             loop_pages=True,
                         )
@@ -362,8 +251,6 @@ class EcoQuests(commands.Cog):
                 "It seems like there are no quests on the server. Please try again"
             )
             await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @quests.command(name="update")
     @commands.cooldown(1, 7200, commands.BucketType.user)
@@ -545,166 +432,6 @@ class EcoQuests(commands.Cog):
         except ItemNotFound:
             embedError = discord.Embed()
             embedError.description = "It seems like there are no quests with that name (or you haven't created an account yet). Please try again"
-            await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @questsView.command(name="claimed")
-    async def viewQuests(self, ctx):
-        """Views any claimed quests"""
-        getQuests = await questsUtil.viewClaimedQuests(claimed=True, uri=CONNECTION_URI)
-        userRank = await userUtils.selectUserRank(
-            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(getQuests) == 0 or len(userRank) == 0:
-                raise ItemNotFound
-            else:
-                for items in userRank:
-                    if int(items) < 5:
-                        await ctx.respond(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {items}"
-                        )
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=dict(questItem)["name"],
-                                    description=dict(questItem)["description"],
-                                )
-                                .add_field(
-                                    name="Quest Creator",
-                                    value=await self.bot.get_or_fetch_user(
-                                        dict(questItem)["creator"]
-                                    )
-                                    if dict(questItem)["creator"] is not None
-                                    else "None",
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Claimed by",
-                                    value=await self.bot.get_or_fetch_user(
-                                        dict(questItem)["claimed_by"]
-                                    )
-                                    if dict(questItem)["claimed_by"] is not None
-                                    else "None",
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Date Created",
-                                    value=parser.isoparse(
-                                        dict(questItem)["date_created"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Quest End Date",
-                                    value=parser.isoparse(
-                                        dict(questItem)["end_datetime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Active",
-                                    value=dict(questItem)["active"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Reward",
-                                    value=dict(questItem)["reward"],
-                                    inline=True,
-                                )
-                                for questItem in getQuests
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = (
-                "It seems like there are no quests on the server. Please try again"
-            )
-            await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @questsView.command(name="unclaimed")
-    async def viewQuests(self, ctx):
-        """Views any unclaimed quests"""
-        getQuests = await questsUtil.viewClaimedQuests(
-            claimed=False, uri=CONNECTION_URI
-        )
-        userRank = await userUtils.selectUserRank(
-            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(getQuests) == 0 or len(userRank) == 0:
-                raise ItemNotFound
-            else:
-                for items in userRank:
-                    if int(items) < 5:
-                        await ctx.respond(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {items}"
-                        )
-                    else:
-                        mainPages = pages.Paginator(
-                            pages=[
-                                discord.Embed(
-                                    title=dict(questItem)["name"],
-                                    description=dict(questItem)["description"],
-                                )
-                                .add_field(
-                                    name="Quest Creator",
-                                    value=await self.bot.get_or_fetch_user(
-                                        dict(questItem)["creator"]
-                                    )
-                                    if dict(questItem)["creator"] is not None
-                                    else "None",
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Claimed by",
-                                    value=await self.bot.get_or_fetch_user(
-                                        dict(questItem)["claimed_by"]
-                                    )
-                                    if dict(questItem)["claimed_by"] is not None
-                                    else "None",
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Date Created",
-                                    value=parser.isoparse(
-                                        dict(questItem)["date_created"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Quest End Date",
-                                    value=parser.isoparse(
-                                        dict(questItem)["end_datetime"]
-                                    ).strftime("%Y-%m-%d %H:%M:%S"),
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Active",
-                                    value=dict(questItem)["active"],
-                                    inline=True,
-                                )
-                                .add_field(
-                                    name="Reward",
-                                    value=dict(questItem)["reward"],
-                                    inline=True,
-                                )
-                                for questItem in getQuests
-                            ],
-                            loop_pages=True,
-                        )
-                        await mainPages.respond(ctx.interaction, ephemeral=False)
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = (
-                "It seems like there are no quests on the server. Please try again"
-            )
             await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
