@@ -54,7 +54,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-alpine-
       - name: Build and push
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v3.2.0
         with:
           context: .
           file: ./Docker/Alpine-Docker/Dockerfile
@@ -112,7 +112,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-debian-
       - name: Build and push
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v3.2.0
         with:
           context: .
           file: ./Docker/Debian-Docker/Dockerfile
