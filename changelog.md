@@ -60,6 +60,7 @@ And some backend changes w/ Docker support:
 - Condensed all Dockerfiles into one main directory
 - Move all of the packages into a `Libs` folder within the `Bot` folder (this is to clean things up)
 - Condensed down the `/eco-quests view` commands into one command
+- Change to use general versions for Python Dockerfiles
 
 
 ## ✨ Additions

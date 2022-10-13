@@ -1,14 +1,12 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.10.7-alpine3.16 AS builder
+FROM python:3.10-alpine3.16 AS builder
 
-# Note that some libaries require Linux Kernel C Headers
 RUN apk add --no-cache \
   ca-certificates \
   build-base \
-  curl \
-  linux-headers 
+  curl
 
 # Add Poetry locally
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -29,14 +27,17 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.10.7-alpine3.16
+FROM python:3.10-alpine3.16
 
+# Note that wget is needed for the wait-for script
 RUN apk add --no-cache \
   ca-certificates \
   tini \
   bash \
   wget
 
+# Copy anything that is needed for Kumiko
+# Docker build context: '.' (root of the repo)
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /scripts/seeder.py /Kumiko/seeder.py
@@ -51,6 +52,7 @@ COPY /Docker/Alpine-Docker/wait-for /Kumiko/wait-for
 COPY --from=builder /Kumiko/wheels /Kumiko/wheels
 COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
 
+# Upgrade pip and setuptools
 RUN pip install --upgrade pip setuptools
 
 # Add an unprivileged user and set directory permissions
