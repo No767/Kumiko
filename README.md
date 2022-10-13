@@ -81,7 +81,7 @@ If you would like to get started, here are some links to help you with that:
 # Resources and Links
 
 - [Documentation](https://docs.kumiko-bot.tech/)
-- [Docker Hub](https://hub.docker.com/repository/docker/no767/kumiko)
+- [Docker Hub](https://hub.docker.com/r/no767/kumiko)
 - [GHCR](https://github.com/No767/Kumiko/pkgs/container/kumiko)
 
 # Licensing
