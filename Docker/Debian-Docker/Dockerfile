@@ -43,6 +43,7 @@ COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Bot/Libs/economy_utils/ /Kumiko/Bot/Libs/economy_utils
 COPY /Bot/Libs/genshin_wish_sim_utils /Kumiko/Bot/Libs/genshin_wish_sim_utils
 COPY /Bot/Libs/admin_logs_utils /Kumiko/Bot/Libs/admin_logs_utils
+COPY /Bot/Libs/kumiko_ui_components /Kumiko/Bot/Libs/kumiko_ui_components
 COPY /Docker/Debian-Docker/start.sh /Kumiko/start.sh
 COPY /Docker/Debian-Docker/wait-for /Kumiko/wait-for
 

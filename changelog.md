@@ -61,6 +61,8 @@ And some backend changes w/ Docker support:
 - Move all of the packages into a `Libs` folder within the `Bot` folder (this is to clean things up)
 - Condensed down the `/eco-quests view` commands into one command
 - Change to use general versions for Python Dockerfiles
+- Move all of the views into a separate package (`kumiko_ui_components`)
+- Force PostgreSQL to use 14 instead of 15 (waiting for `asyncpg` to support 15)
 
 
 ## ✨ Additions

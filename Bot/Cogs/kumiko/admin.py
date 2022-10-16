@@ -10,6 +10,7 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
+from kumiko_ui_components import ALPurgeDataView
 from pytimeparse.timeparse import timeparse
 from rin_exceptions import ItemNotFound
 
@@ -23,54 +24,6 @@ POSTGRES_AL_DATABASE = os.getenv("Postgres_Kumiko_Database")
 AL_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_AL_DATABASE}"
 
 alUtils = KumikoAdminLogsUtils(AL_CONNECTION_URI)
-
-
-class ALPurgeDataView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        selectAllALGuildData = await alUtils.selAllGuildRows(
-            guild_id=interaction.guild.id
-        )
-        try:
-            if len(selectAllALGuildData) == 0:
-                raise ItemNotFound
-            else:
-                await alUtils.purgeData(guild_id=interaction.guild.id)
-                await interaction.response.send_message(
-                    "Confirmed. All of the Admin Logs for this server have been purged",
-                    ephemeral=True,
-                    delete_after=10,
-                )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "It seems like you don't have any to delete from at all...",
-                ephemeral=True,
-                delete_after=10,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The action has been canceled by {interaction.user.name}", ephemeral=True
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class Admin(commands.Cog):
@@ -337,7 +290,9 @@ class Admin(commands.Cog):
         """Purges all of the AL data for that guild (CAN'T BE UNDONE)"""
         embed = discord.Embed()
         embed.description = "Do you really wish to delete all of the AL data for this guild? This cannot be undone."
-        await ctx.respond(embed=embed, view=ALPurgeDataView(), ephemeral=True)
+        await ctx.respond(
+            embed=embed, view=ALPurgeDataView(AL_CONNECTION_URI), ephemeral=True
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

@@ -1,6 +1,5 @@
 import asyncio
 import os
-from datetime import datetime
 
 import discord
 import uvloop
@@ -9,6 +8,7 @@ from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from economy_utils import KumikoEcoUserUtils, KumikoUserInvUtils
+from kumiko_ui_components import CreateAccountView, PurgeAccountView
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
@@ -22,88 +22,6 @@ CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@
 
 utilsUser = KumikoEcoUserUtils()
 inv = KumikoUserInvUtils()
-
-
-class View(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        getUser = await utilsUser.getFirstUser(
-            user_id=interaction.user.id, uri=CONNECTION_URI
-        )
-        if getUser is None:
-            await utilsUser.initUserAcct(
-                user_id=interaction.user.id,
-                username=interaction.user.name,
-                date_joined=datetime.utcnow().isoformat(),
-                uri=CONNECTION_URI,
-            )
-            await interaction.response.send_message(
-                "Confirmed. Now you have access to the marketplace!", ephemeral=True
-            )
-        else:
-            await interaction.response.send_message(
-                "Looks like you already have an account. You can't sign up for extras",
-                ephemeral=True,
-            )
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The operation has been canceled by the user {interaction.user.name}",
-            ephemeral=True,
-        )
-
-
-class PurgeView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        getUser = await utilsUser.getFirstUser(
-            user_id=interaction.user.id, uri=CONNECTION_URI
-        )
-        if getUser is None:
-            await interaction.response.send_message(
-                "You probably have already deleted the account...", ephemeral=True
-            )
-        else:
-            await utilsUser.deleteUser(user_id=interaction.user.id, uri=CONNECTION_URI)
-            await interaction.response.send_message(
-                "Confirmed. Your have permanently deleted your account.", ephemeral=True
-            )
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The action has been cancelled by the user {interaction.user.name}",
-            ephemeral=True,
-        )
 
 
 class EcoUsers(commands.Cog):
@@ -123,7 +41,9 @@ class EcoUsers(commands.Cog):
         """Initialize your user account"""
         embed = discord.Embed()
         embed.description = "Do you wish to initialize your economy account? This is completely optional. Click on the buttons to confirm"
-        await ctx.respond(embed=embed, view=View(), ephemeral=True)
+        await ctx.respond(
+            embed=embed, view=CreateAccountView(CONNECTION_URI), ephemeral=True
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -223,7 +143,9 @@ class EcoUsers(commands.Cog):
         """Permanently deletes your user eco account"""
         embed = discord.Embed()
         embed.description = "Do you really want to delete your eco account? This is a permanent action and cannot be undone. Click on the buttons to confirm"
-        await ctx.respond(embed=embed, view=PurgeView(), ephemeral=True)
+        await ctx.respond(
+            embed=embed, view=PurgeAccountView(CONNECTION_URI), ephemeral=True
+        )
 
 
 def setup(bot):

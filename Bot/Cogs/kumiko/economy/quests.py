@@ -10,6 +10,7 @@ from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from economy_utils import KumikoEcoUserUtils, KumikoQuestsUtils
+from kumiko_ui_components import QuestsPurgeAllView
 from rin_exceptions import ItemNotFound
 
 load_dotenv()
@@ -24,67 +25,6 @@ USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASS
 
 questsUtil = KumikoQuestsUtils()
 userUtils = KumikoEcoUserUtils()
-
-
-class DeleteAllView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        itemUUIDAuth = await questsUtil.getItemUUIDAuth(
-            user_id=interaction.user.id,
-            uri=CONNECTION_URI,
-        )
-        userRank = await userUtils.selectUserRank(
-            user_id=interaction.user.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(itemUUIDAuth) == 0:
-                raise ItemNotFound
-            else:
-                for rank in userRank:
-                    if int(rank) < 5:
-                        await interaction.reponse.send_message(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {rank}",
-                            ephemeral=True,
-                        )
-                    else:
-                        for item in itemUUIDAuth:
-                            await questsUtil.purgeUserQuests(
-                                user_id=interaction.user.id,
-                                uuid=item,
-                                uri=CONNECTION_URI,
-                            )
-                        await interaction.response.send_message(
-                            "All quests belonging to you have been purged.",
-                            ephemeral=True,
-                        )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "You don't have any quests to delete!", ephemeral=True
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            "Well glad you choose not to...", ephemeral=True
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class EcoQuests(commands.Cog):
@@ -346,7 +286,11 @@ class EcoQuests(commands.Cog):
         embed.description = (
             "Are you sure you want to delete all of your quests? This cannot be undone"
         )
-        await ctx.respond(embed=embed, view=DeleteAllView(), ephemeral=True)
+        await ctx.respond(
+            embed=embed,
+            view=QuestsPurgeAllView(user_uri=CONNECTION_URI, quests_uri=CONNECTION_URI),
+            ephemeral=True,
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

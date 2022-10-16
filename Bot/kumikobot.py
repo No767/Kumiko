@@ -1,14 +1,17 @@
+import asyncio
 import logging
 import os
 import sys
 from pathlib import Path
 
 import discord
+import uvloop
 from dotenv import load_dotenv
 
 # Grabs the bot's token from the .env file
 load_dotenv()
-Discord_Bot_Token = os.getenv("Dev_Bot_Token")
+
+DISCORD_BOT_TOKEN = os.getenv("Dev_Bot_Token")
 intents = discord.Intents.default()
 intents.members = True
 bot = discord.Bot(intents=intents)
@@ -61,4 +64,6 @@ async def on_ready():
 
 
 # Run the bot
-bot.run(Discord_Bot_Token)
+if __name__ == "__main__":
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    bot.run(DISCORD_BOT_TOKEN)

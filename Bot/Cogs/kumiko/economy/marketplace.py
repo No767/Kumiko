@@ -12,6 +12,7 @@ from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from economy_utils import KumikoEcoUserUtils, KumikoEcoUtils, KumikoUserInvUtils
+from kumiko_ui_components import MarketplacePurgeAllView
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
@@ -33,53 +34,6 @@ utilsMain = KumikoEcoUtils()
 utilsUser = KumikoEcoUserUtils()
 userInvUtils = KumikoUserInvUtils()
 today = datetime.utcnow()
-
-
-class PurgeAllView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        mainChecker = await utilsMain.getAllOwnersItems(
-            owner=interaction.user.id, uri=MARKETPLACE_CONNECTION_URI
-        )
-        try:
-            if len(mainChecker) == 0:
-                raise NoItemsError
-            else:
-                for items in mainChecker:
-                    await utilsMain.purgeOwnersItems(
-                        uuid=dict(items)["uuid"],
-                        owner=dict(items)["owner"],
-                        uri=MARKETPLACE_CONNECTION_URI,
-                    )
-                await interaction.response.send_message(
-                    "All of your items listed on the marketplace have been deleted",
-                    ephemeral=True,
-                )
-        except NoItemsError:
-            await interaction.response.send_message(
-                "You don't have any items listed on the marketplace to delete. The transaction has been cancelled.",
-                ephemeral=True,
-            )
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            "Welp, you choose not to ig...", ephemeral=True
-        )
 
 
 class Marketplace(commands.Cog):
@@ -276,7 +230,9 @@ class Marketplace(commands.Cog):
         """Deletes all of your items in the marketplace"""
         embed = discord.Embed()
         embed.description = "Do your really want to delete all of your items listed on the marketplace? There is no going back after this."
-        await ctx.respond(embed=embed, view=PurgeAllView())
+        await ctx.respond(
+            embed=embed, view=MarketplacePurgeAllView(MARKETPLACE_CONNECTION_URI)
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

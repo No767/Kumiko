@@ -72,7 +72,7 @@ class QuestsChecker(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_connect(ctx):
+    async def on_ready(ctx):
         task = asyncio.create_task(mainQuestsProc(), name="QuestsChecker")
         backgroundTasks = set()
         backgroundTasks.add(await task)

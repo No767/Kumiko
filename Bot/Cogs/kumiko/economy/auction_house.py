@@ -13,6 +13,7 @@ from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from economy_utils import KumikoAuctionHouseUtils, KumikoEcoUserUtils
+from kumiko_ui_components import AHPurgeAllView
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
@@ -394,7 +395,7 @@ class AuctionHouse(commands.Cog):
         """Purges all of the user's listed Auction House items. This cannot be recovered from"""
         embed = discord.Embed()
         embed.description = "Are you sure you want to purge all of your Auction House listings? This is permanent and cannot be undone."
-        await ctx.respond(embed=embed, view=View())
+        await ctx.respond(embed=embed, view=AHPurgeAllView(uri=AH_CONNECTION_URI))
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
