@@ -36,7 +36,6 @@ pytimeparse = "^1.1.8"
 pre-commit = "^2.20.0"
 mypy = "^0.982"
 pyinstrument = "^4.3.0"
-asyncmy = "^0.2.5"
 
 [tool.isort]
 profile = 'black'
