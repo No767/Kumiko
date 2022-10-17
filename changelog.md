@@ -63,6 +63,7 @@ And some backend changes w/ Docker support:
 - Change to use general versions for Python Dockerfiles
 - Move all of the views into a separate package (`kumiko_ui_components`)
 - Force PostgreSQL to use 14 instead of 15 (waiting for `asyncpg` to support 15)
+- Use views and modals for updating, deleting, and creating quests
 
 
 ## ✨ Additions
@@ -92,6 +93,7 @@ And some backend changes w/ Docker support:
 - New Help Command
 - `POSTGRES_KUMIKO_DB` env var for `start.sh`
 - Class descriptions for all cogs
+- Use views and modals for updating, deleting, and creating quests
 
 ## ➖ Removals
 

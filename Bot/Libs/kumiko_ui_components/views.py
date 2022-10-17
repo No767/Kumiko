@@ -11,6 +11,8 @@ from economy_utils import (
 )
 from rin_exceptions import ItemNotFound, NoItemsError
 
+from .modals import QuestsDeleteOneModal
+
 
 class ALPurgeDataView(discord.ui.View):
     async def on_timeout(self):
@@ -283,7 +285,7 @@ class CreateAccountView(discord.ui.View):
             await self.utilsUser.initUserAcct(
                 user_id=interaction.user.id,
                 username=interaction.user.name,
-                date_joined=discord.utils.utcnow(),
+                date_joined=discord.utils.utcnow().isoformat(),
                 uri=self.uri,
             )
             await interaction.response.send_message(
@@ -343,6 +345,41 @@ class PurgeAccountView(discord.ui.View):
             )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def second_button_callback(self, button, interaction):
+        await interaction.response.send_message(
+            f"The action has been cancelled by the user {interaction.user.name}",
+            ephemeral=True,
+        )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class QuestsDeleteOneConfirmView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(self, uri: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_modal(
+            QuestsDeleteOneModal(uri=self.uri, title="test")
+        )
 
     @discord.ui.button(
         label="No",

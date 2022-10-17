@@ -1,7 +1,5 @@
 import asyncio
 import os
-import uuid
-from datetime import datetime
 
 import discord
 import uvloop
@@ -10,7 +8,12 @@ from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from economy_utils import KumikoEcoUserUtils, KumikoQuestsUtils
-from kumiko_ui_components import QuestsPurgeAllView
+from kumiko_ui_components import (
+    QuestsCreateModal,
+    QuestsDeleteOneConfirmView,
+    QuestsPurgeAllView,
+    QuestsUpdateTimeModal,
+)
 from rin_exceptions import ItemNotFound
 
 load_dotenv()
@@ -44,50 +47,10 @@ class EcoQuests(commands.Cog):
 
     @quests.command(name="create")
     @commands.cooldown(1, 7200, commands.BucketType.user)
-    async def createQuests(
-        self,
-        ctx,
-        *,
-        name: Option(str, "The name of the quest"),
-        description: Option(str, "The description of the quest"),
-        reward: Option(int, "The amount of petals to reward for completion"),
-        end_date: Option(str, "The end date for the quest"),
-        end_time: Option(str, "The end time for this quest"),
-    ):
+    async def createQuests(self, ctx):
         """Creates a quest"""
-        getUser = await userUtils.getFirstUser(user_id=ctx.user.id, uri=CONNECTION_URI)
-
-        if getUser is None:
-            await ctx.respond("Probably should create an account first...")
-
-        elif int(dict(getUser)["rank"]) < 5:
-            await ctx.respond(
-                f"Sorry, but you can't use the quests feature since you are current rank is {dict(getUser)['rank']}"
-            )
-        else:
-            questUUIDItem = str(uuid.uuid4())
-            dateCreated = datetime.now().isoformat()
-            endDateFormatted = parser.parse(f"{end_date} {end_time}").isoformat()
-            totalUserPetals = int(dict(getUser)["lavender_petals"]) - int(reward)
-            await userUtils.updateUserLavenderPetals(
-                user_id=ctx.user.id,
-                lavender_petals=totalUserPetals,
-                uri=USERS_CONNECTION_URI,
-            )
-            await questsUtil.createQuests(
-                uuid=questUUIDItem,
-                creator=ctx.author.id,
-                claimed_by=None,
-                date_created=dateCreated,
-                end_datetime=endDateFormatted,
-                name=name,
-                description=description,
-                reward=reward,
-                active=True,
-                claimed=False,
-                uri=CONNECTION_URI,
-            )
-            await ctx.respond(f"Created quest: {name}")
+        createModal = QuestsCreateModal(uri=CONNECTION_URI, title="Create a quest")
+        await ctx.send_modal(createModal)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -199,83 +162,21 @@ class EcoQuests(commands.Cog):
     async def updateQuests(
         self,
         ctx,
-        *,
-        name: Option(str, "The name of the quest"),
-        reward: Option(int, "The new reward to update to"),
-        end_date: Option(str, "The new date to update to"),
-        end_time: Option(str, "The new time to update to"),
     ):
         """Updates the quest with new info"""
-        mainQuest = await questsUtil.getQuestViaName(
-            user_id=ctx.user.id, name=name, uri=CONNECTION_URI
-        )
-        mainUserData = await userUtils.obtainUserData(
-            user_id=ctx.user.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(mainQuest) == 0 or len(mainUserData) == 0:
-                raise ItemNotFound
-            else:
-                fullDateTime = parser.parse(f"{end_date} {end_time}").isoformat()
-                for userData in mainUserData:
-                    currentUserPetals = dict(userData)["lavender_petals"]
-                    currentUserRank = dict(userData)["rank"]
-                totalUserPetals = currentUserPetals - reward
-                if currentUserRank < 5:
-                    await ctx.respond(
-                        f"Sorry, but you can't use the quests feature since you are current rank is {currentUserRank}"
-                    )
-                else:
-                    await userUtils.updateUserLavenderPetals(
-                        user_id=ctx.user.id,
-                        lavender_petals=totalUserPetals,
-                        uri=USERS_CONNECTION_URI,
-                    )
-                    for items in mainQuest:
-                        await questsUtil.updateQuest(
-                            uuid=dict(items)["uuid"],
-                            reward=reward,
-                            new_end_datetime=fullDateTime,
-                            uri=CONNECTION_URI,
-                        )
-                        await ctx.respond(f"Updated {name} with an reward of {reward}")
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "It seems like there are no quests with that name (or you haven't created an account yet). Please try again"
-            await ctx.respond(embed=embedError)
+        mainModal = QuestsUpdateTimeModal(uri=CONNECTION_URI, title="Update Quest")
+        await ctx.send_modal(mainModal)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @questsDelete.command(name="one")
-    async def deleteOneQuest(self, ctx, *, name: Option(str, "The name of the quest")):
+    async def deleteOneQuest(self, ctx):
         """Deletes one quest"""
-        mainRes = await questsUtil.getUserQuestOne(
-            user_id=ctx.author.id, name=name, uri=CONNECTION_URI
+        embed = discord.Embed()
+        embed.description = "Are you sure you wish to delete that quest?"
+        await ctx.respond(
+            embed=embed, view=QuestsDeleteOneConfirmView(uri=CONNECTION_URI)
         )
-        userRank = await userUtils.selectUserRank(
-            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
-        )
-        questUUID = dict(mainRes)["uuid"]
-        try:
-            if len(userRank) == 0:
-                raise ItemNotFound
-            else:
-                for items in userRank:
-                    if int(items) < 5:
-                        await ctx.respond(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {items}"
-                        )
-                    else:
-                        await questsUtil.deleteOneQuest(
-                            user_id=ctx.author.id,
-                            uuid=questUUID,
-                            uri=CONNECTION_URI,
-                        )
-                        await ctx.respond(f"Quest {name} has been deleted")
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "It seems like you either don't have an account yet, or the the quest you requested is not found. Please try again"
-            await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
