@@ -4,7 +4,7 @@ import uuid
 import discord
 import uvloop
 from dateutil import parser
-from economy_utils import KumikoEcoUserUtils, KumikoQuestsUtils
+from economy_utils import KumikoEcoUserUtils, KumikoEcoUtils, KumikoQuestsUtils
 from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from rin_exceptions import ItemNotFound
 
@@ -280,5 +280,234 @@ class GWSDeleteOneInv(discord.ui.Modal):
                 "Sorry, but it seems like there are no items in your inventory. Please try again.",
                 ephemeral=True,
             )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class MarketplaceAddItem(discord.ui.Modal):
+    def __init__(self, mongo_uri: str, postgres_uri: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.mongoURI = mongo_uri
+        self.postgresURI = postgres_uri
+        self.user = KumikoEcoUserUtils()
+        self.mUtils = KumikoEcoUtils()
+
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Description",
+                style=discord.InputTextStyle.long,
+                min_length=1,
+                required=True,
+                placeholder="Type in the item description here",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Amount",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                required=True,
+                placeholder="Type in how much you are willing to sell here",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Price",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                required=True,
+                placeholder="Type in the price of the item here",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        getUserData = await self.user.getFirstUser(
+            user_id=interaction.user.id, uri=self.postgresURI
+        )
+        try:
+            if getUserData is None:
+                raise ItemNotFound
+            else:
+                finalBal = int(dict(getUserData)["lavender_petals"]) - 10
+                await self.user.updateUserLavenderPetals(
+                    user_id=interaction.user.id,
+                    lavender_petals=finalBal,
+                    uri=self.postgresURI,
+                )
+                await self.mUtils.ins(
+                    uuid=str(uuid.uuid4()),
+                    date_added=discord.utils.utcnow().isoformat(),
+                    owner=interaction.user.id,
+                    owner_name=interaction.user.name,
+                    uri=self.mongoURI,
+                    name=self.children[0].value,
+                    description=self.children[1].value,
+                    amount=self.children[2].value,
+                    price=self.children[3].value,
+                    updatedPrice=False,
+                )
+                await interaction.response.send_message(
+                    f"The item {self.children[0].value} has been added to the marketplace",
+                    ephemeral=True,
+                )
+        except ItemNotFound:
+            embed = discord.Embed()
+            embed.description = "It seems like your account was not found. Please initialize your account first"
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class MarketplaceDeleteOneItem(discord.ui.Modal):
+    def __init__(self, mongo_uri: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.mongoURI = mongo_uri
+        self.mUtils = KumikoEcoUtils()
+
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here to delete",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        getUserItem = await self.mUtils.obtainUserItem(
+            name=self.children[0].value, user_id=interaction.user.id, uri=self.mongoURI
+        )
+        try:
+            if getUserItem is None:
+                raise ItemNotFound
+            else:
+                await getUserItem.delete()
+                await interaction.response.send_message(
+                    f"The item {self.children[0].value} has been deleted from the marketplace",
+                    ephemeral=True,
+                )
+        except ItemNotFound:
+            embed = discord.Embed()
+            embed.description = f"It seems like there is no item called {self.children[0].value} in the marketplace. Please try again"
+            await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class MarketplaceUpdateAmount(discord.ui.Modal):
+    def __init__(self, mongo_uri: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.mongoURI = mongo_uri
+        self.mUtils = KumikoEcoUtils()
+
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here to restorck",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Amount",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the amount of the item here to restock",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        getUserItem = await self.mUtils.obtainUserItem(
+            name=self.children[0].value, user_id=interaction.user.id, uri=self.mongoURI
+        )
+        try:
+            if getUserItem is None:
+                raise ItemNotFound
+            else:
+                totalAmount = int(dict(getUserItem)["amount"]) + int(
+                    self.children[1].value
+                )
+                getUserItem.amount = totalAmount
+                await getUserItem.save()
+                await interaction.response.send_message(
+                    f"Updated {self.children[0].value}'s amount to {totalAmount}",
+                    ephemeral=True,
+                )
+        except ItemNotFound:
+            embedError = discord.Embed()
+            embedError.description = "Sorry, it seems like the item you are trying to update does not exist in the Marketplace. Please try again."
+            await interaction.response.send_message(embed=embedError, ephemeral=True)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class MarketplaceUpdateItemPrice(discord.ui.Modal):
+    def __init__(self, mongo_uri: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.mongoURI = mongo_uri
+        self.mUtils = KumikoEcoUtils()
+
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here to restorck",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Price",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the new price of the item",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        getUserItem = await self.mUtils.obtainUserItem(
+            name=self.children[0].value, user_id=interaction.user.id, uri=self.mongoURI
+        )
+        try:
+            if getUserItem is None:
+                raise ItemNotFound
+            elif dict(getUserItem)["updated_price"] is True:
+                await interaction.response.send_message(
+                    f"Sorry, you cannot update the price of {self.children[0].value} anymore",
+                    ephemeral=True,
+                )
+            else:
+                getUserItem.price = int(self.children[1].value)
+                getUserItem.updated_price = True
+                await getUserItem.save()
+                await interaction.response.send_message(
+                    f"Updated {self.children[0].value}'s price {int(self.children[1].value)}",
+                    ephemeral=True,
+                )
+        except ItemNotFound:
+            embedError = discord.Embed()
+            embedError.description = "Sorry, it seems like the item you are trying to update does not exist in the Marketplace. Please try again."
+            await interaction.response.send_message(embed=embedError, ephemeral=True)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

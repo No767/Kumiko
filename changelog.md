@@ -67,6 +67,10 @@ And some backend changes w/ Docker support:
 - Use views and modals for deleting inventory items for GWS
 - Defer the interaction for gws wishes
 - Raise the max amount of wishes for the multiple wish to 10
+- Use Modals for updating, deleting and creating items in the Marketplace
+- Move the models into a separate file and rename models
+- Completely optimized a ton of backend stuff with the Marketplace 
+- Use `discord.utils.utcnow()` instead of `datetime.utcnow()` for most creation timestamps
 
 ## ✨ Additions
 - Kumiko's Quests System
@@ -97,6 +101,7 @@ And some backend changes w/ Docker support:
 - Class descriptions for all cogs
 - Use views and modals for updating, deleting, and creating quests
 - Use views and modals for deleting inventory items for GWS
+- Use Modals for updating, deleting and creating items in the Marketplace
 
 ## ➖ Removals
 
@@ -118,3 +123,5 @@ And some backend changes w/ Docker support:
 - `/eco-quests view ...` commands
 - Datetime Timeout command
 - `/eco-quests reward` command (too unbalanced and can be easily abused)
+- Removed unused coroutines in the `eco_main.py` file 
+- Remove Marketplace filters

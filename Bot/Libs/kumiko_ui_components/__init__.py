@@ -1,5 +1,9 @@
 from .modals import (
     GWSDeleteOneInv,
+    MarketplaceAddItem,
+    MarketplaceDeleteOneItem,
+    MarketplaceUpdateAmount,
+    MarketplaceUpdateItemPrice,
     QuestsCreateModal,
     QuestsDeleteOneModal,
     QuestsUpdateTimeModal,
@@ -30,4 +34,8 @@ __all__ = [
     "GWSDeleteOneInv",
     "GWSDeleteOneInvView",
     "GWSPurgeAllInvView",
+    "MarketplaceAddItem",
+    "MarketplaceDeleteOneItem",
+    "MarketplaceUpdateAmount",
+    "MarketplaceUpdateItemPrice",
 ]

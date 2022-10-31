@@ -1,19 +1,30 @@
 import asyncio
 import os
-import re
 import uuid
 from datetime import datetime
 
 import discord
+import motor.motor_asyncio
 import uvloop
-import yaml
+from beanie import init_beanie
 from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from economy_utils import KumikoEcoUserUtils, KumikoEcoUtils, KumikoUserInvUtils
-from kumiko_ui_components import MarketplacePurgeAllView
-from rin_exceptions import ItemNotFound, NoItemsError
+from economy_utils import (
+    KumikoEcoUserUtils,
+    KumikoEcoUtils,
+    KumikoUserInvUtils,
+    MarketplaceModel,
+)
+from kumiko_ui_components import (
+    MarketplaceAddItem,
+    MarketplaceDeleteOneItem,
+    MarketplacePurgeAllView,
+    MarketplaceUpdateAmount,
+    MarketplaceUpdateItemPrice,
+)
+from rin_exceptions import NoItemsError
 
 load_dotenv()
 
@@ -49,15 +60,13 @@ class Marketplace(commands.Cog):
     ecoMarketplaceUpdate = eco_marketplace.create_subgroup(
         name="update",
         description="Commands for updating items on the marketplace",
-        guild_ids=[970159505390325842],
     )
     ecoMarketplaceDelete = eco_marketplace.create_subgroup(
         name="delete",
         description="Commands for deleting items on the marketplace",
-        guild_ids=[970159505390325842],
     )
     ecoMarketplaceAdd = eco_marketplace.create_subgroup(
-        "add", "Adds items into the marketplace", guild_ids=[970159505390325842]
+        "add", "Adds items into the marketplace"
     )
 
     @ecoMarketplaceAdd.command(name="item")
@@ -65,73 +74,14 @@ class Marketplace(commands.Cog):
     async def ecoAddItem(
         self,
         ctx,
-        *,
-        name: Option(str, "The name of the item you wish to add"),
-        description: Option(str, "The description of the item you wish to add"),
-        amount: Option(int, "The amount you are willing to sell"),
-        price: Option(int, "The price of the item"),
     ):
         """Adds an item into the marketplace"""
-        dateEntry = today.isoformat()
-        owner = ctx.user.id
-        uuidItem = uuid.uuid4().hex[:16]
-        filterFile = os.path.join(
-            os.path.dirname(__file__), "config", "marketplace_filters.yml"
+        createItem = MarketplaceAddItem(
+            mongo_uri=MARKETPLACE_CONNECTION_URI,
+            postgres_uri=USERS_CONNECTION_URI,
+            title="Add an item",
         )
-        try:
-            try:
-                getUserData = await utilsUser.obtainUserData(
-                    ctx.user.id, USERS_CONNECTION_URI
-                )
-                if len(getUserData) == 0:
-                    raise ItemNotFound
-                else:
-                    for item in getUserData:
-                        mainItem = dict(item)
-                    finalBal = int(mainItem["lavender_petals"]) - 10
-                    await utilsUser.updateUserLavenderPetals(
-                        user_id=ctx.user.id,
-                        lavender_petals=finalBal,
-                        uri=USERS_CONNECTION_URI,
-                    )
-                    with open(filterFile, "r") as stream:
-                        try:
-                            filterList = yaml.safe_load(stream)
-                            mainFilterList = filterList["filters"]
-                            mainFilter = re.compile(
-                                "|".join([str(item) for item in mainFilterList]),
-                                re.IGNORECASE,
-                            )
-                            filteredItemName = re.sub(mainFilter, "item", str(name))
-                            filteredItemDescription = re.sub(
-                                mainFilter, "item", str(description)
-                            )
-                            await utilsMain.ins(
-                                uuidItem,
-                                dateEntry,
-                                owner,
-                                MARKETPLACE_CONNECTION_URI,
-                                filteredItemName,
-                                filteredItemDescription,
-                                amount,
-                                price,
-                                updatedPrice=False,
-                            )
-                            await ctx.respond("Item added to the marketplace")
-                        except yaml.YAMLError:
-                            await ctx.respond(
-                                "Oops, something went wrong with the yaml file! Please try again."
-                            )
-            except ItemNotFound:
-                embedError = discord.Embed()
-                embedError.description = "It seems like that your account was not found. Please initialize your account first."
-                await ctx.respond(embed=embedError)
-        except Exception:
-            await ctx.respond(
-                embed=discord.Embed(
-                    description="Oops, something went wrong! Please try again."
-                )
-            )
+        await ctx.send_modal(createItem)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -164,7 +114,7 @@ class Marketplace(commands.Cog):
                         )
                         .add_field(
                             name="Owner",
-                            value=f"{await self.bot.fetch_user(dict(items)['owner'])}",
+                            value=dict(items)["owner_name"],
                         )
                         for items in mainObtain
                     ],
@@ -183,39 +133,35 @@ class Marketplace(commands.Cog):
     async def ecoMarketplaceSearch(
         self, ctx, *, name: Option(str, "The name of the item you wish to search")
     ):
-        """Search the marketplace"""
+        """Search the marketplace, and returns the first item found"""
         try:
-            mainGetItem = await utilsMain.getItem(
-                name=name, uri=MARKETPLACE_CONNECTION_URI
+            clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(
+                MARKETPLACE_CONNECTION_URI
             )
-            if len(mainGetItem) == 0:
+            await init_beanie(
+                database=clientGetItem.kumiko_marketplace,
+                document_models=[MarketplaceModel],
+            )
+            res = await MarketplaceModel.find(
+                MarketplaceModel.name == name
+            ).first_or_none()
+            if res is None:
                 raise NoItemsError
             else:
-                paginator = pages.Paginator(
-                    pages=[
-                        discord.Embed(
-                            title=dict(item)["name"],
-                            description=dict(item)["description"],
-                        )
-                        .add_field(
-                            name="Amount", value=dict(item)["amount"], inline=True
-                        )
-                        .add_field(name="Price", value=dict(item)["price"], inline=True)
-                        .add_field(
-                            name="Date Added",
-                            value=parser.isoparse(dict(item)["date_added"]).strftime(
-                                "%Y-%m-%d %H:%M:%S"
-                            ),
-                            inline=True,
-                        )
-                        .add_field(
-                            name="Owner",
-                            value=f"{await self.bot.fetch_user(dict(item)['owner'])}",
-                        )
-                        for item in mainGetItem
-                    ]
+                embed = discord.Embed()
+                embed.title = dict(res)["name"]
+                embed.description = dict(res)["description"]
+                embed.add_field(name="Amount", value=dict(res)["amount"])
+                embed.add_field(name="Price", value=dict(res)["price"])
+                embed.add_field(
+                    name="Date Added",
+                    value=parser.isoparse(dict(res)["date_added"]).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),
                 )
-                await paginator.respond(ctx.interaction, ephemeral=False)
+                embed.add_field(name="Owner", value=dict(res)["owner_name"])
+                embed.add_field(name="Updated Price?", value=dict(res)["updated_price"])
+                await ctx.respond(embed=embed)
         except NoItemsError:
             embedError = discord.Embed()
             embedError.description = (
@@ -231,33 +177,24 @@ class Marketplace(commands.Cog):
         embed = discord.Embed()
         embed.description = "Do your really want to delete all of your items listed on the marketplace? There is no going back after this."
         await ctx.respond(
-            embed=embed, view=MarketplacePurgeAllView(MARKETPLACE_CONNECTION_URI)
+            embed=embed,
+            view=MarketplacePurgeAllView(MARKETPLACE_CONNECTION_URI),
+            ephemeral=True,
         )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @ecoMarketplaceDelete.command(name="one")
-    async def ecoMarketplaceDeleteOne(
-        self, ctx, *, name: Option(str, "The name of the item")
-    ):
+    async def ecoMarketplaceDeleteOne(self, ctx):
         """Deletes the specified item within the marketplace"""
-        try:
-            mainChecker = await utilsMain.getItemUUIDWithName(
-                name=name, owner=ctx.user.id, uri=MARKETPLACE_CONNECTION_URI
-            )
-            if len(mainChecker) == 0:
-                raise NoItemsError
-            else:
-                for items in mainChecker:
-                    await utilsMain.delItemUUID(
-                        uuid=dict(items)["uuid"], uri=MARKETPLACE_CONNECTION_URI
-                    )
-                await ctx.respond("Item deleted from the marketplace")
-        except NoItemsError:
-            await ctx.respond("Sorry, but that item does not exist in the marketplace.")
+        deleteModal = MarketplaceDeleteOneItem(
+            mongo_uri=MARKETPLACE_CONNECTION_URI, title="Delete one item"
+        )
+        await ctx.send_modal(deleteModal)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+    # TODO: Redo purchase command to use Modals instead
     @eco_marketplace.command(name="purchase")
     async def ecoMarketplacePurchase(
         self,
@@ -407,72 +344,24 @@ class Marketplace(commands.Cog):
     async def updateItemMarketplaceAmount(
         self,
         ctx,
-        *,
-        name: Option(str, "The name of the item"),
-        amount: Option(int, "The new amount of items you wish to restock with"),
     ):
         """Restocks your current item on the marketplace"""
-        mainRes = await utilsMain.getUserItem(
-            name=name, user_id=ctx.user.id, uri=MARKETPLACE_CONNECTION_URI
+        mainModal = MarketplaceUpdateAmount(
+            mongo_uri=MARKETPLACE_CONNECTION_URI, title="Restock"
         )
-        try:
-            if len(mainRes) == 0:
-                raise ItemNotFound
-            else:
-                for item in mainRes:
-                    mainItem = dict(item)
-                    await utilsMain.updateItemAmount(
-                        uuid=mainItem["uuid"],
-                        amount=mainItem["amount"] + amount,
-                        uri=MARKETPLACE_CONNECTION_URI,
-                    )
-                    await ctx.respond(
-                        f'Successfully updated {mainItem["name"]} to {mainItem["amount"] + amount}'
-                    )
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "Sorry, it seems like the item you are trying to update does not exist in the Marketplace. Please try again."
-            await ctx.respond(embed=embedError)
+        await ctx.send_modal(mainModal)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @ecoMarketplaceUpdate.command(name="price")
-    async def updateItemMarketplacePrice(
-        self,
-        ctx,
-        *,
-        name: Option(str, "The name of the item to update"),
-        price: Option(int, "The new price you wish to set"),
-    ):
+    async def updateItemMarketplacePrice(self, ctx):
         """Updates the price of an item on the marketplace (Can only be used once)"""
-        mainRes = await utilsMain.getUserItem(
-            name=name, user_id=ctx.user.id, uri=MARKETPLACE_CONNECTION_URI
+        updateModal = MarketplaceUpdateItemPrice(
+            mongo_uri=MARKETPLACE_CONNECTION_URI, title="Update Price"
         )
-        try:
-            if len(mainRes) == 0:
-                raise ItemNotFound
-            else:
-                for item in mainRes:
-                    mainDictItem = dict(item)
-                    if mainDictItem["updated_price"] is False:
-                        await utilsMain.updateItemPrice(
-                            user_id=ctx.user.id,
-                            uuid=mainDictItem["uuid"],
-                            price=price,
-                            updated_price=True,
-                            uri=MARKETPLACE_CONNECTION_URI,
-                        )
-                        await ctx.respond(
-                            f"Successfully updated the price of the item {name}."
-                        )
-                    else:
-                        await ctx.respond(
-                            "Sadly you can't update the price of the item. You can only update it once."
-                        )
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "Sorry, it seems like the item you are trying to update does not exist in the Marketplace. Please try again."
-            await ctx.respond(embed=embedError)
+        await ctx.send_modal(updateModal)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 def setup(bot):
