@@ -71,6 +71,8 @@ And some backend changes w/ Docker support:
 - Move the models into a separate file and rename models
 - Completely optimized a ton of backend stuff with the Marketplace 
 - Use `discord.utils.utcnow()` instead of `datetime.utcnow()` for most creation timestamps
+- Merged all Docker Build workflows into one workflow
+- All `edge` tags will be based on Debian 11 instead of Alpine 3.16
 
 ## ✨ Additions
 - Kumiko's Quests System
