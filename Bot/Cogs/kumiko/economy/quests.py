@@ -37,13 +37,9 @@ class EcoQuests(commands.Cog):
         self.bot = bot
 
     quests = SlashCommandGroup(
-        "eco-quests",
-        "Commands for the quests feature in Kumiko",
-        guild_ids=[970159505390325842],
+        "eco-quests", "Commands for the quests feature in Kumiko"
     )
-    questsDelete = quests.create_subgroup(
-        "delete", "deletes quests", guild_ids=[970159505390325842]
-    )
+    questsDelete = quests.create_subgroup("delete", "deletes quests")
 
     @quests.command(name="create")
     @commands.cooldown(1, 7200, commands.BucketType.user)
@@ -175,7 +171,9 @@ class EcoQuests(commands.Cog):
         embed = discord.Embed()
         embed.description = "Are you sure you wish to delete that quest?"
         await ctx.respond(
-            embed=embed, view=QuestsDeleteOneConfirmView(uri=CONNECTION_URI)
+            embed=embed,
+            view=QuestsDeleteOneConfirmView(uri=CONNECTION_URI),
+            ephemeral=True,
         )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -279,71 +277,6 @@ class EcoQuests(commands.Cog):
         except ItemNotFound:
             embedError = discord.Embed()
             embedError.description = "It seems like there are no quests with that name (or you haven't created an account yet). Please try again"
-            await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @quests.command(name="reward")
-    async def giveQuestsReward(
-        self, ctx, *, name: Option(str, "The name of the quest")
-    ):
-        """Alow you to give the reward for the quest"""
-        questData = await questsUtil.getQuestViaName(name=name, uri=CONNECTION_URI)
-        userData = await userUtils.obtainUserData(
-            user_id=ctx.author.id, uri=USERS_CONNECTION_URI
-        )
-        try:
-            if len(questData) == 0 or len(userData) == 0:
-                raise ItemNotFound
-            else:
-                for items in userData:
-                    mainItems = dict(items)
-                    if int(dict(items)["rank"]) < 5:
-                        await ctx.respond(
-                            f"Sorry, but you can't use the quests feature since you are current rank is {mainItems['rank']}"
-                        )
-                    else:
-                        for questItem in questData:
-                            mainItem = dict(questItem)
-                            creatorID = mainItem["creator"]
-                            claimedUserID = mainItem["claimed_by"]
-                            totalPetalsCreator = (
-                                mainItems["lavender_petals"] - mainItem["reward"]
-                            )
-                            if claimedUserID is None:
-                                await ctx.respond(
-                                    "Sorry, you can't reward the quest, since someone has not claimed it yet. Please try again"
-                                )
-                            else:
-                                claimedUserData = await userUtils.obtainUserData(
-                                    user_id=claimedUserID, uri=USERS_CONNECTION_URI
-                                )
-                                for data in claimedUserData:
-                                    claimedUserCurrentPetals = dict(data)[
-                                        "lavender_petals"
-                                    ]
-                                claimedTotalReward = (
-                                    int(claimedUserCurrentPetals) + mainItem["reward"]
-                                )
-                                await userUtils.updateUserLavenderPetals(
-                                    user_id=creatorID,
-                                    lavender_petals=totalPetalsCreator,
-                                    uri=USERS_CONNECTION_URI,
-                                )
-                                await userUtils.updateUserLavenderPetals(
-                                    user_id=claimedUserID,
-                                    lavender_petals=claimedTotalReward,
-                                    uri=USERS_CONNECTION_URI,
-                                )
-                                await questsUtil.setQuestActiveStatus(
-                                    uuid=mainItem["uuid"],
-                                    active=False,
-                                    uri=CONNECTION_URI,
-                                )
-                                await ctx.respond("The quest has been rewarded")
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "It seems like there are no quests on the server (or you haven't made an account yet). Please try again"
             await ctx.respond(embed=embedError)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

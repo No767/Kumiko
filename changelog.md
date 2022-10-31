@@ -2,7 +2,7 @@
 
 This update brings a ton of new things, and a complete overhaul from what things used to be in `v0.3.0`. With this update, we have reached over 2000 commits for Kumiko, and merges all commits from upstream Rin v2.2.x. With a stable codebase for the economy system, tons of new features and critical improvements, Kumiko has never been better. In fact, this release of Kumiko fixes almost everything that `v0.3.0` had wrong. For details for upstream changes from Rin, please refer to the links below (latest point release):
 
-- Rin v2.2.7: https://github.com/No767/Rin/releases/tag/v2.2.7
+- Rin v2.2.8: https://github.com/No767/Rin/releases/tag/v2.2.8
 
 ## ✨ TD;LR
 
@@ -64,7 +64,9 @@ And some backend changes w/ Docker support:
 - Move all of the views into a separate package (`kumiko_ui_components`)
 - Force PostgreSQL to use 14 instead of 15 (waiting for `asyncpg` to support 15)
 - Use views and modals for updating, deleting, and creating quests
-
+- Use views and modals for deleting inventory items for GWS
+- Defer the interaction for gws wishes
+- Raise the max amount of wishes for the multiple wish to 10
 
 ## ✨ Additions
 - Kumiko's Quests System
@@ -94,6 +96,7 @@ And some backend changes w/ Docker support:
 - `POSTGRES_KUMIKO_DB` env var for `start.sh`
 - Class descriptions for all cogs
 - Use views and modals for updating, deleting, and creating quests
+- Use views and modals for deleting inventory items for GWS
 
 ## ➖ Removals
 
@@ -114,3 +117,4 @@ And some backend changes w/ Docker support:
 - Remove unloaded cogs and moved them to a different repo
 - `/eco-quests view ...` commands
 - Datetime Timeout command
+- `/eco-quests reward` command (too unbalanced and can be easily abused)

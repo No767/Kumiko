@@ -9,9 +9,10 @@ from economy_utils import (
     KumikoEcoUtils,
     KumikoQuestsUtils,
 )
+from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from rin_exceptions import ItemNotFound, NoItemsError
 
-from .modals import QuestsDeleteOneModal
+from .modals import GWSDeleteOneInv, QuestsDeleteOneModal
 
 
 class ALPurgeDataView(discord.ui.View):
@@ -378,7 +379,7 @@ class QuestsDeleteOneConfirmView(discord.ui.View):
     )
     async def button_callback(self, button, interaction):
         await interaction.response.send_modal(
-            QuestsDeleteOneModal(uri=self.uri, title="test")
+            QuestsDeleteOneModal(uri=self.uri, title="Delete a quest")
         )
 
     @discord.ui.button(
@@ -394,3 +395,88 @@ class QuestsDeleteOneConfirmView(discord.ui.View):
         )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class GWSDeleteOneInvView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(self, uri: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def button_callback(self, button, interaction):
+        await interaction.response.send_modal(
+            GWSDeleteOneInv(uri=self.uri, title="Delete a item")
+        )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def second_button_callback(self, button, interaction):
+        await interaction.response.send_message(
+            f"The action has been cancelled by the user {interaction.user.name}",
+            ephemeral=True,
+        )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class GWSPurgeAllInvView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(self, uri: str):
+        self.uri = uri
+        self.userInv = KumikoWSUserInvUtils()
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def button_callback(self, button, interaction):
+        checkUserInv = await self.userInv.getUserInv(
+            user_id=interaction.user.id, uri=self.uri
+        )
+        try:
+            if len(checkUserInv) == 0:
+                raise NoItemsError
+            else:
+                await self.userInv.purgeUserInv(
+                    user_id=interaction.user.id, uri=self.uri
+                )
+                await interaction.response.send_message(
+                    "Everything has been purged from your inventory. This cannot be recovered from.",
+                    ephemeral=True,
+                )
+        except NoItemsError:
+            await interaction.response.send_message(
+                "It seems like you don't have anything in your GWS inventory. Please try again",
+                ephemeral=True,
+            )
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def second_button_callback(self, button, interaction):
+        await interaction.response.send_message(
+            "Well glad you choose not to...", ephemeral=True
+        )

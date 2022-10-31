@@ -1,8 +1,15 @@
-from .modals import QuestsCreateModal, QuestsDeleteOneModal, QuestsUpdateTimeModal
+from .modals import (
+    GWSDeleteOneInv,
+    QuestsCreateModal,
+    QuestsDeleteOneModal,
+    QuestsUpdateTimeModal,
+)
 from .views import (
     AHPurgeAllView,
     ALPurgeDataView,
     CreateAccountView,
+    GWSDeleteOneInvView,
+    GWSPurgeAllInvView,
     MarketplacePurgeAllView,
     PurgeAccountView,
     QuestsDeleteOneConfirmView,
@@ -20,4 +27,7 @@ __all__ = [
     "QuestsDeleteOneConfirmView",
     "QuestsCreateModal",
     "QuestsUpdateTimeModal",
+    "GWSDeleteOneInv",
+    "GWSDeleteOneInvView",
+    "GWSPurgeAllInvView",
 ]
