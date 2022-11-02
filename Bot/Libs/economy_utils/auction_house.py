@@ -100,7 +100,7 @@ class KumikoAuctionHouseUtils:
         name: str,
         description: str,
         date_added: str,
-        base_price: int,
+        price: int,
         passed: bool,
         uri: str,
     ):
@@ -129,7 +129,7 @@ class KumikoAuctionHouseUtils:
                     name=name,
                     description=description,
                     date_added=date_added,
-                    price=base_price,
+                    price=price,
                     passed=passed,
                 )
                 session.add_all([auctionHouseItem])
@@ -212,7 +212,7 @@ class KumikoAuctionHouseUtils:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     async def selectAHItemUUID(self, name: str, uri: str):
-        """This only selects from the UUID Column and is used to grab the
+        """This only selects from the UUID Column and is used to grab the UUID of an item
 
         Args:
             name (str): The name of the AH Item
@@ -420,6 +420,75 @@ class KumikoAuctionHouseUtils:
                 )
                 res = await session.execute(selectItem)
                 return [row for row in res.scalars()]
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def selectUserItemNameFirst(self, user_id: int, name: str, uri: str):
+        """Selects the item via the name and just returns the first one found
+
+        Args:
+            user_id (int): Discord User ID
+            name (str): Item Name
+            uri (str): Connection URI
+        """
+        engine = create_async_engine(uri)
+
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selectItem = (
+                    select(models.AuctionHouseItem)
+                    .filter(models.AuctionHouseItem.name == name)
+                    .filter(models.AuctionHouseItem.user_id == user_id)
+                )
+                res = await session.scalars(selectItem)
+                return res.first()
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def selectFirstItem(self, name: str, uri: str):
+        """Gets and selects the first item from the given name
+
+        Args:
+            name (str): AH Item Name
+            uri (str): Connection URI
+        """
+        engine = create_async_engine(uri)
+
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selectItem = select(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.name == name
+                )
+                res = await session.scalars(selectItem)
+                return res.first()
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def selectFirstItemViaUUID(self, uuid: str, uri: str):
+        """Gets and selects the first item from the given UUID
+
+        Args:
+            uuid (str): AH Item UUID
+            uri (str): Connection URI
+        """
+        engine = create_async_engine(uri)
+
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selectItem = select(models.AuctionHouseItem).filter(
+                    models.AuctionHouseItem.uuid == uuid
+                )
+                res = await session.scalars(selectItem)
+                return res.first()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

@@ -1,4 +1,6 @@
 from .modals import (
+    AHCreateItemModal,
+    AHDeleteItemModal,
     GWSDeleteOneInv,
     MarketplaceAddItem,
     MarketplaceDeleteOneItem,
@@ -38,4 +40,6 @@ __all__ = [
     "MarketplaceDeleteOneItem",
     "MarketplaceUpdateAmount",
     "MarketplaceUpdateItemPrice",
+    "AHCreateItemModal",
+    "AHDeleteItemModal",
 ]

@@ -133,7 +133,9 @@ class AHPurgeAllView(discord.ui.View):
         emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
     )
     async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message("Well glad you choose not to...")
+        await interaction.response.send_message(
+            "The action has been canceled", ephemeral=True
+        )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

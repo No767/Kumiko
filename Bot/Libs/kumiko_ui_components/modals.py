@@ -4,7 +4,12 @@ import uuid
 import discord
 import uvloop
 from dateutil import parser
-from economy_utils import KumikoEcoUserUtils, KumikoEcoUtils, KumikoQuestsUtils
+from economy_utils import (
+    KumikoAuctionHouseUtils,
+    KumikoEcoUserUtils,
+    KumikoEcoUtils,
+    KumikoQuestsUtils,
+)
 from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from rin_exceptions import ItemNotFound
 
@@ -509,5 +514,159 @@ class MarketplaceUpdateItemPrice(discord.ui.Modal):
             embedError = discord.Embed()
             embedError.description = "Sorry, it seems like the item you are trying to update does not exist in the Marketplace. Please try again."
             await interaction.response.send_message(embed=embedError, ephemeral=True)
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class AHCreateItemModal(discord.ui.Modal):
+    def __init__(
+        self, uri: str, redis_host: str, redis_port: int, *args, **kwargs
+    ) -> None:
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+        self.redis_host = redis_host
+        self.redis_port = redis_port
+        self.ahUtils = KumikoAuctionHouseUtils()
+        self.userUtils = KumikoEcoUserUtils()
+
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here to create",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Description",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="What will the description be ?",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Price",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the new price of the item",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        try:
+            getUserInfo = await self.userUtils.getFirstUser(
+                user_id=interaction.user.id, uri=self.uri
+            )
+            if getUserInfo is None:
+                raise ItemNotFound
+            else:
+                userInfo = dict(getUserInfo)
+                if userInfo["rank"] < 25:
+                    await interaction.response.send_message(
+                        f"Sorry, you need to be at least rank 25 to create an item in the Auction House. Your rank is {userInfo['rank']}",
+                        ephemeral=True,
+                    )
+                elif userInfo["rank"] > 25 and userInfo["lavender_petals"] < 1500:
+                    await interaction.response.send_message(
+                        "it seems like you don't have enough money to list. You need at the very least 1500 Petals to list",
+                        ephemeral=True,
+                    )
+                elif userInfo["rank"] > 25 and userInfo["lavender_petals"] >= 1500:
+                    ahItemUUID = str(uuid.uuid4())
+                    await self.ahUtils.addAuctionHouseItem(
+                        uuid=ahItemUUID,
+                        user_id=interaction.user.id,
+                        name=self.children[0].value,
+                        description=self.children[1].value,
+                        date_added=discord.utils.utcnow().isoformat(),
+                        price=int(self.children[2].value),
+                        passed=False,
+                        uri=self.uri,
+                    )
+                    await self.ahUtils.setItemKey(
+                        key=ahItemUUID,
+                        value=self.children[2].value,
+                        db=0,
+                        ttl=86400,
+                        redis_server_ip=self.redis_host,
+                        redis_port=self.redis_port,
+                    )
+                    await interaction.response.send_message(
+                        "Successfully added the item to the auction house",
+                        ephemeral=True,
+                    )
+        except ItemNotFound:
+            await interaction.response.send_message(
+                "It seems like you don't have an account to begin with. Please go ahead and create one.",
+                ephemeral=True,
+            )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class AHDeleteItemModal(discord.ui.Modal):
+    def __init__(self, uri: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+        self.userUtils = KumikoEcoUserUtils()
+        self.ahUtils = KumikoAuctionHouseUtils()
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here to delete",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        try:
+            getUser = await self.userUtils.getFirstUser(
+                user_id=interaction.user.id, uri=self.uri
+            )
+            if getUser is None:
+                raise ItemNotFound
+            else:
+                if dict(getUser)["rank"] < 25:
+                    await interaction.response.send_message(
+                        f"Sorry, you need to be at least rank 25 to delete an item in the Auction House. Your rank is {dict(getUser)['rank']}",
+                        ephemeral=True,
+                    )
+                else:
+                    getUserItem = await self.ahUtils.selectUserItemNameFirst(
+                        user_id=interaction.user.id,
+                        name=self.children[0].value,
+                        uri=self.uri,
+                    )
+                    if getUserItem is None:
+                        await interaction.response.send_message(
+                            f"The item requested ({self.children[0].value}) could not be found. Please try again",
+                            ephemeral=True,
+                        )
+                    else:
+                        await self.ahUtils.deleteUserAHItem(
+                            user_id=interaction.user.id,
+                            uuid=dict(getUserItem)["uuid"],
+                            uri=self.uri,
+                        )
+                        await interaction.response.send_message(
+                            f"Successfully deleted {self.children[0].value} from the Auction House",
+                            ephemeral=True,
+                        )
+        except ItemNotFound:
+            await interaction.response.send_message(
+                "It seems like you don't have an account to begin with. Please go ahead and create one.",
+                ephemeral=True,
+            )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

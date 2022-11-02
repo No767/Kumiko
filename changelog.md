@@ -26,6 +26,7 @@ And some backend changes w/ Docker support:
 - **Switched from Pipenv to Poetry**
 - **Remove support for prefixed commands**
 - **Remove legacy help cog**
+- **Remove the use of RabbitMQ**
 
 ## 🛠️ Changes
 
@@ -73,6 +74,8 @@ And some backend changes w/ Docker support:
 - Use `discord.utils.utcnow()` instead of `datetime.utcnow()` for most creation timestamps
 - Merged all Docker Build workflows into one workflow
 - All `edge` tags will be based on Debian 11 instead of Alpine 3.16
+- Use Modals for adding, and deleting items from the Auction House
+- Selections and bids will be now stored on Redis instead
 
 ## ✨ Additions
 - Kumiko's Quests System
@@ -127,3 +130,5 @@ And some backend changes w/ Docker support:
 - `/eco-quests reward` command (too unbalanced and can be easily abused)
 - Removed unused coroutines in the `eco_main.py` file 
 - Remove Marketplace filters
+- RabbitMQ Consumer
+- AH RabbitMQ Bidder
