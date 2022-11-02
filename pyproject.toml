@@ -16,8 +16,6 @@ lxml = "^4.9.1"
 asyncpraw = "^7.6.0"
 asyncpg = "^0.27.0"
 uvloop = "^0.17.0"
-cchardet = "^2.1.7"
-beautifulsoup4 = "^4.11.1"
 pysimdjson = "^5.0.2"
 gql = { extras = ["aiohttp"], version = "^3.4.0" }
 python-dateutil = "^2.8.2"
@@ -25,12 +23,10 @@ rin-exceptions = "^1.0.3"
 beanie = "^1.13.1"
 numpy = "^1.23.4"
 PyYAML = "^6.0"
-aiormq = "^6.4.2"
 py-cord = {version = "2.2.2", extras = ["voice"]}
-hiredis = "^2.0.0"
-redis = "^4.3.4"
-asyncio-redis = "^0.16.0"
 pytimeparse = "^1.1.8"
+coredis = "^4.8.2"
+charset-normalizer = "^2.1.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"

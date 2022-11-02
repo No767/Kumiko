@@ -11,17 +11,6 @@ services:
     ports:
       - 5432:5432
 
-  rabbitmq:
-    container_name: Kumiko-RabbitMQ-Dev
-    image: rabbitmq:3-management
-    hostname: kumiko_prod
-    restart: always
-    ports:
-      - 5672:5672
-      - 15672:15672
-    env_file:
-      - .env
-
   mongodb:
     container_name: Kumiko-MongoDB-Dev
     image: mongo:latest

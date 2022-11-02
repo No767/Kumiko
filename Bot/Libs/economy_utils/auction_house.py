@@ -1,7 +1,7 @@
 import asyncio
 
-import asyncio_redis
 import uvloop
+from coredis import Redis
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -25,32 +25,10 @@ class KumikoAuctionHouseUtils:
             redis_server_ip (str): The Redis server IP
             redis_port (int): The Redis server port
         """
-        conn = await asyncio_redis.Pool.create(
-            host=redis_server_ip, port=int(redis_port), db=db
-        )
-        getKey = await conn.get(key)
-        conn.close()
-        return getKey
+        conn = Redis(host=redis_server_ip, port=int(redis_port), db=db)
+        return await conn.get(key)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    async def scanKeys(
-        self, match: str, db: int, redis_server_ip: str, redis_port: int
-    ):
-        """Scans all of the values from the Redis database
-
-        Args:
-            match (str): Filter for keys by pattern
-            db (int): The database to scan
-            redis_server_ip (str): The Redis server IP
-            redis_port (int): The Redis server port
-        """
-        conn = await asyncio_redis.Pool.create(
-            host=redis_server_ip, port=int(redis_port), db=db
-        )
-        scanKeys = await conn.keys_aslist(pattern=match)
-        conn.close()
-        return scanKeys
 
     async def setItemKey(
         self,
@@ -71,11 +49,8 @@ class KumikoAuctionHouseUtils:
             redis_server_ip (str): The Redis server IP
             redis_port (int): The Redis server port
         """
-        conn = await asyncio_redis.Pool.create(
-            host=redis_server_ip, port=int(redis_port), db=db
-        )
-        await conn.set(key, str(value), expire=ttl)
-        conn.close()
+        conn = Redis(host=redis_server_ip, port=int(redis_port), db=db)
+        await conn.set(key=key, value=str(value), ex=ttl)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

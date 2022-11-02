@@ -76,6 +76,7 @@ And some backend changes w/ Docker support:
 - All `edge` tags will be based on Debian 11 instead of Alpine 3.16
 - Use Modals for adding, and deleting items from the Auction House
 - Selections and bids will be now stored on Redis instead
+- Use coredis as the redis client instead of asyncio_redis
 
 ## ✨ Additions
 - Kumiko's Quests System
@@ -132,3 +133,6 @@ And some backend changes w/ Docker support:
 - Remove Marketplace filters
 - RabbitMQ Consumer
 - AH RabbitMQ Bidder
+- `asyncio_redis` package
+- `aiormq` package
+- `ccharet` package
