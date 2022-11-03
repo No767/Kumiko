@@ -15,7 +15,6 @@ If running standalone, you'll also need these:
   - [PostgreSQL](https://www.postgresql.org/)
   - [MongoDB](https://www.mongodb.com/)
   - [Redis](https://redis.io/)
-  - [RabbitMQ](https://www.rabbitmq.com/)
 
 
 > **Note**
