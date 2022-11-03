@@ -12,6 +12,7 @@ tasks:
             poetry env use 3.10
             poetry install
             poetry run pre-commit install
+            sudo docker compose -f docker-compose-dev.yml up -d
 
 github:
       prebuilds:
