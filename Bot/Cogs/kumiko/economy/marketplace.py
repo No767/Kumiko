@@ -1,7 +1,5 @@
 import asyncio
 import os
-import uuid
-from datetime import datetime
 
 import discord
 import motor.motor_asyncio
@@ -20,6 +18,7 @@ from economy_utils import (
 from kumiko_ui_components import (
     MarketplaceAddItem,
     MarketplaceDeleteOneItem,
+    MarketplacePurchaseItemModal,
     MarketplacePurgeAllView,
     MarketplaceUpdateAmount,
     MarketplaceUpdateItemPrice,
@@ -44,7 +43,6 @@ MARKETPLACE_CONNECTION_URI = f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{
 utilsMain = KumikoEcoUtils()
 utilsUser = KumikoEcoUserUtils()
 userInvUtils = KumikoUserInvUtils()
-today = datetime.utcnow()
 
 
 class Marketplace(commands.Cog):
@@ -194,149 +192,15 @@ class Marketplace(commands.Cog):
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # TODO: Redo purchase command to use Modals instead
     @eco_marketplace.command(name="purchase")
-    async def ecoMarketplacePurchase(
-        self,
-        ctx,
-        *,
-        item: Option(str, "The name of the item to purchase (case-sensitive)"),
-        amount: Option(int, "The amount of items to purchase"),
-        price: Option(int, "The price of the item. Note that you have to pay in full"),
-    ):
+    async def ecoMarketplacePurchase(self, ctx):
         """Purchases an item from the marketplace"""
-        try:
-            beforePurchasing = await utilsMain.beforePurchase(
-                owner_id=ctx.user.id, item_name=item, uri=MARKETPLACE_CONNECTION_URI
-            )
-
-            if len(beforePurchasing) == 0:
-                raise NoItemsError
-            else:
-                for mainItems in beforePurchasing:
-                    items = dict(mainItems)
-                    checkIfUserHasItem = await userInvUtils.checkIfItemInUserInv(
-                        user_id=ctx.author.id,
-                        uuid=items["uuid"],
-                        uri=USERS_CONNECTION_URI,
-                    )
-                    itemAuth = await utilsMain.purchaseAuth(
-                        uuid=items["uuid"], uri=MARKETPLACE_CONNECTION_URI
-                    )
-
-                    for mainAuthItem in itemAuth:
-                        auth = dict(mainAuthItem)
-
-                        if auth["uuid"] == items["uuid"] and int(items["price"]) == int(
-                            price
-                        ):
-                            if int(amount) > int(items["amount"]):
-                                await ctx.respond(
-                                    f"Sorry, but there is only {items['amount']} {items['name']} within the listing. You have requested more than that, so therefore the transaction is denied. Please try again."
-                                )
-                            elif int(amount) < int(items["amount"]):
-                                if len(checkIfUserHasItem) == 0:
-                                    totalAmountLeft = int(items["amount"]) - int(amount)
-                                    await utilsMain.updateItemAmount(
-                                        uuid=items["uuid"],
-                                        amount=totalAmountLeft,
-                                        uri=MARKETPLACE_CONNECTION_URI,
-                                    )
-                                    await userInvUtils.insertItem(
-                                        user_uuid=str(uuid.uuid4()),
-                                        user_id=ctx.author.id,
-                                        date_acquired=datetime.utcnow().isoformat(),
-                                        uuid=items["uuid"],
-                                        name=items["name"],
-                                        description=items["description"],
-                                        amount=amount,
-                                        uri=USERS_CONNECTION_URI,
-                                    )
-                                    await ctx.respond(
-                                        f"Successfully purchased {amount} {items['name']} for {items['price']} coins."
-                                    )
-                                else:
-                                    for userInvItem in checkIfUserHasItem:
-                                        mainUserInvItem = dict(userInvItem)
-                                        totalAmountRemaining = int(
-                                            items["amount"]
-                                        ) - int(amount)
-                                        amountAddingToUser = (
-                                            mainUserInvItem["amount"] + amount
-                                        )
-                                        await utilsMain.updateItemAmount(
-                                            uuid=items["uuid"],
-                                            amount=totalAmountRemaining,
-                                            uri=MARKETPLACE_CONNECTION_URI,
-                                        )
-                                        await userInvUtils.updateItemAmount(
-                                            user_id=ctx.user.id,
-                                            uuid=items["uuid"],
-                                            amount=amountAddingToUser,
-                                            uri=USERS_CONNECTION_URI,
-                                        )
-                                        await ctx.respond(
-                                            f"Successfully purchased {amount} {items['name']} for {items['price']} coins. You currently have {amountAddingToUser} {items['name']} in your inventory."
-                                        )
-
-                            elif int(amount) == int(items["amount"]):
-                                if len(checkIfUserHasItem) == 0:
-                                    await userInvUtils.insertItem(
-                                        user_uuid=str(uuid.uuid4()),
-                                        user_id=ctx.user.id,
-                                        date_acquired=datetime.utcnow().isoformat(),
-                                        uuid=items["uuid"],
-                                        name=items["name"],
-                                        description=items["description"],
-                                        amount=amount,
-                                        uri=USERS_CONNECTION_URI,
-                                    )
-                                    await utilsMain.updateItemAmount(
-                                        uuid=items["uuid"],
-                                        amount=int(amount)
-                                        - int(
-                                            items["amount"],
-                                            uri=MARKETPLACE_CONNECTION_URI,
-                                        ),
-                                    )
-                                    await ctx.respond(
-                                        f"Successfully purchased {amount} {items['name']} for {items['price']} coins."
-                                    )
-                                else:
-                                    for userInvItem3 in checkIfUserHasItem:
-                                        mainUserInvItem = dict(userInvItem3)
-                                        totalAmountRemaining = int(
-                                            items["amount"]
-                                        ) - int(amount)
-                                        amountAddingToUser = (
-                                            mainUserInvItem["amount"] + amount
-                                        )
-                                        await utilsMain.updateItemAmount(
-                                            uuid=items["uuid"],
-                                            amount=totalAmountRemaining,
-                                            uri=MARKETPLACE_CONNECTION_URI,
-                                        )
-                                        await userInvUtils.updateItemAmount(
-                                            user_id=ctx.user.id,
-                                            uuid=items["uuid"],
-                                            amount=amountAddingToUser,
-                                            uri=USERS_CONNECTION_URI,
-                                        )
-                                        await ctx.respond(
-                                            f"Successfully purchased {amount} {items['name']} for {items['price']} coins. You currently have {amountAddingToUser} {items['name']} in your inventory."
-                                        )
-                            else:
-                                await ctx.respond(
-                                    f'Unable to purchase {items["name"]} for {items["price"]} coins. Please try again'
-                                )
-                        else:
-                            await ctx.respond(
-                                f"Unable to purchase {items['name']} for {items['price']} coins. This is due to either the UUID's not matching up, or the incorrect price was given. Please try again"
-                            )
-        except NoItemsError:
-            embedNoItemsError = discord.Embed()
-            embedNoItemsError.description = "Sorry, but that item does not exist in the marketplace. Maybe try redoing your search? It is case sensitive so..."
-            await ctx.respond(embed=embedNoItemsError)
+        purchaseModal = MarketplacePurchaseItemModal(
+            mongo_uri=MARKETPLACE_CONNECTION_URI,
+            postgres_uri=USERS_CONNECTION_URI,
+            title="Purchase an item",
+        )
+        await ctx.send_modal(purchaseModal)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

@@ -9,6 +9,7 @@ from economy_utils import (
     KumikoEcoUserUtils,
     KumikoEcoUtils,
     KumikoQuestsUtils,
+    KumikoUserInvUtils,
 )
 from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from rin_exceptions import ItemNotFound
@@ -668,5 +669,117 @@ class AHDeleteItemModal(discord.ui.Modal):
                 "It seems like you don't have an account to begin with. Please go ahead and create one.",
                 ephemeral=True,
             )
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class MarketplacePurchaseItemModal(discord.ui.Modal):
+    def __init__(self, mongo_uri: str, postgres_uri: str, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.mongo_uri = mongo_uri
+        self.postgres_uri = postgres_uri
+        self.mUtils = KumikoEcoUtils()
+        self.userUtils = KumikoEcoUserUtils()
+        self.userInvUtils = KumikoUserInvUtils()
+        self.add_item(
+            discord.ui.InputText(
+                label="Item Name",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item name here to purchase",
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Amount",
+                style=discord.InputTextStyle.short,
+                min_length=1,
+                max_length=255,
+                required=True,
+                placeholder="Type in the item amount to purchase",
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        getUserInv = await self.userInvUtils.findItem(
+            user_id=interaction.user.id,
+            item_name=self.children[0].value,
+            uri=self.postgres_uri,
+        )
+        getUser = await self.userUtils.getFirstUser(
+            user_id=interaction.user.id, uri=self.postgres_uri
+        )
+        getRequestedItem = await self.mUtils.getRequestedPurchaseItem(
+            name=self.children[0].value, uri=self.mongo_uri
+        )
+
+        if getRequestedItem is None:
+            await interaction.followup.send(
+                f"The item {self.children[0].value} could not be found. Please try again",
+                ephemeral=True,
+            )
+        elif getUser is None:
+            await interaction.followup.send(
+                "It seems like you forgot to create an account first. Please do that first",
+                ephemeral=True,
+            )
+        else:
+            stock = dict(getRequestedItem)["amount"]
+            requestedAmount = int(self.children[1].value)
+            totalRemaining = stock - requestedAmount
+            totalToDeduct = int(dict(getUser)["lavender_petals"]) - int(
+                dict(getRequestedItem)["price"]
+            )
+
+            if stock <= 0:
+                await interaction.followup.send(
+                    f"The item {self.children[0].value} is out of stock. Please try again later",
+                    ephemeral=True,
+                )
+            elif requestedAmount > stock:
+                await interaction.followup.send(
+                    f"The amount requested ({requestedAmount}) is more than the stock ({stock}). Please try again",
+                    ephemeral=True,
+                )
+            elif requestedAmount == stock:
+                await self.userUtils.updateUserLavenderPetals(
+                    user_id=interaction.user.id,
+                    lavender_petals=totalToDeduct,
+                    uri=self.postgres_uri,
+                )
+                purchaseItem = await self.mUtils.purchaseItem(
+                    user_inv=getUserInv,
+                    requested_item=getRequestedItem,
+                    current_stock=totalRemaining if totalRemaining > 0 else 0,
+                    requested_amount=self.children[1].value,
+                    user_id=interaction.user.id,
+                    mongo_uri=self.mongo_uri,
+                    postgres_uri=self.postgres_uri,
+                )
+                await interaction.followup.send(purchaseItem, ephemeral=True)
+            elif requestedAmount < stock:
+                await self.userUtils.updateUserLavenderPetals(
+                    user_id=interaction.user.id,
+                    lavender_petals=totalToDeduct,
+                    uri=self.postgres_uri,
+                )
+                purchaseItem = await self.mUtils.purchaseItem(
+                    user_inv=getUserInv,
+                    requested_item=getRequestedItem,
+                    current_stock=totalRemaining if totalRemaining > 0 else 0,
+                    requested_amount=self.children[1].value,
+                    user_id=interaction.user.id,
+                    mongo_uri=self.mongo_uri,
+                    postgres_uri=self.postgres_uri,
+                )
+                await interaction.followup.send(purchaseItem, ephemeral=True)
+            else:
+                await interaction.followup.send(
+                    "The transaction was not successful. Please try again",
+                    ephemeral=True,
+                )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

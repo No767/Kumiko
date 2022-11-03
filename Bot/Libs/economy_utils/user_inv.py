@@ -145,3 +145,27 @@ class KumikoUserInvUtils:
                 return [row for row in res.scalars()]
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def findItem(self, user_id: int, item_name: str, uri: str):
+        """Finds one item from the user inv that is requested
+
+        Args:
+            user_id (int): Discord User ID
+            item_name (str): Item name
+            uri (str): Connection URI
+        """
+        engine = create_async_engine(uri)
+        async_session = sessionmaker(
+            engine, expire_on_commit=False, class_=AsyncSession
+        )
+        async with async_session() as session:
+            async with session.begin():
+                selectItem = (
+                    select(models.UserInv)
+                    .filter(models.UserInv.user_id == user_id)
+                    .filter(models.UserInv.name == item_name)
+                )
+                res = await session.execute(selectItem)
+                return res.first()
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

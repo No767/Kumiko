@@ -77,6 +77,7 @@ And some backend changes w/ Docker support:
 - Use Modals for adding, and deleting items from the Auction House
 - Selections and bids will be now stored on Redis instead
 - Use coredis as the redis client instead of asyncio_redis
+- Completely revamp Kumiko's purchasing command and system for the Marketplace
 
 ## ✨ Additions
 - Kumiko's Quests System
