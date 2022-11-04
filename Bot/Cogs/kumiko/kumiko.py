@@ -8,7 +8,7 @@ import uvloop
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
 
-VERSION = "v0.4.0-b1"
+VERSION = "v0.4.0"
 
 
 class Kumiko(commands.Cog):
