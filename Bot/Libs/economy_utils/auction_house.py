@@ -112,124 +112,6 @@ class KumikoAuctionHouseUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def obtainUserAHItem(self, user_id: int, uri: str):
-        """Obtains all of the items that a user has on the Auction House.
-        These coroutines should be used sparingly, since most of the time
-        it's better to pull it off from Redis instead
-
-        Args:
-            user_id (int): Discord User ID
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                selectItem = select(models.AuctionHouseItem).filter(
-                    models.AuctionHouseItem.user_id == user_id
-                )
-                res = await session.execute(selectItem)
-                return [row for row in res.scalars()]
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    async def updateAHItem(self, uuid: str, price: int, uri: str):
-        """Updates the price of an item on the Auction House.
-        This should be used sparingly, since this will only
-        commit it into the DB for persistance storage
-
-        Args:
-            uuid (str): Auction House Item UUID
-            price (int): The new price of the item
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                updateItem = update(
-                    models.AuctionHouseItem,
-                    values={models.AuctionHouseItem.price: price},
-                ).filter(models.AuctionHouseItem.uuid == uuid)
-                await session.execute(updateItem)
-                await session.commit()
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    async def deleteAHItem(self, uuid: str, uri: str):
-        """Deletes an AH item. This should only be used
-        after the time limit is up. This will purge the item
-        out of the database
-
-        Args:
-            uuid (str): Auction House Item UUID
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                delItem = delete(models.AuctionHouseItem).filter(
-                    models.AuctionHouseItem.uuid == uuid
-                )
-                await session.execute(delItem)
-                await session.commit()
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    async def selectAHItemUUID(self, name: str, uri: str):
-        """This only selects from the UUID Column and is used to grab the UUID of an item
-
-        Args:
-            name (str): The name of the AH Item
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                selectItem = select(models.AuctionHouseItem.uuid).filter(
-                    models.AuctionHouseItem.name == name
-                )
-                res = await session.execute(selectItem)
-                return [row for row in res.scalars()]
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    async def selectAHItemPrice(self, uuid: str, uri: str):
-        """Just grabs the price of the AH Item given
-
-        Args:
-            uuid (str): AH Item UUID
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                selectItem = select(models.AuctionHouseItem.price).filter(
-                    models.AuctionHouseItem.uuid == uuid
-                )
-                res = await session.execute(selectItem)
-                return [row for row in res.scalars()]
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     async def obtainItemUUIDAuth(self, user_id: int, uri: str):
         """Obtains the UUID of an AH Item for auth purposes
 
@@ -373,31 +255,6 @@ class KumikoAuctionHouseUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def selectUserItemViaName(self, user_id: int, name: str, uri: str):
-        """Obtains an item via the name belonging to the user
-
-        Args:
-            user_id (int): Discord User ID
-            name (str): Name of the item
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                selectItem = (
-                    select(models.AuctionHouseItem)
-                    .filter(models.AuctionHouseItem.name == name)
-                    .filter(models.AuctionHouseItem.user_id == user_id)
-                )
-                res = await session.execute(selectItem)
-                return [row for row in res.scalars()]
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     async def selectUserItemNameFirst(self, user_id: int, name: str, uri: str):
         """Selects the item via the name and just returns the first one found
 
@@ -464,24 +321,5 @@ class KumikoAuctionHouseUtils:
                 )
                 res = await session.scalars(selectItem)
                 return res.first()
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    async def selectAllItemsUUID(self, uri: str):
-        """Selects all of the UUID's on the DB
-
-        Args:
-            uri (str): DB Connection URI
-        """
-        engine = create_async_engine(uri)
-
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                selItem = select(models.AuctionHouseItem.uuid)
-                res = await session.execute(selItem)
-                return [row for row in res.scalars()]
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

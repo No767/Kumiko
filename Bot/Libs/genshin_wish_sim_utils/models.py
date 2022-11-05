@@ -32,16 +32,18 @@ class UserWSInv(Base):
 class UserWS(Base):
     __tablename__ = "user_ws"
     user_id = Column(BigInteger, primary_key=True)
+    username = Column(String)
     pulls = Column(BigInteger)
     date_joined = Column(String)
 
     def __iter__(self):
         yield "user_id", self.user_id
+        yield "username", self.username
         yield "pulls", self.pulls
         yield "date_joined", self.date_joined
 
     def __repr__(self):
-        return f"UserWS(user_id={self.user_id!r}, pulls={self.pulls!r}, date_joined={self.date_joined!r})"
+        return f"UserWS(user_id={self.user_id!r}, username={self.username!r}, pulls={self.pulls!r}, date_joined={self.date_joined!r})"
 
 
 class WSData(Base):

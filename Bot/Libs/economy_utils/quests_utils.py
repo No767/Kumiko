@@ -124,35 +124,6 @@ class KumikoQuestsUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def updateQuest(
-        self, uuid: str, reward: int, new_end_datetime: str, uri: str
-    ) -> None:
-        """Updates a quest with the new date and time and
-
-        Args:
-            uuid (str): Quests Item UUID
-            reward (int): Quest Reward
-            new_end_datetime (str): The new date and time
-            uri (str): Connection URI
-        """
-        engine = create_async_engine(uri)
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                updateItem = update(
-                    models.KumikoQuests,
-                    values={
-                        models.KumikoQuests.end_datetime: new_end_datetime,
-                        models.KumikoQuests.reward: reward,
-                    },
-                ).filter(models.KumikoQuests.uuid == uuid)
-                await session.execute(updateItem)
-                await session.commit()
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     async def updateDatetimeQuest(
         self, uuid: str, new_end_datetime: str, uri: str
     ) -> None:

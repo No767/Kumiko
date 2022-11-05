@@ -79,6 +79,7 @@ And some backend changes w/ Docker support:
 - Use coredis as the redis client instead of asyncio_redis
 - Completely revamp Kumiko's purchasing command and system for the Marketplace
 - Use Python 3.10.8 as the default 
+- If the user profile for GWS isn't there, the wish commands will generate a new one for that user
 
 ## ✨ Additions
 - Kumiko's Quests System
@@ -138,3 +139,4 @@ And some backend changes w/ Docker support:
 - `asyncio_redis` package
 - `aiormq` package
 - `ccharet` package
+- Unused coroutines (this is to reduce the amount of code that Kumiko ships with)

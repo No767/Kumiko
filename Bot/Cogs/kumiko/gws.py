@@ -14,7 +14,7 @@ from genshin_wish_sim_utils import (
     KumikoWSUtils,
 )
 from kumiko_ui_components import GWSDeleteOneInvView, GWSPurgeAllInvView
-from rin_exceptions import NoItemsError
+from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
 
@@ -45,22 +45,34 @@ class GWS(commands.Cog):
     async def gwsWishOne(self, ctx: discord.ApplicationContext):
         """Allows you to wish for one item"""
         await ctx.defer()
-        getUserProfile = await wsUserUtils.getUserProfile(
+        getUserProfile = await wsUserUtils.getFirstUser(
             user_id=ctx.author.id, uri=WS_CONNECTION_URI
         )
         starRank = 3
-        for itemsMain in getUserProfile:
-            if int(dict(itemsMain)["pulls"]) % 10 == 0:
-                starRank = 4
-            elif int(dict(itemsMain)["pulls"]) % 90 == 0:
-                starRank = 5
-            else:
-                starRank = await wsUtils.determineStarRank()
-            totalAmount = int(dict(itemsMain)["pulls"]) + 1
-            await wsUserUtils.updateUserPullCount(
-                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+
+        if getUserProfile is None:
+            await wsUserUtils.insertNewUser(
+                user_id=ctx.user.id,
+                username=ctx.user.name,
+                pulls=0,
+                date_joined=discord.utils.utcnow().isoformat(),
+                uri=WS_CONNECTION_URI,
+            )
+            getUserProfile = await wsUserUtils.getFirstUser(
+                user_id=ctx.author.id, uri=WS_CONNECTION_URI
             )
 
+        if int(dict(getUserProfile[0])["pulls"]) % 10 == 0:
+            starRank = 4
+        elif int(dict(getUserProfile[0])["pulls"]) % 90 == 0:
+            starRank = 5
+        else:
+            starRank = await wsUtils.determineStarRank()
+
+        totalAmount = int(dict(getUserProfile[0])["pulls"]) + 1
+        await wsUserUtils.updateUserPullCount(
+            user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+        )
         mainRes = await wsUtils.getRandomWSArray(
             star_rank=starRank, uri=WS_CONNECTION_URI
         )
@@ -132,23 +144,36 @@ class GWS(commands.Cog):
             int, "The number of wishes to perform", min_value=1, max_value=10
         ),
     ):
-        """Allows you to wish for up to 3 items at once"""
+        """Allows you to wish for up to 10 items at once"""
         await ctx.defer()
-        getUserProfile = await wsUserUtils.getUserProfile(
+        getUserProfile = await wsUserUtils.getFirstUser(
             user_id=ctx.author.id, uri=WS_CONNECTION_URI
         )
         starRank = 3
-        for itemsMain in getUserProfile:
-            if int(dict(itemsMain)["pulls"]) % 10 == 0:
-                starRank = 4
-            elif int(dict(itemsMain)["pulls"]) % 90 == 0:
-                starRank = 5
-            else:
-                starRank = await wsUtils.determineStarRank()
-            totalAmount = int(dict(itemsMain)["pulls"]) + num_of_wishes
-            await wsUserUtils.updateUserPullCount(
-                user_id=ctx.author.id, amount=totalAmount, uri=WS_CONNECTION_URI
+        if getUserProfile is None:
+            await wsUserUtils.insertNewUser(
+                user_id=ctx.user.id,
+                username=ctx.user.name,
+                pulls=0,
+                date_joined=discord.utils.utcnow().isoformat(),
+                uri=WS_CONNECTION_URI,
             )
+            getUserProfile = await wsUserUtils.getFirstUser(
+                user_id=ctx.author.id, uri=WS_CONNECTION_URI
+            )
+
+        if int(dict(getUserProfile[0])["pulls"]) % 10 == 0:
+            starRank = 4
+        elif int(dict(getUserProfile[0])["pulls"]) % 90 == 0:
+            starRank = 5
+        else:
+            starRank = await wsUtils.determineStarRank()
+
+        totalAmount = int(dict(getUserProfile[0])["pulls"]) + num_of_wishes
+
+        await wsUserUtils.updateUserPullCount(
+            user_id=ctx.user.id, amount=totalAmount, uri=WS_CONNECTION_URI
+        )
         mainRes = await wsUtils.getRandomWSItemMultiple(
             amount=num_of_wishes, star_rank=starRank, uri=WS_CONNECTION_URI
         )
@@ -288,23 +313,31 @@ class GWS(commands.Cog):
     @gws.command(name="profile")
     async def getUserProfile(self, ctx):
         """Gets your GWS profile"""
-        mainRes = await wsUserUtils.getUserProfile(
+        mainRes = await wsUserUtils.getFirstUser(
             user_id=ctx.author.id, uri=WS_CONNECTION_URI
         )
-        embed = discord.Embed()
-        for items in mainRes:
-            getUserInfo = await self.bot.get_or_fetch_user(dict(items)["user_id"])
-            embed.title = getUserInfo.name
-            embed.add_field(name="Pulls", value=dict(items)["pulls"], inline=True)
-            embed.add_field(
-                name="Date Joined",
-                value=parser.isoparse(dict(items)["date_joined"]).strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                ),
-                inline=True,
-            )
-            embed.set_thumbnail(url=getUserInfo.display_avatar.url)
-        await ctx.respond(embed=embed, ephemeral=True)
+        try:
+            if mainRes is None:
+                raise ItemNotFound
+            else:
+                user = dict(mainRes[0])
+                getUserInfo = await self.bot.get_or_fetch_user(user["user_id"])
+                embed = discord.Embed()
+                embed.title = f"{user['username']}'s Profile"
+                embed.add_field(name="Pulls", value=user["pulls"], inline=True)
+                embed.add_field(
+                    name="Date Joined",
+                    value=parser.isoparse(user["date_joined"]).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    ),
+                    inline=True,
+                )
+                embed.set_thumbnail(url=getUserInfo.display_avatar.url)
+                await ctx.respond(embed=embed, ephemeral=True)
+        except ItemNotFound:
+            embedError = discord.Embed()
+            embedError.description = "Sorry, but it seems like you don't have a profile. Make a pull to create one"
+            await ctx.respond(embed=embedError, ephemeral=True)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

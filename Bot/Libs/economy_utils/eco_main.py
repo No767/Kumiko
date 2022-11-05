@@ -8,7 +8,7 @@ from beanie import init_beanie
 from discord.utils import utcnow
 from sqlalchemy.engine.row import Row
 
-from .marketplace_models import ItemAuthProject, MarketplaceModel, PurchaseProject
+from .marketplace_models import MarketplaceModel
 from .user_inv import KumikoUserInvUtils
 
 
@@ -17,7 +17,6 @@ class KumikoEcoUtils:
         self.self = self
         self.userInvUtils = KumikoUserInvUtils()
 
-    # Used: 1
     async def ins(
         self,
         uuid: str,
@@ -64,7 +63,6 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # Used: 1
     async def obtain(self, uri: str):
         """Obtains all of the items from the marketplace
 
@@ -83,7 +81,6 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # Used: 3
     async def obtainUserItem(self, name: str, user_id: str, uri: str):
         """Obtains the user item from the database
 
@@ -107,81 +104,6 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # Used (old): 1
-    async def beforePurchase(self, owner_id: int, item_name: str, uri: str):
-        """Obtains the needed data before making the purchase of said item
-
-        Args:
-            owner_id (int): Owner's Discord ID
-            item_name (str): The name of the item
-            uri (str): MongoDB Connection URI
-
-        Returns:
-            List: List containing the data of the item(s) found
-        """
-        clientPurchase = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        await init_beanie(
-            database=clientPurchase.kumiko_marketplace,
-            document_models=[MarketplaceModel],
-        )
-        entryPurchaseInit = (
-            await MarketplaceModel.find(
-                MarketplaceModel.name == item_name, MarketplaceModel.owner == owner_id
-            )
-            .project(PurchaseProject)
-            .limit(1)
-            .to_list()
-        )
-        return entryPurchaseInit
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    # Used (old): 1
-    async def purchaseAuth(self, uuid: str, uri: str):
-        """Obtains the UUID for the item, which will authorize the transaction of the item
-
-        Args:
-            uuid (str): Marketplace Item UUID
-            uri (str): MongoDB Connection URI
-
-        Returns:
-            List: List containing only the UUID of the item(s) found
-        """
-        clientItemAuth = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        await init_beanie(
-            database=clientItemAuth.kumiko_marketplace,
-            document_models=[MarketplaceModel],
-        )
-        entryItemAuth = (
-            await MarketplaceModel.find(MarketplaceModel.uuid == uuid)
-            .project(ItemAuthProject)
-            .to_list()
-        )
-        return entryItemAuth
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    # Used (old): 4
-    async def updateItemAmount(self, uuid: str, amount: int, uri: str):
-        """Update the amount of the item given
-
-        Args:
-            uuid (str): The UUID of the item in the Marketplace
-            amount (int): The amount of the item in the Marketplace
-            uri (str): MongoDB Connection URI
-        """
-        clientUpdateItemPrice = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        await init_beanie(
-            database=clientUpdateItemPrice.kumiko_marketplace,
-            document_models=[MarketplaceModel],
-        )
-        await MarketplaceModel.find(MarketplaceModel.uuid == uuid).set(
-            {MarketplaceModel.amount: amount}
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    # Used (old): 1
     async def getAllOwnersItems(self, owner: int, uri: str) -> list:
         """Gets literally all of the items that the owner has in the marketplace
 
@@ -201,7 +123,6 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # Used (old): 1
     async def purgeOwnersItems(self, uuid: str, owner: int, uri: str):
         """Purges all of the owner's items listed on the marketplace
 
@@ -220,12 +141,8 @@ class KumikoEcoUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    # -------------------------------- #
-    # ! NEW PURCHASE SYSTEM COROUTINES #
-    # -------------------------------- #
-
     async def getRequestedPurchaseItem(self, name: str, uri: str):
-        """Gets the first or none item that matches the nam
+        """Gets the first or none item that matches the name
 
         This is used to first search up the item to purchase from the Marketplace
 

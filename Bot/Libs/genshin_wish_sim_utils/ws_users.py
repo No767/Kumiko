@@ -1,6 +1,5 @@
 import asyncio
 
-import numpy as np
 import uvloop
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -14,12 +13,13 @@ class KumikoWSUsersUtils:
         self.self = self
 
     async def insertNewUser(
-        self, user_id: int, pulls: int, date_joined: str, uri: str
+        self, user_id: int, username: str, pulls: int, date_joined: str, uri: str
     ) -> None:
         """Inserts a new user into the GWS User DB
 
         Args:
             user_id (int): Discord User ID
+            username (str): Discord Username
             pulls (int): How much pulls the user just did
             date_joined (str): Date Joined
             uri (str): Connection URI
@@ -29,22 +29,22 @@ class KumikoWSUsersUtils:
         async with asyncSession() as session:
             async with session.begin():
                 insertItem = models.UserWS(
-                    user_id=user_id, pulls=pulls, date_joined=date_joined
+                    user_id=user_id,
+                    username=username,
+                    pulls=pulls,
+                    date_joined=date_joined,
                 )
                 session.add_all([insertItem])
                 await session.commit()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def getUserProfile(self, user_id: int, uri: str) -> np.array:
-        """Gets the user's profile for Kumiko's GWS
+    async def getFirstUser(self, user_id: int, uri: str):
+        """Gets the first user in the DB
 
         Args:
             user_id (int): Discord User ID
             uri (str): Connection URI
-
-        Returns:
-            np.array: A numpy array of UserWS objects
         """
         engine = create_async_engine(uri)
         asyncSession = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
@@ -52,7 +52,7 @@ class KumikoWSUsersUtils:
             async with session.begin():
                 selItem = select(models.UserWS).filter(models.UserWS.user_id == user_id)
                 res = await session.execute(selItem)
-                return np.array([row for row in res.scalars()])
+                return res.first()
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

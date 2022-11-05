@@ -57,43 +57,6 @@ class KumikoEcoUserUtils:
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-    async def insertUserData(
-        self,
-        user_id: int,
-        username: str,
-        lavender_petals: int,
-        rank: int,
-        date_joined: str,
-        uri: str,
-    ):
-        """Inserts user data into the db
-
-        Args:
-            user_id (int): Discord User ID
-            username (str): Discord Username
-            lavender_petals (int): The amount of Lavender Petals that the user has
-            rank (int): The rank of the user
-            date_joined (str / ISO-8601): The date that the user joined
-            uri (str): The Connection URI needed for connecting to the database
-        """
-        engine = create_async_engine(uri)
-        async_session = sessionmaker(
-            engine, expire_on_commit=False, class_=AsyncSession
-        )
-        async with async_session() as session:
-            async with session.begin():
-                insertData = models.KumikoEcoUser(
-                    user_id=user_id,
-                    username=username,
-                    lavender_petals=lavender_petals,
-                    rank=rank,
-                    date_joined=date_joined,
-                )
-                session.add_all([insertData])
-                await session.commit()
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
     async def obtainUserData(self, user_id: int, uri: str):
         """Gets the data about a user
 
@@ -155,6 +118,7 @@ class KumikoEcoUserUtils:
                 res = await session.execute(selectUser)
                 return [row for row in res.scalars()]
 
+    # This coroutine is only kept because the rank system will need this
     async def updateUserRank(self, user_id: int, rank: int, uri: str):
         """Updates a user's rank
 
