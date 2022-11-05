@@ -14,8 +14,7 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, and soon a web dashboard (pinned for v2.0). Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that all of Rin's 20 services are directly integrated into Kumiko.
-
+Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, an Genshin wish sim, and many more features. Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that Rin's services are directly integrated within Kumiko 
 ## Rin (リン)
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
@@ -43,7 +42,7 @@ And some ones that are planned:
 
 ## Rin's Supported Services
 
-Kumiko comes with integration from 15+ services. Some of these services that are fully supported and integrated include:
+Kumiko comes with integration from Rin's services. Some of these services that are fully supported and integrated include:
 
 - AniList
 - MyAnimeList
@@ -54,8 +53,6 @@ Kumiko comes with integration from 15+ services. Some of these services that are
 - MangaDex
 - Twitch
 - GitHub
-
-And many more! For a full list, see the [Supported Services](https://docs.rinbot.live/docs/about/supported-services) page.
 
 # Prefix
 
