@@ -168,8 +168,8 @@ python-versions = ">=3.7,<4.0"
 
 [[package]]
 name = "beanie"
-version = "1.13.1"
-description = "Python ODM for MongoDB"
+version = "1.15.0"
+description = "Asynchronous Python ODM for MongoDB"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
@@ -803,7 +803,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4.0"
-content-hash = "c88b592739b998433f71be4bb48608450442aa30f2f4171221c63aff1506ea44"
+content-hash = "7c930f53aff99c181f361a4fa5cbd121773022fefbcff956fa4f0eec3ee5f995"
 
 [metadata.files]
 aiodns = [
@@ -963,8 +963,8 @@ backoff = [
     {file = "backoff-2.1.2.tar.gz", hash = "sha256:407f1bc0f22723648a8880821b935ce5df8475cf04f7b6b5017ae264d30f6069"},
 ]
 beanie = [
-    {file = "beanie-1.13.1-py3-none-any.whl", hash = "sha256:954e33ffc7b6b79eec87b61a20c36e296dab98fe021e6798f3f2de752f35f9a6"},
-    {file = "beanie-1.13.1.tar.gz", hash = "sha256:3aae32ba6bd40c3768ca1126a07725577d45133d240cca50ef1e6a35699f6063"},
+    {file = "beanie-1.15.0-py3-none-any.whl", hash = "sha256:be15b5c95edcbe1f423c50c39f936482535ef2ef9b933417f894ca988c2dee8f"},
+    {file = "beanie-1.15.0.tar.gz", hash = "sha256:ced274f27a5fc0133177fb8f175c1d5bf3fb6ed3efea7711e80ee60d09039d9b"},
 ]
 brotli = [
     {file = "Brotli-1.0.9-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:268fe94547ba25b58ebc724680609c8ee3e5a843202e9a381f6f9c5e8bdb5c70"},
