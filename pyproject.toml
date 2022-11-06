@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "Kumiko"
+version = "0.3.0"
+description = "A multipurpose Discord bot built with freedom and choice in mind"
+authors = ["No767 <73260931+No767@users.noreply.github.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+python-dotenv = "^0.21.0"
+aiodns = "^3.0.0"
+Brotli = "^1.0.9"
+SQLAlchemy = "^1.4.43"
+orjson = "^3.8.1"
+asyncpraw = "^7.6.0"
+asyncpg = "^0.27.0"
+uvloop = "^0.17.0"
+pysimdjson = "^5.0.2"
+gql = { extras = ["aiohttp"], version = "^3.4.0" }
+python-dateutil = "^2.8.2"
+rin-exceptions = "^1.0.3"
+beanie = "^1.15.0"
+numpy = "^1.23.4"
+py-cord = {version = "2.2.2", extras = ["voice"]}
+pytimeparse = "^1.1.8"
+coredis = "^4.8.3"
+charset-normalizer = "^2.1.1"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.20.0"
+pyinstrument = "^4.4.0"
+
+[tool.isort]
+profile = 'black'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

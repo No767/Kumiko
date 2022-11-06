@@ -8,12 +8,13 @@ To get started, you'll need these things installed:
 
 - [Git](https://git-scm.com/)
 - [Python 3.10](https://www.python.org/)
-- [Pipenv](https://pipenv.pypa.io/en/latest/)
-- [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
+- [Poetry](https://python-poetry.org/)
+- [WSL2](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
 - Discord Account + Discord App
+
 ## Installing Dependencies
 
-Getting the environment set up for the bot is a kinda complex process. Rin now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+Getting the environment set up for the bot is a kinda complex process. Kumiko now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
 
 ## Windows 
 
@@ -31,8 +32,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -45,7 +46,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 5. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 
@@ -72,8 +73,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -86,7 +87,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -109,8 +110,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -123,7 +124,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -153,8 +154,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -167,7 +168,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -188,8 +189,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -202,7 +203,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 4. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 5. Run Make to create the venv and install dependencies
@@ -231,8 +232,8 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
     ```sh
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -241,7 +242,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 5. Fork and clone the repo
 
     ```sh
-    git clone https://github.com/[username]/Rin.git && cd Rin
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
 6. Run Make to create the venv and install dependencies
@@ -253,7 +254,7 @@ Getting the environment set up for the bot is a kinda complex process. Rin now u
 
 ### Getting the Discord Bot
 
-First things first, you'll more than likely need a dev bot to run Rin. Luckily you'll find the steps below to help you on that
+First things first, you'll more than likely need a dev bot to run Kumiko. Luckily you'll find the steps below to help you on that
 
 ![images](../assets/getting-started-assets/create-app.png)
 
@@ -296,10 +297,10 @@ First things first, you'll more than likely need a dev bot to run Rin. Luckily y
 Once you have the discord bot up, there's a few things that needs to be done before development can begin. 
 
 1. Follow the steps in [Installing Dependencies](#installing-dependencies) to get all of the dependencies installed.
-2. Now create a shell that pipenv needs. Run the following command:
+2. Now create a shell that poetry needs. Run the following command:
 
     ```sh
-    pipenv shell
+    poetry shell
     ```
 
 3. To run Kumiko, run the following command:
@@ -314,11 +315,11 @@ Once you have the discord bot up, there's a few things that needs to be done bef
    make run
    ```
 
-   To exit out of Rin, hit Ctrl + C to kill the process. 
+   To exit out of Kumiko, hit Ctrl + C to kill the process. 
 
 ### Things to keep in mind
 
-Make sure to always keep this in mind: Always add exception handling for Rin. And make sure it is done correctly. A poor example would be this:
+Make sure to always keep this in mind: Always add exception handling for Kumiko. And make sure it is done correctly. A poor example would be this:
 
    ```py
    try:
@@ -350,14 +351,34 @@ Kumiko requires PostgreSQL and MongoDB to get started.
 
 ### PostgreSQL Setup
 
-Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD`, `POSTGRES_USER`. `POSTGRES_USER` should be named `Beryl` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users`. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
+Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD` and `POSTGRES_USER`. `POSTGRES_USER` should be named `Kumiko` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
 
 ```
 # Bot/.env
-TOKEN = "Discord Bot Tokens"
 Postgres_Password = "Password for Postgres"
 Postgres_IP = 127.0.0.1 # if localhost doesn't work, use your ipv4 address instead
 Postgres_User = "Kumiko"
+Postgres_Database_Dev = "db"
+Postgres_Wish_Sim_Database = "db"
+Postgres_Database_AH_Dev = "db"
+Postgres_Quests_Database = "db"
+```
+
+Now connect to your postgres server and create the databases. So for example, if I had these 4 set like this:
+
+```.env
+Postgres_Database_Dev="kumiko_users"
+Postgres_Wish_Sim_Database="kumiko_ws"
+Postgres_Database_AH_Dev="kumiko_ah"
+Postgres_Quests_Database="kumiko_quests"
+```
+
+then I would have to create the databases like this:
+```sql
+CREATE DATABASE kumiko_users;
+CREATE DATABASE kumiko_ws;
+CREATE DATABASE kumiko_ah;
+CREATE DATABASE kumiko_quests;
 ```
 
 Now run `postgres-init.py` located within the scripts folder. This will create the table within the database that will store all of the data. 
@@ -375,22 +396,61 @@ MongoDB_Server_IP_Dev = "127.0.0.1" # also could use ipv4 address if localhost d
 
 Now connect to the MongoDB server with MongoDBCompass or Mongosh and create a database called `kumiko_marketplace`. There is no need to create any collections, since beanie will create them when needed. 
 
+### RabbitMQ Setup
+
+Kumiko's Auction House (AH) relies on RabbitMQ to distribute massive pub/sub queue messages safely and securely. There are 2 ways to set this up: either on a standard Linux server (eg on Ubuntu Server, Debian, Rocky, etc) or on Docker. For development, it's recommended to use Docker. You should set 2 variables that you more than likely will need: `RABBITMQ_DEFAULT_USER` and `RABBITMQ_DEFAULT_PASS`. Set those 2 accordingly, and please also don't use `@` symbols in your password. Assuming you have the `Bot/.env` file made, insert these env variables into the file:
+
+```
+# Bot/.env
+RabbitMQ_Password_Dev = "password"
+RabbitMQ_Username_Dev = "Kumiko"
+RabbitMQ_Server_IP_Dev = "ip"
+RabbitMQ_Port_Dev = "port"
+```
+
+## Docker Compose 
+
+Instead of adding or adjusting the values from the `.env` file, there is a easier and faster way of doing things. If you have Docker and Docker Compose installed, rename the `docker-compose-example.yml` file into `docker-compose.yml`. You will notice that the section where Kumiko normally runs is commented out. Leave it like that for development purposes. Edit and change the default passwords for each of the services, and make sure that the passwords you set for the services are the exact same as the ones you'll be using in the `.env` file (inside the `Bot` folder, there is a `.env.dev-example` file. Rename that to `.env`, and you can adjust the values there instead). Then just start up the docker compose stack, create the databases and tables for postgres, and that's it.
+
+```sh
+sudo docker compose up -d
+```
+
 ## API Keys
 
-Kumiko is built on top of Rin, and Rin requires some API keys. Here's a list of current services that require API keys:
+Kumiko is built on top of Kumiko, and Kumiko requires some API keys. Here's a list of current services that require API keys:
 
-- Twitter (requires bearer token, make sure that the bearer token supports Twitter API V2)
-- Reddit 
-- Hypixel
-- DeviantArt (Use the DA-Token-Refresher script in production for refreshing tokens)
-- Tenor (Use API V2)
-- First FRC
-- Discord.bots.gg
-- Top.gg
-- GitHub
-- YouTube
-- Blue Alliance
-- Twitch
+- [Blue Alliance](https://www.thebluealliance.com/apidocs)
+- [Discord.bots.gg](https://discord.bots.gg/) (may need to login with Discord in order to access API keys)
+- [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
+- [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
+- [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
+- [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
+- [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
+- [Top.gg](https://docs.top.gg/)
+- [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
+- [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
+- [YouTube](https://developers.google.com/youtube/registering_an_application)
+
+## Docker Build System
+All commits on the `dev` branch will be tagged with `edge` on Docker Hub and GHCR. These builds are dev builds, which means they are unstable and should be not used in an production environment. If you are interested in just testing out Kumiko, and are willing to deal with the instability, you can use the dev builds. Kumiko is built using Alpine Linux as a base.
+
+In short:
+
+- If you want to use Kumiko in a production environment, use a versioned tag.
+- If you want to test out Kumiko, use the `edge` tag.
+
+## Coding Style
+
+### Variables
+
+Most of the code written uses camelCasing for variables, PascalCasing for classes, and snake_casing for args. To sum it up:
+
+- camelCasing for variables
+- PascalCasing for classes
+- snake_casing for args
+- ALL_CAPS for constants
+- kebab-casing for files
 
 ## Pull Requests and Commits
 
@@ -398,9 +458,8 @@ You have 2 option: Fork the repo and make a pull request back into the main one,
 
 ## Formatting
 
-This projects uses a ton of linters and formatters. The main formatters are Black, AutoPEP8, AutoFlake and Isort. And there are a lot of linters as well. Most of them are from Codefactor, Codacy, and Deepsource. You don't have to worry about them because they are set up as formatters on the CI/CD workflow. Meaning that once it is done, all the code is formatted already.
+Kumiko uses pre-commit hooks to format all of the code. Make sure run `git add --all` before committing to add all of the files. And if you get stuck in a loop, (mainly if black or isort constantly keeps on formatting for no reason), append the `--no-verify` flag to the command to commit it directly.
 
-This allows for synchronization between both projects without constantly creating merge conflicts. Make sure that this is for the main code changes, not for other files like `README.md` or `LICENSE`.
 ## Issue and Feature Requests Reports
 
 If there is an issue or a feature you want to be added, use the built-in GitHub issue tracker. Though a system like Jira could be used, it would be more efficient to just use the issue tracker that GitHub provides. 
@@ -408,18 +467,18 @@ If there is an issue or a feature you want to be added, use the built-in GitHub 
 - If submitting a issue report, follow the template. Duplicates will not receive support
 - If submitting a feature request, follow the template as well. As with issue reports, duplicate requests will not receive support
 
-# Releasing Tags
-In order to automate the release system, you have to make sure that in order to use it, the git commit message must be done correctly. Only use this if there is a new update that is ready to be released. These are pretty similar to [Angular's Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines). Here's a table that should help with explaining this:
+## Releasing Tags
+In order to automate the release system, you have to make sure that in order to use it, the git commit message must be done correctly. Only use this if there is a new update that is ready to be released. Kumiko uses [SemVer](https://semver.org/) as the standard for versioning. Here's a table that should help with explaining this:
 
 | Type of Release, Update, or Patch | Example |
 |              :--:                 | :--:    | 
-| Major Release                     | `Release: v2.5` | 
-| Minor Release                     | `Update: v2.5.1`|
-| Patch Release                     | `Fix: Instagram API Cog removal` |
+| Major Release (For updates that are not backwards compatible) | `Release: v2.0.0` | 
+| Minor Release (For updates that are backwards compatible) | `Update: v2.5.0`|
+| Patch Release (For critical security patches and bug fixes) | `Fix: v2.5.1` |
 
 
 ## Git Commit StyleGuides
 
 - If updating any other files that aren't project files or not important (stuff like README.md, contributing.md, etc), add the [skip ci] label in the front
 - With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
-- If releasing tags, have it in this style. `Release: [insert what changed here]`, `Update: [insert what changed here]`, and `Fix: [insert what changed here]`. Release is a major release. This means it bumps from 1.0 to 2.0. Minor means it bumps up the version from 1.4 to 1.4.1 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.1.1.
+- If releasing tags, have it in this style. `Release: v[version number]`, `Update: v[version number]`, and `Fix: v[version number]`. Release is a major release. This means it bumps from 1.0.0 to 2.0.0. Minor means it bumps up the version from 1.4 to 1.5 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.2.

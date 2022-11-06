@@ -9,9 +9,10 @@ To get started, you'll need these things installed:
 
 - [Git](https://git-scm.com/)
 - [Python 3.10](https://www.python.org/)
-- [Pipenv](https://pipenv.pypa.io/en/latest/)
+- [Poetry](https://python-poetry.org/)
 - [WSL](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
 - Discord Account + Discord App
+- Docker Compose
 
 ## Installing Dependencies
 
@@ -33,8 +34,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -74,8 +75,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -111,8 +112,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -155,8 +156,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -190,8 +191,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
     ```sh
     curl https://pyenv.run | bash
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -233,8 +234,8 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
 
     ```sh
     pyenv update
-    pyenv install 3.10.5
-    pyenv global 3.10.5
+    pyenv install 3.10.8
+    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -257,33 +258,29 @@ Getting the environment set up for the bot is a kinda complex process. If you wa
 
 First things first, you'll more than likely need a dev bot to run Kumiko. Luckily you'll find the steps below to help you on that
 
-![images](../assets/getting-started-assets/create-app.png)
-
 1. Create the app that will be needed for the bot. Once done, you should see the page as shown above
+    ![images](../assets/getting-started-assets/create-app.png)
 
-![yesyes](../assets/getting-started-assets/create-bot.png)
 
 2. Now head done to the bot section, and click on the button that says "Add Bot". 
-
-![ewom](../assets/getting-started-assets/allow-bot.png)
+    ![yesyes](../assets/getting-started-assets/create-bot.png)
 
 3. You'll see a pop-up that asks you if you want to create the bot. 
-
-![intents](../assets/getting-started-assets/allow-intents.png)
+    ![ewom](../assets/getting-started-assets/allow-bot.png)
 
 4. Make sure to have all 3 of the buttons enabled. Kumiko will need all 3 of them to work.
+    ![intents](../assets/getting-started-assets/allow-intents.png)
 
-![whyyy](../assets/getting-started-assets/reset-token.png)
 
 5. You'll see a page just like the one above. We'll need access the the token for the bot, and the only way to do it is to reset the token.
-
-![confirm](../assets/getting-started-assets/allow-reset-token.png)
+    ![whyyy](../assets/getting-started-assets/reset-token.png)
 
 6. Allow for the token to be reset. Note that if your account is hooked up with 2FA, it will ask you to enter your 2FA code. Go to your authenticator app and enter the code from the app.
+    ![confirm](../assets/getting-started-assets/allow-reset-token.png)
 
-![copytoken](../assets/getting-started-assets/copy-token.png)
 
 7. Now click on the copy button and copy the token
+    ![copytoken](../assets/getting-started-assets/copy-token.png)
 
 8. Head back into the root directory of the repo, and run this command: 
 
@@ -298,10 +295,10 @@ First things first, you'll more than likely need a dev bot to run Kumiko. Luckil
 Once you have the discord bot up, there's a few things that needs to be done before development can begin. 
 
 1. Follow the steps in [Installing Dependencies](#installing-dependencies) to get all of the dependencies installed.
-2. Now create a shell that pipenv needs. Run the following command:
+2. Now create a shell that poetry needs. Run the following command:
 
     ```sh
-    pipenv shell
+    poetry shell
     ```
 
 3. To run Kumiko, run the following command:
@@ -346,6 +343,8 @@ Make sure to always keep this in mind: Always add exception handling for Kumiko.
       await ctx.respond("That item doesn't exist! Please try again")
    ```
 
+And also yes you need to write docstrings. The format is Google's docstring format
+
 ## Database Setup
 
 Kumiko requires PostgreSQL and MongoDB to get started. 
@@ -356,11 +355,30 @@ Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use P
 
 ```
 # Bot/.env
-TOKEN = "Discord Bot Tokens"
 Postgres_Password = "Password for Postgres"
 Postgres_IP = 127.0.0.1 # if localhost doesn't work, use your ipv4 address instead
 Postgres_User = "Kumiko"
-Postgres_Database = "database"
+Postgres_Database_Dev = "db"
+Postgres_Wish_Sim_Database = "db"
+Postgres_Database_AH_Dev = "db"
+Postgres_Quests_Database = "db"
+```
+
+Now connect to your postgres server and create the databases. So for example, if I had these 4 set like this:
+
+```.env
+Postgres_Database_Dev="kumiko_users"
+Postgres_Wish_Sim_Database="kumiko_ws"
+Postgres_Database_AH_Dev="kumiko_ah"
+Postgres_Quests_Database="kumiko_quests"
+```
+
+then I would have to create the databases like this:
+```sql
+CREATE DATABASE kumiko_users;
+CREATE DATABASE kumiko_ws;
+CREATE DATABASE kumiko_ah;
+CREATE DATABASE kumiko_quests;
 ```
 
 Now run `postgres-init.py` located within the scripts folder. This will create the table within the database that will store all of the data. 
@@ -378,4 +396,22 @@ MongoDB_Server_IP_Dev = "127.0.0.1" # also could use ipv4 address if localhost d
 
 Now connect to the MongoDB server with MongoDBCompass or Mongosh and create a database called `kumiko_marketplace`. There is no need to create any collections, since beanie will create them when needed. 
 
+### RabbitMQ Setup
 
+Kumiko's Auction House (AH) relies on RabbitMQ to distribute massive pub/sub queue messages safely and securely. There are 2 ways to set this up: either on a standard Linux server (eg on Ubuntu Server, Debian, Rocky, etc) or on Docker. For development, it's recommended to use Docker. You should set 2 variables that you more than likely will need: `RABBITMQ_DEFAULT_USER` and `RABBITMQ_DEFAULT_PASS`. Set those 2 accordingly, and please also don't use `@` symbols in your password. Assuming you have the `Bot/.env` file made, insert these env variables into the file:
+
+```
+# Bot/.env
+RabbitMQ_Password_Dev = "password"
+RabbitMQ_Username_Dev = "Kumiko"
+RabbitMQ_Server_IP_Dev = "ip"
+RabbitMQ_Port_Dev = "port"
+```
+
+## Docker Compose 
+
+Instead of adding or adjusting the values from the `.env` file, there is a easier and faster way of doing things. If you have Docker and Docker Compose installed, rename the `docker-compose-example.yml` file into `docker-compose.yml`. You will notice that the section where Kumiko normally runs is commented out. Leave it like that for development purposes. Edit and change the default passwords for each of the services, and make sure that the passwords you set for the services are the exact same as the ones you'll be using in the `.env` file (inside the `Bot` folder, there is a `.env.dev-example` file. Rename that to `.env`, and you can adjust the values there instead). Then just start up the docker compose stack, create the databases and tables for postgres, and that's it.
+
+```sh
+sudo docker compose up -d
+```

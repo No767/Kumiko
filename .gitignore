@@ -62,3 +62,16 @@ marketplace_filters.yml
 Bot/Cog/economy/config/*
 Bot/Cog/economy/config
 config
+gws-items.py
+docker-compose.yml
+docker-compose
+docker-compose2.yml
+redis-cache.py
+eco_user_tester.py
+quests-test.py
+test.sh
+user-inv-test.py
+ah-test.py
+gws-test.py
+.env-docker
+test-scripts

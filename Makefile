@@ -1,14 +1,11 @@
 BOT_TOKEN ?=
-PM2_PUBLIC_KEY_INGEST ?=
-PM2_SECRET_KEY_INGEST ?=
 DOCKER_TAG_VERSION ?=
 
 all: run
 
 dev-setup:
-	pip install --upgrade pip setuptools wheel pipenv
-	pipenv --python 3.10
-	pipenv install --dev
+	poetry env use 3.10
+	poetry install
 
 init:
 	touch Bot/.env
@@ -16,6 +13,3 @@ init:
 
 run:
 	python Bot/kumikobot.py
-
-deploy: 
-	sudo docker build -t no767/rin:$(DOCKER_TAG_VERSION) --build-arg PM2_PUBLIC_KEY_INGEST=$(PM2_PUBLIC_KEY_INGEST) --build-arg PM2_SECRET_KEY_INGEST=$(PM2_SECRET_KEY_INGEST) -f ./Ubuntu-Docker/Dockerfile .
