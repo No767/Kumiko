@@ -20,6 +20,7 @@ And some backend changes w/ Docker support:
 - Deploy both Alpine and Debian-based Dockerfiles
 - Automatic DB schema creator (called the "seeder")
 - Improved Docker Compose support + Standalone support
+- Docker Compose version bumps w/ Postgres, MongoDB and Redis
 
 ## 🔥 Breaking Changes
 
@@ -44,14 +45,12 @@ And some backend changes w/ Docker support:
 - Make Debian now the latest `edge` tag
 - Require input type to be `discord.Member` instead of `str` in UwU cog
 - Swap from `github.repository_owner` to `github.actor` to fix GHCR build workflows
-- Bump Python version to 3.10.7 for Alpine and Debian Dockerfiles
 - Display Pycord version w/ bot info command
 - Optimize Dynamic Cog Loader
 - Update Docs
 - Don't `echo` database schema creations w/ SQLAlchemy
 - Improved Docker Compose setup (literally just download some stuff, set up the env file, and run)
 - Append `eco` to all economy commands
-- Unload RabbitMQ consumer for Kumiko
 - Provide a general exception embed for admin commands
 - Completely redid Help command
 - Organize Cogs into different directories determined by if the cogs came from Rin or Kumiko
@@ -63,7 +62,6 @@ And some backend changes w/ Docker support:
 - Condensed down the `/eco-quests view` commands into one command
 - Change to use general versions for Python Dockerfiles
 - Move all of the views into a separate package (`kumiko_ui_components`)
-- Force PostgreSQL to use 14 instead of 15 (waiting for `asyncpg` to support 15)
 - Use views and modals for updating, deleting, and creating quests
 - Use views and modals for deleting inventory items for GWS
 - Defer the interaction for gws wishes
@@ -84,13 +82,11 @@ And some backend changes w/ Docker support:
 ## ✨ Additions
 - Kumiko's Quests System
 - Genshin-based Wish Sim (GWS)
-- Kumiko's Auction House (Uses Redis + RabbitMQ)
+- Kumiko's Auction House (Uses Redis)
 - Docker Compose Example + ENV Examples
 - Docker Compose Support
 - Alpine + Debian Dockerfiles w/ `tini` for running Kumiko
-- RabbitMQ Consumer Cog
 - Redis for selecting and caching
-- RabbitMQ for auction house message queues
 - Basic Admin Commands
 - UwU Commands
 - Avatar fetcher commands (#109)
@@ -102,7 +98,7 @@ And some backend changes w/ Docker support:
 - Automatic DB schema creator (called the "seeder")
 - Database init scripts for Docker Compose 
 - `setup.sh` and `standalone-setup.sh` for both Docker Compose setups and standalone setups
-- `wait-for` script within Docker Compose (to wait until PostgreSQL and RabbitMQ start accepting connections)
+- `wait-for` script within Docker Compose (to wait until PostgreSQL and Redis start accepting connections)
 - Custom PostgreSQL docker image for Docker Compose
 - Admin Logs
 - New Help Command
@@ -135,6 +131,7 @@ And some backend changes w/ Docker support:
 - Removed unused coroutines in the `eco_main.py` file 
 - Remove Marketplace filters
 - RabbitMQ Consumer
+- RabbitMQ within Docker Compose and requirements
 - AH RabbitMQ Bidder
 - `asyncio_redis` package
 - `aiormq` package
