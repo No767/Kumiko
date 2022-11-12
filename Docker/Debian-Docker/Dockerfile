@@ -38,6 +38,7 @@ RUN apt update \
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
+COPY /Bot/kumikocore.py /Kumiko/Bot/
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
 COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Bot/Libs/economy_utils/ /Kumiko/Bot/Libs/economy_utils
