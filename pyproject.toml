@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Kumiko"
-version = "0.3.0"
+version = "0.5.0"
 description = "A multipurpose Discord bot built with freedom and choice in mind"
 authors = ["No767 <73260931+No767@users.noreply.github.com>"]
 license = "Apache-2.0"
@@ -25,6 +25,8 @@ py-cord = {version = "2.2.2", extras = ["voice"]}
 pytimeparse = "^1.1.8"
 coredis = "^4.8.3"
 charset-normalizer = "^2.1.1"
+tortoise-orm = {extras = ["accel"], version = "^0.19.2"}
+python-rapidjson = "^1.9"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"
