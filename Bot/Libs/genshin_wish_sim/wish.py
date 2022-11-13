@@ -43,3 +43,23 @@ class KumikoGWSUtils:
             return rng.choice(selectedItem, size=size)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    async def determineStarRank(self) -> int:
+        """Randomly generates the chance needed and based on chance,
+        return which rows based on those stars should be queried
+
+        Returns:
+            int: The star rank to use (3-5 inclusive)
+        """
+        rng = default_rng()
+        randomChance = rng.random()
+
+        # Pull rates used here: https://game8.co/games/Genshin-Impact/archives/297443
+        if randomChance <= 0.06:
+            return 5
+        elif randomChance <= 0.051:
+            return 4
+        elif randomChance <= 94.3:
+            return 3
+
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
