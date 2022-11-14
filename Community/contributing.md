@@ -4,7 +4,7 @@ We are glad that you're willing to contribute to this project. We are usually ve
 
 ## Note to new contributors
 
-When you contribute to this project, you are subject to the [Code of Conduct](./CODE_OF_CONDUCT.md). Any violations of the Code Of Conduct will be handled as stated. Read the contributing guide. Common questions are answered in the [FAQ](./faq.md). **Support is not given if you didn't bother reading the documentation for setting up any of the requirements, or if you didn't read the contributing guide.**
+When you contribute to this project, you are subject to the [Code of Conduct](./CODE_OF_CONDUCT.md). Any violations of the Code Of Conduct will be handled as stated. Read the contributing guide. **Support is not given if you didn't bother reading the documentation for setting up any of the requirements, or if you didn't bother to read the contributing guide.**
 
 ## Before Starting
 
