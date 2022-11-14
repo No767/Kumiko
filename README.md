@@ -70,14 +70,13 @@ If you would like to support me with projects like this, please consider starrin
 
 If you would like to get started, here are some links to help you with that:
 
-- [Getting Started Guide](./Community/getting-started-guide.md)
-- [Getting Started (For Developers)](./Community/getting-started.md)
+- [Getting Started Guide (Self Hosting)](./Community/guides/getting-started-guide.md)
 - [Contributing](./Community/contributing.md)
-- [Documentation](https://docs.kumiko-bot.tech/)
+- [Documentation](https://kumiko-docs.vercel.app/)
 
 # Resources and Links
 
-- [Documentation](https://docs.kumiko-bot.tech/)
+- [Documentation](https://kumiko-docs.vercel.app/)
 - [Docker Hub](https://hub.docker.com/r/no767/kumiko)
 - [GHCR](https://github.com/No767/Kumiko/pkgs/container/kumiko)
 
