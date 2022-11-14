@@ -13,6 +13,7 @@ from kumikocore import KumikoCore
 load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("Dev_Bot_Token")
+IPC_SECRET_KEY = os.getenv("IPC_Secret_Key")
 intents = discord.Intents.default()
 intents.members = True
 
@@ -21,7 +22,7 @@ cogsPath = os.path.join(str(path), "Cogs")
 libsPath = os.path.join(str(path), "Libs")
 sys.path.append(libsPath)
 
-bot = KumikoCore(intents=intents)
+bot = KumikoCore(ipc_key=IPC_SECRET_KEY, intents=intents)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -35,5 +36,6 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 # Run the bot
 if __name__ == "__main__":
+    # asyncio.run(bot.ipc.start())
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     bot.run(DISCORD_BOT_TOKEN)

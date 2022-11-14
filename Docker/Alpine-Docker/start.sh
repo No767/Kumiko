@@ -52,6 +52,13 @@ else
     echo "Missing YouTube API key! YOUTUBE_API_KEY environment variable is not set."
 fi
 
+if [[ -v IPC_SECRET_KEY ]]; then
+    echo "IPC_Secret_Key=${IPC_SECRET_KEY}" >> /Kumiko/Bot/.env
+else
+    echo "Missing IPC_Secret_Key env var! IPC_Secret_Key environment variable is not set."
+    exit 1;
+fi
+
 if [[ -v POSTGRES_PASSWORD ]]; then
     echo "Postgres_Password=${POSTGRES_PASSWORD}" >> /Kumiko/Bot/.env
 else
@@ -112,34 +119,6 @@ if [[ -v MONGODB_PORT ]]; then
     echo "MongoDB_Server_Port=${MONGODB_PORT}" >> /Kumiko/Bot/.env
 else
     echo "Missing MongoDB_Server_Port env var! MongoDB_Server_Port environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v RABBITMQ_PASSWORD ]]; then
-    echo "RabbitMQ_Password=${RABBITMQ_PASSWORD}" >> /Kumiko/Bot/.env
-else
-    echo "Missing RabbitMQ_Password env var! RabbitMQ_Password environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v RABBITMQ_USER ]]; then
-    echo "RabbitMQ_Username=${RABBITMQ_USER}" >> /Kumiko/Bot/.env
-else
-    echo "Missing RabbitMQ_Username env var! RabbitMQ_Username environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v RABBITMQ_IP ]]; then
-    echo "RabbitMQ_Server_IP=${RABBITMQ_IP}" >> /Kumiko/Bot/.env
-else
-    echo "Missing RabbitMQ_Server_IP env var! RabbitMQ_Server_IP environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v RABBITMQ_PORT ]]; then
-    echo "RabbitMQ_Port=${RABBITMQ_PORT}" >> /Kumiko/Bot/.env
-else
-    echo "Missing RabbitMQ_Port env var! RabbitMQ_Port environment variable is not set."
     exit 1;
 fi
 
