@@ -15,11 +15,7 @@ To get started, you'll need these things installed:
 > Kumiko is developed on Linux. This means that you must have a good understanding on how to use Linux in the terminal. It is recommended to use Ubuntu to start with, but more advanced users may feel more comfortable with other distros such as OpenSUSE Tumbleweed or Arch. If you are using Windows, you must use WSL2.
 
 > **Note**
-> The reason why Kumiko has to be developed on Linux is due to the maintainers of `uvloop` refusing to add support for Windows. See https://github.com/MagicStack/uvloop/issues/14 for more info
-
-## Installing Dependencies
-
-If you want to get set up, here are the instructions to do so:
+> The reason why Kumiko has to be developed on Linux is due to the maintainers of `uvloop` refusing to add support for Windows. See https://github.com/MagicStack/uvloop/issues/14 for more info. OpenSSL 3 by default, is used now instead of OpenSSL 1.1. This breaks uvloop, so make sure to install the shared libraries (-dev or -devel) packages as well for them
 
 ## Windows 
 
@@ -33,30 +29,36 @@ If you want to get set up, here are the instructions to do so:
     libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3.10-dev git
     ```
 
-3. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
+3. Install Pyenv. The script below downloads the automatic installer, which is recommended
 
     ```sh
     curl https://pyenv.run | bash
-    pyenv update
+    ```
+
+4. Follow the rest of the steps to finish installing Pyenv that are listed [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv). Once you get to the section where it says to install the Python build dependencies, don't worry. That was literally done in the first step.
+
+5. Now with Pyenv, you can install Python 3.10
+
+    ```sh
     pyenv install 3.10.8
     pyenv global 3.10.8
     pyenv rehash
     ```
 
-4. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-5. Fork and clone the repo
+6. Fork and clone the repo
 
     ```sh
     git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     ```
 
+    Or if you have the `gh` cli tool installed:
 
-6. Run Make to create the venv and install dependencies
+    ```sh
+    gh repo clone [username]/Kumiko
+    ```
+
+
+7. Run `make` to create the venv and install dependencies. This will do any needed setup as well.
 
     ```sh
     make dev-setup
@@ -74,61 +76,23 @@ If you want to get set up, here are the instructions to do so:
     libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3.10-dev git
     ```
 
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
+2. Install Pyenv. The script below downloads the automatic installer, which is recommended
 
     ```sh
     curl https://pyenv.run | bash
-    pyenv update
+    ```
+
+3. Follow the rest of the steps to finish installing Pyenv that are listed [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv). Once you get to the section where it says to install the Python build dependencies, don't worry. That was literally done in the first step.
+
+4. Now with Pyenv, you can install Python 3.10
+
+    ```sh
     pyenv install 3.10.8
     pyenv global 3.10.8
     pyenv rehash
     ```
 
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-5. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
-
-### OpenSUSE
-
-1. Install the suggested build dependencies for pyenv.
-
-    ```sh
-    sudo zypper install gcc automake bzip2 libbz2-devel xz xz-devel openssl-devel ncurses-devel \
-    readline-devel zlib-devel tk-devel \
-    libffi-devel sqlite3-devel python310-devel git
-    ```
-
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-    ```sh
-    curl https://pyenv.run | bash
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
+5. Fork and clone the repo
 
     ```sh
     git clone https://github.com/[username]/Kumiko.git && cd Kumiko
@@ -140,7 +104,51 @@ If you want to get set up, here are the instructions to do so:
     gh repo clone [username]/Kumiko
     ```
 
-5. Run Make to create the venv and install dependencies
+
+6. Run `make` to create the venv and install dependencies. This will do any needed setup as well.
+
+    ```sh
+    make dev-setup
+    ```
+
+### OpenSUSE
+
+1. Install the suggested build dependencies for pyenv.
+
+    ```sh
+    sudo zypper install gcc automake bzip2 libbz2-devel xz xz-devel openssl-devel openssl-1_1 ncurses-devel \
+    readline-devel zlib-devel tk-devel \
+    libffi-devel sqlite3-devel python310-devel git curl
+    ```
+2. Install Pyenv. The script below downloads the automatic installer, which is recommended
+
+    ```sh
+    curl https://pyenv.run | bash
+    ```
+
+3. Follow the rest of the steps to finish installing Pyenv that are listed [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv). Once you get to the section where it says to install the Python build dependencies, don't worry. That was literally done in the first step.
+
+4. Now with Pyenv, you can install Python 3.10
+
+    ```sh
+    pyenv install 3.10.8
+    pyenv global 3.10.8
+    pyenv rehash
+    ```
+
+5. Fork and clone the repo
+
+    ```sh
+    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
+    ```
+
+    Or if you have the `gh` cli tool installed:
+
+    ```sh
+    gh repo clone [username]/Kumiko
+    ```
+
+6. Run `make` to create the venv and install dependencies. This will do any needed setup as well.
 
     ```sh
     make dev-setup
@@ -153,7 +161,7 @@ If you want to get set up, here are the instructions to do so:
     Fedora 22 and above:
 
     ```sh
-    sudo dnf install make gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel python-devel git curl
+    sudo dnf install make gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel python-devel git curl openssl11-devel
     ```
 
     CentOS or Fedora 22 and below:
@@ -162,23 +170,23 @@ If you want to get set up, here are the instructions to do so:
     sudo yum install gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel python-devel git curl
     ```
 
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
+2. Install Pyenv. The script below downloads the automatic installer, which is recommended
 
     ```sh
     curl https://pyenv.run | bash
-    pyenv update
+    ```
+
+3. Follow the rest of the steps to finish installing Pyenv that are listed [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv). Once you get to the section where it says to install the Python build dependencies, don't worry. That was literally done in the first step.
+
+4. Now with Pyenv, you can install Python 3.10
+
+    ```sh
     pyenv install 3.10.8
     pyenv global 3.10.8
     pyenv rehash
     ```
 
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
+5. Fork and clone the repo
 
     ```sh
     git clone https://github.com/[username]/Kumiko.git && cd Kumiko
@@ -190,36 +198,38 @@ If you want to get set up, here are the instructions to do so:
     gh repo clone [username]/Kumiko
     ```
 
-5. Run Make to create the venv and install dependencies
+
+6. Run `make` to create the venv and install dependencies. This will do any needed setup as well.
 
     ```sh
     make dev-setup
     ```
+
 ### Arch/Manjaro
 
 1. Install the suggested build dependencies for pyenv
 
     ```sh
-    sudo pacman -S --needed base-devel openssl zlib xz tk python libffi
+    sudo pacman -S --needed base-devel openssl openssl-1.1 zlib xz tk python libffi
     ```
 
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
+2. Install Pyenv. The script below downloads the automatic installer, which is recommended
 
     ```sh
     curl https://pyenv.run | bash
-    pyenv update
+    ```
+
+3. Follow the rest of the steps to finish installing Pyenv that are listed [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv). Once you get to the section where it says to install the Python build dependencies, don't worry. That was literally done in the first step.
+
+4. Now with Pyenv, you can install Python 3.10
+
+    ```sh
     pyenv install 3.10.8
     pyenv global 3.10.8
     pyenv rehash
     ```
 
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
+5. Fork and clone the repo
 
     ```sh
     git clone https://github.com/[username]/Kumiko.git && cd Kumiko
@@ -231,7 +241,8 @@ If you want to get set up, here are the instructions to do so:
     gh repo clone [username]/Kumiko
     ```
 
-5. Run Make to create the venv and install dependencies
+
+6. Run `make` to create the venv and install dependencies. This will do any needed setup as well.
 
     ```sh
     make dev-setup
