@@ -72,4 +72,4 @@ class KumikoCore(discord.Bot):
     @Server.route()
     async def get_user_data(self, data: ClientPayload) -> Dict:
         user = self.get_user(data.user_id)
-        return user._to_minimal_user_json()
+        print(user)
