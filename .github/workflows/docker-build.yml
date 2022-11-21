@@ -11,122 +11,7 @@ on:
 
 
 jobs:
-  Build-Alpine-GHCR:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare Docker Meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/no767/kumiko
-          tags: |
-            type=semver,pattern={{raw}},suffix=-alpine
-            type=semver,pattern={{version}},suffix=-alpine
-            type=semver,pattern={{major}}.{{minor}},suffix=-alpine
-            type=semver,pattern={{major}},suffix=-alpine
-            type=edge,branch=dev,suffix=-alpine
-          flavor: |
-            latest=false
-
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: latest
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3.0.11
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-alpine-ghcr-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-alpine-ghcr-
-      - name: Build and push
-        uses: docker/build-push-action@v3.2.0
-        with:
-          context: .
-          file: ./Docker/Alpine-Docker/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-alpine-ghcr
-
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-alpine-ghcr /tmp/.buildx-cache
-
-  Build-Debian-GHCR:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare Docker Meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ghcr.io/no767/kumiko
-          tags: |
-            type=semver,pattern={{raw}},suffix=-bullseye
-            type=semver,pattern={{version}},suffix=-bullseye
-            type=semver,pattern={{major}}.{{minor}},suffix=-bullseye
-            type=semver,pattern={{major}},suffix=-bullseye
-            type=semver,pattern={{raw}}
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=edge,branch=dev,suffix=-bullseye
-            type=edge,branch=dev
-
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: latest
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3.0.11
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-debian-ghcr-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-debian-ghcr-
-      - name: Build and push
-        uses: docker/build-push-action@v3.2.0
-        with:
-          context: .
-          file: ./Docker/Debian-Docker/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian-ghcr
-
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-debian-ghcr /tmp/.buildx-cache
-
-  Build-Alpine-Hub:
+  Build-Alpine:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -153,6 +38,13 @@ jobs:
         with:
           version: latest
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -163,9 +55,9 @@ jobs:
         uses: actions/cache@v3.0.11
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-alpine-hub-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-alpine-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-alpine-hub
+            ${{ runner.os }}-buildx-alpine-
 
       - name: Build and push
         uses: docker/build-push-action@v3.2.0
@@ -175,14 +67,14 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-alpine-hub
+          cache-to: type=local,dest=/tmp/.buildx-cache-new-alpine
 
       - name: Move Cache
         run: |
           rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-alpine-hub /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new-alpine /tmp/.buildx-cache
           
-  Build-Debian-Hub:
+  Build-Debian:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -212,6 +104,13 @@ jobs:
         with:
           version: latest
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -222,9 +121,9 @@ jobs:
         uses: actions/cache@v3.0.11
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-debian-hub-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-debian-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-debian-hub-
+            ${{ runner.os }}-buildx-debian-
 
       - name: Build and push
         uses: docker/build-push-action@v3.2.0
@@ -234,12 +133,12 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian-hub
+          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian
 
       - name: Move Cache
         run: |
           rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-debian-hub /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new-debian /tmp/.buildx-cache
 
   Build-Kumiko-Postgres:
     runs-on: ubuntu-latest
