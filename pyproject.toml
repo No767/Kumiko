@@ -21,7 +21,7 @@ python-dateutil = "^2.8.2"
 rin-exceptions = "^1.0.3"
 beanie = "^1.15.4"
 numpy = "^1.23.5"
-py-cord = {version = "2.2.2", extras = ["voice"]}
+py-cord = {version = "2.3.0", extras = ["voice"]}
 pytimeparse = "^1.1.8"
 coredis = "^4.10.0"
 charset-normalizer = "^2.1.1"
