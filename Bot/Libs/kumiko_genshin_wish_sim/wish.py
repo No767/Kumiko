@@ -40,7 +40,12 @@ class KumikoGWSUtils:
                 await WSData.filter(star_rank=star_rank).all().values()
             )
             rng = default_rng()
-            return rng.choice(selectedItem, size=size)
+            choice = (
+                rng.choice(selectedItem, size=size)[0]
+                if size == 1
+                else rng.choice(selectedItem, size=size)
+            )
+            return choice
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 

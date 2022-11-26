@@ -16,6 +16,7 @@ logging.basicConfig(
 )
 
 logging.getLogger("asyncio_redis").setLevel(logging.WARNING)
+logging.getLogger("tortoise").setLevel(logging.WARNING)
 logging.getLogger("gql").setLevel(logging.WARNING)
 
 path = Path(__file__).parents[0].absolute()

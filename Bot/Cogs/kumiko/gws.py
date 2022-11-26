@@ -1,5 +1,6 @@
 import asyncio
 import os
+import urllib.parse
 from datetime import datetime
 
 import discord
@@ -13,21 +14,27 @@ from genshin_wish_sim_utils import (
     KumikoWSUsersUtils,
     KumikoWSUtils,
 )
+from kumiko_genshin_wish_sim import KumikoGWSUtils, WSUser, WSUserInv
 from kumiko_ui_components import GWSDeleteOneInvView, GWSPurgeAllInvView
+from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_WS_DATABASE = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
 WS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_WS_DATABASE}"
+CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_WS_DATABASE}"
+MODELS = ["kumiko_genshin_wish_sim.models"]
 
 wsUtils = KumikoWSUtils()
 wsUserInvUtils = KumikoWSUserInvUtils()
 wsUserUtils = KumikoWSUsersUtils()
+
+gwsUtils = KumikoGWSUtils(uri=CONNECTION_URI, models=MODELS)
 
 
 class GWS(commands.Cog):
@@ -40,6 +47,82 @@ class GWS(commands.Cog):
     gwsWish = gws.create_subgroup("wish", "Wish for some items")
 
     gwsUserInvDelete = gws.create_subgroup("delete", "Deletes some stuff from your inv")
+
+    @gwsWish.command(name="improved-one")
+    async def improvedGwsWishOne(self, ctx: discord.ApplicationContext):
+        """Improved version of the wish command"""
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            userProfileExists = await WSUser.filter(user_id=ctx.user.id).exists()
+            userInvExists = await WSUserInv.filter(user_id=ctx.user.id).exists()
+            pulls = 0
+            totalPulls = 0
+            if userProfileExists is False:
+                await WSUser.create(
+                    user_id=ctx.user.id,
+                    username=ctx.user.name,
+                    pulls=pulls,
+                    date_joined=discord.utils.utcnow().isoformat(),
+                )
+                totalPulls = pulls + 1
+            else:
+                # TODO: Add a cache check here (w/ Redis)
+                userProfile = await WSUser.filter(user_id=ctx.user.id).first().values()
+                pulls = userProfile["pulls"]
+                totalPulls = userProfile["pulls"] + 1
+
+            starRank = (
+                4
+                if pulls % 10 == 0
+                else (5 if pulls % 90 == 0 else await gwsUtils.determineStarRank())
+            )
+            await WSUser.filter(user_id=ctx.user.id).update(pulls=totalPulls)
+            wishItem = await gwsUtils.getWish(star_rank=starRank, size=1)
+
+            if userInvExists is False:
+                await WSUserInv.create(
+                    item_uuid=wishItem["uuid"],
+                    user_id=ctx.user.id,
+                    date_obtained=discord.utils.utcnow().isoformat(),
+                    name=wishItem["name"],
+                    description=wishItem["description"],
+                    star_rank=wishItem["star_rank"],
+                    type=wishItem["type"],
+                    amount=1,
+                )
+            else:
+                itemInInv = (
+                    await WSUserInv.filter(
+                        user_id=ctx.user.id, item_uuid=wishItem["uuid"]
+                    )
+                    .first()
+                    .values()
+                )
+                if itemInInv is None:
+                    await WSUserInv.create(
+                        item_uuid=wishItem["uuid"],
+                        user_id=ctx.user.id,
+                        date_obtained=discord.utils.utcnow().isoformat(),
+                        name=wishItem["name"],
+                        description=wishItem["description"],
+                        star_rank=wishItem["star_rank"],
+                        type=wishItem["type"],
+                        amount=1,
+                    )
+                else:
+                    totalAmount = itemInInv["amount"] + 1
+                    await WSUserInv.filter(
+                        user_id=ctx.user.id, item_uuid=wishItem["uuid"]
+                    ).update(amount=totalAmount)
+
+            embed = discord.Embed()
+            embed.title = wishItem["name"]
+            embed.description = wishItem["description"]
+            embed.add_field(name="Star Rank", value=wishItem["star_rank"])
+            embed.add_field(name="Type", value=wishItem["type"])
+            embed.set_image(
+                url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{wishItem['uuid']}.png"
+            )
+            await ctx.respond(embed=embed)
 
     @gwsWish.command(name="one")
     async def gwsWishOne(self, ctx: discord.ApplicationContext):

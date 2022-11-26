@@ -22,10 +22,11 @@ POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
 POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
 CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+MODELS = ["kumiko_genshin_wish_sim.models"]
 
 
 async def main():
-    async with KumikoCM(uri=CONNECTION_URI, models=["genshin_wish_sim.models"]):
+    async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
         await Tortoise.generate_schemas()
         print("[DB Seeder V2] Successfully generated schemas")
 

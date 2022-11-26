@@ -21,7 +21,7 @@ class WSUser(Model):
     user_id = fields.BigIntField(pk=True)
     username = fields.CharField(max_length=255)
     pulls = fields.IntField()
-    date_joined = fields.DatetimeField(null=True, auto_now_add=True)
+    date_joined = fields.CharField(max_length=255)
 
     class Meta:
         table = "user_ws"
@@ -33,7 +33,7 @@ class WSUser(Model):
 class WSUserInv(Model):
     item_uuid = fields.CharField(max_length=255, pk=True)
     user_id = fields.BigIntField()
-    date_obtained = fields.DatetimeField(null=True, auto_now_add=True)
+    date_obtained = fields.CharField(max_length=255)
     name = fields.CharField(max_length=255)
     description = fields.TextField()
     star_rank = fields.IntField()
