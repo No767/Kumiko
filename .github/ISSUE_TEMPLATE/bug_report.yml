@@ -35,13 +35,13 @@ body:
         - **OS**: Ubuntu 20.04
         - **Python Version**: 3.10.0
         - **pip version**: 21.3.1
-        - **pipenv version**: v2021.11.5
+        - **poetry version**: v1.2.2
         - **Found on Discord?**: Yes
     value: |
         - OS:
         - Python Version:
         - pip version:
-        - pipenv version:
+        - poetry version:
         - Found on Discord?:
   validations:
     required: false
