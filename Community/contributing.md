@@ -10,7 +10,7 @@ When you contribute to this project, you are subject to the [Code of Conduct](./
 
 Make sure to read these guides listed below (read them in order):
 
-- [Installing-Requirements](./installing-requirements.md)
+- [Installing Requirements](./installing-requirements.md)
 - [Getting the Discord Bot](./getting-discord-bot.md)
 - [Database Setup](./database-setup.md)
 
@@ -19,7 +19,7 @@ Make sure to read these guides listed below (read them in order):
 
 Once you have the discord bot up, there's a few things that needs to be done before development can begin. 
 
-1. Follow the steps in [Installing Dependencies](#installing-dependencies) to get all of the dependencies installed.
+1. Follow all of the guides in the [Before Starting](#Before-Starting) section to make sure that you have everything installed.
 2. Now create a shell that poetry needs. Run the following command:
 
     ```sh
@@ -85,6 +85,10 @@ In short:
 
 - If you want to use Kumiko in a production environment, use a versioned tag.
 - If you want to test out Kumiko, use the `edge` tag.
+
+## Python Version Update
+
+Generally Kumiko will use the latest version of Python. The project will start migrating to the next version of Python (eg from Python 3.10 to 3.11) only if either the dependencies or the point releases of the next Python version (eg Python 3.11.1, etc) has released.
 
 ## Coding Style
 ### Variables

@@ -41,7 +41,6 @@ To get started, you'll need these things installed:
 
     ```sh
     pyenv install 3.10.8
-    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -68,7 +67,8 @@ To get started, you'll need these things installed:
     
 ### Ubuntu
 
-1. Install the suggested build dependencies for pyenv. 
+> **Note**
+> `uvloop` requires the `libssl-dev` package. On Ubuntu 22.04, this will install OpenSSL 3.0 instead of OpenSSL 1.1. You'll need to use a backport version of Ubuntu's repos (focal) in order to get access to OpenSSL 1.1. Refer to https://stackoverflow.com/questions/72133316/ubuntu-22-04-libssl-so-1-1-cannot-open-shared-object-file-no-such-file-or-di for more info
 
     ```sh
     sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
@@ -88,7 +88,6 @@ To get started, you'll need these things installed:
 
     ```sh
     pyenv install 3.10.8
-    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -132,7 +131,6 @@ To get started, you'll need these things installed:
 
     ```sh
     pyenv install 3.10.8
-    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -182,7 +180,6 @@ To get started, you'll need these things installed:
 
     ```sh
     pyenv install 3.10.8
-    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -224,8 +221,6 @@ To get started, you'll need these things installed:
 4. Now with Pyenv, you can install Python 3.10
 
     ```sh
-    pyenv install 3.10.8
-    pyenv global 3.10.8
     pyenv rehash
     ```
 
@@ -269,7 +264,6 @@ To get started, you'll need these things installed:
     ```sh
     pyenv update
     pyenv install 3.10.8
-    pyenv global 3.10.8
     pyenv rehash
     ```
 
