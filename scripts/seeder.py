@@ -13,13 +13,13 @@ envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(libsPath)
 
 from admin_logs_utils import KumikoAdminLogsUtils
-from economy_utils import (
+from genshin_wish_sim_utils import KumikoWSUtils
+from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoQuestsUtils,
     KumikoUserInvUtils,
 )
-from genshin_wish_sim_utils import KumikoWSUtils
 
 load_dotenv(dotenv_path=envPath)
 

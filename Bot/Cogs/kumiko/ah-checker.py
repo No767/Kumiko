@@ -5,7 +5,7 @@ from datetime import datetime
 
 from dateutil import parser
 from discord.ext import commands
-from economy_utils import KumikoAuctionHouseUtils
+from kumiko_economy import KumikoAuctionHouseUtils
 from rin_exceptions import ItemNotFound
 
 POSTGRES_PASSWORD = os.getenv("Postgres_Password")

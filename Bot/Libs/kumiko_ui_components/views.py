@@ -3,13 +3,13 @@ import asyncio
 import discord
 import uvloop
 from admin_logs_utils import KumikoAdminLogsUtils
-from economy_utils import (
+from genshin_wish_sim_utils import KumikoWSUserInvUtils
+from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoEcoUtils,
     KumikoQuestsUtils,
 )
-from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from rin_exceptions import ItemNotFound, NoItemsError
 
 from .modals import GWSDeleteOneInv, QuestsDeleteOneModal

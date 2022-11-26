@@ -3,12 +3,12 @@ from tortoise.models import Model
 
 
 class WSData(Model):
-    uuid = fields.CharField(max_length=512, pk=True)
-    event_name = fields.CharField(max_length=512)
-    name = fields.CharField(max_length=512)
+    uuid = fields.CharField(max_length=255, pk=True)
+    event_name = fields.CharField(max_length=255)
+    name = fields.CharField(max_length=255)
     description = fields.TextField()
     star_rank = fields.IntField()
-    type = fields.CharField(max_length=512)
+    type = fields.CharField(max_length=255)
 
     class Meta:
         table = "ws_data"
@@ -19,7 +19,7 @@ class WSData(Model):
 
 class WSUser(Model):
     user_id = fields.BigIntField(pk=True)
-    username = fields.CharField(max_length=512)
+    username = fields.CharField(max_length=255)
     pulls = fields.IntField()
     date_joined = fields.DatetimeField(null=True, auto_now_add=True)
 
@@ -31,13 +31,13 @@ class WSUser(Model):
 
 
 class WSUserInv(Model):
-    item_uuid = fields.CharField(max_length=512, pk=True)
+    item_uuid = fields.CharField(max_length=255, pk=True)
     user_id = fields.BigIntField()
     date_obtained = fields.DatetimeField(null=True, auto_now_add=True)
-    name = fields.CharField(max_length=512)
+    name = fields.CharField(max_length=255)
     description = fields.TextField()
     star_rank = fields.IntField()
-    type = fields.CharField(max_length=512)
+    type = fields.CharField(max_length=255)
     amount = fields.IntField()
 
     class Meta:

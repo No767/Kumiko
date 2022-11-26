@@ -4,14 +4,14 @@ import uuid
 import discord
 import uvloop
 from dateutil import parser
-from economy_utils import (
+from genshin_wish_sim_utils import KumikoWSUserInvUtils
+from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoEcoUtils,
     KumikoQuestsUtils,
     KumikoUserInvUtils,
 )
-from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from rin_exceptions import ItemNotFound
 
 

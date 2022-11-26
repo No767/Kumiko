@@ -12,7 +12,7 @@ envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(os.path.join(str(path), "Bot"))
 sys.path.append(os.path.join(str(path), "Bot", "Libs"))
 
-from utils import KumikoCM
+from kumiko_utils import KumikoCM
 
 load_dotenv(dotenv_path=envPath)
 

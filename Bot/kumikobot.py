@@ -36,6 +36,5 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 # Run the bot
 if __name__ == "__main__":
-    # asyncio.run(bot.ipc.start())
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
     bot.run(DISCORD_BOT_TOKEN)

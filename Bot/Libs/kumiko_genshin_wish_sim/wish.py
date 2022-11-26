@@ -3,8 +3,8 @@ from typing import Union
 
 import numpy as np
 import uvloop
+from kumiko_utils import KumikoCM
 from numpy.random import default_rng
-from utils import KumikoCM
 
 from .models import WSData
 

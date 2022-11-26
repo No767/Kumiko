@@ -7,7 +7,7 @@ import uvloop
 from dateutil import parser
 from discord.ext import commands
 from dotenv import load_dotenv
-from economy_utils import KumikoQuestsUtils
+from kumiko_economy import KumikoQuestsUtils
 from rin_exceptions import NoItemsError
 
 load_dotenv()

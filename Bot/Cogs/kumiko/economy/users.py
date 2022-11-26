@@ -7,7 +7,7 @@ from dateutil import parser
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from economy_utils import KumikoEcoUserUtils, KumikoUserInvUtils
+from kumiko_economy import KumikoEcoUserUtils, KumikoUserInvUtils
 from kumiko_ui_components import CreateAccountView, PurgeAccountView
 from rin_exceptions import ItemNotFound, NoItemsError
 
