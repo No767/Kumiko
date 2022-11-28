@@ -105,8 +105,8 @@ test = ["flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
 
 [[package]]
 name = "asyncpraw"
-version = "7.6.0"
-description = "Async PRAW, an abbreviation for `Asynchronous Python Reddit API Wrapper`, is a python package that allows for simple access to Reddit's API."
+version = "7.6.1"
+description = "Async PRAW, an abbreviation for \"Asynchronous Python Reddit API Wrapper\", is a python package that allows for simple access to Reddit's API."
 category = "main"
 optional = false
 python-versions = ">=3.7"
@@ -121,10 +121,10 @@ update-checker = ">=0.18"
 
 [package.extras]
 ci = ["coveralls"]
-dev = ["asynctest (>=0.13.0)", "mock (>=0.8)", "packaging", "pre-commit", "pytest (>=2.7.3)", "pytest-asyncio", "pytest-vcr", "sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio", "testfixtures (>4.13.2,<7)", "vcrpy (>=4.1.1)"]
+dev = ["asynctest (>=0.13.0)", "mock (>=0.8)", "packaging", "pre-commit", "pytest (>=7.2.0,<7.3.0)", "pytest-asyncio", "pytest-vcr", "sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio", "testfixtures (>4.13.2,<7)", "vcrpy (>=4.1.1)"]
 lint = ["pre-commit", "sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio"]
 readthedocs = ["sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio"]
-test = ["asynctest (>=0.13.0)", "mock (>=0.8)", "pytest (>=2.7.3)", "pytest-asyncio", "pytest-vcr", "testfixtures (>4.13.2,<7)", "vcrpy (>=4.1.1)"]
+test = ["asynctest (>=0.13.0)", "mock (>=0.8)", "pytest (>=7.2.0,<7.3.0)", "pytest-asyncio", "pytest-vcr", "testfixtures (>4.13.2,<7)", "vcrpy (>=4.1.1)"]
 
 [[package]]
 name = "asyncprawcore"
@@ -880,7 +880,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "~3.10"
-content-hash = "0cd7ea902f35174160958b45fa3326836973f649bbc4ff9b85dc87326ee260a2"
+content-hash = "2e8a495a16234f5e4136711e0de6105098f81af5917e319a6c5f7c0b1183215a"
 
 [metadata.files]
 aiodns = [
@@ -1024,8 +1024,8 @@ asyncpg = [
     {file = "asyncpg-0.27.0.tar.gz", hash = "sha256:720986d9a4705dd8a40fdf172036f5ae787225036a7eb46e704c45aa8f62c054"},
 ]
 asyncpraw = [
-    {file = "asyncpraw-7.6.0-py3-none-any.whl", hash = "sha256:6e23b4f7a114a4a023fc7db5562ef8ab2c7b5be149efa71826f16b9ae26e001a"},
-    {file = "asyncpraw-7.6.0.tar.gz", hash = "sha256:587c9f1d76f7b119a8ed215827e513c20827b28978878a7ad5c1d1747c211ac7"},
+    {file = "asyncpraw-7.6.1-py3-none-any.whl", hash = "sha256:b7a424d9357ff5991de71341ddf8d0f133b0b28cbc7f65e20e4e399e334e0d2b"},
+    {file = "asyncpraw-7.6.1.tar.gz", hash = "sha256:17567c517afa06bb33996a01632ee7f1d733307fd2820ed982da9bfb13adb98a"},
 ]
 asyncprawcore = [
     {file = "asyncprawcore-2.3.0-py3-none-any.whl", hash = "sha256:46c52e6cfe91801a8c9490a0ee29a85cbc6713ccc535d5c704d448aee9729e5b"},
