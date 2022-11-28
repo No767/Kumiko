@@ -396,33 +396,33 @@ class GWS(commands.Cog):
     @gws.command(name="profile")
     async def getUserProfile(self, ctx):
         """Gets your GWS profile"""
-        mainRes = await wsUserUtils.getFirstUser(
-            user_id=ctx.author.id, uri=WS_CONNECTION_URI
-        )
-        try:
-            if mainRes is None:
-                raise ItemNotFound
-            else:
-                user = dict(mainRes[0])
-                getUserInfo = await self.bot.get_or_fetch_user(user["user_id"])
-                embed = discord.Embed()
-                embed.title = f"{user['username']}'s Profile"
-                embed.add_field(name="Pulls", value=user["pulls"], inline=True)
-                embed.add_field(
-                    name="Date Joined",
-                    value=parser.isoparse(user["date_joined"]).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    ),
-                    inline=True,
-                )
-                embed.set_thumbnail(url=getUserInfo.display_avatar.url)
-                await ctx.respond(embed=embed, ephemeral=True)
-        except ItemNotFound:
-            embedError = discord.Embed()
-            embedError.description = "Sorry, but it seems like you don't have a profile. Make a pull to create one"
-            await ctx.respond(embed=embedError, ephemeral=True)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            # TODO: Add profile caching w/ Redis
+            getUserProfile = (
+                await WSUser.filter(user_id=ctx.user.id).get_or_none().values()
+            )
+            try:
+                if getUserProfile is None:
+                    raise ItemNotFound
+                else:
+                    getUserInfo = await self.bot.get_or_fetch_user(
+                        getUserProfile["user_id"]
+                    )
+                    embed = discord.Embed()
+                    embed.title = f"{getUserProfile['username']}'s Profile"
+                    embed.add_field(name="Pulls", value=getUserProfile["pulls"])
+                    embed.add_field(
+                        name="Date Joined",
+                        value=discord.utils.format_dt(
+                            parser.isoparse(getUserProfile["date_joined"]), style="F"
+                        ),
+                    )
+                    embed.set_thumbnail(url=getUserInfo.display_avatar.url)
+                    await ctx.respond(embed=embed, ephemeral=True)
+            except ItemNotFound:
+                embedError = discord.Embed()
+                embedError.description = "Sorry, but it seems like you don't have a profile. Make a pull to create one"
+                await ctx.respond(embed=embedError, ephemeral=True)
 
 
 def setup(bot):
