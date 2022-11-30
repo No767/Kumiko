@@ -14,13 +14,19 @@ from genshin_wish_sim_utils import (
     KumikoWSUsersUtils,
     KumikoWSUtils,
 )
-from kumiko_genshin_wish_sim import KumikoGWSUtils, WSUser, WSUserInv
+from kumiko_genshin_wish_sim import (
+    KumikoGWSCacheUtils,
+    KumikoGWSUtils,
+    WSUser,
+    WSUserInv,
+)
 from kumiko_ui_components import GWSDeleteOneInvView, GWSPurgeAllInvView
 from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
-
+REDIS_HOST = os.getenv("Redis_Server_IP")
+REDIS_PORT = os.getenv("Redis_Port")
 POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_WS_DATABASE = os.getenv("Postgres_Kumiko_Database")
@@ -35,6 +41,9 @@ wsUserInvUtils = KumikoWSUserInvUtils()
 wsUserUtils = KumikoWSUsersUtils()
 
 gwsUtils = KumikoGWSUtils(uri=CONNECTION_URI, models=MODELS)
+cacheUtils = KumikoGWSCacheUtils(
+    uri=CONNECTION_URI, models=MODELS, redis_host=REDIS_HOST, redis_port=REDIS_PORT
+)
 
 
 class GWS(commands.Cog):
@@ -397,9 +406,8 @@ class GWS(commands.Cog):
     async def getUserProfile(self, ctx):
         """Gets your GWS profile"""
         async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
-            # TODO: Add profile caching w/ Redis
-            getUserProfile = (
-                await WSUser.filter(user_id=ctx.user.id).get_or_none().values()
+            getUserProfile = await cacheUtils.cacheUser(
+                user_id=ctx.user.id, command_name=ctx.command.qualified_name
             )
             try:
                 if getUserProfile is None:

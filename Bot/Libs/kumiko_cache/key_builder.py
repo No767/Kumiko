@@ -33,7 +33,7 @@ def commandKeyBuilder(
     Args:
         prefix (Optional[str], optional): Prefix of the key. Defaults to None.
         namespace (Optional[str], optional): Namespace of the key. Defaults to None.
-        guild_id (Optional[int], optional): Discord User or Guild ID. Defaults to None.
+        id (Optional[int], optional): Discord User or Guild ID. Defaults to None.
         command (Optional[str], optional): Slash Command Name. Defaults to None.
 
     Returns:
