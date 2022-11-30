@@ -1,4 +1,4 @@
-FROM library/postgres:15
+FROM library/postgres:latest
 
 WORKDIR /docker-entrypoint-initdb.d
 
