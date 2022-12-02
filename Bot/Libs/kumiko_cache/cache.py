@@ -39,6 +39,7 @@ class KumikoCache:
 
     async def getBasicCommandCache(self, key: str) -> str:
         """Gets the command cache from Redis
+
         Args:
             key (str): Key to get from Redis
         """

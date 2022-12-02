@@ -335,6 +335,43 @@ class GWS(commands.Cog):
         )
         await mainPages.respond(ctx.interaction, ephemeral=False)
 
+    @gws.command(name="improved-inv")
+    async def improvedUserInv(self, ctx):
+        """Improved version of the inventory command"""
+        userInv = await cacheUtils.cacheUserInv(
+            user_id=ctx.user.id, command_name=ctx.command.qualified_name
+        )
+        try:
+            if userInv is None:
+                raise NoItemsError
+            else:
+                mainPages = pages.Paginator(
+                    pages=[
+                        discord.Embed(
+                            title=items["name"], description=items["description"]
+                        )
+                        .add_field(
+                            name="Date Obtained",
+                            value=discord.utils.format_dt(
+                                parser.isoparse(items["date_obtained"]), style="F"
+                            ),
+                        )
+                        .add_field(name="Star Rank", value=items["star_rank"])
+                        .add_field(name="Type", value=items["type"])
+                        .add_field(name="Amount", value=items["amount"])
+                        # .set_image(
+                        #         url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{items['item_uuid']}.png"
+                        #     )
+                        for items in userInv
+                    ],
+                    loop_pages=True,
+                )
+                await mainPages.respond(ctx.interaction, ephemeral=False)
+        except NoItemsError:
+            embedError = discord.Embed()
+            embedError.description = "Sorry, but it seems like there are no items in your inventory. Please try again"
+            await ctx.respond(embed=embedError)
+
     @gws.command(name="inv")
     async def accessUserInv(self, ctx):
         """Accesses your inventory for GWS"""
