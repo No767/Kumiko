@@ -40,7 +40,7 @@ To get started, you'll need these things installed:
 5. Now with Pyenv, you can install Python 3.10
 
     ```sh
-    pyenv install 3.10.8
+    pyenv install 3.11.0
     pyenv rehash
     ```
 
@@ -87,7 +87,7 @@ To get started, you'll need these things installed:
 4. Now with Pyenv, you can install Python 3.10
 
     ```sh
-    pyenv install 3.10.8
+    pyenv install 3.11.0
     pyenv rehash
     ```
 
@@ -130,7 +130,7 @@ To get started, you'll need these things installed:
 4. Now with Pyenv, you can install Python 3.10
 
     ```sh
-    pyenv install 3.10.8
+    pyenv install 3.11.0
     pyenv rehash
     ```
 
@@ -179,7 +179,7 @@ To get started, you'll need these things installed:
 4. Now with Pyenv, you can install Python 3.10
 
     ```sh
-    pyenv install 3.10.8
+    pyenv install 3.11.0
     pyenv rehash
     ```
 
@@ -263,7 +263,7 @@ To get started, you'll need these things installed:
 
     ```sh
     pyenv update
-    pyenv install 3.10.8
+    pyenv install 3.11.0
     pyenv rehash
     ```
 

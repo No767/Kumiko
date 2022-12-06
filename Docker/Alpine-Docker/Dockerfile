@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.10-alpine3.16 AS builder
+FROM python:3.11-alpine3.16 AS builder
 
 RUN apk add --no-cache \
   ca-certificates \
@@ -15,6 +15,9 @@ RUN python -m pip install --upgrade pip setuptools
 RUN curl -sSL https://install.python-poetry.org | python -
 ENV PATH="${PATH}:/root/.local/bin"
 
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --profile minimal --default-toolchain stable -y
+ENV PATH="${PATH}:/root/.cargo/bin"
+
 WORKDIR /Kumiko
 
 COPY /pyproject.toml /Kumiko/
@@ -27,7 +30,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.10-alpine3.16
+FROM python:3.11-alpine3.16
 
 # Note that wget is needed for the wait-for script
 RUN apk add --no-cache \
