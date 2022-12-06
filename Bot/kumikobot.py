@@ -22,7 +22,7 @@ cogsPath = os.path.join(str(path), "Cogs")
 libsPath = os.path.join(str(path), "Libs")
 sys.path.append(libsPath)
 
-bot = KumikoCore(ipc_key=IPC_SECRET_KEY, intents=intents)
+bot = KumikoCore(intents=intents)
 
 logging.basicConfig(
     level=logging.INFO,

@@ -2,12 +2,8 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import Dict
 
 import discord
-from discord.ext import ipc
-from discord.ext.ipc.objects import ClientPayload
-from discord.ext.ipc.server import Server
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,10 +24,9 @@ sys.path.append(libsPath)
 class KumikoCore(discord.Bot):
     """The core of Kumiko - Subclassed this time"""
 
-    def __init__(self, ipc_key: str, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.load_cogs()
-        self.ipc = ipc.Server(self, secret_key=ipc_key)
 
     def load_cogs(self):
         """Kumiko's system to load cogs"""
@@ -61,7 +56,6 @@ class KumikoCore(discord.Bot):
                         )
 
     async def on_ready(self):
-        await self.ipc.start()
         logging.info(f"Logged in as {self.user.name}")
         logging.info(
             f"{self.user.name} is ready to go! All checkers are loaded and ready!"
@@ -69,8 +63,3 @@ class KumikoCore(discord.Bot):
         await self.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
         )
-
-    @Server.route()
-    async def get_user_data(self, data: ClientPayload) -> Dict:
-        user = self.get_user(data.user_id)
-        print(user)
