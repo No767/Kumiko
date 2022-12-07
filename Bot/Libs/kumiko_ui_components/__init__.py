@@ -16,7 +16,7 @@ from .views import (
     ALPurgeDataView,
     CreateAccountView,
     GWSDeleteOneInvView,
-    GWSPurgeAllInvView,
+    GWSPurgeInvView,
     MarketplacePurgeAllView,
     PurgeAccountView,
     QuestsDeleteOneConfirmView,
@@ -44,4 +44,5 @@ __all__ = [
     "AHCreateItemModal",
     "AHDeleteItemModal",
     "MarketplacePurchaseItemModal",
+    "GWSPurgeInvView",
 ]

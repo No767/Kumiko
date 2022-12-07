@@ -20,11 +20,12 @@ from kumiko_genshin_wish_sim import (
     WSUser,
     WSUserInv,
 )
-from kumiko_ui_components import GWSDeleteOneInvView, GWSPurgeAllInvView
+from kumiko_ui_components import GWSDeleteOneInvView, GWSPurgeInvView
 from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
+
 REDIS_HOST = os.getenv("Redis_Server_IP")
 REDIS_PORT = os.getenv("Redis_Port")
 POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
@@ -74,7 +75,6 @@ class GWS(commands.Cog):
                 )
                 totalPulls = pulls + 1
             else:
-                # TODO: Add a cache check here (w/ Redis)
                 userProfile = await WSUser.filter(user_id=ctx.user.id).first().values()
                 pulls = userProfile["pulls"]
                 totalPulls = userProfile["pulls"] + 1
@@ -335,7 +335,7 @@ class GWS(commands.Cog):
         )
         await mainPages.respond(ctx.interaction, ephemeral=False)
 
-    @gws.command(name="improved-inv")
+    @gws.command(name="inv")
     async def improvedUserInv(self, ctx):
         """Improved version of the inventory command"""
         userInv = await cacheUtils.cacheUserInv(
@@ -359,9 +359,9 @@ class GWS(commands.Cog):
                         .add_field(name="Star Rank", value=items["star_rank"])
                         .add_field(name="Type", value=items["type"])
                         .add_field(name="Amount", value=items["amount"])
-                        # .set_image(
-                        #         url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{items['item_uuid']}.png"
-                        #     )
+                        .set_image(
+                            url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{items['item_uuid']}.png"
+                        )
                         for items in userInv
                     ],
                     loop_pages=True,
@@ -372,55 +372,8 @@ class GWS(commands.Cog):
             embedError.description = "Sorry, but it seems like there are no items in your inventory. Please try again"
             await ctx.respond(embed=embedError)
 
-    @gws.command(name="inv")
-    async def accessUserInv(self, ctx):
-        """Accesses your inventory for GWS"""
-        userInv = await wsUserInvUtils.getUserInv(
-            user_id=ctx.author.id, uri=WS_CONNECTION_URI
-        )
-        try:
-            if len(userInv) == 0:
-                raise NoItemsError
-            else:
-                mainPages = pages.Paginator(
-                    pages=[
-                        discord.Embed(
-                            title=dict(mainItem)["name"],
-                            description=dict(mainItem)["description"],
-                        )
-                        .add_field(
-                            name="Date Obtained",
-                            value=parser.isoparse(
-                                dict(mainItem)["date_obtained"]
-                            ).strftime("%Y-%m-%d %H:%M:%S"),
-                            inline=True,
-                        )
-                        .add_field(
-                            name="Star Rank",
-                            value=dict(mainItem)["star_rank"],
-                            inline=True,
-                        )
-                        .add_field(
-                            name="Type", value=dict(mainItem)["type"], inline=True
-                        )
-                        .add_field(
-                            name="Amount", value=dict(mainItem)["amount"], inline=True
-                        )
-                        .set_image(
-                            url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{dict(mainItem)['item_uuid']}.png"
-                        )
-                        for mainItem in userInv
-                    ],
-                    loop_pages=True,
-                )
-                await mainPages.respond(ctx.interaction, ephemeral=False)
-        except NoItemsError:
-            embedError = discord.Embed()
-            embedError.description = "Sorry, but it seems like there are no items in your inventory. Please try again"
-            await ctx.respond(embed=embedError)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
+    # Probably will have the action bar have like a delete x1 button, etc
+    # This way it is more clear to the user what do they want to delete
     @gwsUserInvDelete.command(name="one")
     async def deleteOneUserInv(self, ctx):
         """Deletes one item from your inventory"""
@@ -436,7 +389,9 @@ class GWS(commands.Cog):
         embed = discord.Embed()
         embed.description = "Do you want to purge all of the items from your user inventory? This cannot be undone"
         await ctx.respond(
-            embed=embed, view=GWSPurgeAllInvView(uri=WS_CONNECTION_URI), ephemeral=True
+            embed=embed,
+            view=GWSPurgeInvView(uri=CONNECTION_URI, models=MODELS),
+            ephemeral=True,
         )
 
     @gws.command(name="profile")

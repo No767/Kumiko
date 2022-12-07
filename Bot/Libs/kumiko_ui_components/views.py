@@ -1,15 +1,17 @@
 import asyncio
+from typing import List
 
 import discord
 import uvloop
 from admin_logs_utils import KumikoAdminLogsUtils
-from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoEcoUtils,
     KumikoQuestsUtils,
 )
+from kumiko_genshin_wish_sim import WSUserInv
+from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 from .modals import GWSDeleteOneInv, QuestsDeleteOneModal
@@ -436,14 +438,15 @@ class GWSDeleteOneInvView(discord.ui.View):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-class GWSPurgeAllInvView(discord.ui.View):
+class GWSPurgeInvView(discord.ui.View):
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
 
-    def __init__(self, uri: str):
+    def __init__(self, uri: str, models: List, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.uri = uri
-        self.userInv = KumikoWSUserInvUtils()
+        self.models = models
 
     @discord.ui.button(
         label="Yes",
@@ -451,26 +454,30 @@ class GWSPurgeAllInvView(discord.ui.View):
         style=discord.ButtonStyle.primary,
         emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
     )
-    async def button_callback(self, button, interaction):
-        checkUserInv = await self.userInv.getUserInv(
-            user_id=interaction.user.id, uri=self.uri
-        )
-        try:
-            if len(checkUserInv) == 0:
-                raise NoItemsError
+    async def button_callback(self, button, interaction: discord.Interaction):
+        async with KumikoCM(uri=self.uri, models=self.models):
+            invExist = await WSUserInv.filter(user_id=interaction.user.id).exists()
+            if invExist is False:
+                for child in self.children:
+                    child.disabled = True
+                await interaction.response.edit_message(
+                    embed=discord.Embed(
+                        description="It seems like you don't have anything in your GWS inventory. Please try again"
+                    ),
+                    view=self,
+                    delete_after=15.0,
+                )
             else:
-                await self.userInv.purgeUserInv(
-                    user_id=interaction.user.id, uri=self.uri
+                await WSUserInv.filter(user_id=interaction.user.id).delete()
+                for child in self.children:
+                    child.disabled = True
+                await interaction.response.edit_message(
+                    embed=discord.Embed(
+                        description="Everything has been purged from your inventory. This cannot be recovered from."
+                    ),
+                    view=self,
+                    delete_after=15.0,
                 )
-                await interaction.response.send_message(
-                    "Everything has been purged from your inventory. This cannot be recovered from.",
-                    ephemeral=True,
-                )
-        except NoItemsError:
-            await interaction.response.send_message(
-                "It seems like you don't have anything in your GWS inventory. Please try again",
-                ephemeral=True,
-            )
 
     @discord.ui.button(
         label="No",
@@ -478,7 +485,13 @@ class GWSPurgeAllInvView(discord.ui.View):
         style=discord.ButtonStyle.primary,
         emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
     )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            "Well glad you choose not to...", ephemeral=True
+    async def second_button_callback(self, button, interaction: discord.Interaction):
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
         )
