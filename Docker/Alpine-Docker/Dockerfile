@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.11-alpine3.16 AS builder
+FROM python:3.11-alpine3.17 AS builder
 
 RUN apk add --no-cache \
   ca-certificates \
@@ -30,7 +30,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.11-alpine3.16
+FROM python:3.11-alpine3.17
 
 # Note that wget is needed for the wait-for script
 RUN apk add --no-cache \
