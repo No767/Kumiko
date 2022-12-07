@@ -1,6 +1,6 @@
 from typing import Dict, Optional, Union
 
-import orjson
+import ormsgpack
 from coredis import Redis
 
 from .key_builder import commandKeyBuilder
@@ -34,8 +34,8 @@ class KumikoCache:
             value (Union[str, bytes, dict]): Value to set on Redis. Defaults to None.
             ttl (Optional[int], optional): TTL for the key-value pair. Defaults to 30.
         """
-        conn = Redis(host=self.host, port=self.port, decode_responses=True)
-        await conn.set(key=key, value=orjson.dumps(value), ex=ttl)
+        conn = Redis(host=self.host, port=self.port)
+        await conn.set(key=key, value=ormsgpack.packb(value), ex=ttl)
 
     async def getBasicCommandCache(self, key: str) -> str:
         """Gets the command cache from Redis
@@ -43,8 +43,8 @@ class KumikoCache:
         Args:
             key (str): Key to get from Redis
         """
-        conn = Redis(host=self.host, port=self.port, decode_responses=True)
-        return orjson.loads(await conn.get(key))
+        conn = Redis(host=self.host, port=self.port)
+        return ormsgpack.unpackb(await conn.get(key))
 
     async def setDictCommandCache(
         self,
