@@ -90,10 +90,6 @@ In short:
 
 Generally Kumiko will use the latest version of Python. The project will start migrating to the next version of Python (eg from Python 3.10 to 3.11) only if either the dependencies or the point releases of the next Python version (eg Python 3.11.1, etc) has released.
 
-## Design and Engineering Principles
-
-The thought process behind the code for Kumiko is done through some design principles. The one major one is that all methods inside a class for a lib must have been used more than twice. If it's only used one time, then it's not worth the time. Think the code through and through. Kumiko's purchasing system and optimized `/gws wish one` command were first written and designed entirely on a piece of paper, and then programmed in. If you have taken AP CSA, you already know where this is going. When you want to design a new feature of Kumiko, write it on a piece of paper and then go from there. Think it through. Lean Six Sigma Engineering Principles also should be considered as well.
-
 ## Coding Style
 ### Variables
 
