@@ -7,4 +7,4 @@ dev-setup:
 	cp ./docker-compose-dev.yml ./docker-compose.yml
 
 run:
-	python Bot/kumikobot.py
+	poetry run python Bot/kumikobot.py

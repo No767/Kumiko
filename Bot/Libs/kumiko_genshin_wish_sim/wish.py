@@ -24,7 +24,7 @@ class KumikoGWSUtils:
         self.models = models
 
     async def getWish(self, star_rank: int, size: int = 1) -> Union[dict, np.ndarray]:
-        """Selects all of the data based on the star rank from the WS DB, and just randomly picks one out
+        """Selects all the data based on the star rank from the WS DB, and just randomly picks one out
 
         Ideally should be randomly picked from the SQL Database, but can cause performance issues on PostgreSQL
 
@@ -43,7 +43,7 @@ class KumikoGWSUtils:
             choice = (
                 rng.choice(selectedItem, size=size)[0]
                 if size == 1
-                else rng.choice(selectedItem, size=size)
+                else rng.choice(selectedItem, size=size, replace=False)
             )
             return choice
 
