@@ -5,7 +5,6 @@ from typing import List
 import discord
 import uvloop
 from dateutil import parser
-from genshin_wish_sim_utils import KumikoWSUserInvUtils
 from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -245,49 +244,6 @@ class QuestsUpdateTimeModal(discord.ui.Modal):
         except ItemNotFound:
             await interaction.response.send_message(
                 "It seems like there no quests with that name (or you haven't created an account yet). Please try again"
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
-class GWSDeleteOneInv(discord.ui.Modal):
-    def __init__(self, uri: str, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.userInv = KumikoWSUserInvUtils()
-
-        self.add_item(
-            discord.ui.InputText(
-                label="Item to delete",
-                style=discord.InputTextStyle.short,
-                min_length=1,
-                required=True,
-                placeholder="Type in the item name to delete",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        checkUserInv = await self.userInv.getWSItemUserInvOne(
-            user_id=interaction.user.id, name=self.children[0].value, uri=self.uri
-        )
-        try:
-            if len(checkUserInv) == 0:
-                raise ItemNotFound
-            else:
-                for items in checkUserInv:
-                    await self.userInv.deleteOneUserInv(
-                        user_id=interaction.user.id,
-                        uuid=dict(items)["item_uuid"],
-                        uri=self.uri,
-                    )
-                await interaction.response.send_message(
-                    f"The item {self.children[0].value} has been deleted from your inventory",
-                    ephemeral=True,
-                )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "Sorry, but it seems like there are no items in your inventory. Please try again.",
-                ephemeral=True,
             )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

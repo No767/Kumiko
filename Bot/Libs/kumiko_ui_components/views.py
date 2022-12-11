@@ -14,7 +14,7 @@ from kumiko_genshin_wish_sim import WSUserInv
 from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
-from .modals import GWSDeleteOneInv, QuestsDeleteOneModal
+from .modals import QuestsDeleteOneModal
 
 
 class ALPurgeDataView(discord.ui.View):
@@ -385,43 +385,6 @@ class QuestsDeleteOneConfirmView(discord.ui.View):
         await interaction.response.send_modal(
             QuestsDeleteOneModal(uri=self.uri, title="Delete a quest")
         )
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The action has been cancelled by the user {interaction.user.name}",
-            ephemeral=True,
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
-class GWSDeleteOneInvView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    def __init__(self, uri: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        await interaction.response.send_modal(
-            GWSDeleteOneInv(uri=self.uri, title="Delete a item")
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @discord.ui.button(
         label="No",
