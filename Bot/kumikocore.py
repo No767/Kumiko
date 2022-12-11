@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 
 import discord
+from discord.ext import tasks
+from kumiko_economy import AHChecker, QuestsChecker
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,8 +26,9 @@ sys.path.append(libsPath)
 class KumikoCore(discord.Bot):
     """The core of Kumiko - Subclassed this time"""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, uri: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.uri = uri
         self.load_cogs()
 
     def load_cogs(self):
@@ -55,8 +58,30 @@ class KumikoCore(discord.Bot):
                             f"Cogs.{cogDir}.{subCogDir[:-3]}", store=False
                         )
 
+    @tasks.loop(hours=1)
+    async def checkerHandler(self):
+        await QuestsChecker(uri=self.uri)
+        await AHChecker(uri=self.uri)
+
+    @checkerHandler.before_loop
+    async def beforeReady(self):
+        await self.wait_until_ready()
+
+    @checkerHandler.after_loop
+    async def afterReady(self):
+        if self.checkerHandler.failed():
+            logging.error(
+                f"{self.user.name}'s Checker Handlers has failed. Attempting to restart"
+            )
+            self.checkerHandler.restart()
+        elif self.checkerHandler.is_being_cancelled():
+            logging.info(f"Stopping {self.user.name}'s Checker Handlers")
+            self.checkerHandler.stop()
+
     async def on_ready(self):
         logging.info(f"Logged in as {self.user.name}")
+        self.checkerHandler.start()
+        logging.info(f"{self.user.name}'s Checker Handlers successfully started")
         logging.info(
             f"{self.user.name} is ready to go! All checkers are loaded and ready!"
         )

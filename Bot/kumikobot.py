@@ -12,6 +12,13 @@ from kumikocore import KumikoCore
 # Grabs the bot's token from the .env file
 load_dotenv()
 
+POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_DB = os.getenv("Postgres_Kumiko_Database")
+POSTGRES_PORT = os.getenv("Postgres_Port")
+POSTGRES_USERNAME = os.getenv("Postgres_Username")
+CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
 DISCORD_BOT_TOKEN = os.getenv("Dev_Bot_Token")
 IPC_SECRET_KEY = os.getenv("IPC_Secret_Key")
 intents = discord.Intents.default()
@@ -22,7 +29,7 @@ cogsPath = os.path.join(str(path), "Cogs")
 libsPath = os.path.join(str(path), "Libs")
 sys.path.append(libsPath)
 
-bot = KumikoCore(intents=intents)
+bot = KumikoCore(uri=CONNECTION_URI, intents=intents)
 
 logging.basicConfig(
     level=logging.INFO,

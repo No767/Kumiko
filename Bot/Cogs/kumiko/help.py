@@ -15,9 +15,8 @@ class HelpSelect(discord.ui.Select):
                     label=cog_name,
                     description=cog.__doc__,
                 )
-                for cog_name, cog in cog.bot.cogs.items()
-                if cog_name
-                not in ["AHItemChecker", "InteractionFailureHandler", "QuestsChecker"]
+                for cog_name, cog in sorted(cog.bot.cogs.items())
+                if cog_name not in ["InteractionFailureHandler"]
             ],
         )
         self.cog = cog
@@ -49,7 +48,7 @@ class Help(commands.Cog):
         name="help",
         description="The help command page for Kumiko",
     )
-    async def akariHelp(self, ctx):
+    async def kumikoHelp(self, ctx):
         embed = discord.Embed(title=self.bot.user.name)
         embed.description = """
         Kumiko is a multipurpose bot built for freedom and choice in mind\n
@@ -69,10 +68,7 @@ class Help(commands.Cog):
                         for cogs in self.bot.cogs
                         if cogs
                         not in [
-                            "AHItemChecker",
                             "InteractionFailureHandler",
-                            "QuestsChecker",
-                            "HelpTest",
                         ]
                     ]
                 )
