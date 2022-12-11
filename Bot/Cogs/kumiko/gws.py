@@ -6,18 +6,13 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from genshin_wish_sim_utils import (
-    KumikoWSUserInvUtils,
-    KumikoWSUsersUtils,
-    KumikoWSUtils,
-)
 from kumiko_genshin_wish_sim import (
     KumikoGWSCacheUtils,
     KumikoGWSUtils,
     WSUser,
     WSUserInv,
 )
-from kumiko_ui_components import GWSDeleteOneInvView, GWSPurgeInvView
+from kumiko_ui_components import GWSDeleteOneUserInvItemModal, GWSPurgeInvView
 from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
@@ -30,13 +25,8 @@ POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_WS_DATABASE = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
-WS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_WS_DATABASE}"
 CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_WS_DATABASE}"
 MODELS = ["kumiko_genshin_wish_sim.models"]
-
-wsUtils = KumikoWSUtils()
-wsUserInvUtils = KumikoWSUserInvUtils()
-wsUserUtils = KumikoWSUsersUtils()
 
 gwsUtils = KumikoGWSUtils(uri=CONNECTION_URI, models=MODELS)
 cacheUtils = KumikoGWSCacheUtils(
@@ -130,7 +120,7 @@ class GWS(commands.Cog):
             await ctx.respond(embed=embed)
 
     @gwsWish.command(name="multiple")
-    async def improvedGwsWishMultiple(
+    async def gwsWishMultiple(
         self,
         ctx: discord.ApplicationContext,
         *,
@@ -217,11 +207,12 @@ class GWS(commands.Cog):
                 ],
                 loop_pages=True,
             )
+
             await mainPages.respond(ctx.interaction, ephemeral=False)
 
     @gws.command(name="inv")
-    async def improvedUserInv(self, ctx):
-        """Improved version of the inventory command"""
+    async def gwsUserInv(self, ctx):
+        """Allows you to view your inventory"""
         userInv = await cacheUtils.cacheUserInv(
             user_id=ctx.user.id, command_name=ctx.command.qualified_name
         )
@@ -256,16 +247,18 @@ class GWS(commands.Cog):
             embedError.description = "Sorry, but it seems like there are no items in your inventory. Please try again"
             await ctx.respond(embed=embedError)
 
-    # Probably will have the action bar have like a delete x1 button, etc
-    # This way it is more clear to the user what do they want to delete
     @gwsUserInvDelete.command(name="one")
-    async def deleteOneUserInv(self, ctx):
+    async def deleteOneUserInv(self, ctx: discord.ApplicationContext):
         """Deletes one item from your inventory"""
-        embed = discord.Embed()
-        embed.description = "Are you sure you want to delete this item?"
-        await ctx.respond(
-            embed=embed, view=GWSDeleteOneInvView(uri=WS_CONNECTION_URI), ephemeral=True
+        view = GWSDeleteOneUserInvItemModal(
+            uri=CONNECTION_URI,
+            models=MODELS,
+            redis_host=REDIS_HOST,
+            redis_port=REDIS_PORT,
+            command_name=ctx.command.qualified_name,
+            title="Delete One Item",
         )
+        await ctx.send_modal(view)
 
     @gwsUserInvDelete.command(name="all")
     async def purgeUserInv(self, ctx):

@@ -57,7 +57,9 @@ class KumikoGWSCacheUtils:
         else:
             return await self.cache.getDictCommandCache(key=key)
 
-    async def cacheUserInv(self, user_id: int, command_name: str) -> Union[Dict, None]:
+    async def cacheUserInv(
+        self, user_id: int, command_name: str
+    ) -> Union[Dict, str, None]:
         """Abstraction for caching the user inv for the GWS
 
         Args:
@@ -65,7 +67,7 @@ class KumikoGWSCacheUtils:
             command_name (str): Command Name. Will be used to set up the key on Redis
 
         Returns:
-            Union[Dict, None]: This will return the cached data if cached, else it will return the data from the DB.
+            Union[Dict, str, None]: This will return the cached data if cached, else it will return the data from the DB.
             Or in the case the user's inv is not found, it will return None.
         """
         key = commandKeyBuilder(
@@ -84,17 +86,16 @@ class KumikoGWSCacheUtils:
                 )
                 return userInvData
         else:
-            res = await self.cache.getBasicCommandCache(key=key)
-            return res
+            return await self.cache.getBasicCommandCache(key=key)
 
     async def cacheUserInvItem(
-        self, user_id: int, item_uuid: str, command_name: str
+        self, user_id: int, name: str, command_name: str
     ) -> Union[Dict, None]:
         """Abstraction for caching the user inv item
 
         Args:
             user_id (int): Discord User ID
-            item_uuid (str): Item UUID
+            name (str): Item Name
             command_name (str): Command name. Will get used in the Redis key
 
         Returns:
@@ -110,8 +111,8 @@ class KumikoGWSCacheUtils:
         if await self.cache.cacheExists(key=key) is False:
             async with KumikoCM(uri=self.uri, models=self.models):
                 userInvItem = (
-                    await WSUserInv.filter(user_id=user_id, item_uuid=item_uuid)
-                    .first()
+                    await WSUserInv.filter(user_id=user_id, name=name)
+                    .get_or_none()
                     .values()
                 )
                 if userInvItem is None:
@@ -119,5 +120,4 @@ class KumikoGWSCacheUtils:
                 await self.cache.setDictCommandCache(key=key, value=userInvItem, ttl=60)
                 return userInvItem
         else:
-            res = await self.cache.getDictCommandCache(key=key)
-            return res
+            return await self.cache.getDictCommandCache(key=key)

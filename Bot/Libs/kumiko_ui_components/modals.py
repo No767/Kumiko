@@ -1,5 +1,6 @@
 import asyncio
 import uuid
+from typing import List
 
 import discord
 import uvloop
@@ -12,6 +13,8 @@ from kumiko_economy import (
     KumikoQuestsUtils,
     KumikoUserInvUtils,
 )
+from kumiko_genshin_wish_sim import KumikoGWSCacheUtils, WSUserInv
+from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound
 
 
@@ -783,3 +786,74 @@ class MarketplacePurchaseItemModal(discord.ui.Modal):
                 )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class GWSDeleteOneUserInvItemModal(discord.ui.Modal):
+    def __init__(
+        self,
+        uri: str,
+        models: List,
+        redis_host: str,
+        redis_port: int,
+        command_name: str,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+        self.models = models
+        self.redis_host = redis_host
+        self.redis_port = redis_port
+        self.command_name = command_name
+        self.cache = KumikoGWSCacheUtils(
+            uri=self.uri,
+            models=self.models,
+            redis_host=self.redis_host,
+            redis_port=self.redis_port,
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                placeholder="Type in the item name to delete",
+                min_length=1,
+                max_length=255,
+                required=True,
+                style=discord.InputTextStyle.short,
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Amount",
+                placeholder="Type in the item amount to delete",
+                min_length=1,
+                max_length=255,
+                required=True,
+                style=discord.InputTextStyle.short,
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        async with KumikoCM(uri=self.uri, models=self.models):
+            userInvItem = await self.cache.cacheUserInvItem(
+                user_id=interaction.user.id,
+                name=self.children[0].value,
+                command_name=self.command_name,
+            )
+            if userInvItem is None:
+                await interaction.response.send_message(
+                    f"The item ({self.children[0].value}) could not be found. Please try again",
+                    ephemeral=True,
+                )
+            elif int(self.children[1].value) > userInvItem["amount"]:
+                await interaction.response.send_message(
+                    f"The amount requested ({self.children[1].value}) is more than the amount you have ({userInvItem['amount']}). Please try again",
+                    ephemeral=True,
+                )
+            else:
+                await WSUserInv.filter(
+                    user_id=interaction.user.id, name=userInvItem["name"]
+                ).update(amount=userInvItem["amount"] - int(self.children[1].value))
+                await interaction.response.send_message(
+                    f"Deleted {self.children[1].value} {self.children[0].value}(s) from your inventory",
+                    ephemeral=True,
+                )
