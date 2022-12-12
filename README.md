@@ -14,7 +14,8 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, an Genshin wish sim, and many more features. Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that Rin's services are directly integrated within Kumiko 
+Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, an Genshin wish sim, and many more features. Kumiko also has integration with Rin, which means that services such as AniList and Reddit are also available for users to consume. 
+
 ## Rin (リン)
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
@@ -33,10 +34,11 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
     - Custom quests
 - Genshin-Based Wish Sim (GWS)
 - Basic Administration Commands + Admin Logs
-- All of the services from upstream Rin
+- 10+ services from upstream Rin
 
 And some ones that are planned:
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
+- Annoucement releaser with support from GitHub (Pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 
@@ -66,13 +68,13 @@ Currently under beta stages. Not ready for release yet. Currently Kumiko is unde
 
 # Support 
 
-If you would like to support me with projects like this, please consider starring this project and other ones! Both Rin and Kumiko take a lot of time to make, so please consider supporting me if you can.
+If you would like to support me with projects like this, please consider starring this project and other ones! Bots like Kumiko, Akari, and Rin take a lot of time to make, so please consider supporting me if you can.
 
 # Getting Started
 
 If you would like to get started, here are some links to help you with that:
 
-- [Getting Started Guide (Self Hosting)](./Community/guides/getting-started-guide.md)
+- [Manual Deployment (Self Hosting)](https://kumiko-docs.vercel.app/docs/deployment/manual-deployment)
 - [Contributing](./Community/contributing.md)
 - [Documentation](https://kumiko-docs.vercel.app/)
 
