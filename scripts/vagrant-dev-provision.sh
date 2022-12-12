@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Yes please dont ask me about this...
 dnf update -y
 
 dnf install make gcc zlib-devel bzip2 bzip2-devel readline-devel \
@@ -24,7 +25,7 @@ dnf config-manager \
     https://download.docker.com/linux/fedora/docker-ce.repo
 dnf install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-curl https://sh.rustup.rs -sSf | sh -s -- --profile stable --default-toolchain nightly -y
+curl https://sh.rustup.rs -sSf | sh -s -- --profile default --default-toolchain nightly -y
 echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 
 curl -sSL https://install.python-poetry.org | python3 -

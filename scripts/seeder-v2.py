@@ -7,7 +7,7 @@ import uvloop
 from dotenv import load_dotenv
 from tortoise import Tortoise
 
-path = Path(__file__).parents[1]
+path = Path(__file__).parents[0]
 envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(os.path.join(str(path), "Bot"))
 sys.path.append(os.path.join(str(path), "Bot", "Libs"))
@@ -22,7 +22,11 @@ POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
 POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
 CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
-MODELS = ["kumiko_genshin_wish_sim.models"]
+MODELS = [
+    "kumiko_genshin_wish_sim.models",
+    "kumiko_servers.models",
+    "kumiko_admin_logs.models",
+]
 
 
 async def main():
@@ -31,7 +35,6 @@ async def main():
         print("[DB Seeder V2] Successfully generated schemas")
 
 
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+        runner.run(main())
