@@ -75,4 +75,5 @@ ah-test.py
 gws-test.py
 .env-docker
 test-scripts
-image-tests
+image-testspy
+.vagrant
