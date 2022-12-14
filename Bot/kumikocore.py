@@ -2,9 +2,12 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Dict
 
 import discord
-from discord.ext import tasks
+from discord.ext import ipc, tasks
+from discord.ext.ipc.objects import ClientPayload
+from discord.ext.ipc.server import Server
 from kumiko_economy import AHChecker, QuestsChecker
 
 logging.basicConfig(
@@ -26,9 +29,11 @@ sys.path.append(libsPath)
 class KumikoCore(discord.Bot):
     """The core of Kumiko - Subclassed this time"""
 
-    def __init__(self, uri: str, *args, **kwargs):
+    def __init__(self, uri: str, ipc_secret_key: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.uri = uri
+        self.ipc_secret_key = ipc_secret_key
+        self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
         self.load_cogs()
 
     def load_cogs(self):
@@ -78,13 +83,23 @@ class KumikoCore(discord.Bot):
             logging.info(f"Stopping {self.user.name}'s Checker Handlers")
             self.checkerHandler.stop()
 
+    @Server.route()
+    async def get_user_data(self, data: ClientPayload) -> Dict:
+        user = self.get_user(data.user_id)
+        return user._to_minimal_user_json()
+
+    @Server.route()
+    async def create_embed(self, data: ClientPayload) -> None:
+        print(data.embed_content)
+        logging.debug(f"Embed created, and sent to {data.channel_id}")
+
     async def on_ready(self):
         logging.info(f"Logged in as {self.user.name}")
         self.checkerHandler.start()
         logging.info(f"{self.user.name}'s Checker Handlers successfully started")
-        logging.info(
-            f"{self.user.name} is ready to go! All checkers are loaded and ready!"
-        )
+        logging.info(f"Loaded all checkers")
+        await self.ipc.start()
+        logging.info(f"{self.user.name} is ready")
         await self.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
         )
