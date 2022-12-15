@@ -21,8 +21,11 @@ CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@
 
 DISCORD_BOT_TOKEN = os.getenv("Dev_Bot_Token")
 IPC_SECRET_KEY = os.getenv("IPC_Secret_Key")
+
 intents = discord.Intents.default()
 intents.members = True
+intents.bans = True
+intents.guilds = True
 
 path = Path(__file__).parents[0].absolute()
 cogsPath = os.path.join(str(path), "Cogs")

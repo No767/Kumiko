@@ -1,5 +1,7 @@
 import asyncio
+import logging
 import os
+import urllib.parse
 import uuid
 from datetime import datetime, timedelta
 
@@ -10,20 +12,33 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
+from kumiko_admin_logs import KumikoAdminLogs, KumikoAdminLogsCacheUtils
+from kumiko_servers import KumikoServerCacheUtils
 from kumiko_ui_components import ALPurgeDataView
+from kumiko_utils import KumikoCM
 from pytimeparse.timeparse import timeparse
-from rin_exceptions import ItemNotFound
+from rin_exceptions import NoItemsError
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+REDIS_HOST = os.getenv("Redis_Server_IP")
+REDIS_PORT = os.getenv("Redis_Port")
+POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
-POSTGRES_AL_DATABASE = os.getenv("Postgres_Kumiko_Database")
-AL_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_AL_DATABASE}"
+CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+LEGACY_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+MODELS = ["kumiko_admin_logs.models", "kumiko_servers.models"]
 
-alUtils = KumikoAdminLogsUtils(AL_CONNECTION_URI)
+alUtils = KumikoAdminLogsUtils(LEGACY_CONNECTION_URI)
+cache = KumikoServerCacheUtils(
+    uri=CONNECTION_URI, models=MODELS, redis_host=REDIS_HOST, redis_port=REDIS_PORT
+)
+cacheUtils = KumikoAdminLogsCacheUtils(
+    uri=CONNECTION_URI, models=MODELS, redis_host=REDIS_HOST, redis_port=REDIS_PORT
+)
 
 
 class Admin(commands.Cog):
@@ -38,7 +53,7 @@ class Admin(commands.Cog):
 
     @admin.command(name="ban")
     @commands.has_permissions(ban_members=True)
-    async def banMembers(
+    async def improvedBanMember(
         self,
         ctx,
         *,
@@ -46,27 +61,37 @@ class Admin(commands.Cog):
         reason: Option(str, "The reason for the ban"),
     ):
         """Bans the requested user"""
-        await alUtils.addALRow(
-            uuid=str(uuid.uuid4()),
-            guild_id=ctx.guild.id,
-            action_user_name=ctx.author.name,
-            user_affected_name=user.name,
-            type_of_action="ban",
-            reason=reason,
-            date_issued=datetime.utcnow().isoformat(),
-            duration=999,
-            datetime_duration=None,
-        )
-        await user.ban(delete_message_days=7, reason=reason)
-        embed = discord.Embed(
-            title=f"Banned {user.name}", color=discord.Color.from_rgb(255, 51, 51)
-        )
-        embed.description = (
-            f"**Successfully banned {user.name}**\n\n**Reason:** {reason}"
-        )
-        await ctx.respond(embed=embed)
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            serverData = await cache.cacheServer(
+                guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
+            )
+            footerText = ""
+            if serverData is None:
+                logging.warning(
+                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
+                )  # is logging really needed?
+            elif int(serverData["admin_logs"] == False):
+                footerText = "*Admin Logs are disabled for this server*"
+            else:
+                await KumikoAdminLogs.create(
+                    guild_id=ctx.guild.id,
+                    action="ban",
+                    issuer=ctx.author.name,
+                    affected_user=user.name,
+                    reason=reason,
+                    date_issued=discord.utils.utcnow().isoformat(),
+                    duration=9999,
+                )
 
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+            await user.ban(delete_message_seconds=3600, reason=reason)
+            embed = discord.Embed(
+                title=f"Banned {user.name}", color=discord.Color.from_rgb(255, 51, 51)
+            )
+            embed.description = (
+                f"**Successfully banned {user.name}**\n\n**Reason:** {reason}"
+            )
+            embed.set_footer(text=footerText)
+            await ctx.respond(embed=embed)
 
     @admin.command(name="unban")
     @commands.has_permissions(ban_members=True)
@@ -74,29 +99,42 @@ class Admin(commands.Cog):
         self,
         ctx,
         *,
-        user: Option(discord.Member, "The user to unban"),
+        user: Option(discord.User, "The user to unban"),
         reason: Option(str, "The reason for the unban"),
     ):
         """Un-bans the requested user"""
-        await alUtils.addALRow(
-            uuid=str(uuid.uuid4()),
-            guild_id=ctx.guild.id,
-            action_user_name=ctx.author.name,
-            user_affected_name=user.name,
-            type_of_action="unban",
-            reason=reason,
-            date_issued=datetime.utcnow().isoformat(),
-            duration=999,
-            datetime_duration=None,
-        )
-        await ctx.guild.unban(user=user, reason=reason)
-        embed = discord.Embed(
-            title=f"Unbanned {user.name}", color=discord.Color.from_rgb(178, 171, 255)
-        )
-        embed.description = (
-            f"**Successfully unbanned {user.name}**\n\n**Reason:** {reason}"
-        )
-        await ctx.respond(embed=embed, ephemeral=True)
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            serverData = await cache.cacheServer(
+                guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
+            )
+            footerText = ""
+            if serverData is None:
+                logging.warning(
+                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
+                )  # is logging really needed?
+            elif int(serverData["admin_logs"] == False):
+                footerText = "*Admin Logs are disabled for this server*"
+            else:
+                await KumikoAdminLogs.create(
+                    guild_id=ctx.guild.id,
+                    action="unban",
+                    issuer=ctx.author.name,
+                    affected_user=user.name,
+                    reason=reason,
+                    date_issued=discord.utils.utcnow().isoformat(),
+                    duration=9999,
+                )
+
+            await ctx.guild.unban(user=user, reason=reason)
+            embed = discord.Embed(
+                title=f"Unbanned {user.name}",
+                color=discord.Color.from_rgb(178, 171, 255),
+            )
+            embed.description = (
+                f"**Successfully unbanned {user.name}**\n\n**Reason:** {reason}"
+            )
+            embed.set_footer(text=footerText)
+            await ctx.respond(embed=embed, ephemeral=True)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -224,65 +262,40 @@ class Admin(commands.Cog):
         ),
     ):
         """Allows admins to view admin logs"""
-        typeOfAction = type_of_action.lower()
-        res = await alUtils.selAction(
-            type_of_action=typeOfAction, guild_id=ctx.guild.id
+        adminLogsData = await cacheUtils.cacheAdminLogsView(
+            guild_id=ctx.guild.id,
+            action=type_of_action.lower(),
+            command_name=ctx.command.qualified_name,
         )
-        if typeOfAction in ["all", "All"]:
-            res = await alUtils.selAllGuildRows(guild_id=ctx.guild.id)
-        else:
-            res = await alUtils.selAction(
-                type_of_action=typeOfAction, guild_id=ctx.guild.id
-            )
         try:
-            if len(res) == 0 or res is None:
-                raise ItemNotFound
+            if len(adminLogsData) == 0:
+                raise NoItemsError
             else:
                 mainPages = pages.Paginator(
                     pages=[
                         discord.Embed(
-                            title=f"{str(dict(mainItems)['type_of_action']).title()} - {dict(mainItems)['user_affected_name']}",
-                            description=dict(mainItems)["reason"],
+                            title=f"{item['type_of_action'].title()} - {item['affected_user']}",
+                            description=item["reason"],
                         )
-                        .add_field(
-                            name="Issuer",
-                            value=dict(mainItems)["action_user_name"],
-                            inline=True,
-                        )
-                        .add_field(
-                            name="Affected User",
-                            value=dict(mainItems)["user_affected_name"],
-                            inline=True,
-                        )
+                        .add_field(name="Issuer", value=item["issuer"])
+                        .add_field(name="Affected User", value=item["affected_user"])
                         .add_field(
                             name="Date Issued",
-                            value=parser.isoparse(
-                                dict(mainItems)["date_issued"]
-                            ).strftime("%Y-%m-%d %H:%M:%S"),
-                            inline=True,
+                            value=discord.utils.format_dt(
+                                parser.isoparse(item["date_issued"])
+                            ),
                         )
-                        .add_field(
-                            name="Duration",
-                            value=dict(mainItems)["duration"],
-                            inline=True,
-                        )
-                        .add_field(
-                            name="Date Duration",
-                            value=dict(mainItems)["date_duration"],
-                            inline=True,
-                        )
-                        for mainItems in res
+                        .add_field(name="Duration", value=item["duration"])
+                        for item in adminLogsData
                     ],
                     loop_pages=True,
                 )
                 await mainPages.respond(ctx.interaction, ephemeral=True)
-        except ItemNotFound:
+        except NoItemsError:
             embedErrorMessage = "Sorry, but it seems like we can't find anything within the category that you selected. Please try again"
             await ctx.respond(
                 embed=discord.Embed(description=embedErrorMessage), ephemeral=True
             )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @adminLogs.command(name="purge")
     @commands.has_permissions(moderate_members=True)
@@ -291,7 +304,7 @@ class Admin(commands.Cog):
         embed = discord.Embed()
         embed.description = "Do you really wish to delete all of the AL data for this guild? This cannot be undone."
         await ctx.respond(
-            embed=embed, view=ALPurgeDataView(AL_CONNECTION_URI), ephemeral=True
+            embed=embed, view=ALPurgeDataView(CONNECTION_URI), ephemeral=True
         )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

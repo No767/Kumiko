@@ -796,12 +796,12 @@ class GWSDeleteOneUserInvItemModal(discord.ui.Modal):
                 command_name=self.command_name,
             )
             if userInvItem is None:
-                await interaction.response.send_message(
+                return await interaction.response.send_message(
                     f"The item ({self.children[0].value}) could not be found. Please try again",
                     ephemeral=True,
                 )
             elif int(self.children[1].value) > userInvItem["amount"]:
-                await interaction.response.send_message(
+                return await interaction.response.send_message(
                     f"The amount requested ({self.children[1].value}) is more than the amount you have ({userInvItem['amount']}). Please try again",
                     ephemeral=True,
                 )
@@ -809,7 +809,7 @@ class GWSDeleteOneUserInvItemModal(discord.ui.Modal):
                 await WSUserInv.filter(
                     user_id=interaction.user.id, name=userInvItem["name"]
                 ).update(amount=userInvItem["amount"] - int(self.children[1].value))
-                await interaction.response.send_message(
+                return await interaction.response.send_message(
                     f"Deleted {self.children[1].value} {self.children[0].value}(s) from your inventory",
                     ephemeral=True,
                 )

@@ -3,7 +3,7 @@ from tortoise.models import Model
 
 
 class KumikoAdminLogs(Model):
-    uuid = fields.CharField(max_length=255, pk=True)
+    uuid = fields.UUIDField(pk=True)
     guild_id = fields.BigIntField()
     action = fields.CharField(max_length=255)
     issuer = fields.CharField(max_length=255)
@@ -11,7 +11,6 @@ class KumikoAdminLogs(Model):
     reason = fields.TextField()
     date_issued = fields.CharField(max_length=255)
     duration = fields.IntField()
-    datetime_duration = fields.CharField(max_length=255)
 
     class Meta:
         table = "admin_logs"
