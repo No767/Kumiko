@@ -4,6 +4,7 @@ from typing import List
 import discord
 import uvloop
 from admin_logs_utils import KumikoAdminLogsUtils
+from kumiko_admin_logs.models import KumikoAdminLogs
 from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -11,6 +12,7 @@ from kumiko_economy import (
     KumikoQuestsUtils,
 )
 from kumiko_genshin_wish_sim import WSUserInv
+from kumiko_servers import KumikoServerCacheUtils
 from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
@@ -449,6 +451,92 @@ class GWSPurgeInvView(discord.ui.View):
         emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
     )
     async def second_button_callback(self, button, interaction: discord.Interaction):
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
+        )
+
+
+class AdminLogsPurgeAllView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(
+        self,
+        uri: str,
+        models: List,
+        redis_host: str,
+        redis_port: int,
+        command_name: str,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+        self.models = models
+        self.redis_host = redis_host
+        self.redis_port = redis_port
+        self.command_name = command_name
+        self.cache = KumikoServerCacheUtils(
+            uri=self.uri,
+            models=self.models,
+            redis_host=self.redis_host,
+            redis_port=self.redis_port,
+        )
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def confirm_purge_callback(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        async with KumikoCM(uri=self.uri, models=self.models):
+            adminLogsExists = await KumikoAdminLogs.filter(
+                guild_id=interaction.guild.id
+            ).exists()
+            serverData = await self.cache.cacheServer(
+                guild_id=interaction.guild.id, command_name=self.command_name
+            )
+            if adminLogsExists is False or int(serverData["admin_logs"]) == 0:
+                for child in self.children:
+                    child.disabled = True
+                return await interaction.response.edit_message(
+                    embed=discord.Embed(
+                        description="It seems like there could be no admin logs found. This is usually due to Admin Logs not being enabled"
+                    ),
+                    view=self,
+                    delete_after=15.0,
+                )
+            else:
+                await KumikoAdminLogs.filter(guild_id=interaction.guild.id).delete()
+                for child in self.children:
+                    child.disabled = True
+                return await interaction.response.edit_message(
+                    embed=discord.Embed(
+                        description="All of the admin logs for this server has been completely wiped."
+                    ),
+                    view=self,
+                    delete_after=15.0,
+                )
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def cancel_action_callback(
+        self, button, interaction: discord.Interaction
+    ) -> None:
         for child in self.children:
             child.disabled = True
         await interaction.response.edit_message(

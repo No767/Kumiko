@@ -12,6 +12,7 @@ from .modals import (
     QuestsUpdateTimeModal,
 )
 from .views import (
+    AdminLogsPurgeAllView,
     AHPurgeAllView,
     ALPurgeDataView,
     CreateAccountView,
@@ -42,4 +43,5 @@ __all__ = [
     "MarketplacePurchaseItemModal",
     "GWSPurgeInvView",
     "GWSDeleteOneUserInvItemModal",
+    "AdminLogsPurgeAllView",
 ]

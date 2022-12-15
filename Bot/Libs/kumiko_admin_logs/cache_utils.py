@@ -57,7 +57,7 @@ class KumikoAdminLogsCacheUtils:
                     ).values()
                 )
                 await self.cache.setBasicCommandCache(
-                    key=key, value=adminLogsData, ttl=5
+                    key=key, value=adminLogsData, ttl=3
                 )
                 return adminLogsData
         else:

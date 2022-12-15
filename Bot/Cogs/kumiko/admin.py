@@ -2,19 +2,17 @@ import asyncio
 import logging
 import os
 import urllib.parse
-import uuid
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import discord
 import uvloop
-from admin_logs_utils import KumikoAdminLogsUtils
 from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
 from kumiko_admin_logs import KumikoAdminLogs, KumikoAdminLogsCacheUtils
 from kumiko_servers import KumikoServerCacheUtils
-from kumiko_ui_components import ALPurgeDataView
+from kumiko_ui_components import AdminLogsPurgeAllView
 from kumiko_utils import KumikoCM
 from pytimeparse.timeparse import timeparse
 from rin_exceptions import NoItemsError
@@ -29,10 +27,8 @@ POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
 CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
-LEGACY_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
 MODELS = ["kumiko_admin_logs.models", "kumiko_servers.models"]
 
-alUtils = KumikoAdminLogsUtils(LEGACY_CONNECTION_URI)
 cache = KumikoServerCacheUtils(
     uri=CONNECTION_URI, models=MODELS, redis_host=REDIS_HOST, redis_port=REDIS_PORT
 )
@@ -148,28 +144,37 @@ class Admin(commands.Cog):
         reason: Option(str, "The reason for why"),
     ):
         """Kicks the requested user"""
-        await alUtils.addALRow(
-            uuid=str(uuid.uuid4()),
-            guild_id=ctx.guild.id,
-            action_user_name=ctx.author.name,
-            user_affected_name=user.name,
-            type_of_action="kick",
-            reason=reason,
-            date_issued=datetime.utcnow().isoformat(),
-            duration=0,
-            datetime_duration=None,
-        )
-        await user.kick(reason=reason)
-        embed = discord.Embed(
-            title=f"Kicked {user.name}", color=discord.Color.from_rgb(206, 255, 186)
-        )
-        embed.description = (
-            f"**Successfully kicked {user.name}**\n\n**Reason:** {reason}"
-        )
-        await ctx.respond(embed=embed, ephemeral=True)
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            serverData = await cache.cacheServer(
+                guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
+            )
+            if serverData is None:
+                logging.warning(
+                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
+                )  # is logging really needed?
+            elif int(serverData["admin_logs"] == False):
+                pass
+            else:
+                await KumikoAdminLogs.create(
+                    guild_id=ctx.guild.id,
+                    action="kick",
+                    issuer=ctx.author.name,
+                    affected_user=user.name,
+                    reason=reason,
+                    date_issued=discord.utils.utcnow().isoformat(),
+                    duration=0,
+                )
+            await user.kick(reason=reason)
+            embed = discord.Embed(
+                title=f"Kicked {user.name}", color=discord.Color.from_rgb(206, 255, 186)
+            )
+            embed.description = (
+                f"**Successfully kicked {user.name}**\n\n**Reason:** {reason}"
+            )
+            await ctx.respond(embed=embed, ephemeral=True)
 
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
+    # TODO: Tab selection for how long the user will be timed-out
+    # This will be more than likely a modal
     @adminTimeout.command(name="duration")
     @commands.has_permissions(moderate_members=True)
     async def timeoutDuration(
@@ -181,35 +186,44 @@ class Admin(commands.Cog):
         reason: Option(str, "The reason for the timeout", default=None),
     ):
         """Applies a timeout to the user for a specified amount of time"""
-        try:
-            parsedTime = timeparse(duration)
-            timeoutDuration = timedelta(seconds=parsedTime)
-            await alUtils.addALRow(
-                uuid=str(uuid.uuid4()),
-                guild_id=ctx.guild.id,
-                action_user_name=ctx.author.name,
-                user_affected_name=user.name,
-                type_of_action="timeout",
-                reason=reason,
-                date_issued=datetime.utcnow().isoformat(),
-                duration=timeoutDuration,
-                datetime_duration=None,
-            )
-            await user.timeout_for(duration=timeoutDuration, reason=reason)
-            embed = discord.Embed(
-                title=f"Timeout applied for {user.name}",
-                color=discord.Color.from_rgb(255, 255, 102),
-            )
-            embed.description = f"{user.name }has been successfully timed out for {timeoutDuration}\n\n**Reason:** {reason}"
-            await ctx.respond(embed=embed, ephemeral=True)
-        except TypeError:
-            await ctx.respond(
-                embed=discord.Embed(
-                    description="It seems like you may have mistyped the amount of time for the timeout. Some examples that you can use are the following: `1h`, `1d`, `2 hours`, `5d`"
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            try:
+                serverData = await cache.cacheServer(
+                    guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
                 )
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+                footerText = ""
+                parsedTime = timeparse(duration)
+                timeoutDuration = timedelta(seconds=parsedTime)
+                if serverData is None:
+                    logging.warning(
+                        f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
+                    )  # is logging really needed?
+                elif int(serverData["admin_logs"] == False):
+                    footerText = "*Admin Logs are disabled for this server*"
+                else:
+                    await KumikoAdminLogs.create(
+                        guild_id=ctx.guild.id,
+                        action="timeout-duration",
+                        issuer=ctx.author.name,
+                        affected_user=user.name,
+                        reason=reason,
+                        date_issued=discord.utils.utcnow().isoformat(),
+                        duration=timeoutDuration,
+                    )
+                await user.timeout_for(duration=timeoutDuration, reason=reason)
+                embed = discord.Embed(
+                    title=f"Timeout applied for {user.name}",
+                    color=discord.Color.from_rgb(255, 255, 102),
+                )
+                embed.description = f"{user.name }has been successfully timed out for {timeoutDuration}\n\n**Reason:** {reason}"
+                embed.set_footer(text=footerText)
+                await ctx.respond(embed=embed, ephemeral=True)
+            except TypeError:
+                await ctx.respond(
+                    embed=discord.Embed(
+                        description="It seems like you may have mistyped the amount of time for the timeout. Some examples that you can use are the following: `1h`, `1d`, `2 hours`, `5d`"
+                    )
+                )
 
     @adminTimeout.command(name="remove")
     @commands.has_permissions(moderate_members=True)
@@ -221,24 +235,35 @@ class Admin(commands.Cog):
         reason: Option(str, "The reason why the timeout should be removed"),
     ):
         """Removes the timeout from the user"""
-        await alUtils.addALRow(
-            uuid=str(uuid.uuid4()),
-            guild_id=ctx.guild.id,
-            action_user_name=ctx.author.name,
-            user_affected_name=user.name,
-            type_of_action="timeout-remove",
-            reason=reason,
-            date_issued=datetime.utcnow().isoformat(),
-            duration=0,
-            datetime_duration=None,
-        )
-        await user.remove_timeout(reason=reason)
-        embed = discord.Embed(
-            title=f"Timeout removed for {user.name}",
-            color=discord.Color.from_rgb(255, 251, 194),
-        )
-        embed.description = f"Timeout for {user.name} has been successfully removed\n\n**Reason:** {reason}"
-        await ctx.respond(embed=embed, ephemeral=True)
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            serverData = await cache.cacheServer(
+                guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
+            )
+            footerText = ""
+            if serverData is None:
+                logging.warning(
+                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
+                )  # is logging really needed?
+            elif int(serverData["admin_logs"] == False):
+                footerText = "*Admin Logs are disabled for this server*"
+            else:
+                await KumikoAdminLogs.create(
+                    guild_id=ctx.guild.id,
+                    action="timeout-remove",
+                    issuer=ctx.author.name,
+                    affected_user=user.name,
+                    reason=reason,
+                    date_issued=discord.utils.utcnow().isoformat(),
+                    duration=0,
+                )
+            await user.remove_timeout(reason=reason)
+            embed = discord.Embed(
+                title=f"Timeout removed for {user.name}",
+                color=discord.Color.from_rgb(255, 251, 194),
+            )
+            embed.description = f"Timeout for {user.name} has been successfully removed\n\n**Reason:** {reason}"
+            embed.set_footer(text=footerText)
+            await ctx.respond(embed=embed, ephemeral=True)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
@@ -292,7 +317,7 @@ class Admin(commands.Cog):
                 )
                 await mainPages.respond(ctx.interaction, ephemeral=True)
         except NoItemsError:
-            embedErrorMessage = "Sorry, but it seems like we can't find anything within the category that you selected. Please try again"
+            embedErrorMessage = "Sorry, but either Admin Logs is disabled, or there are no logs found. Please try again."
             await ctx.respond(
                 embed=discord.Embed(description=embedErrorMessage), ephemeral=True
             )
@@ -303,11 +328,14 @@ class Admin(commands.Cog):
         """Purges all of the AL data for that guild (CAN'T BE UNDONE)"""
         embed = discord.Embed()
         embed.description = "Do you really wish to delete all of the AL data for this guild? This cannot be undone."
-        await ctx.respond(
-            embed=embed, view=ALPurgeDataView(CONNECTION_URI), ephemeral=True
+        view = AdminLogsPurgeAllView(
+            uri=CONNECTION_URI,
+            models=MODELS,
+            redis_host=REDIS_HOST,
+            redis_port=REDIS_PORT,
+            command_name=ctx.command.qualified_name,
         )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        await ctx.respond(embed=embed, view=view, ephemeral=True)
 
 
 def setup(bot):
