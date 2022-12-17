@@ -1,6 +1,12 @@
 # ✨ Kumiko v0.5.0 ✨
 
 This release focuses just on major backend performances, and rewrites of the core to use Tortoise ORM instead of SQLAlchemy ORM.
+
+## :boom: Breaking Changes :boom:
+
+- **Dropped support for Alpine-based images and -alpine tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base.
+- **Removed unneeded -bullseye tags**. This means that the version number will be the one you want to install, and `edge` for any dev builds
+
 ## ✨ TD;LR
 
 - Migrate from SQLAlchemy ORM to Tortoise ORM
@@ -20,6 +26,8 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Update Alpine Linux to 3.17
 - Moved all checkers into tasks
 - Rewrite Admin Logs to use Tortoise ORM
+- Include caching with Admin Logs
+
 
 ## ✨ Additions
 
@@ -30,8 +38,10 @@ This release focuses just on major backend performances, and rewrites of the cor
 - IPC Support with better-ipc
 - Server configs
 - Warn command
+- Server Configs (with Server Join Handlers)
 
 ## ➖ Removals
 - SQLAlchemy ORM code
 - Old SQLAlchemy-based GWSs
 - Old GWS Purge Inv View
+- Old Library packages (GWS, Admin Logs, Eco)
