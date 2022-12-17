@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import os
 import urllib.parse
 from datetime import timedelta
@@ -63,9 +62,9 @@ class Admin(commands.Cog):
             )
             footerText = ""
             if serverData is None:
-                logging.warning(
-                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
-                )  # is logging really needed?
+                embed = discord.Embed()
+                embed.description = "Sorry, but the server data is not available. This is usually due to incorrect permissions with the bot. Please try again, and if needed, contact the Kumiko Support Server for more help."
+                return await ctx.respond(embed=embed, ephemeral=True)
             elif int(serverData["admin_logs"] == False):
                 footerText = "*Admin Logs are disabled for this server*"
             else:
@@ -105,9 +104,9 @@ class Admin(commands.Cog):
             )
             footerText = ""
             if serverData is None:
-                logging.warning(
-                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
-                )  # is logging really needed?
+                embed = discord.Embed()
+                embed.description = "Sorry, but the server data is not available. This is usually due to incorrect permissions with the bot. Please try again, and if needed, contact the Kumiko Support Server for more help."
+                return await ctx.respond(embed=embed, ephemeral=True)
             elif int(serverData["admin_logs"] == False):
                 footerText = "*Admin Logs are disabled for this server*"
             else:
@@ -148,12 +147,13 @@ class Admin(commands.Cog):
             serverData = await cache.cacheServer(
                 guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
             )
+            footerText = ""
             if serverData is None:
-                logging.warning(
-                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
-                )  # is logging really needed?
+                embed = discord.Embed()
+                embed.description = "Sorry, but the server data is not available. This is usually due to incorrect permissions with the bot. Please try again, and if needed, contact the Kumiko Support Server for more help."
+                return await ctx.respond(embed=embed, ephemeral=True)
             elif int(serverData["admin_logs"] == False):
-                pass
+                footerText = "*Admin Logs are disabled for this server*"
             else:
                 await KumikoAdminLogs.create(
                     guild_id=ctx.guild.id,
@@ -171,6 +171,51 @@ class Admin(commands.Cog):
             embed.description = (
                 f"**Successfully kicked {user.name}**\n\n**Reason:** {reason}"
             )
+            embed.set_footer(text=footerText)
+            await ctx.respond(embed=embed, ephemeral=True)
+
+    # Maybe set up a system like 3 strikes and you are banned?
+    # and let that amount be configurable and be adjusted by the owner?
+    @admin.command(name="warn")
+    @commands.has_permissions(moderate_members=True)
+    async def warnUser(
+        self,
+        ctx,
+        *,
+        user: Option(discord.Member, "The user to warn"),
+        reason: Option(str, "The reason for the warn"),
+    ):
+        """Warns the requested user"""
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            serverData = await cache.cacheServer(
+                guild_id=ctx.guild.id, command_name=ctx.command.qualified_name
+            )
+            footerText = ""
+            if serverData is None:
+                embed = discord.Embed()
+                embed.description = "Sorry, but the server data is not available. This is usually due to incorrect permissions with the bot. Please try again, and if needed, contact the Kumiko Support Server for more help."
+                return await ctx.respond(embed=embed, ephemeral=True)
+            elif int(serverData["admin_logs"] == False):
+                footerText = "*Admin Logs are disabled for this server*"
+            else:
+                await KumikoAdminLogs.create(
+                    guild_id=ctx.guild.id,
+                    action="warn",
+                    issuer=ctx.author.name,
+                    affected_user=user.name,
+                    reason=reason,
+                    date_issued=discord.utils.utcnow().isoformat(),
+                    duration=0,
+                )
+            embed = discord.Embed(
+                title=f"Warning applied for {user.name}",
+                color=discord.Color.from_rgb(255, 255, 102),
+            )
+            embed.description = (
+                f"{user.name} has been successfully warned.\n\n**Reason:** {reason}"
+            )
+            embed.set_footer(text=footerText)
+            await ctx.respond(f"{user.mention} has been warned. Reason: {reason}")
             await ctx.respond(embed=embed, ephemeral=True)
 
     # TODO: Tab selection for how long the user will be timed-out
@@ -195,9 +240,9 @@ class Admin(commands.Cog):
                 parsedTime = timeparse(duration)
                 timeoutDuration = timedelta(seconds=parsedTime)
                 if serverData is None:
-                    logging.warning(
-                        f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
-                    )  # is logging really needed?
+                    embed = discord.Embed()
+                    embed.description = "Sorry, but the server data is not available. This is usually due to incorrect permissions with the bot. Please try again, and if needed, contact the Kumiko Support Server for more help."
+                    return await ctx.respond(embed=embed, ephemeral=True)
                 elif int(serverData["admin_logs"] == False):
                     footerText = "*Admin Logs are disabled for this server*"
                 else:
@@ -241,9 +286,9 @@ class Admin(commands.Cog):
             )
             footerText = ""
             if serverData is None:
-                logging.warning(
-                    f"{ctx.guild.name} ({ctx.guild.id}) can't be found in the DB"
-                )  # is logging really needed?
+                embed = discord.Embed()
+                embed.description = "Sorry, but the server data is not available. This is usually due to incorrect permissions with the bot. Please try again, and if needed, contact the Kumiko Support Server for more help."
+                return await ctx.respond(embed=embed, ephemeral=True)
             elif int(serverData["admin_logs"] == False):
                 footerText = "*Admin Logs are disabled for this server*"
             else:
@@ -283,6 +328,7 @@ class Admin(commands.Cog):
                 "Kick",
                 "Timeout-Remove",
                 "Timeout-Duration",
+                "Warn",
             ],
         ),
     ):

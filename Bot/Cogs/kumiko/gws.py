@@ -159,7 +159,7 @@ class GWS(commands.Cog):
 
             if userInvExists is False:
                 for wishItem in wishItemArr:
-                    await WSUSerInv.create(
+                    await WSUserInv.create(
                         item_uuid=wishItem["uuid"],
                         user_id=ctx.user.id,
                         date_obtained=discord.utils.utcnow().isoformat(),

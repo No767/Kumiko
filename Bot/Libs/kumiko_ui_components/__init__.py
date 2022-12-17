@@ -14,7 +14,6 @@ from .modals import (
 from .views import (
     AdminLogsPurgeAllView,
     AHPurgeAllView,
-    ALPurgeDataView,
     CreateAccountView,
     GWSPurgeInvView,
     MarketplacePurgeAllView,
@@ -24,7 +23,6 @@ from .views import (
 )
 
 __all__ = [
-    "ALPurgeDataView",
     "AHPurgeAllView",
     "MarketplacePurgeAllView",
     "QuestsPurgeAllView",

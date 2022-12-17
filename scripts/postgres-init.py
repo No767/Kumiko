@@ -11,8 +11,6 @@ envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(os.path.join(str(path), "Bot"))
 sys.path.append(os.path.join(str(path), "Bot", "Libs"))
 
-from admin_logs_utils import KumikoAdminLogsUtils
-from genshin_wish_sim_utils import KumikoWSUtils
 from kumiko_economy import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -33,8 +31,6 @@ utils = KumikoEcoUserUtils()
 ahUtils = KumikoAuctionHouseUtils()
 questsUtils = KumikoQuestsUtils()
 userInvUtils = KumikoUserInvUtils()
-wsUtils = KumikoWSUtils()
-alUtils = KumikoAdminLogsUtils(uri=CONNECTION_URI)
 
 
 async def main():
@@ -42,8 +38,6 @@ async def main():
     await ahUtils.initAHTables(uri=CONNECTION_URI)
     await userInvUtils.initUserInvTables(uri=CONNECTION_URI)
     await questsUtils.initQuestsTables(uri=CONNECTION_URI)
-    await wsUtils.initAllWSTables(uri=CONNECTION_URI)
-    await alUtils.initAllALTables()
 
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

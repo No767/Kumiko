@@ -3,7 +3,6 @@ from typing import List
 
 import discord
 import uvloop
-from admin_logs_utils import KumikoAdminLogsUtils
 from kumiko_admin_logs.models import KumikoAdminLogs
 from kumiko_economy import (
     KumikoAuctionHouseUtils,
@@ -17,59 +16,6 @@ from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 from .modals import QuestsDeleteOneModal
-
-
-class ALPurgeDataView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    def __init__(self, uri: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.alUtils = KumikoAdminLogsUtils(self.uri)
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        selectAllALGuildData = await self.alUtils.selAllGuildRows(
-            guild_id=interaction.guild.id
-        )
-        try:
-            if len(selectAllALGuildData) == 0:
-                raise ItemNotFound
-            else:
-                await self.alUtils.purgeData(guild_id=interaction.guild.id)
-                await interaction.response.send_message(
-                    "Confirmed. All of the Admin Logs for this server have been purged",
-                    ephemeral=True,
-                    delete_after=10,
-                )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "It seems like you don't have any to delete from at all...",
-                ephemeral=True,
-                delete_after=10,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The action has been canceled by {interaction.user.name}", ephemeral=True
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class AHPurgeAllView(discord.ui.View):
