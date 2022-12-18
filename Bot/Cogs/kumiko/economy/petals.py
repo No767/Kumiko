@@ -7,7 +7,7 @@ import uvloop
 from discord.commands import SlashCommandGroup
 from discord.ext import commands
 from dotenv import load_dotenv
-from kumiko_economy import KumikoEcoUserUtils
+from kumiko_economy_utils import KumikoEcoUserUtils
 from numpy.random import default_rng
 from rin_exceptions import ItemNotFound
 

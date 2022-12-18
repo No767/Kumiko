@@ -11,7 +11,7 @@ envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(os.path.join(str(path), "Bot"))
 sys.path.append(os.path.join(str(path), "Bot", "Libs"))
 
-from kumiko_economy import (
+from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoQuestsUtils,

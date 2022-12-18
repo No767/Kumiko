@@ -4,7 +4,7 @@ from typing import List
 import discord
 import uvloop
 from kumiko_admin_logs.models import KumikoAdminLogs
-from kumiko_economy import (
+from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoEcoUtils,

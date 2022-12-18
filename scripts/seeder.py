@@ -14,7 +14,7 @@ sys.path.append(libsPath)
 
 from admin_logs_utils import KumikoAdminLogsUtils
 from genshin_wish_sim_utils import KumikoWSUtils
-from kumiko_economy import (
+from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoQuestsUtils,
