@@ -9,7 +9,7 @@ from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from kumiko_economy import (
+from kumiko_economy_utils import (
     KumikoEcoUserUtils,
     KumikoEcoUtils,
     KumikoUserInvUtils,

@@ -8,7 +8,7 @@ import discord
 from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
-from kumiko_economy import AHChecker, QuestsChecker
+from kumiko_economy_utils import AHChecker, QuestsChecker
 
 logging.basicConfig(
     level=logging.INFO,

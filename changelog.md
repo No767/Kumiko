@@ -45,3 +45,4 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Old SQLAlchemy-based GWSs
 - Old GWS Purge Inv View
 - Old Library packages (GWS, Admin Logs, Eco)
+- Remove Jisho, Twitter, and MCSrvStats integration

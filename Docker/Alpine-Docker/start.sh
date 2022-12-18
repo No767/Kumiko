@@ -39,12 +39,6 @@ if [[ -v TENOR_API_KEY ]]; then
 else
     echo "Missing Tenor API key! TENOR_API_KEY environment variable is not set."
 fi 
-# Twitter
-if [[ -v TWITTER_BEARER_TOKEN ]]; then
-    echo "Twitter_Bearer_Token=${TWITTER_BEARER_TOKEN}" >> /Kumiko/Bot/.env
-else
-    echo "Missing Twitter bearer token! TWITTER_BEARER_TOKEN environment variable is not set."
-fi
 # YouTube
 if [[ -v YOUTUBE_API_KEY ]]; then
     echo "YouTube_API_Key=${YOUTUBE_API_KEY}" >> /Kumiko/Bot/.env

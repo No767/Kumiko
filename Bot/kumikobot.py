@@ -17,7 +17,16 @@ POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_DB = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_PORT = os.getenv("Postgres_Port")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
+LEGACY_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
+
+# these will be used later
+CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
+MODELS = [
+    "kumiko_genshin_wish_sim.models",
+    "kumiko_servers.models",
+    "kumiko_admin_logs.models",
+    "kumiko_economy.models",
+]
 
 DISCORD_BOT_TOKEN = os.getenv("Dev_Bot_Token")
 IPC_SECRET_KEY = os.getenv("IPC_Secret_Key")
@@ -32,7 +41,9 @@ cogsPath = os.path.join(str(path), "Cogs")
 libsPath = os.path.join(str(path), "Libs")
 sys.path.append(libsPath)
 
-bot = KumikoCore(uri=CONNECTION_URI, ipc_secret_key=IPC_SECRET_KEY, intents=intents)
+bot = KumikoCore(
+    uri=LEGACY_CONNECTION_URI, ipc_secret_key=IPC_SECRET_KEY, intents=intents
+)
 
 logging.basicConfig(
     level=logging.INFO,

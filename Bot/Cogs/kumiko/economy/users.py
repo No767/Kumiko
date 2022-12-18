@@ -1,5 +1,6 @@
 import asyncio
 import os
+import urllib.parse
 
 import discord
 import uvloop
@@ -7,18 +8,29 @@ from dateutil import parser
 from discord.commands import SlashCommandGroup
 from discord.ext import commands, pages
 from dotenv import load_dotenv
-from kumiko_economy import KumikoEcoUserUtils, KumikoUserInvUtils
+from kumiko_economy import EcoUserBridge
+from kumiko_economy_utils import KumikoEcoUserUtils, KumikoUserInvUtils
 from kumiko_ui_components import CreateAccountView, PurgeAccountView
+from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
-POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
+POSTGRES_WS_DATABASE = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_PORT = os.getenv("Postgres_Port")
-CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_WS_DATABASE}"
+MODELS = ["kumiko_economy.models"]
+
+# Old values
+# POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+# POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
+# POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
+# POSTGRES_USERNAME = os.getenv("Postgres_Username")
+# POSTGRES_PORT = os.getenv("Postgres_Port")
+# CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
 
 utilsUser = KumikoEcoUserUtils()
 inv = KumikoUserInvUtils()
@@ -101,6 +113,35 @@ class EcoUsers(commands.Cog):
             await ctx.respond(embed=embedError, ephemeral=True)
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+    @eco_users.command(name="improved-profile")
+    async def improvedProfile(self, ctx: discord.ApplicationContext):
+        """An improved version of the profile cmd"""
+        # The caching will be added later
+        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+            try:
+                userData = await EcoUserBridge.get_or_none(
+                    user_bridge_id=ctx.user.id
+                ).prefetch_related("user_inv")
+                if userData is None:
+                    raise ItemNotFound
+                else:
+                    pageGroups = [
+                        pages.PageGroup(
+                            pages=[
+                                discord.Embed(description=item["name"])
+                                for item in await userData.user_inv.all().values()
+                            ],
+                            label="Inventory",
+                            description="user inv",
+                        )
+                    ]
+                    mainPages = pages.Paginator(pages=pageGroups, show_menu=True)
+                    await mainPages.respond(ctx.interaction, ephemeral=True)
+            except ItemNotFound:
+                embedError = discord.Embed()
+                embedError.description = "It seems like that your account was not found. Please initialize your account first."
+                return await ctx.respond(embed=embedError, ephemeral=True)
 
     @eco_users.command(name="inv")
     async def ecoUserInv(self, ctx):

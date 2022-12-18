@@ -5,7 +5,7 @@ from typing import List
 import discord
 import uvloop
 from dateutil import parser
-from kumiko_economy import (
+from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
     KumikoEcoUtils,
