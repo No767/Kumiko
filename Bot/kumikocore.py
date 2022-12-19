@@ -8,7 +8,6 @@ import discord
 from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
-from Libs.kumiko_economy_utils import AHChecker, QuestsChecker
 
 logging.basicConfig(
     level=logging.INFO,
@@ -65,8 +64,9 @@ class KumikoCore(discord.Bot):
 
     @tasks.loop(hours=1)
     async def checkerHandler(self):
-        await QuestsChecker(uri=self.uri)
-        await AHChecker(uri=self.uri)
+        logging.info("Tasks Disabled")
+        # await QuestsChecker(uri=self.uri)
+        # await AHChecker(uri=self.uri)
 
     @checkerHandler.before_loop
     async def beforeReady(self):

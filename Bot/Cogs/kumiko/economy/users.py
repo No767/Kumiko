@@ -1,6 +1,7 @@
 import asyncio
 import os
 import urllib.parse
+from typing import List
 
 import discord
 import uvloop
@@ -121,22 +122,61 @@ class EcoUsers(commands.Cog):
         async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
             try:
                 userData = await EcoUserBridge.get_or_none(
-                    user_bridge_id=ctx.user.id
+                    user_bridge_id=454357482102587393
                 ).prefetch_related("user_inv")
                 if userData is None:
                     raise ItemNotFound
                 else:
+                    # Should all be cached later
+                    userInv = await userData.user_inv.all().values()
+                    userQuests = await userData.quests.all().values()
+                    userMarketplace = await userData.marketplace.all().values()
+                    userAuctionHouse = await userData.auction_house.all().values()
                     pageGroups = [
                         pages.PageGroup(
                             pages=[
                                 discord.Embed(description=item["name"])
                                 for item in await userData.user_inv.all().values()
-                            ],
+                            ]
+                            if isinstance(userInv, List)
+                            else [discord.Embed(description=userInv["name"])],
                             label="Inventory",
                             description="user inv",
-                        )
+                        ),
+                        pages.PageGroup(
+                            pages=[
+                                discord.Embed(description=item["name"])
+                                for item in userQuests
+                            ]
+                            if isinstance(userQuests, List)
+                            else [discord.Embed(description=userQuests["name"])],
+                            label="Quests",
+                            description="user quests",
+                        ),
+                        pages.PageGroup(
+                            pages=[
+                                discord.Embed(description=item["name"])
+                                for item in userMarketplace
+                            ]
+                            if isinstance(userMarketplace, List)
+                            else [discord.Embed(description=userMarketplace["name"])],
+                            label="Marketplace",
+                            description="user marketplace",
+                        ),
+                        pages.PageGroup(
+                            pages=[
+                                discord.Embed(description=item["name"])
+                                for item in userAuctionHouse
+                            ]
+                            if isinstance(userAuctionHouse, List)
+                            else [discord.Embed(description=userAuctionHouse["name"])],
+                            label="Auction House",
+                            description="user auction house",
+                        ),
                     ]
-                    mainPages = pages.Paginator(pages=pageGroups, show_menu=True)
+                    mainPages = pages.Paginator(
+                        pages=pageGroups, show_menu=True, loop_pages=True
+                    )
                     await mainPages.respond(ctx.interaction, ephemeral=True)
             except ItemNotFound:
                 embedError = discord.Embed()

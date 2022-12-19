@@ -41,7 +41,7 @@ class EcoUserInv(Model):
         table = "eco_user_inv"
 
     def __str__(self):
-        return f"EcoUserInv({self.user_id}, {self.date_acquired}, {self.item_uuid}, {self.name}, {self.description}, {self.amount})"
+        return f"EcoUserInv({self.id}, {self.user_id}, {self.item_uuid}, {self.name}, {self.description}, {self.amount}, {self.date_acquired})"
 
 
 class EcoUser(Model):
