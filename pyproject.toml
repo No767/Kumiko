@@ -29,6 +29,7 @@ tortoise-orm = {extras = ["accel"], version = "^0.19.2"}
 python-rapidjson = "^1.9"
 ormsgpack = "^1.2.4"
 better-ipc = "^2.0.1"
+aerich = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.20.0"

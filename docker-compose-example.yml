@@ -2,7 +2,7 @@ version: "3.9"
 services:
   postgres:
     container_name: Kumiko-Postgres
-    image: no767/kumiko-postgres:latest
+    image: no767/kumiko-postgres:edge
     restart: always
     env_file:
       - .env
@@ -22,7 +22,7 @@ services:
 
   kumiko:
     container_name: Kumiko
-    image: no767/kumiko:latest
+    image: no767/kumiko:edge
     restart: always
     deploy:
       restart_policy:

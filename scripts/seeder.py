@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import os
 import sys
 import time
@@ -7,13 +8,11 @@ from pathlib import Path
 import uvloop
 from dotenv import load_dotenv
 
-path = Path(__file__).parents[0]
+path = Path(__file__).parent
 libsPath = os.path.join(str(path), "Bot", "Libs")
 envPath = os.path.join(str(path), "Bot", ".env")
 sys.path.append(libsPath)
 
-from admin_logs_utils import KumikoAdminLogsUtils
-from genshin_wish_sim_utils import KumikoWSUtils
 from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -30,12 +29,16 @@ POSTGRES_PORT = os.getenv("Postgres_Port")
 POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
 CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="[%(levelname)s] | %(asctime)s >> [DB Seeder V1] %(message)s",
+    datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
+)
+
 utils = KumikoEcoUserUtils()
 ahUtils = KumikoAuctionHouseUtils()
 questsUtils = KumikoQuestsUtils()
 userInvUtils = KumikoUserInvUtils()
-wsUtils = KumikoWSUtils()
-alUtils = KumikoAdminLogsUtils(uri=CONNECTION_URI)
 
 
 async def main():
@@ -43,16 +46,13 @@ async def main():
     await ahUtils.initAHTables(uri=CONNECTION_URI)
     await userInvUtils.initUserInvTables(uri=CONNECTION_URI)
     await questsUtils.initQuestsTables(uri=CONNECTION_URI)
-    await wsUtils.initAllWSTables(uri=CONNECTION_URI)
-    await alUtils.initAllALTables()
-    print("[DB Seeder] Successfully created all database tables for Kumiko")
+    logging.info("Successfully created all database tables for Kumiko")
 
-
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+            runner.run(main())
     except Exception as e:
         print(f"[DB Seeder] Error: {e.__class__.__name__} - {str(e)}")
         print(f"[DB Seeder] Waiting for 5 seconds before retrying")

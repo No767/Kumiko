@@ -77,3 +77,4 @@ gws-test.py
 test-scripts
 image-testspy
 .vagrant
+migrations
