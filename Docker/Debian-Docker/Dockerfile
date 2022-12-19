@@ -32,6 +32,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ## Final image
 ####################################################################################################
 FROM python:3.11-slim-bullseye
+
 RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
