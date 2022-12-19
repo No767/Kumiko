@@ -38,6 +38,11 @@ pyinstrument = "^4.4.0"
 [tool.isort]
 profile = 'black'
 
+[tool.aerich]
+tortoise_orm = "settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
