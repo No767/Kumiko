@@ -40,6 +40,7 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Warn command
 - Server Configs (with Server Join Handlers)
 - Completely rewritten economy system using Tortoise ORM, and with proper SQL and 3nf complaint relations.
+- Use aerich for migrations, and initializing db tables
 
 ## ➖ Removals
 - SQLAlchemy ORM code
