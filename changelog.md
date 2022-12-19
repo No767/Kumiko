@@ -4,8 +4,9 @@ This release focuses just on major backend performances, and rewrites of the cor
 
 ## :boom: Breaking Changes :boom:
 
-- **Dropped support for Alpine-based images and -alpine tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base.
-- **Removed unneeded -bullseye tags**. This means that the version number will be the one you want to install, and `edge` for any dev builds
+- **Dropped support for Alpine-based images and `-alpine` tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base. See [this gist](https://gist.github.com/No767/76d87bce5e6fcb1e682d2ff932c2a6b7) for more info.
+- **Removed unneeded `-bullseye` tags**. This means that the version number will be the one you want to install, and `edge` for any dev builds
+- **Removed MongoDB for Kumiko**. The new marketplace system will use PostgreSQL instead. This is done in order to correctly map relations with users, and to merge that feature into using PostgreSQL over MongoDB.
 
 ## ✨ TD;LR
 
@@ -19,15 +20,14 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Optimize GWS pull command
 - Update Python constraints (>=3.8,<4.0)
 - Upgrade PostgreSQL Dockerfile versions to 15
-- Include Rust (`rustc` and `cargo`) when building orjson and ormsgpack 
 - Use Ormsgpack for MessagePack serialization
-- Update docs (as per usual)
+- Rewrite `contributing.md` and docs to further clarify topics.
 - Switch to using Python 3.11 for Dockerfiles, and officially support Python 3.11 for Kumiko
 - Update Alpine Linux to 3.17
 - Moved all checkers into tasks
 - Rewrite Admin Logs to use Tortoise ORM
 - Include caching with Admin Logs
-
+- Rewrite the economy system for the 3rd time in a row
 
 ## ✨ Additions
 
@@ -39,10 +39,12 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Server configs
 - Warn command
 - Server Configs (with Server Join Handlers)
+- Completely rewritten economy system using Tortoise ORM, and with proper SQL and 3nf complaint relations.
 
 ## ➖ Removals
 - SQLAlchemy ORM code
 - Old SQLAlchemy-based GWSs
 - Old GWS Purge Inv View
 - Old Library packages (GWS, Admin Logs, Eco)
+- Old Economy V2 code
 - Remove Jisho, Twitter, and MCSrvStats integration
