@@ -5,7 +5,6 @@ This release focuses just on major backend performances, and rewrites of the cor
 ## :boom: Breaking Changes :boom:
 
 - **Dropped support for Alpine-based images and `-alpine` tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base. See [this gist](https://gist.github.com/No767/76d87bce5e6fcb1e682d2ff932c2a6b7) for more info.
-- **Removed unneeded `-bullseye` tags**. This means that the version number will be the one you want to install, and `edge` for any dev builds
 - **Removed MongoDB for Kumiko**. The new marketplace system will use PostgreSQL instead. This is done in order to correctly map relations with users, and to merge that feature into using PostgreSQL over MongoDB.
 
 ## ✨ TD;LR
@@ -28,6 +27,8 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Rewrite Admin Logs to use Tortoise ORM
 - Include caching with Admin Logs
 - Rewrite the economy system for the 3rd time in a row
+- Ensure that the DB connection is first instantiated when Kumiko starts up
+- Move IPC from bot to a dedicated cog
 
 ## ✨ Additions
 
