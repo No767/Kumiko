@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 from kumiko_economy import EcoUserBridge
 from kumiko_economy_utils import KumikoEcoUserUtils, KumikoUserInvUtils
 from kumiko_ui_components import CreateAccountView, PurgeAccountView
-from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
@@ -119,69 +118,69 @@ class EcoUsers(commands.Cog):
     async def improvedProfile(self, ctx: discord.ApplicationContext):
         """An improved version of the profile cmd"""
         # The caching will be added later
-        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
-            try:
-                userData = await EcoUserBridge.get_or_none(
-                    user_bridge_id=454357482102587393
-                ).prefetch_related("user_inv")
-                if userData is None:
-                    raise ItemNotFound
-                else:
-                    # Should all be cached later
-                    userInv = await userData.user_inv.all().values()
-                    userQuests = await userData.quests.all().values()
-                    userMarketplace = await userData.marketplace.all().values()
-                    userAuctionHouse = await userData.auction_house.all().values()
-                    pageGroups = [
-                        pages.PageGroup(
-                            pages=[
-                                discord.Embed(description=item["name"])
-                                for item in await userData.user_inv.all().values()
-                            ]
-                            if isinstance(userInv, List)
-                            else [discord.Embed(description=userInv["name"])],
-                            label="Inventory",
-                            description="user inv",
-                        ),
-                        pages.PageGroup(
-                            pages=[
-                                discord.Embed(description=item["name"])
-                                for item in userQuests
-                            ]
-                            if isinstance(userQuests, List)
-                            else [discord.Embed(description=userQuests["name"])],
-                            label="Quests",
-                            description="user quests",
-                        ),
-                        pages.PageGroup(
-                            pages=[
-                                discord.Embed(description=item["name"])
-                                for item in userMarketplace
-                            ]
-                            if isinstance(userMarketplace, List)
-                            else [discord.Embed(description=userMarketplace["name"])],
-                            label="Marketplace",
-                            description="user marketplace",
-                        ),
-                        pages.PageGroup(
-                            pages=[
-                                discord.Embed(description=item["name"])
-                                for item in userAuctionHouse
-                            ]
-                            if isinstance(userAuctionHouse, List)
-                            else [discord.Embed(description=userAuctionHouse["name"])],
-                            label="Auction House",
-                            description="user auction house",
-                        ),
-                    ]
-                    mainPages = pages.Paginator(
-                        pages=pageGroups, show_menu=True, loop_pages=True
-                    )
-                    await mainPages.respond(ctx.interaction, ephemeral=True)
-            except ItemNotFound:
-                embedError = discord.Embed()
-                embedError.description = "It seems like that your account was not found. Please initialize your account first."
-                return await ctx.respond(embed=embedError, ephemeral=True)
+        # async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
+        try:
+            userData = await EcoUserBridge.get_or_none(
+                user_bridge_id=454357482102587393
+            ).prefetch_related("user_inv")
+            if userData is None:
+                raise ItemNotFound
+            else:
+                # Should all be cached later
+                userInv = await userData.user_inv.all().values()
+                userQuests = await userData.quests.all().values()
+                userMarketplace = await userData.marketplace.all().values()
+                userAuctionHouse = await userData.auction_house.all().values()
+                pageGroups = [
+                    pages.PageGroup(
+                        pages=[
+                            discord.Embed(description=item["name"])
+                            for item in await userData.user_inv.all().values()
+                        ]
+                        if isinstance(userInv, List)
+                        else [discord.Embed(description=userInv["name"])],
+                        label="Inventory",
+                        description="user inv",
+                    ),
+                    pages.PageGroup(
+                        pages=[
+                            discord.Embed(description=item["name"])
+                            for item in userQuests
+                        ]
+                        if isinstance(userQuests, List)
+                        else [discord.Embed(description=userQuests["name"])],
+                        label="Quests",
+                        description="user quests",
+                    ),
+                    pages.PageGroup(
+                        pages=[
+                            discord.Embed(description=item["name"])
+                            for item in userMarketplace
+                        ]
+                        if isinstance(userMarketplace, List)
+                        else [discord.Embed(description=userMarketplace["name"])],
+                        label="Marketplace",
+                        description="user marketplace",
+                    ),
+                    pages.PageGroup(
+                        pages=[
+                            discord.Embed(description=item["name"])
+                            for item in userAuctionHouse
+                        ]
+                        if isinstance(userAuctionHouse, List)
+                        else [discord.Embed(description=userAuctionHouse["name"])],
+                        label="Auction House",
+                        description="user auction house",
+                    ),
+                ]
+                mainPages = pages.Paginator(
+                    pages=pageGroups, show_menu=True, loop_pages=True
+                )
+                await mainPages.respond(ctx.interaction, ephemeral=True)
+        except ItemNotFound:
+            embedError = discord.Embed()
+            embedError.description = "It seems like that your account was not found. Please initialize your account first."
+            return await ctx.respond(embed=embedError, ephemeral=True)
 
     @eco_users.command(name="inv")
     async def ecoUserInv(self, ctx):

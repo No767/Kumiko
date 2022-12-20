@@ -42,7 +42,7 @@ libsPath = os.path.join(str(path), "Libs")
 sys.path.append(libsPath)
 
 bot = KumikoCore(
-    uri=LEGACY_CONNECTION_URI, ipc_secret_key=IPC_SECRET_KEY, intents=intents
+    uri=CONNECTION_URI, models=MODELS, ipc_secret_key=IPC_SECRET_KEY, intents=intents
 )
 
 logging.basicConfig(

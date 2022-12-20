@@ -16,7 +16,8 @@ class HelpSelect(discord.ui.Select):
                     description=cog.__doc__,
                 )
                 for cog_name, cog in sorted(cog.bot.cogs.items())
-                if cog_name not in ["InteractionFailureHandler", "ServerJoinHandlers"]
+                if cog_name
+                not in ["InteractionFailureHandler", "ServerJoinHandlers", "IPCServer"]
             ],
         )
         self.cog = cog
@@ -67,7 +68,11 @@ class Help(commands.Cog):
                         cogs
                         for cogs in self.bot.cogs
                         if cogs
-                        not in ["InteractionFailureHandler", "ServerJoinHandlers"]
+                        not in [
+                            "InteractionFailureHandler",
+                            "ServerJoinHandlers",
+                            "IPCServer",
+                        ]
                     ]
                 )
             ),

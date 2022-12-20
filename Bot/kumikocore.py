@@ -1,13 +1,13 @@
+import asyncio
 import logging
 import os
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import List
 
 import discord
 from discord.ext import ipc, tasks
-from discord.ext.ipc.objects import ClientPayload
-from discord.ext.ipc.server import Server
+from tortoise import Tortoise
 
 logging.basicConfig(
     level=logging.INFO,
@@ -28,11 +28,16 @@ sys.path.append(libsPath)
 class KumikoCore(discord.Bot):
     """The core of Kumiko - Subclassed this time"""
 
-    def __init__(self, uri: str, ipc_secret_key: str, *args, **kwargs):
+    def __init__(self, uri: str, models: List, ipc_secret_key: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.uri = uri
+        self.models = models
         self.ipc_secret_key = ipc_secret_key
+        self.dbConnected = asyncio.Event()
         self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
+        self.connectDB.add_exception_type(TimeoutError)
+        self.connectDB.start()
+        self.checkerHandler.start()
         self.load_cogs()
 
     def load_cogs(self):
@@ -72,33 +77,42 @@ class KumikoCore(discord.Bot):
     async def beforeReady(self):
         await self.wait_until_ready()
 
+    @checkerHandler.error
+    async def checkHandlerError(self):
+        logging.error(
+            f"{self.user.name}'s Checker Handlers has failed. Attempting to restart"
+        )
+        await asyncio.sleep(5)
+        self.checkerHandler.restart()
+
     @checkerHandler.after_loop
     async def afterReady(self):
-        if self.checkerHandler.failed():
-            logging.error(
-                f"{self.user.name}'s Checker Handlers has failed. Attempting to restart"
-            )
-            self.checkerHandler.restart()
-        elif self.checkerHandler.is_being_cancelled():
-            logging.info(f"Stopping {self.user.name}'s Checker Handlers")
+        if self.checkerHandler.is_being_cancelled():
             self.checkerHandler.stop()
 
-    @Server.route()
-    async def get_user_data(self, data: ClientPayload) -> Dict:
-        user = self.get_user(data.user_id)
-        return user._to_minimal_user_json()
+    @tasks.loop(count=1)
+    async def connectDB(self):
+        await Tortoise.init(db_url=self.uri, modules={"models": self.models})
+        self.dbConnected.set()
+        logging.info("Successfully connected to PostgreSQL")
 
-    @Server.route()
-    async def create_embed(self, data: ClientPayload) -> None:
-        print(data.embed_content)
-        logging.debug(f"Embed created, and sent to {data.channel_id}")
+    # Note that this reconnection logic does not work
+    # Tortoise ORM's init coroutine does not raise an exception, but instead makes asyncpg do the dirty work
+    # The exception should be TimeoutError, this can't be caught for some reason
+    @connectDB.error
+    async def connectDBError(self):
+        logging.error("Failed to connect to PostgreSQL. Retrying in 5 seconds")
+        await asyncio.sleep(5)
+        await self.connectDB.restart()
+
+    @connectDB.after_loop
+    async def connectionTeardown(self):
+        if self.connectDB.is_being_cancelled():
+            await Tortoise.close_connections()
+            self.dbConnected.clear()
 
     async def on_ready(self):
         logging.info(f"Logged in as {self.user.name}")
-        self.checkerHandler.start()
-        logging.info(f"{self.user.name}'s Checker Handlers successfully started")
-        logging.info(f"Loaded all checkers")
-        await self.ipc.start()
         logging.info(f"{self.user.name} is ready")
         await self.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
