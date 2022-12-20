@@ -3,10 +3,12 @@ import logging
 import os
 import sys
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 import discord
 from discord.ext import ipc, tasks
+from discord.ext.ipc.objects import ClientPayload
+from discord.ext.ipc.server import Server
 from tortoise import Tortoise
 
 logging.basicConfig(
@@ -34,8 +36,10 @@ class KumikoCore(discord.Bot):
         self.models = models
         self.ipc_secret_key = ipc_secret_key
         self.dbConnected = asyncio.Event()
+        self.ipcStarted = asyncio.Event()
         self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
         self.connectDB.add_exception_type(TimeoutError)
+        self.startIPCServer.start()
         self.connectDB.start()
         self.checkerHandler.start()
         self.load_cogs()
@@ -111,9 +115,29 @@ class KumikoCore(discord.Bot):
             await Tortoise.close_connections()
             self.dbConnected.clear()
 
+    @tasks.loop(count=1)
+    async def startIPCServer(self):
+        await self.ipc.start()
+        self.ipcStarted.set()
+
+    @startIPCServer.after_loop
+    async def ipcTeardown(self):
+        if self.startIPCServer.is_being_cancelled():
+            await self.ipc.stop()
+            self.ipcStarted.clear()
+
+    @Server.route()
+    async def get_user_data(self, data: ClientPayload) -> Dict:
+        user = self.get_user(data.user_id)
+        return user._to_minimal_user_json()
+
+    @Server.route()
+    async def create_embed(self, data: ClientPayload) -> None:
+        print(data.embed_content)
+        logging.info(f"Embed created, and sent to {data.channel_id}")
+
     async def on_ready(self):
-        logging.info(f"Logged in as {self.user.name}")
-        logging.info(f"{self.user.name} is ready")
+        logging.info(f"{self.user.name} is fully ready!")
         await self.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
         )
