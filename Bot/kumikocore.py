@@ -10,6 +10,7 @@ from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
 from tortoise import Tortoise
+from tortoise.exceptions import DBConnectionError
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,6 +40,7 @@ class KumikoCore(discord.Bot):
         self.ipcStarted = asyncio.Event()
         self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
         self.connectDB.add_exception_type(TimeoutError)
+        self.connectDB.add_exception_type(DBConnectionError)
         self.startIPCServer.start()
         self.connectDB.start()
         self.checkerHandler.start()

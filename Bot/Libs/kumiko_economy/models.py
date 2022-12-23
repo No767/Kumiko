@@ -1,36 +1,40 @@
+import orjson
+from pydantic.main import BaseConfig as PydanticBaseConfig
 from tortoise import fields
 from tortoise.models import Model
 
 
-# Bridging table used for one-to-many relationship
-class EcoUserBridge(Model):
-    user_bridge_id = fields.BigIntField(pk=True)
-    user: fields.ForeignKeyRelation["EcoUser"] = fields.ForeignKeyField(
-        "models.EcoUser"
-    )
-    user_inv: fields.ForeignKeyRelation["EcoUserInv"] = fields.ForeignKeyField(
-        "models.EcoUserInv", null=True
-    )
-    quests: fields.ForeignKeyRelation["EcoQuests"] = fields.ForeignKeyField(
-        "models.EcoQuests", null=True
-    )
-    auction_house: fields.ForeignKeyRelation[
-        "EcoAuctionHouse"
-    ] = fields.ForeignKeyField("models.EcoAuctionHouse", null=True)
-    marketplace: fields.ForeignKeyRelation["EcoMarketplace"] = fields.ForeignKeyField(
-        "models.EcoMarketplace", null=True
-    )
+class EcoJSONConfig(PydanticBaseConfig):
+    json_loads = orjson.loads
+    json_dumps = orjson.dumps
+
+
+class EcoUser(Model):
+    user_id = fields.BigIntField(pk=True)
+    user_inv: fields.ReverseRelation["EcoUserInv"]
+    quest: fields.ReverseRelation["EcoQuests"]
+    auction_house: fields.ReverseRelation["EcoAuctionHouse"]
+    marketplace: fields.ReverseRelation["EcoMarketplace"]
+    username = fields.CharField(max_length=255)
+    lavender_petals = fields.BigIntField(default=0)
+    rank = fields.IntField(default=0)
+    date_joined = fields.DatetimeField(auto_now_add=True)
 
     class Meta:
-        table = "eco_user_bridge"
+        table = "eco_user"
+
+    class PydanticMeta:
+        config_class = EcoJSONConfig
 
     def __str__(self):
-        return f"EcoUserBridge({self.user_bridge_id}, {self.user}, {self.user_inv}, {self.quests}, {self.auction_house}, {self.marketplace})"
+        return f"EcoUser({self.user_id}, {self.user_inv}, {self.quests}, {self.auction_house}, {self.marketplace}, {self.username}, {self.lavender_petals}, {self.rank}, {self.date_joined})"
 
 
 class EcoUserInv(Model):
     id = fields.UUIDField(pk=True)
-    user_id = fields.BigIntField()
+    user: fields.ForeignKeyRelation["EcoUser"] = fields.ForeignKeyField(
+        "models.EcoUser", related_name="user_inv", on_delete=fields.CASCADE
+    )
     item_uuid = fields.UUIDField()
     name = fields.CharField(max_length=255)
     description = fields.TextField()
@@ -40,27 +44,18 @@ class EcoUserInv(Model):
     class Meta:
         table = "eco_user_inv"
 
-    def __str__(self):
-        return f"EcoUserInv({self.id}, {self.user_id}, {self.item_uuid}, {self.name}, {self.description}, {self.amount}, {self.date_acquired})"
-
-
-class EcoUser(Model):
-    user_id = fields.BigIntField(pk=True)
-    username = fields.CharField(max_length=255)
-    lavender_petals = fields.BigIntField(default=0)
-    rank = fields.IntField(default=0)
-    date_joined = fields.DatetimeField(auto_now_add=True)
-
-    class Meta:
-        table = "eco_users"
+    class PydanticMeta:
+        config_class = EcoJSONConfig
 
     def __str__(self):
-        return f"EcoUser({self.user_id}, {self.username}, {self.lavender_petals}, {self.rank}, {self.date_joined})"
+        return f"EcoUserInv({self.id}, {self.user}, {self.item_uuid}, {self.name}, {self.description}, {self.amount}, {self.date_acquired})"
 
 
 class EcoQuests(Model):
     id = fields.UUIDField(pk=True)
-    creator_id = fields.BigIntField()
+    creator: fields.ForeignKeyRelation["EcoUser"] = fields.ForeignKeyField(
+        "models.EcoUser", related_name="quest", on_delete=fields.CASCADE
+    )
     claimer_id = fields.BigIntField(null=True)
     date_created = fields.DatetimeField(auto_now_add=True)
     name = fields.CharField(max_length=255)
@@ -73,13 +68,18 @@ class EcoQuests(Model):
     class Meta:
         table = "eco_quests"
 
+    class PydanticMeta:
+        config_class = EcoJSONConfig
+
     def __str__(self):
-        return f"EcoQuests({self.id}, {self.creator_id}, {self.claimer_id}, {self.date_created}, {self.name}, {self.description}, {self.end_datetime}, {self.reward}, {self.active}, {self.claimed})"
+        return f"EcoQuests({self.id}, {self.creator}, {self.claimer_id}, {self.date_created}, {self.name}, {self.description}, {self.end_datetime}, {self.reward}, {self.active}, {self.claimed})"
 
 
 class EcoAuctionHouse(Model):
     id = fields.UUIDField(pk=True)
-    owner_id = fields.BigIntField()
+    owner: fields.ForeignKeyRelation["EcoUser"] = fields.ForeignKeyField(
+        "models.EcoUser", related_name="auction_house", on_delete=fields.CASCADE
+    )
     name = fields.CharField(max_length=255)
     description = fields.TextField()
     price = fields.IntField()
@@ -89,13 +89,18 @@ class EcoAuctionHouse(Model):
     class Meta:
         table = "eco_auction_house"
 
+    class PydanticMeta:
+        config_class = EcoJSONConfig
+
     def __str__(self):
-        return f"EcoAuctionHouse({self.id}, {self.owner_id}, {self.name}, {self.description}, {self.price}, {self.date_added}, {self.passed})"
+        return f"EcoAuctionHouse({self.id}, {self.owner}, {self.name}, {self.description}, {self.price}, {self.date_added}, {self.passed})"
 
 
 class EcoMarketplace(Model):
     id = fields.UUIDField(pk=True)
-    owner_id = fields.BigIntField()
+    owner: fields.ForeignKeyRelation["EcoUser"] = fields.ForeignKeyField(
+        "models.EcoUser", related_name="marketplace", on_delete=fields.CASCADE
+    )
     owner_name = fields.CharField(max_length=255)
     date_added = fields.DatetimeField(auto_now_add=True)
     name = fields.CharField(max_length=255)
@@ -107,5 +112,8 @@ class EcoMarketplace(Model):
     class Meta:
         table = "eco_marketplace"
 
+    class PydanticMeta:
+        config_class = EcoJSONConfig
+
     def __str__(self):
-        return f"EcoMarketplace({self.id}, {self.owner_id}, {self.owner_name}, {self.date_added}, {self.name}, {self.description}, {self.price}, {self.amount}, {self.updated_price})"
+        return f"EcoMarketplace({self.id}, {self.owner}, {self.owner_name}, {self.date_added}, {self.name}, {self.description}, {self.price}, {self.amount}, {self.updated_price})"
