@@ -4,7 +4,7 @@ from typing import Union
 import ciso8601
 
 
-async def parseDate(datetime: Union[datetime.datetime, str]) -> datetime.datetime:
+async def parseDate(datetime: Union[datetime, str]) -> datetime:
     """Parses a datetime object or a string into a datetime object
 
     Args:

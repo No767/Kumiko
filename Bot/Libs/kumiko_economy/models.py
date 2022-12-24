@@ -12,7 +12,7 @@ class EcoJSONConfig(PydanticBaseConfig):
 class EcoUser(Model):
     user_id = fields.BigIntField(pk=True)
     user_inv: fields.ReverseRelation["EcoUserInv"]
-    quest: fields.ReverseRelation["EcoQuests"]
+    quests: fields.ReverseRelation["EcoQuests"]
     auction_house: fields.ReverseRelation["EcoAuctionHouse"]
     marketplace: fields.ReverseRelation["EcoMarketplace"]
     username = fields.CharField(max_length=255)
@@ -54,7 +54,7 @@ class EcoUserInv(Model):
 class EcoQuests(Model):
     id = fields.UUIDField(pk=True)
     creator: fields.ForeignKeyRelation["EcoUser"] = fields.ForeignKeyField(
-        "models.EcoUser", related_name="quest", on_delete=fields.CASCADE
+        "models.EcoUser", related_name="quests", on_delete=fields.CASCADE
     )
     claimer_id = fields.BigIntField(null=True)
     date_created = fields.DatetimeField(auto_now_add=True)

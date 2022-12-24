@@ -9,7 +9,7 @@ import discord
 from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
-from tortoise import Tortoise
+from tortoise import BaseDBAsyncClient, Tortoise, connections
 from tortoise.exceptions import DBConnectionError
 
 logging.basicConfig(
@@ -98,18 +98,17 @@ class KumikoCore(discord.Bot):
 
     @tasks.loop(count=1)
     async def connectDB(self):
-        await Tortoise.init(db_url=self.uri, modules={"models": self.models})
-        self.dbConnected.set()
-        logging.info("Successfully connected to PostgreSQL")
-
-    # Note that this reconnection logic does not work
-    # Tortoise ORM's init coroutine does not raise an exception, but instead makes asyncpg do the dirty work
-    # The exception should be TimeoutError, this can't be caught for some reason
-    @connectDB.error
-    async def connectDBError(self):
-        logging.error("Failed to connect to PostgreSQL. Retrying in 5 seconds")
-        await asyncio.sleep(5)
-        await self.connectDB.restart()
+        try:
+            # Apparently Tortoise's init method does not connect to the DB that well
+            await Tortoise.init(db_url=self.uri, modules={"models": self.models})
+            conn: BaseDBAsyncClient = connections.get("default")
+            await conn.create_connection(with_db=True)
+            self.dbConnected.set()
+            logging.info("Successfully connected to PostgreSQL")
+        except TimeoutError:
+            logging.error("Failed to connect to PostgreSQL. Retrying in 15 seconds")
+            await asyncio.sleep(15)
+            self.connectDB.restart()
 
     @connectDB.after_loop
     async def connectionTeardown(self):
