@@ -1,6 +1,8 @@
 # ✨ Kumiko v0.5.0 ✨
 
-This release focuses just on major backend performances, and rewrites of the core to use Tortoise ORM instead of SQLAlchemy ORM.
+This release focuses just on major backend performances, and rewrites of the core to use Tortoise ORM instead of SQLAlchemy ORM. This update also basically fully rewrites almost all of Kumiko's core features to using Redis caching.
+
+**This will probably be the first beta-release of Kumiko. This release will still have bugs and issues, and please make sure to report them on the Discord server and/or on GitHub instead.**
 
 ## :boom: Breaking Changes :boom:
 
@@ -28,7 +30,8 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Include caching with Admin Logs
 - Rewrite the economy system for the 3rd time in a row
 - Ensure that the DB connection is first instantiated when Kumiko starts up
-- Move IPC from bot to a dedicated cog
+- Export some Tortoise ORM models to Pydantic models for easier serialization and caching
+- Use ciso8601 for parsing ISO-8601 datetimes
 
 ## ✨ Additions
 
@@ -41,7 +44,10 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Warn command
 - Server Configs (with Server Join Handlers)
 - Completely rewritten economy system using Tortoise ORM, and with proper SQL and 3nf complaint relations.
+- New caching system for Kumiko's economy using Redis
 - Use aerich for migrations, and initializing db tables
+- Small datetime util to help figure out whether the given datetime is a ISO-8601 datetime or not
+- Reconnect/retry logic for DB connections (for PostgreSQL)
 
 ## ➖ Removals
 - SQLAlchemy ORM code
