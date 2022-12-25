@@ -15,6 +15,8 @@ from .views import (
     AdminLogsPurgeAllView,
     AHPurgeAllView,
     CreateAccountView,
+    EcoUserCreationView,
+    EcoUserPurgeView,
     GWSPurgeInvView,
     MarketplacePurgeAllView,
     PurgeAccountView,
@@ -42,4 +44,6 @@ __all__ = [
     "GWSPurgeInvView",
     "GWSDeleteOneUserInvItemModal",
     "AdminLogsPurgeAllView",
+    "EcoUserCreationView",
+    "EcoUserPurgeView",
 ]

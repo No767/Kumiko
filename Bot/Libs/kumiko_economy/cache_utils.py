@@ -1,7 +1,7 @@
 from typing import Dict, List, Union
 
+import simdjson
 from kumiko_cache import KumikoCache, commandKeyBuilder
-from kumiko_utils import KumikoCM
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 from .models import EcoUser
@@ -38,16 +38,15 @@ class KumikoEconomyCacheUtils:
             command=f"{command_name}".replace(" ", "-"),
         )
         if await self.cache.cacheExists(key=key) is False:
-            async with KumikoCM(uri=self.uri, models=self.models):
-                pydanticUserBridgeData = pydantic_model_creator(EcoUser)
-                userData = await EcoUser.filter(user_id=user_id).get_or_none()
-                if userData is None:
-                    return None
-                userS = await pydanticUserBridgeData.from_tortoise_orm(userData)
-                userDictData = userS.dict()
-                await self.cache.setBasicCommandCache(
-                    key=key, value=userDictData, ttl=15
-                )
-                return userDictData
+            pydanticUserBridgeData = pydantic_model_creator(EcoUser)
+            userData = await EcoUser.filter(user_id=user_id).get_or_none()
+            if userData is None:
+                return None
+            userS = await pydanticUserBridgeData.from_tortoise_orm(userData)
+            await self.cache.setBasicCommandCache(key=key, value=userS.json(), ttl=15)
+            return userS.dict()
         else:
-            return await self.cache.getBasicCommandCache(key=key)
+            jsonParser = simdjson.Parser()
+            return jsonParser.parse(
+                await self.cache.getBasicCommandCache(key=key), recursive=True
+            )

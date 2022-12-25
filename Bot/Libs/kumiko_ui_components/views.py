@@ -4,6 +4,7 @@ from typing import List
 import discord
 import uvloop
 from kumiko_admin_logs.models import KumikoAdminLogs
+from kumiko_economy import EcoUser
 from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -473,6 +474,128 @@ class AdminLogsPurgeAllView(discord.ui.View):
                     view=self,
                     delete_after=15.0,
                 )
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def cancel_action_callback(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
+        )
+
+
+class EcoUserCreationView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def confirm_create_callabck(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        doesUserExist = await EcoUser.filter(user_id=interaction.user.id).exists()
+        if doesUserExist is False:
+            await EcoUser(
+                user_id=interaction.user.id,
+                username=interaction.user.name,
+                date_joined=discord.utils.utcnow(),
+            ).save()
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="Your economy account has been created! Have fun!"
+                ),
+                view=self,
+                delete_after=15.0,
+            )
+        else:
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(description="You already have an economy account!"),
+                view=self,
+                delete_after=15.0,
+            )
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def cancel_action_callback(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
+        )
+
+
+class EcoUserPurgeView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def confirm_create_callabck(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        doesUserExist = await EcoUser.filter(user_id=interaction.user.id).exists()
+        if doesUserExist is True:
+            await EcoUser.filter(user_id=interaction.user.id).delete()
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="Your economy account has been deleted. All of your items that is associated with your account has been deleted as well."
+                ),
+                view=self,
+                delete_after=15.0,
+            )
+        else:
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="You don't have an economy account to delete!"
+                ),
+                view=self,
+                delete_after=15.0,
+            )
 
     @discord.ui.button(
         label="No",
