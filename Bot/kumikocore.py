@@ -113,7 +113,7 @@ class KumikoCore(discord.Bot):
     @connectDB.after_loop
     async def connectionTeardown(self):
         if self.connectDB.is_being_cancelled():
-            await Tortoise.close_connections()
+            connections.close_all()
             self.dbConnected.clear()
 
     @tasks.loop(count=1)

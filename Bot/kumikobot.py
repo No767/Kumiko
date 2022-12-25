@@ -2,6 +2,7 @@ import asyncio
 import logging
 import os
 import sys
+import urllib.parse
 from pathlib import Path
 
 import discord
@@ -12,14 +13,11 @@ from kumikocore import KumikoCore
 # Grabs the bot's token from the .env file
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_DB = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_PORT = os.getenv("Postgres_Port")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
-LEGACY_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
-
-# these will be used later
 CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
 MODELS = [
     "kumiko_genshin_wish_sim.models",
@@ -52,7 +50,6 @@ logging.basicConfig(
 )
 
 # Literally prevent these modules from attempting to log info stuff
-logging.getLogger("asyncio_redis").setLevel(logging.WARNING)
 logging.getLogger("gql").setLevel(logging.WARNING)
 
 # Run the bot
