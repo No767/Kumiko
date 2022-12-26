@@ -32,7 +32,7 @@ better-ipc = "^2.0.1"
 aerich = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.20.0"
+pre-commit = "^2.21.0"
 pyinstrument = "^4.4.0"
 
 [tool.isort]
