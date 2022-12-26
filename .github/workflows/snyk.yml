@@ -25,7 +25,7 @@ jobs:
         run: |
           npm install --location=global snyk@latest 
       - name: Set up Poetry
-        uses: Gr1N/setup-poetry@v7
+        uses: Gr1N/setup-poetry@v8
       - name: Cache Poetry
         id: cache-poetry
         uses: actions/cache@v3.2.1
