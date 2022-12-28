@@ -1,6 +1,7 @@
 from .modals import (
     AHCreateItemModal,
     AHDeleteItemModal,
+    EcoMarketplaceListItemModal,
     GWSDeleteOneUserInvItemModal,
     MarketplaceAddItem,
     MarketplaceDeleteOneItem,
@@ -46,4 +47,5 @@ __all__ = [
     "AdminLogsPurgeAllView",
     "EcoUserCreationView",
     "EcoUserPurgeView",
+    "EcoMarketplaceListItemModal",
 ]

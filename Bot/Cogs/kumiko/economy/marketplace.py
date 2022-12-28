@@ -16,7 +16,7 @@ from kumiko_economy_utils import (
     MarketplaceModel,
 )
 from kumiko_ui_components import (
-    MarketplaceAddItem,
+    EcoMarketplaceListItemModal,
     MarketplaceDeleteOneItem,
     MarketplacePurchaseItemModal,
     MarketplacePurgeAllView,
@@ -74,14 +74,8 @@ class Marketplace(commands.Cog):
         ctx,
     ):
         """Adds an item into the marketplace"""
-        createItem = MarketplaceAddItem(
-            mongo_uri=MARKETPLACE_CONNECTION_URI,
-            postgres_uri=USERS_CONNECTION_URI,
-            title="Add an item",
-        )
+        createItem = EcoMarketplaceListItemModal()
         await ctx.send_modal(createItem)
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
     @eco_marketplace.command(name="view")
     async def ecoMarketplaceView(self, ctx):

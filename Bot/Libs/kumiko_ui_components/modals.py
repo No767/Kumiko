@@ -5,6 +5,7 @@ from typing import List
 import discord
 import uvloop
 from dateutil import parser
+from kumiko_economy import EcoMarketplace, EcoUser
 from kumiko_economy_utils import (
     KumikoAuctionHouseUtils,
     KumikoEcoUserUtils,
@@ -813,3 +814,63 @@ class GWSDeleteOneUserInvItemModal(discord.ui.Modal):
                     f"Deleted {self.children[1].value} {self.children[0].value}(s) from your inventory",
                     ephemeral=True,
                 )
+
+
+class EcoMarketplaceListItemModal(discord.ui.Modal):
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.add_item(
+            discord.ui.InputText(
+                style=discord.InputTextStyle.short,
+                label="Item Name",
+                min_length=3,
+                max_length=255,
+                required=True,
+                row=0,
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                style=discord.InputTextStyle.short,
+                label="Price",
+                min_length=1,
+                max_length=20,
+                required=True,
+                row=0,
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                style=discord.InputTextStyle.long,
+                label="Description",
+                min_length=1,
+                max_length=512,
+                required=True,
+                row=1,
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        # Wish i could use the cache here... but whatever
+        currUser = await EcoUser.filter(user_id=interaction.user.id).get_or_none()
+        if currUser is None:
+            return await interaction.response.send_message(
+                "You do not have an account. Please create one using the /eco-user init command",
+                ephemeral=True,
+            )
+        else:
+            await EcoMarketplace(
+                owner=currUser,
+                owner_name=interaction.user.name,
+                name=self.children[0].value,
+                description=self.children[2].value,
+                price=self.children[1].value,
+                amount=1,
+            ).save()
+            return await interaction.response.send_message(
+                f"Added {self.children[0].value} to the marketplace", ephemeral=True
+            )
