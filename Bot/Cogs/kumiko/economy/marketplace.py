@@ -1,5 +1,6 @@
 import asyncio
 import os
+import urllib.parse
 
 import discord
 import motor.motor_asyncio
@@ -8,7 +9,9 @@ from beanie import init_beanie
 from dateutil import parser
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands, pages
+from discord.utils import format_dt
 from dotenv import load_dotenv
+from kumiko_economy import KumikoEconomyCacheUtils
 from kumiko_economy_utils import (
     KumikoEcoUserUtils,
     KumikoEcoUtils,
@@ -23,26 +26,35 @@ from kumiko_ui_components import (
     MarketplaceUpdateAmount,
     MarketplaceUpdateItemPrice,
 )
+from kumiko_utils import parseDatetime
 from rin_exceptions import NoItemsError
 
 load_dotenv()
 
-POSTGRES_PASSWORD = os.getenv("Postgres_Password")
+REDIS_HOST = os.getenv("Redis_Server_IP")
+REDIS_PORT = os.getenv("Redis_Port")
+POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_DATABASE = os.getenv("Postgres_Kumiko_Database")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 POSTGRES_SERVER_PORT = os.getenv("Postgres_Port")
+
 MONGODB_PASSWORD = os.getenv("MongoDB_Password")
 MONGODB_USERNAME = os.getenv("MongoDB_Username")
 MONGODB_SERVER_IP = os.getenv("MongoDB_Server_IP")
 MONGODB_PORT = os.getenv("MongoDB_Server_Port")
 
-USERS_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_SERVER_PORT}/{POSTGRES_DATABASE}"
-MARKETPLACE_CONNECTION_URI = f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:{MONGODB_PORT}"
+LEGACY_USER_CONNECTION_URI = f"postgresql+asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_SERVER_PORT}/{POSTGRES_DATABASE}"
+LEGACY_MARKETPLACE_CONNECTION_URI = f"mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_SERVER_IP}:{MONGODB_PORT}"
+CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_SERVER_PORT}/{POSTGRES_DATABASE}"
+MODELS = ["kumiko_economy.models"]
 
 utilsMain = KumikoEcoUtils()
 utilsUser = KumikoEcoUserUtils()
 userInvUtils = KumikoUserInvUtils()
+cacheUtils = KumikoEconomyCacheUtils(
+    uri=CONNECTION_URI, models=MODELS, redis_host=REDIS_HOST, redis_port=REDIS_PORT
+)
 
 
 class Marketplace(commands.Cog):
@@ -74,44 +86,37 @@ class Marketplace(commands.Cog):
         ctx,
     ):
         """Adds an item into the marketplace"""
-        createItem = EcoMarketplaceListItemModal()
+        createItem = EcoMarketplaceListItemModal(title="List an Item")
         await ctx.send_modal(createItem)
 
     @eco_marketplace.command(name="view")
     async def ecoMarketplaceView(self, ctx):
         """View the marketplace"""
         try:
-            mainObtain = await utilsMain.obtain(uri=MARKETPLACE_CONNECTION_URI)
-            if len(mainObtain) == 0:
+            marketplaceData = await cacheUtils.cacheMarketplace(
+                user_id=ctx.user.id, command_name=ctx.command.qualified_name
+            )
+            if marketplaceData is None:
                 raise NoItemsError
             else:
-                paginator = pages.Paginator(
+                mainPages = pages.Paginator(
                     pages=[
                         discord.Embed(
-                            title=dict(items)["name"],
-                            description=dict(items)["description"],
+                            title=items["name"], description=items["description"]
                         )
-                        .add_field(
-                            name="Amount", value=dict(items)["amount"], inline=True
-                        )
-                        .add_field(
-                            name="Price", value=dict(items)["price"], inline=True
-                        )
+                        .add_field(name="Owner's Name", value=items["owner_name"])
+                        .add_field(name="Price", value=items["price"])
+                        .add_field(name="Amount", value=items["amount"])
                         .add_field(
                             name="Date Added",
-                            value=parser.isoparse(dict(items)["date_added"]).strftime(
-                                "%Y-%m-%d %H:%M:%S"
-                            ),
-                            inline=True,
+                            value=format_dt(parseDatetime(items["date_added"])),
+                            inline=False,
                         )
-                        .add_field(
-                            name="Owner",
-                            value=dict(items)["owner_name"],
-                        )
-                        for items in mainObtain
+                        for items in marketplaceData
                     ],
+                    loop_pages=True,
                 )
-                await paginator.respond(ctx.interaction, ephemeral=False)
+                await mainPages.respond(ctx.interaction, ephemeral=False)
         except NoItemsError:
             embedErrorMain = discord.Embed()
             embedErrorMain.description = "There seems to be no items in the marketplace right now. Please try again..."
@@ -128,7 +133,7 @@ class Marketplace(commands.Cog):
         """Search the marketplace, and returns the first item found"""
         try:
             clientGetItem = motor.motor_asyncio.AsyncIOMotorClient(
-                MARKETPLACE_CONNECTION_URI
+                LEGACY_MARKETPLACE_CONNECTION_URI
             )
             await init_beanie(
                 database=clientGetItem.kumiko_marketplace,
@@ -170,7 +175,7 @@ class Marketplace(commands.Cog):
         embed.description = "Do your really want to delete all of your items listed on the marketplace? There is no going back after this."
         await ctx.respond(
             embed=embed,
-            view=MarketplacePurgeAllView(MARKETPLACE_CONNECTION_URI),
+            view=MarketplacePurgeAllView(LEGACY_MARKETPLACE_CONNECTION_URI),
             ephemeral=True,
         )
 
@@ -180,7 +185,7 @@ class Marketplace(commands.Cog):
     async def ecoMarketplaceDeleteOne(self, ctx):
         """Deletes the specified item within the marketplace"""
         deleteModal = MarketplaceDeleteOneItem(
-            mongo_uri=MARKETPLACE_CONNECTION_URI, title="Delete one item"
+            mongo_uri=LEGACY_MARKETPLACE_CONNECTION_URI, title="Delete one item"
         )
         await ctx.send_modal(deleteModal)
 
@@ -190,8 +195,8 @@ class Marketplace(commands.Cog):
     async def ecoMarketplacePurchase(self, ctx):
         """Purchases an item from the marketplace"""
         purchaseModal = MarketplacePurchaseItemModal(
-            mongo_uri=MARKETPLACE_CONNECTION_URI,
-            postgres_uri=USERS_CONNECTION_URI,
+            mongo_uri=LEGACY_MARKETPLACE_CONNECTION_URI,
+            postgres_uri=LEGACY_USER_CONNECTION_URI,
             title="Purchase an item",
         )
         await ctx.send_modal(purchaseModal)
@@ -205,7 +210,7 @@ class Marketplace(commands.Cog):
     ):
         """Restocks your current item on the marketplace"""
         mainModal = MarketplaceUpdateAmount(
-            mongo_uri=MARKETPLACE_CONNECTION_URI, title="Restock"
+            mongo_uri=LEGACY_MARKETPLACE_CONNECTION_URI, title="Restock"
         )
         await ctx.send_modal(mainModal)
 
@@ -215,7 +220,7 @@ class Marketplace(commands.Cog):
     async def updateItemMarketplacePrice(self, ctx):
         """Updates the price of an item on the marketplace (Can only be used once)"""
         updateModal = MarketplaceUpdateItemPrice(
-            mongo_uri=MARKETPLACE_CONNECTION_URI, title="Update Price"
+            mongo_uri=LEGACY_MARKETPLACE_CONNECTION_URI, title="Update Price"
         )
         await ctx.send_modal(updateModal)
 

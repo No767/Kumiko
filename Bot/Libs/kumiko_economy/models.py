@@ -114,6 +114,7 @@ class EcoMarketplace(Model):
 
     class PydanticMeta:
         config_class = EcoJSONConfig
+        exclude = ("id",)
 
     def __str__(self):
         return f"EcoMarketplace({self.id}, {self.owner}, {self.owner_name}, {self.date_added}, {self.name}, {self.description}, {self.price}, {self.amount}, {self.updated_price})"

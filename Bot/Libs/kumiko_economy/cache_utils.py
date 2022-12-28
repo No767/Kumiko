@@ -2,9 +2,9 @@ from typing import Dict, List, Union
 
 import simdjson
 from kumiko_cache import KumikoCache, commandKeyBuilder
-from tortoise.contrib.pydantic import pydantic_model_creator
+from tortoise.contrib.pydantic import pydantic_model_creator, pydantic_queryset_creator
 
-from .models import EcoUser
+from .models import EcoMarketplace, EcoUser
 
 
 class KumikoEconomyCacheUtils:
@@ -47,6 +47,42 @@ class KumikoEconomyCacheUtils:
             return userS.dict()
         else:
             jsonParser = simdjson.Parser()
+            return jsonParser.parse(
+                await self.cache.getBasicCommandCache(key=key), recursive=True
+            )
+
+    async def cacheMarketplace(
+        self, user_id: int, command_name: str
+    ) -> Union[Dict, None]:
+        """The abstraction layer for caching the requested user's data
+
+        The purpose of this is a helper coroutine that caches the guild data if not cached.
+        If cached, it will return the cached data.
+
+        Args:
+            user_id (int): Discord User ID
+            command_name (str):
+
+        Returns:
+            Union[Dict, None]: _description_
+        """
+        key = commandKeyBuilder(
+            prefix="cache",
+            namespace="kumiko",
+            id=user_id,
+            command=f"{command_name}".replace(" ", "-"),
+        )
+        jsonParser = simdjson.Parser()
+        if await self.cache.cacheExists(key=key) is False:
+            pydanticMarketplaceData = pydantic_queryset_creator(EcoMarketplace)
+            marketplaceS = await pydanticMarketplaceData.from_queryset(
+                EcoMarketplace.all().limit(25)
+            )
+            mJson = marketplaceS.json()
+            parsedData = jsonParser.parse(mJson, recursive=True)
+            await self.cache.setBasicCommandCache(key=key, value=mJson, ttl=15)
+            return parsedData
+        else:
             return jsonParser.parse(
                 await self.cache.getBasicCommandCache(key=key), recursive=True
             )

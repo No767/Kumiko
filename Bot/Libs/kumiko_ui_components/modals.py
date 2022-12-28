@@ -840,7 +840,7 @@ class EcoMarketplaceListItemModal(discord.ui.Modal):
                 min_length=1,
                 max_length=20,
                 required=True,
-                row=0,
+                row=2,
             )
         )
         self.add_item(
@@ -858,7 +858,7 @@ class EcoMarketplaceListItemModal(discord.ui.Modal):
         # Wish i could use the cache here... but whatever
         currUser = await EcoUser.filter(user_id=interaction.user.id).get_or_none()
         if currUser is None:
-            return await interaction.response.send_message(
+            await interaction.response.send_message(
                 "You do not have an account. Please create one using the /eco-user init command",
                 ephemeral=True,
             )
@@ -871,6 +871,6 @@ class EcoMarketplaceListItemModal(discord.ui.Modal):
                 price=self.children[1].value,
                 amount=1,
             ).save()
-            return await interaction.response.send_message(
+            await interaction.response.send_message(
                 f"Added {self.children[0].value} to the marketplace", ephemeral=True
             )
