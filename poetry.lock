@@ -187,7 +187,7 @@ python-versions = ">=3.7,<4.0"
 
 [[package]]
 name = "beanie"
-version = "1.16.5"
+version = "1.16.6"
 description = "Asynchronous Python ODM for MongoDB"
 category = "main"
 optional = false
@@ -966,7 +966,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "d7bde18794315b06573f01c9656d061417527213b27530ca176aa96f5ddeee1f"
+content-hash = "365ee4010512d4da49ce09a0350f2ff5c032bb7426fbf44831b5773474659e80"
 
 [metadata.files]
 aerich = [
@@ -1145,8 +1145,8 @@ backoff = [
     {file = "backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba"},
 ]
 beanie = [
-    {file = "beanie-1.16.5-py3-none-any.whl", hash = "sha256:295781278db090c261c942b937ce567fd44eaacd90d4266fd3e26e153251ea5f"},
-    {file = "beanie-1.16.5.tar.gz", hash = "sha256:29014c6af433fb248dc7d751ddc2780de3aa837b70605cb94968dff2bb411c1b"},
+    {file = "beanie-1.16.6-py3-none-any.whl", hash = "sha256:fa15d3ef9c2cbfc7cb81ecb0879ca750c6d64d9d7985278ba38f439bf7ced84c"},
+    {file = "beanie-1.16.6.tar.gz", hash = "sha256:dc00e0e567ac07396dd91f42efff0fec972b6d8702366abd024de2da2365775c"},
 ]
 better-ipc = [
     {file = "better-ipc-2.0.1.tar.gz", hash = "sha256:eb7f057c74ac9eae4363da9ef85928805bc1c52c65b024eb445284585c1996e9"},
