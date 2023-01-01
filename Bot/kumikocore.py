@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Dict, List
 
 import discord
+from coredis import ConnectionPool
+from coredis.exceptions import ConnectionError
 from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
@@ -31,18 +33,34 @@ sys.path.append(libsPath)
 class KumikoCore(discord.Bot):
     """The core of Kumiko - Subclassed this time"""
 
-    def __init__(self, uri: str, models: List, ipc_secret_key: str, *args, **kwargs):
+    def __init__(
+        self,
+        uri: str,
+        models: List,
+        redis_host: str,
+        redis_port: int,
+        ipc_secret_key: str,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.uri = uri
         self.models = models
         self.ipc_secret_key = ipc_secret_key
+        self.redis_host = redis_host
+        self.redis_port = redis_port
         self.dbConnected = asyncio.Event()
+        self.connPoolRedisSet = asyncio.Event()
+        self.redisConnPool = ConnectionPool.from_url(
+            url=f"redis://{self.redis_host}@:{self.redis_port}/0"
+        )
         self.ipcStarted = asyncio.Event()
         self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
         self.connectDB.add_exception_type(TimeoutError)
         self.connectDB.add_exception_type(DBConnectionError)
         self.startIPCServer.start()
         self.connectDB.start()
+        self.connPoolRedis.start()
         self.checkerHandler.start()
         self.load_cogs()
 
@@ -113,8 +131,25 @@ class KumikoCore(discord.Bot):
     @connectDB.after_loop
     async def connectionTeardown(self):
         if self.connectDB.is_being_cancelled():
-            connections.close_all()
+            await connections.close_all()
             self.dbConnected.clear()
+
+    @tasks.loop(count=1)
+    async def connPoolRedis(self):
+        try:
+            await self.redisConnPool.get_connection()
+            self.connPoolRedisSet.set()
+            logging.info("Successfully connected to Redis")
+        except ConnectionError:
+            logging.error("Failed to connect to Redis. Retrying in 15 seconds")
+            await asyncio.sleep(15)
+            self.connPoolRedis.restart()
+
+    @connPoolRedis.after_loop
+    async def connPoolRelease(self):
+        if self.connPoolRedis.is_being_cancelled():
+            self.redisConnPool.disconnect()
+            self.connPoolRedisSet.clear()
 
     @tasks.loop(count=1)
     async def startIPCServer(self):

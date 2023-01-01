@@ -7,12 +7,15 @@ from pathlib import Path
 
 import discord
 import uvloop
+from Cogs.kumiko.admin import REDIS_PORT
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 
 # Grabs the bot's token from the .env file
 load_dotenv()
 
+REDIS_HOST = os.getenv("Redis_Server_IP")
+REDIS_PORT = os.getenv("Redis_Port")
 POSTGRES_PASSWORD = urllib.parse.quote_plus(os.getenv("Postgres_Password"))
 POSTGRES_SERVER_IP = os.getenv("Postgres_Server_IP")
 POSTGRES_DB = os.getenv("Postgres_Kumiko_Database")
@@ -40,7 +43,12 @@ libsPath = os.path.join(str(path), "Libs")
 sys.path.append(libsPath)
 
 bot = KumikoCore(
-    uri=CONNECTION_URI, models=MODELS, ipc_secret_key=IPC_SECRET_KEY, intents=intents
+    uri=CONNECTION_URI,
+    models=MODELS,
+    redis_host=REDIS_HOST,
+    redis_port=REDIS_PORT,
+    ipc_secret_key=IPC_SECRET_KEY,
+    intents=intents,
 )
 
 logging.basicConfig(
