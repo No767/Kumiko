@@ -14,16 +14,6 @@ from discord.ext.ipc.server import Server
 from tortoise import BaseDBAsyncClient, Tortoise, connections
 from tortoise.exceptions import DBConnectionError
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(levelname)s] | %(asctime)s >> %(message)s",
-    datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
-)
-
-logging.getLogger("asyncio_redis").setLevel(logging.WARNING)
-logging.getLogger("tortoise").setLevel(logging.WARNING)
-logging.getLogger("gql").setLevel(logging.WARNING)
-
 path = Path(__file__).parents[0].absolute()
 cogsPath = os.path.join(str(path), "Cogs")
 libsPath = os.path.join(str(path), "Libs")
@@ -62,6 +52,7 @@ class KumikoCore(discord.Bot):
         self.connectDB.start()
         self.connPoolRedis.start()
         self.checkerHandler.start()
+        self.logger = logging.getLogger("kumikobot")
         self.load_cogs()
 
     def load_cogs(self):
@@ -78,7 +69,7 @@ class KumikoCore(discord.Bot):
                             os.path.join(cogsPath, cogDir, subCogDir)
                         ):
                             if lastCog not in ["__pycache__", "config"]:
-                                logging.debug(
+                                self.logger.debug(
                                     f"Loaded Cog: Cogs.{cogDir}.{subCogDir}.{lastCog[:-3]}"
                                 )
                                 self.load_extension(
@@ -86,14 +77,14 @@ class KumikoCore(discord.Bot):
                                     store=False,
                                 )
                     elif subCogDir.endswith(".py"):
-                        logging.debug(f"Loaded Cog: Cogs.{cogDir}.{subCogDir[:-3]}")
+                        self.logger.debug(f"Loaded Cog: Cogs.{cogDir}.{subCogDir[:-3]}")
                         self.load_extension(
                             f"Cogs.{cogDir}.{subCogDir[:-3]}", store=False
                         )
 
     @tasks.loop(hours=1)
     async def checkerHandler(self):
-        logging.info("Tasks Disabled")
+        self.logger.info("Tasks Disabled")
         # await QuestsChecker(uri=self.uri)
         # await AHChecker(uri=self.uri)
 
@@ -103,7 +94,7 @@ class KumikoCore(discord.Bot):
 
     @checkerHandler.error
     async def checkHandlerError(self):
-        logging.error(
+        self.logger.error(
             f"{self.user.name}'s Checker Handlers has failed. Attempting to restart"
         )
         await asyncio.sleep(5)
@@ -122,9 +113,9 @@ class KumikoCore(discord.Bot):
             conn: BaseDBAsyncClient = connections.get("default")
             await conn.create_connection(with_db=True)
             self.dbConnected.set()
-            logging.info("Successfully connected to PostgreSQL")
+            self.logger.info("Successfully connected to PostgreSQL")
         except TimeoutError:
-            logging.error("Failed to connect to PostgreSQL. Retrying in 15 seconds")
+            self.logger.error("Failed to connect to PostgreSQL. Retrying in 15 seconds")
             await asyncio.sleep(15)
             self.connectDB.restart()
 
@@ -139,9 +130,9 @@ class KumikoCore(discord.Bot):
         try:
             await self.redisConnPool.get_connection()
             self.connPoolRedisSet.set()
-            logging.info("Successfully connected to Redis")
+            self.logger.info("Successfully connected to Redis")
         except ConnectionError:
-            logging.error("Failed to connect to Redis. Retrying in 15 seconds")
+            self.logger.error("Failed to connect to Redis. Retrying in 15 seconds")
             await asyncio.sleep(15)
             self.connPoolRedis.restart()
 
@@ -170,10 +161,10 @@ class KumikoCore(discord.Bot):
     @Server.route()
     async def create_embed(self, data: ClientPayload) -> None:
         print(data.embed_content)
-        logging.info(f"Embed created, and sent to {data.channel_id}")
+        self.logger.info(f"Embed created, and sent to {data.channel_id}")
 
     async def on_ready(self):
-        logging.info(f"{self.user.name} is fully ready!")
+        self.logger.info(f"{self.user.name} is fully ready!")
         await self.change_presence(
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
         )

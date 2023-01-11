@@ -58,6 +58,7 @@ logging.basicConfig(
 )
 
 # Literally prevent these modules from attempting to log info stuff
+logging.getLogger("tortoise").setLevel(logging.WARNING)
 logging.getLogger("gql").setLevel(logging.WARNING)
 
 # Run the bot
