@@ -57,30 +57,21 @@ class KumikoCore(discord.Bot):
 
     def load_cogs(self):
         """Kumiko's system to load cogs"""
-        cogsList = os.listdir(cogsPath)
-        for cogDir in cogsList:
-            if cogDir not in ["__pycache__"]:
-                subCogsList = os.listdir(os.path.join(cogsPath, cogDir))
-                for subCogDir in subCogsList:
-                    if subCogDir not in [
-                        "__pycache__",
-                    ] and not subCogDir.endswith(".py"):
-                        for lastCog in os.listdir(
-                            os.path.join(cogsPath, cogDir, subCogDir)
-                        ):
-                            if lastCog not in ["__pycache__", "config"]:
-                                self.logger.debug(
-                                    f"Loaded Cog: Cogs.{cogDir}.{subCogDir}.{lastCog[:-3]}"
-                                )
-                                self.load_extension(
-                                    f"Cogs.{cogDir}.{subCogDir}.{lastCog[:-3]}",
-                                    store=False,
-                                )
-                    elif subCogDir.endswith(".py"):
-                        self.logger.debug(f"Loaded Cog: Cogs.{cogDir}.{subCogDir[:-3]}")
-                        self.load_extension(
-                            f"Cogs.{cogDir}.{subCogDir[:-3]}", store=False
-                        )
+        cogsPath = Path(__file__).parent.joinpath("Cogs")
+        for cog in cogsPath.rglob("*.py"):
+            relativeParentName = cog.parents[1].name
+            parentName = cog.parent.name
+            cogName = cog.name
+            if relativeParentName != "Cogs":
+                self.logger.debug(
+                    f"Loaded Cog: Cogs.{relativeParentName}.{parentName}.{cogName}"
+                )
+                self.load_extension(f"Cogs.{relativeParentName}.{parentName}.{cogName}")
+            else:
+                self.logger.debug(
+                    f"Loaded Cog: {relativeParentName}.{parentName}.{cogName}"
+                )
+                self.load_extension(f"{relativeParentName}.{parentName}.{cogName}")
 
     @tasks.loop(hours=1)
     async def checkerHandler(self):
