@@ -38,7 +38,10 @@ RUN apt update \
   tini \
   ca-certificates \
   bash \
-  netcat
+  netcat \
+  libopus-dev \
+  libffi-dev \
+  libnacl-dev
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
