@@ -25,7 +25,7 @@ WORKDIR /Kumiko
 COPY /pyproject.toml /Kumiko/
 COPY /poetry.lock /Kumiko/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes \
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --without=dev,test \
   && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
 
 ####################################################################################################
