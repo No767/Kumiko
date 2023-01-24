@@ -6,7 +6,7 @@ authors = ["No767 <73260931+No767@users.noreply.github.com>"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<4.0"
+python = ">=3.8,<4.0"
 python-dotenv = "^0.21.1"
 aiodns = "^3.0.0"
 Brotli = "^1.0.9"
