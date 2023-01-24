@@ -7,7 +7,7 @@ license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-python-dotenv = "^0.21.0"
+python-dotenv = "^0.21.1"
 aiodns = "^3.0.0"
 Brotli = "^1.0.9"
 SQLAlchemy = "^1.4.46"
@@ -19,7 +19,7 @@ pysimdjson = "^5.0.2"
 gql = { extras = ["aiohttp"], version = "^3.4.0" }
 python-dateutil = "^2.8.2"
 rin-exceptions = "^1.0.3"
-beanie = "^1.16.8"
+beanie = "^1.17.0"
 numpy = "^1.24.1"
 py-cord = {version = "2.3.2", extras = ["voice"]}
 pytimeparse = "^1.1.8"

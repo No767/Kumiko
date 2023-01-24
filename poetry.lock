@@ -364,14 +364,14 @@ files = [
 
 [[package]]
 name = "beanie"
-version = "1.16.8"
+version = "1.17.0"
 description = "Asynchronous Python ODM for MongoDB"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "beanie-1.16.8-py3-none-any.whl", hash = "sha256:de97c50adf510960e71a229433a084b2c79e62538d60c1823e2e487166410e7a"},
-    {file = "beanie-1.16.8.tar.gz", hash = "sha256:3c016c5f226d6fcb1a603b93dc1f1dd17e350ca854e95ac7143cf076178a4309"},
+    {file = "beanie-1.17.0-py3-none-any.whl", hash = "sha256:a0711775051c72324fc4555120355da9a3c081d41db14ddaa8e9f368303436ef"},
+    {file = "beanie-1.17.0.tar.gz", hash = "sha256:5f758785ce813838a0f25e171957afb6e70fa142dda937531427e0a530d03c64"},
 ]
 
 [package.dependencies]
@@ -1792,14 +1792,14 @@ six = ">=1.5"
 
 [[package]]
 name = "python-dotenv"
-version = "0.21.0"
+version = "0.21.1"
 description = "Read key-value pairs from a .env file and set them as environment variables"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "python-dotenv-0.21.0.tar.gz", hash = "sha256:b77d08274639e3d34145dfa6c7008e66df0f04b7be7a75fd0d5292c191d79045"},
-    {file = "python_dotenv-0.21.0-py3-none-any.whl", hash = "sha256:1684eb44636dd462b66c3ee016599815514527ad99965de77f43e0944634a7e5"},
+    {file = "python-dotenv-0.21.1.tar.gz", hash = "sha256:1c93de8f636cde3ce377292818d0e440b6e45a82f215c3744979151fa8151c49"},
+    {file = "python_dotenv-0.21.1-py3-none-any.whl", hash = "sha256:41e12e0318bebc859fcc4d97d4db8d20ad21721a6aa5047dd59f090391cb549a"},
 ]
 
 [package.extras]
@@ -2485,4 +2485,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<4.0"
-content-hash = "6aeb0523b0ac54ee3d82da3768b13694aed27286a752d9c8c337526db7174166"
+content-hash = "500cadd5849ecaf4843e5b97f2bf33e594d74f6cd0cd90dc41e623ddb7fc3d07"
