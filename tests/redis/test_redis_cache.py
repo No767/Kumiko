@@ -10,7 +10,7 @@ path = Path(__file__).parents[2]
 packagePath = os.path.join(str(path), "bot", "libs")
 sys.path.append(packagePath)
 
-from Bot.Libs.kumiko_cache import KumikoCache, commandKeyBuilder
+from kumiko_cache import KumikoCache, commandKeyBuilder
 
 DATA = "Hello World"
 
