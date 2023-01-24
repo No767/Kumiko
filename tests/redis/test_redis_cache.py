@@ -7,7 +7,7 @@ from aiocache import Cache
 from coredis import ConnectionPool
 
 path = Path(__file__).parents[2]
-packagePath = os.path.join(str(path), "bot", "libs")
+packagePath = os.path.join(str(path), "Bot", "Libs")
 sys.path.append(packagePath)
 
 from kumiko_cache import KumikoCache, commandKeyBuilder
