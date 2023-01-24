@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Union
 
 import ciso8601
+from coredis import ConnectionPool, Redis
 
 
 async def parseDate(datetime: Union[datetime, str]) -> datetime:
@@ -31,3 +32,17 @@ def parseDatetime(datetime: Union[datetime, str]) -> datetime:
     if isinstance(datetime, str):
         return ciso8601.parse_datetime(datetime)
     return datetime
+
+
+async def pingRedis(connection_pool: ConnectionPool) -> bool:
+    """Pings Redis to make sure it is alive
+
+    Args:
+        connection_pool (ConnectionPool): ConnectionPool object to use
+
+    Returns:
+        bool: Whether Redis is alive or not
+    """
+    r = Redis(connection_pool=connection_pool)
+    res = await r.ping()
+    return True if res == b"PONG" else False

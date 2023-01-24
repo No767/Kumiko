@@ -6,13 +6,15 @@ from pathlib import Path
 from typing import Dict, List
 
 import discord
-from coredis import ConnectionPool
+from aiocache import Cache
+from coredis import Connection, ConnectionPool
 from coredis.exceptions import ConnectionError
 from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
 from tortoise import BaseDBAsyncClient, Tortoise, connections
-from tortoise.exceptions import DBConnectionError
+
+from Bot.Libs.kumiko_utils import pingRedis
 
 path = Path(__file__).parents[0].absolute()
 cogsPath = os.path.join(str(path), "Cogs")
@@ -46,11 +48,11 @@ class KumikoCore(discord.Bot):
         )
         self.ipcStarted = asyncio.Event()
         self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
-        self.connectDB.add_exception_type(TimeoutError)
-        self.connectDB.add_exception_type(DBConnectionError)
-        self.startIPCServer.start()
+        self.checkIfRedisIsUp.add_exception_type(ConnectionError)
         self.connectDB.start()
         self.connPoolRedis.start()
+        self.checkIfRedisIsUp.start()
+        self.startIPCServer.start()
         self.checkerHandler.start()
         self.logger = logging.getLogger("kumikobot")
         self.load_cogs()
@@ -64,14 +66,16 @@ class KumikoCore(discord.Bot):
             cogName = cog.name
             if relativeParentName != "Cogs":
                 self.logger.debug(
-                    f"Loaded Cog: Cogs.{relativeParentName}.{parentName}.{cogName}"
+                    f"Loaded Cog: Cogs.{relativeParentName}.{parentName}.{cogName[:-3]}"
                 )
-                self.load_extension(f"Cogs.{relativeParentName}.{parentName}.{cogName}")
+                self.load_extension(
+                    f"Cogs.{relativeParentName}.{parentName}.{cogName[:-3]}"
+                )
             else:
                 self.logger.debug(
-                    f"Loaded Cog: {relativeParentName}.{parentName}.{cogName}"
+                    f"Loaded Cog: {relativeParentName}.{parentName}.{cogName[:-3]}"
                 )
-                self.load_extension(f"{relativeParentName}.{parentName}.{cogName}")
+                self.load_extension(f"{relativeParentName}.{parentName}.{cogName[:-3]}")
 
     @tasks.loop(hours=1)
     async def checkerHandler(self):
@@ -118,20 +122,47 @@ class KumikoCore(discord.Bot):
 
     @tasks.loop(count=1)
     async def connPoolRedis(self):
-        try:
-            await self.redisConnPool.get_connection()
-            self.connPoolRedisSet.set()
-            self.logger.info("Successfully connected to Redis")
-        except ConnectionError:
-            self.logger.error("Failed to connect to Redis. Retrying in 15 seconds")
-            await asyncio.sleep(15)
-            self.connPoolRedis.restart()
+        connPool = ConnectionPool(
+            connection_class=Connection(
+                host=self.redis_host, port=self.redis_port, db=0
+            )
+        )
+        memCache = Cache()
+        await memCache.set("redis_conn_pool", connPool)
+        self.logger.info("Cached Redis connection pool to memory")
+
+    @tasks.loop(count=1)
+    async def checkIfRedisIsUp(self):
+        memCache = Cache()
+        isRedisUp = await pingRedis(
+            connection_pool=await memCache.get("redis_conn_pool")
+        )
+        if isRedisUp is True:
+            self.logger.info("Redis server is currently alive")
+
+    @checkIfRedisIsUp.error
+    async def onRedisPingError(self):
+        self.logger.error(
+            "Redis server is currently down. Restarting ping in 15 seconds..."
+        )
+        await asyncio.sleep(15)
+        self.checkIfRedisIsUp.restart()
 
     @connPoolRedis.after_loop
     async def connPoolRelease(self):
         if self.connPoolRedis.is_being_cancelled():
-            self.redisConnPool.disconnect()
-            self.connPoolRedisSet.clear()
+            memCache = Cache()
+            connPool = await memCache.get("redis_conn_pool")
+            if connPool is None:
+                self.logger.error(
+                    "Failed to get Redis connection pool from memory cache! Deleting Redis connection pool from memory cache"
+                )
+                await memCache.delete("redis_conn_pool")
+                self.connPoolRedisSet.clear()
+            else:
+                await connPool.disconnect()
+                memCache.delete("redis_conn_pool")
+                self.connPoolRedisSet.clear()
 
     @tasks.loop(count=1)
     async def startIPCServer(self):
