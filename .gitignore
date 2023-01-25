@@ -78,5 +78,3 @@ test-scripts
 image-testspy
 .vagrant
 migrations
-.coverage
-coverage.xml
