@@ -30,6 +30,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup Codecov Uploader
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov
+
       - name: Set up Python
         id: setup-python
         uses: actions/setup-python@v4.4.0
@@ -48,3 +54,8 @@ jobs:
           RAW_PYTHON_VERSION=${{ matrix.version }}
           PYTHON_VERSION=$(echo $RAW_PYTHON_VERSION | sed 's/\.//')
           nox --sessions test$PYTHON_VERSION
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
