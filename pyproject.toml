@@ -27,7 +27,7 @@ coredis = "^4.10.2"
 charset-normalizer = "^2.1.1"
 tortoise-orm = {extras = ["accel"], version = "^0.19.3"}
 python-rapidjson = "^1.9"
-ormsgpack = "^1.2.4"
+ormsgpack = "^1.2.5"
 better-ipc = "^2.0.1"
 aerich = "^0.7.1"
 aiocache = "^0.12.0"
