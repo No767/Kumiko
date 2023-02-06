@@ -20,7 +20,7 @@ gql = { extras = ["aiohttp"], version = "^3.4.0" }
 python-dateutil = "^2.8.2"
 rin-exceptions = "^1.0.3"
 beanie = "^1.17.0"
-numpy = "^1.24.1"
+numpy = "^1.24.2"
 py-cord = {version = "2.3.2", extras = ["voice"]}
 pytimeparse = "^1.1.8"
 coredis = "^4.10.2"
