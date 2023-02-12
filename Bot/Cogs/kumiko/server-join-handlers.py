@@ -5,7 +5,6 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 from kumiko_servers import KumikoServer
-from kumiko_utils import KumikoCM
 
 load_dotenv()
 
@@ -26,12 +25,9 @@ class ServerJoinHandlers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild):
-        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
-            serverExists = await KumikoServer.filter(id=guild.id).exists()
-            if serverExists is False:
-                await KumikoServer.create(
-                    id=guild.id, name=guild.name, admin_logs=False, announcements=False
-                )
+        serverExists = await KumikoServer.filter(id=guild.id).exists()
+        if serverExists is False:
+            await KumikoServer.create(id=guild.id, name=guild.name, announcements=False)
 
 
 def setup(bot):

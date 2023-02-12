@@ -17,9 +17,6 @@ RUN python -m pip install --upgrade pip setuptools
 RUN curl -sSL https://install.python-poetry.org | python -
 ENV PATH="${PATH}:/root/.local/bin"
 
-RUN curl https://sh.rustup.rs -sSf | sh -s -- --profile minimal --default-toolchain nightly -y
-ENV PATH="${PATH}:/root/.cargo/bin"
-
 WORKDIR /Kumiko
 
 COPY /pyproject.toml /Kumiko/

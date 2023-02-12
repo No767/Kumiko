@@ -40,11 +40,6 @@ else
     echo "Missing Tenor API key! TENOR_API_KEY environment variable is not set."
 fi 
 # YouTube
-if [[ -v YOUTUBE_API_KEY ]]; then
-    echo "YouTube_API_Key=${YOUTUBE_API_KEY}" >> /Kumiko/Bot/.env
-else
-    echo "Missing YouTube API key! YOUTUBE_API_KEY environment variable is not set."
-fi
 
 if [[ -v IPC_SECRET_KEY ]]; then
     echo "IPC_Secret_Key=${IPC_SECRET_KEY}" >> /Kumiko/Bot/.env
@@ -85,34 +80,6 @@ if [[ -v POSTGRES_KUMIKO_DB ]]; then
     echo "Postgres_Kumiko_Database=${POSTGRES_KUMIKO_DB}" >> /Kumiko/Bot/.env
 else
     echo "Missing Postgres_Kumiko_Database env var! Postgres_Kumiko_Database environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v MONGODB_PASSWORD ]]; then
-    echo "MongoDB_Password=${MONGODB_PASSWORD}" >> /Kumiko/Bot/.env
-else
-    echo "Missing MongoDB_Password env var! MongoDB_Password environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v MONGODB_USER ]]; then
-    echo "MongoDB_Username=${MONGODB_USER}" >> /Kumiko/Bot/.env
-else
-    echo "Missing MongoDB_Username env var! MongoDB_Username environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v MONGODB_IP ]]; then
-    echo "MongoDB_Server_IP=${MONGODB_IP}" >> /Kumiko/Bot/.env
-else
-    echo "Missing MongoDB_Server_IP env var! MongoDB_Server_IP environment variable is not set."
-    exit 1;
-fi
-
-if [[ -v MONGODB_PORT ]]; then
-    echo "MongoDB_Server_Port=${MONGODB_PORT}" >> /Kumiko/Bot/.env
-else
-    echo "Missing MongoDB_Server_Port env var! MongoDB_Server_Port environment variable is not set."
     exit 1;
 fi
 
