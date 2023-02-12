@@ -13,6 +13,7 @@ sys.path.append(packagePath)
 from kumiko_cache import KumikoCache, commandKeyBuilder
 
 DATA = "Hello World"
+DICT_DATA = {"message": "Hello World"}
 
 
 @pytest.mark.asyncio
@@ -37,3 +38,23 @@ async def test_basic_cache_from_mem():
     cache = KumikoCache(connection_pool=getConnPool)
     res = await cache.getBasicCommandCache(key=key)
     assert (res == DATA) and (isinstance(res, str))  # nosec
+
+
+@pytest.mark.asyncio
+async def test_dict_cache():
+    key = commandKeyBuilder(id=1235, command=None)
+    connPool = ConnectionPool().from_url("redis://localhost:6379/0")
+    cache = KumikoCache(connection_pool=connPool)
+    await cache.setDictCommandCache(key=key, value=DICT_DATA)
+    res = await cache.getDictCommandCache(key=key)
+    assert (res == DICT_DATA) and (isinstance(res, dict))  # nosec
+
+
+@pytest.mark.asyncio
+async def test_key_exists():
+    key = commandKeyBuilder(id=12352, command=None)
+    connPool = ConnectionPool().from_url("redis://localhost:6379/0")
+    cache = KumikoCache(connection_pool=connPool)
+    await cache.setBasicCommandCache(key=key, value=DATA)
+    res = await cache.cacheExists(key=key)
+    assert res is True  # nosec

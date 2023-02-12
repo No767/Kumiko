@@ -10,6 +10,7 @@ path = Path(__file__).parents[2]
 packagePath = os.path.join(str(path), "Bot", "Libs")
 sys.path.append(packagePath)
 
+from kumiko_utils import pingRedis
 from kumiko_utils.redis import pingRedisServer, setupRedisConnPool
 
 
@@ -31,4 +32,5 @@ async def test_ping_redis_server(mem_cache):
     await mem_cache.add("main2", ConnectionPool().from_url("redis://localhost:6379/0"))
     getConnPool = await mem_cache.get("main2")
     res = await pingRedisServer(connection_pool=getConnPool)
-    assert res is True  # nosec
+    otherRes = await pingRedis(connection_pool=getConnPool)
+    assert res is True and otherRes is True  # nosec
