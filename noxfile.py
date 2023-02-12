@@ -10,7 +10,7 @@ def test311(session: nox.Session):
         "pytest",
         "--cov=Bot",
         "--cov-report=xml",
-        "tests/redis",
+        "tests",
         external=True,
     )
 
@@ -24,7 +24,7 @@ def test310(session: nox.Session):
         "pytest",
         "--cov=Bot",
         "--cov-report=xml",
-        "tests/redis",
+        "tests",
         external=True,
     )
 
@@ -38,7 +38,7 @@ def test39(session: nox.Session):
         "pytest",
         "--cov=Bot",
         "--cov-report=xml",
-        "tests/redis",
+        "tests",
         external=True,
     )
 
@@ -52,6 +52,6 @@ def test38(session: nox.Session):
         "pytest",
         "--cov=Bot",
         "--cov-report=xml",
-        "tests/redis",
+        "tests",
         external=True,
     )

@@ -11,28 +11,15 @@ services:
     ports:
       - 5432:5432
 
-  mongodb:
-    container_name: Kumiko-MongoDB-Dev
-    image: mongo:6
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - 27017:27017
-    volumes:
-      - dev_mongodb_volume:/data/db
-
-
   redis:
-    container_name: Kumiko-Redis-Dev
-    image: redis:7
+    container_name: Kumiko-Redis-Stack-Dev
+    image: redis/redis-stack:7.0.6-RC5
     ports:
       - 6379:6379
     volumes:
       - dev_redis_volume:/data
-    command: redis-server --save 60 1 --loglevel warning
+    command: redis-stack-server --protected-mode no
 
 volumes:
   dev_postgres_volume:
-  dev_mongodb_volume:
   dev_redis_volume:
