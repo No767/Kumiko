@@ -13,7 +13,6 @@ from kumiko_genshin_wish_sim import (
     WSUserInv,
 )
 from kumiko_ui_components import GWSDeleteOneUserInvItemModal, GWSPurgeInvView
-from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 load_dotenv()
@@ -47,33 +46,47 @@ class GWS(commands.Cog):
     @gwsWish.command(name="one")
     async def gwsWishOne(self, ctx: discord.ApplicationContext):
         """Allows you to wish for one item"""
-        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
-            userProfileExists = await WSUser.filter(user_id=ctx.user.id).exists()
-            userInvExists = await WSUserInv.filter(user_id=ctx.user.id).exists()
-            pulls = 0
-            totalPulls = 0
-            if userProfileExists is False:
-                await WSUser.create(
-                    user_id=ctx.user.id,
-                    username=ctx.user.name,
-                    pulls=pulls,
-                    date_joined=discord.utils.utcnow().isoformat(),
-                )
-                totalPulls = pulls + 1
-            else:
-                userProfile = await WSUser.filter(user_id=ctx.user.id).first().values()
-                pulls = userProfile["pulls"]
-                totalPulls = userProfile["pulls"] + 1
-
-            starRank = (
-                4
-                if pulls % 10 == 0
-                else (5 if pulls % 90 == 0 else await gwsUtils.determineStarRank())
+        userProfileExists = await WSUser.filter(user_id=ctx.user.id).exists()
+        userInvExists = await WSUserInv.filter(user_id=ctx.user.id).exists()
+        pulls = 0
+        totalPulls = 0
+        if userProfileExists is False:
+            await WSUser.create(
+                user_id=ctx.user.id,
+                username=ctx.user.name,
+                pulls=pulls,
+                date_joined=discord.utils.utcnow().isoformat(),
             )
-            await WSUser.filter(user_id=ctx.user.id).update(pulls=totalPulls)
-            wishItem = await gwsUtils.getWish(star_rank=starRank, size=1)
-
-            if userInvExists is False:
+            totalPulls = pulls + 1
+        else:
+            userProfile = await WSUser.filter(user_id=ctx.user.id).first().values()
+            pulls = userProfile["pulls"]
+            totalPulls = userProfile["pulls"] + 1
+        starRank = (
+            4
+            if pulls % 10 == 0
+            else (5 if pulls % 90 == 0 else await gwsUtils.determineStarRank())
+        )
+        await WSUser.filter(user_id=ctx.user.id).update(pulls=totalPulls)
+        wishItem = await gwsUtils.getWish(star_rank=starRank, size=1)
+        if userInvExists is False:
+            await WSUserInv.create(
+                item_uuid=wishItem["uuid"],
+                user_id=ctx.user.id,
+                date_obtained=discord.utils.utcnow().isoformat(),
+                name=wishItem["name"],
+                description=wishItem["description"],
+                star_rank=wishItem["star_rank"],
+                type=wishItem["type"],
+                amount=1,
+            )
+        else:
+            itemInInv = (
+                await WSUserInv.filter(user_id=ctx.user.id, item_uuid=wishItem["uuid"])
+                .first()
+                .values()
+            )
+            if itemInInv is None:
                 await WSUserInv.create(
                     item_uuid=wishItem["uuid"],
                     user_id=ctx.user.id,
@@ -85,6 +98,67 @@ class GWS(commands.Cog):
                     amount=1,
                 )
             else:
+                totalAmount = itemInInv["amount"] + 1
+                await WSUserInv.filter(
+                    user_id=ctx.user.id, item_uuid=wishItem["uuid"]
+                ).update(amount=totalAmount)
+        embed = discord.Embed()
+        embed.title = wishItem["name"]
+        embed.description = wishItem["description"]
+        embed.add_field(name="Star Rank", value=wishItem["star_rank"])
+        embed.add_field(name="Type", value=wishItem["type"])
+        embed.set_image(
+            url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{wishItem['uuid']}.png"
+        )
+        await ctx.respond(embed=embed)
+
+    @gwsWish.command(name="multiple")
+    async def gwsWishMultiple(
+        self,
+        ctx: discord.ApplicationContext,
+        *,
+        number_of_wishes: Option(
+            int, "How much wishes do you wish to make?", min_value=2, max_value=10
+        ),
+    ):
+        """Allows you to wish for up to 10 items at once"""
+        userProfileExists = await WSUser.filter(user_id=ctx.user.id).exists()
+        userInvExists = await WSUserInv.filter(user_id=ctx.user.id).exists()
+        pulls = 0
+        totalPulls = 0
+        if userProfileExists is False:
+            await WSUser.create(
+                user_id=ctx.user.id,
+                username=ctx.user.name,
+                pulls=pulls,
+                date_joined=discord.utils.utcnow().isoformat(),
+            )
+            totalPulls = pulls + number_of_wishes
+        else:
+            userProfile = await WSUser.filter(user_id=ctx.user.id).first().values()
+            pulls = userProfile["pulls"]
+            totalPulls = userProfile["pulls"] + number_of_wishes
+        starRank = (
+            4
+            if pulls % 10 == 0
+            else (5 if pulls % 90 == 0 else await gwsUtils.determineStarRank())
+        )
+        await WSUser.filter(user_id=ctx.user.id).update(pulls=totalPulls)
+        wishItemArr = await gwsUtils.getWish(star_rank=starRank, size=number_of_wishes)
+        if userInvExists is False:
+            for wishItem in wishItemArr:
+                await WSUserInv.create(
+                    item_uuid=wishItem["uuid"],
+                    user_id=ctx.user.id,
+                    date_obtained=discord.utils.utcnow().isoformat(),
+                    name=wishItem["name"],
+                    description=wishItem["description"],
+                    star_rank=wishItem["star_rank"],
+                    type=wishItem["type"],
+                    amount=1,
+                )
+        else:
+            for wishItem in wishItemArr:
                 itemInInv = (
                     await WSUserInv.filter(
                         user_id=ctx.user.id, item_uuid=wishItem["uuid"]
@@ -108,107 +182,19 @@ class GWS(commands.Cog):
                     await WSUserInv.filter(
                         user_id=ctx.user.id, item_uuid=wishItem["uuid"]
                     ).update(amount=totalAmount)
-
-            embed = discord.Embed()
-            embed.title = wishItem["name"]
-            embed.description = wishItem["description"]
-            embed.add_field(name="Star Rank", value=wishItem["star_rank"])
-            embed.add_field(name="Type", value=wishItem["type"])
-            embed.set_image(
-                url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{wishItem['uuid']}.png"
-            )
-            await ctx.respond(embed=embed)
-
-    @gwsWish.command(name="multiple")
-    async def gwsWishMultiple(
-        self,
-        ctx: discord.ApplicationContext,
-        *,
-        number_of_wishes: Option(
-            int, "How much wishes do you wish to make?", min_value=2, max_value=10
-        ),
-    ):
-        """Allows you to wish for up to 10 items at once"""
-        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
-            userProfileExists = await WSUser.filter(user_id=ctx.user.id).exists()
-            userInvExists = await WSUserInv.filter(user_id=ctx.user.id).exists()
-            pulls = 0
-            totalPulls = 0
-            if userProfileExists is False:
-                await WSUser.create(
-                    user_id=ctx.user.id,
-                    username=ctx.user.name,
-                    pulls=pulls,
-                    date_joined=discord.utils.utcnow().isoformat(),
+        mainPages = pages.Paginator(
+            pages=[
+                discord.Embed(title=item["name"], description=item["description"])
+                .add_field(name="Star Rank", value=item["star_rank"])
+                .add_field(name="Type", value=item["type"])
+                .set_image(
+                    url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{item['uuid']}.png"
                 )
-                totalPulls = pulls + number_of_wishes
-            else:
-                userProfile = await WSUser.filter(user_id=ctx.user.id).first().values()
-                pulls = userProfile["pulls"]
-                totalPulls = userProfile["pulls"] + number_of_wishes
-
-            starRank = (
-                4
-                if pulls % 10 == 0
-                else (5 if pulls % 90 == 0 else await gwsUtils.determineStarRank())
-            )
-            await WSUser.filter(user_id=ctx.user.id).update(pulls=totalPulls)
-            wishItemArr = await gwsUtils.getWish(
-                star_rank=starRank, size=number_of_wishes
-            )
-
-            if userInvExists is False:
-                for wishItem in wishItemArr:
-                    await WSUserInv.create(
-                        item_uuid=wishItem["uuid"],
-                        user_id=ctx.user.id,
-                        date_obtained=discord.utils.utcnow().isoformat(),
-                        name=wishItem["name"],
-                        description=wishItem["description"],
-                        star_rank=wishItem["star_rank"],
-                        type=wishItem["type"],
-                        amount=1,
-                    )
-            else:
-                for wishItem in wishItemArr:
-                    itemInInv = (
-                        await WSUserInv.filter(
-                            user_id=ctx.user.id, item_uuid=wishItem["uuid"]
-                        )
-                        .first()
-                        .values()
-                    )
-                    if itemInInv is None:
-                        await WSUserInv.create(
-                            item_uuid=wishItem["uuid"],
-                            user_id=ctx.user.id,
-                            date_obtained=discord.utils.utcnow().isoformat(),
-                            name=wishItem["name"],
-                            description=wishItem["description"],
-                            star_rank=wishItem["star_rank"],
-                            type=wishItem["type"],
-                            amount=1,
-                        )
-                    else:
-                        totalAmount = itemInInv["amount"] + 1
-                        await WSUserInv.filter(
-                            user_id=ctx.user.id, item_uuid=wishItem["uuid"]
-                        ).update(amount=totalAmount)
-
-            mainPages = pages.Paginator(
-                pages=[
-                    discord.Embed(title=item["name"], description=item["description"])
-                    .add_field(name="Star Rank", value=item["star_rank"])
-                    .add_field(name="Type", value=item["type"])
-                    .set_image(
-                        url=f"https://raw.githubusercontent.com/No767/Kumiko-WS-Assets/master/assets/{item['uuid']}.png"
-                    )
-                    for item in wishItemArr
-                ],
-                loop_pages=True,
-            )
-
-            await mainPages.respond(ctx.interaction, ephemeral=False)
+                for item in wishItemArr
+            ],
+            loop_pages=True,
+        )
+        await mainPages.respond(ctx.interaction, ephemeral=False)
 
     @gws.command(name="inv")
     async def gwsUserInv(self, ctx):
@@ -274,32 +260,31 @@ class GWS(commands.Cog):
     @gws.command(name="profile")
     async def getUserProfile(self, ctx):
         """Gets your GWS profile"""
-        async with KumikoCM(uri=CONNECTION_URI, models=MODELS):
-            getUserProfile = await cacheUtils.cacheUser(
-                user_id=ctx.user.id, command_name=ctx.command.qualified_name
-            )
-            try:
-                if getUserProfile is None:
-                    raise ItemNotFound
-                else:
-                    getUserInfo = await self.bot.get_or_fetch_user(
-                        getUserProfile["user_id"]
-                    )
-                    embed = discord.Embed()
-                    embed.title = f"{getUserProfile['username']}'s Profile"
-                    embed.add_field(name="Pulls", value=getUserProfile["pulls"])
-                    embed.add_field(
-                        name="Date Joined",
-                        value=discord.utils.format_dt(
-                            parser.isoparse(getUserProfile["date_joined"]), style="F"
-                        ),
-                    )
-                    embed.set_thumbnail(url=getUserInfo.display_avatar.url)
-                    await ctx.respond(embed=embed, ephemeral=True)
-            except ItemNotFound:
-                embedError = discord.Embed()
-                embedError.description = "Sorry, but it seems like you don't have a profile. Make a pull to create one"
-                await ctx.respond(embed=embedError, ephemeral=True)
+        getUserProfile = await cacheUtils.cacheUser(
+            user_id=ctx.user.id, command_name=ctx.command.qualified_name
+        )
+        try:
+            if getUserProfile is None:
+                raise ItemNotFound
+            else:
+                getUserInfo = await self.bot.get_or_fetch_user(
+                    getUserProfile["user_id"]
+                )
+                embed = discord.Embed()
+                embed.title = f"{getUserProfile['username']}'s Profile"
+                embed.add_field(name="Pulls", value=getUserProfile["pulls"])
+                embed.add_field(
+                    name="Date Joined",
+                    value=discord.utils.format_dt(
+                        parser.isoparse(getUserProfile["date_joined"]), style="F"
+                    ),
+                )
+                embed.set_thumbnail(url=getUserInfo.display_avatar.url)
+                await ctx.respond(embed=embed, ephemeral=True)
+        except ItemNotFound:
+            embedError = discord.Embed()
+            embedError.description = "Sorry, but it seems like you don't have a profile. Make a pull to create one"
+            await ctx.respond(embed=embedError, ephemeral=True)
 
 
 def setup(bot):

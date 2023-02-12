@@ -16,7 +16,7 @@ class KumikoEconomyCacheUtils:
         self.models = models
         self.redis_host = redis_host
         self.redis_port = redis_port
-        self.cache = KumikoCache(host=redis_host, port=redis_port)
+        self.cache = KumikoCache(connection_pool=None, host=redis_host, port=redis_port)
 
     async def cacheUser(self, user_id: int, command_name: str) -> Union[Dict, None]:
         """The abstraction layer for caching the requested user's data

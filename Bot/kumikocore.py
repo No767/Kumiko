@@ -7,14 +7,13 @@ from typing import Dict, List
 
 import discord
 from aiocache import Cache
-from coredis import Connection, ConnectionPool
 from coredis.exceptions import ConnectionError
 from discord.ext import ipc, tasks
 from discord.ext.ipc.objects import ClientPayload
 from discord.ext.ipc.server import Server
-from tortoise import BaseDBAsyncClient, Tortoise, connections
-
-from Bot.Libs.kumiko_utils import pingRedis
+from Libs.kumiko_utils import backoff
+from Libs.kumiko_utils.postgresql import connectPostgres
+from Libs.kumiko_utils.redis import pingRedisServer, setupRedisConnPool
 
 path = Path(__file__).parents[0].absolute()
 cogsPath = os.path.join(str(path), "Cogs")
@@ -41,19 +40,15 @@ class KumikoCore(discord.Bot):
         self.ipc_secret_key = ipc_secret_key
         self.redis_host = redis_host
         self.redis_port = redis_port
-        self.dbConnected = asyncio.Event()
-        self.connPoolRedisSet = asyncio.Event()
-        self.redisConnPool = ConnectionPool.from_url(
-            url=f"redis://{self.redis_host}@:{self.redis_port}/0"
-        )
+        self.backoffSec = 15
+        self.backoffSecIndex = 0
+        self.databaseBackoffSec = 15
+        self.databaseBackoffSecIndex = 0
         self.ipcStarted = asyncio.Event()
         self.ipc = ipc.Server(self, secret_key=self.ipc_secret_key)
-        self.checkIfRedisIsUp.add_exception_type(ConnectionError)
-        self.connectDB.start()
-        self.connPoolRedis.start()
-        self.checkIfRedisIsUp.start()
+        self.loop.create_task(self.redisCheck())
+        self.loop.create_task(self.connPostgres())
         self.startIPCServer.start()
-        self.checkerHandler.start()
         self.logger = logging.getLogger("kumikobot")
         self.load_cogs()
 
@@ -77,6 +72,40 @@ class KumikoCore(discord.Bot):
                 )
                 self.load_extension(f"{relativeParentName}.{parentName}.{cogName[:-3]}")
 
+    async def redisCheck(self) -> None:
+        try:
+            memCache = Cache()
+            await setupRedisConnPool()
+            res = await pingRedisServer(connection_pool=await memCache.get(key="main"))
+            if res is True:
+                self.logger.info("Successfully connected to Redis server")
+        except (ConnectionError, TimeoutError):
+            backOffTime = backoff(
+                backoff_sec=self.backoffSec, backoff_sec_index=self.backoffSecIndex
+            )
+            self.logger.error(
+                f"Failed to connect to Redis server - Reconnecting in {int(backOffTime)} seconds"
+            )
+            await asyncio.sleep(backOffTime)
+            self.backoffSecIndex += 1
+            await self.redisCheck()
+
+    async def connPostgres(self) -> None:
+        try:
+            await connectPostgres(uri=self.uri, models=self.models)
+            self.logger.info("Successfully connected to PostgreSQL server")
+        except TimeoutError:
+            backOffTime = backoff(
+                backoff_sec=self.databaseBackoffSec,
+                backoff_sec_index=self.databaseBackoffSecIndex,
+            )
+            self.logger.error(
+                f"Failed to connect to PostgreSQL server - Reconnecting in {int(backOffTime)} seconds"
+            )
+            await asyncio.sleep(backOffTime)
+            self.databaseBackoffSecIndex += 1
+            await self.connPostgres()
+
     @tasks.loop(hours=1)
     async def checkerHandler(self):
         self.logger.info("Tasks Disabled")
@@ -99,70 +128,6 @@ class KumikoCore(discord.Bot):
     async def afterReady(self):
         if self.checkerHandler.is_being_cancelled():
             self.checkerHandler.stop()
-
-    @tasks.loop(count=1)
-    async def connectDB(self):
-        try:
-            # Apparently Tortoise's init method does not connect to the DB that well
-            await Tortoise.init(db_url=self.uri, modules={"models": self.models})
-            conn: BaseDBAsyncClient = connections.get("default")
-            await conn.create_connection(with_db=True)
-            self.dbConnected.set()
-            self.logger.info("Successfully connected to PostgreSQL")
-        except TimeoutError:
-            self.logger.error("Failed to connect to PostgreSQL. Retrying in 15 seconds")
-            await asyncio.sleep(15)
-            self.connectDB.restart()
-
-    @connectDB.after_loop
-    async def connectionTeardown(self):
-        if self.connectDB.is_being_cancelled():
-            await connections.close_all()
-            self.dbConnected.clear()
-
-    @tasks.loop(count=1)
-    async def connPoolRedis(self):
-        connPool = ConnectionPool(
-            connection_class=Connection(
-                host=self.redis_host, port=self.redis_port, db=0
-            )
-        )
-        memCache = Cache()
-        await memCache.set("redis_conn_pool", connPool)
-        self.logger.info("Cached Redis connection pool to memory")
-
-    @tasks.loop(count=1)
-    async def checkIfRedisIsUp(self):
-        memCache = Cache()
-        isRedisUp = await pingRedis(
-            connection_pool=await memCache.get("redis_conn_pool")
-        )
-        if isRedisUp is True:
-            self.logger.info("Redis server is currently alive")
-
-    @checkIfRedisIsUp.error
-    async def onRedisPingError(self):
-        self.logger.error(
-            "Redis server is currently down. Restarting ping in 15 seconds..."
-        )
-        await asyncio.sleep(15)
-        self.checkIfRedisIsUp.restart()
-
-    @connPoolRedis.after_loop
-    async def connPoolRelease(self):
-        if self.connPoolRedis.is_being_cancelled():
-            memCache = Cache()
-            connPool = await memCache.get("redis_conn_pool")
-            if connPool is None:
-                self.logger.error(
-                    "Failed to get Redis connection pool from memory cache! Deleting Redis connection pool from memory cache"
-                )
-                await memCache.delete("redis_conn_pool")
-                self.connPoolRedisSet.clear()
-            else:
-                await connPool.disconnect()
-                memCache.delete("redis_conn_pool")
-                self.connPoolRedisSet.clear()
 
     @tasks.loop(count=1)
     async def startIPCServer(self):

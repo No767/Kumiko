@@ -1,5 +1,7 @@
+import asyncio
 from typing import Dict, Union
 
+from aiocache import Cache
 from kumiko_cache import KumikoCache, commandKeyBuilder
 from kumiko_utils import KumikoCM
 
@@ -25,7 +27,11 @@ class KumikoGWSCacheUtils:
         self.models = models
         self.redis_host = redis_host
         self.redis_port = redis_port
-        self.cache = KumikoCache(host=self.redis_host, port=self.redis_port)
+        self.memCache = Cache()
+        self.connPool = asyncio.run(self.memCache.get("main"))
+        self.cache = KumikoCache(
+            connection_pool=self.connPool, host=self.redis_host, port=self.redis_port
+        )
 
     async def cacheUser(self, user_id: int, command_name: str) -> Union[Dict, None]:
         """Abstraction for caching user data

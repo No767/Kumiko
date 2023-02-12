@@ -7,7 +7,6 @@ from pathlib import Path
 
 import discord
 import uvloop
-from Cogs.kumiko.admin import REDIS_PORT
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 
@@ -25,7 +24,6 @@ CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_S
 MODELS = [
     "kumiko_genshin_wish_sim.models",
     "kumiko_servers.models",
-    "kumiko_admin_logs.models",
     "kumiko_economy.models",
 ]
 

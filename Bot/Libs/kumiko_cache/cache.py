@@ -10,7 +10,10 @@ class KumikoCache:
     """Kumiko's custom caching library. Uses Redis as the backend."""
 
     def __init__(
-        self, connection_pool: ConnectionPool, host: str = "127.0.0.1", port: int = 6379
+        self,
+        connection_pool: Optional[ConnectionPool],
+        host: str = "127.0.0.1",
+        port: int = 6379,
     ) -> None:
         """Kumiko's custom caching library. Uses Redis as the backend.
 

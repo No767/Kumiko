@@ -13,8 +13,6 @@ from .modals import (
     QuestsUpdateTimeModal,
 )
 from .views import (
-    AdminLogsPurgeAllView,
-    AHPurgeAllView,
     CreateAccountView,
     EcoUserCreationView,
     EcoUserPurgeView,
@@ -26,7 +24,6 @@ from .views import (
 )
 
 __all__ = [
-    "AHPurgeAllView",
     "MarketplacePurgeAllView",
     "QuestsPurgeAllView",
     "CreateAccountView",
@@ -44,7 +41,6 @@ __all__ = [
     "MarketplacePurchaseItemModal",
     "GWSPurgeInvView",
     "GWSDeleteOneUserInvItemModal",
-    "AdminLogsPurgeAllView",
     "EcoUserCreationView",
     "EcoUserPurgeView",
     "EcoMarketplaceListItemModal",

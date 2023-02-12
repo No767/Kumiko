@@ -3,92 +3,13 @@ from typing import List
 
 import discord
 import uvloop
-from kumiko_admin_logs.models import KumikoAdminLogs
 from kumiko_economy import EcoUser
-from kumiko_economy_utils import (
-    KumikoAuctionHouseUtils,
-    KumikoEcoUserUtils,
-    KumikoEcoUtils,
-    KumikoQuestsUtils,
-)
+from kumiko_economy_utils import KumikoEcoUserUtils, KumikoEcoUtils, KumikoQuestsUtils
 from kumiko_genshin_wish_sim import WSUserInv
-from kumiko_servers import KumikoServerCacheUtils
 from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
 from .modals import QuestsDeleteOneModal
-
-
-class AHPurgeAllView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    def __init__(self, uri: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.userUtils = KumikoEcoUserUtils()
-        self.auctionHouseUtils = KumikoAuctionHouseUtils()
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        try:
-            getUserInfo = await self.userUtils.selectUserRank(
-                interaction.user.id, self.uri
-            )
-            if len(getUserInfo) == 0:
-                raise NoItemsError
-            else:
-                for items in getUserInfo:
-                    if items < 25:
-                        await interaction.response.send_message(
-                            f"Sorry, but your current rank is {items}. You need at the very least rank 25 or higher to use this command."
-                        )
-                    else:
-                        itemUUIDAuth = await self.auctionHouseUtils.obtainItemUUIDAuth(
-                            user_id=interaction.user.id, uri=self.uri
-                        )
-                        try:
-                            if len(itemUUIDAuth) == 0:
-                                raise ItemNotFound
-                            else:
-                                await self.auctionHouseUtils.purgeUserAHItems(
-                                    user_id=interaction.user.id, uri=self.uri
-                                )
-                                await interaction.response.send_message(
-                                    "Confirmed. All Auction House Listings have now been completely purged from your account. This is permanent and irreversible.",
-                                    ephemeral=True,
-                                )
-                        except ItemNotFound:
-                            await interaction.response.send_message(
-                                "It seems like you don't have any to delete from at all...",
-                                ephemeral=True,
-                            )
-        except NoItemsError:
-            await interaction.response.send_message(
-                "It seems like you don't even have an account to begin with. Go ahead and create one first.",
-                ephemeral=True,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            "The action has been canceled", ephemeral=True
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
 class MarketplacePurgeAllView(discord.ui.View):
@@ -398,92 +319,6 @@ class GWSPurgeInvView(discord.ui.View):
         emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
     )
     async def second_button_callback(self, button, interaction: discord.Interaction):
-        for child in self.children:
-            child.disabled = True
-        await interaction.response.edit_message(
-            embed=discord.Embed(
-                description=f"This action has been canceled by {interaction.user.name}"
-            ),
-            view=self,
-            delete_after=15.0,
-        )
-
-
-class AdminLogsPurgeAllView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    def __init__(
-        self,
-        uri: str,
-        models: List,
-        redis_host: str,
-        redis_port: int,
-        command_name: str,
-        *args,
-        **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.models = models
-        self.redis_host = redis_host
-        self.redis_port = redis_port
-        self.command_name = command_name
-        self.cache = KumikoServerCacheUtils(
-            uri=self.uri,
-            models=self.models,
-            redis_host=self.redis_host,
-            redis_port=self.redis_port,
-        )
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def confirm_purge_callback(
-        self, button, interaction: discord.Interaction
-    ) -> None:
-        async with KumikoCM(uri=self.uri, models=self.models):
-            adminLogsExists = await KumikoAdminLogs.filter(
-                guild_id=interaction.guild.id
-            ).exists()
-            serverData = await self.cache.cacheServer(
-                guild_id=interaction.guild.id, command_name=self.command_name
-            )
-            if adminLogsExists is False or int(serverData["admin_logs"]) == 0:
-                for child in self.children:
-                    child.disabled = True
-                return await interaction.response.edit_message(
-                    embed=discord.Embed(
-                        description="It seems like there could be no admin logs found. This is usually due to Admin Logs not being enabled"
-                    ),
-                    view=self,
-                    delete_after=15.0,
-                )
-            else:
-                await KumikoAdminLogs.filter(guild_id=interaction.guild.id).delete()
-                for child in self.children:
-                    child.disabled = True
-                return await interaction.response.edit_message(
-                    embed=discord.Embed(
-                        description="All of the admin logs for this server has been completely wiped."
-                    ),
-                    view=self,
-                    delete_after=15.0,
-                )
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def cancel_action_callback(
-        self, button, interaction: discord.Interaction
-    ) -> None:
         for child in self.children:
             child.disabled = True
         await interaction.response.edit_message(
