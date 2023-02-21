@@ -33,7 +33,7 @@ jobs:
       uses: Gr1N/setup-poetry@v8
     - name: Cache Poetry
       id: cache-poetry
-      uses: actions/cache@v3.2.5
+      uses: actions/cache@v3.2.6
       with:
         path: ~/.cache/pypoetry/virtualenvs
         key: ${{ runner.os }}-poetry-v3-${{ hashFiles('**/poetry.lock') }}
