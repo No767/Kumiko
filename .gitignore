@@ -78,3 +78,4 @@ test-scripts
 image-testspy
 .vagrant
 migrations
+.env-old

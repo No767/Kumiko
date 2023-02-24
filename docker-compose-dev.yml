@@ -3,7 +3,6 @@ services:
   postgres:
     container_name: Kumiko-Postgres-Dev
     image: no767/kumiko-postgres:edge
-    restart: always
     env_file:
       - .env
     volumes:
