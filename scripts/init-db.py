@@ -25,7 +25,6 @@ CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_S
 MODELS = [
     "kumiko_genshin_wish_sim.models",
     "kumiko_servers.models",
-    "kumiko_admin_logs.models",
     "kumiko_economy.models",
     "aerich.models",
 ]

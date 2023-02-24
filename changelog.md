@@ -2,17 +2,16 @@
 
 This release focuses just on major backend performances, and rewrites of the core to use Tortoise ORM instead of SQLAlchemy ORM. This update also basically fully rewrites almost all of Kumiko's core features to using Redis caching.
 
-**This will probably be the first beta-release of Kumiko. This release will still have bugs and issues, and please make sure to report them on the Discord server and/or on GitHub instead.**
-
+**Note that Kumiko will undergo major backend changes, and this release is known to be quite unstable and has not been tested. v0.6 is a full rewrite of the core backend**
 ## :boom: Breaking Changes :boom:
 
 - **Dropped support for Alpine-based images and `-alpine` tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base. See [this gist](https://gist.github.com/No767/76d87bce5e6fcb1e682d2ff932c2a6b7) for more info.
 - **Removed MongoDB for Kumiko**. The new marketplace system will use PostgreSQL instead. This is done in order to correctly map relations with users, and to merge that feature into using PostgreSQL over MongoDB.
-
 ## ✨ TD;LR
 
 - Migrate from SQLAlchemy ORM to Tortoise ORM
 - Kumiko's custom caching library (w/ coredis)
+- Removal of old cogs, and old code
 
 ## 🛠️ Changes
 - Subclass Kumiko instead of creating the instance from `discord.Bot`
@@ -24,7 +23,6 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Use Ormsgpack for MessagePack serialization
 - Rewrite `contributing.md` and docs to further clarify topics.
 - Switch to using Python 3.11 for Dockerfiles, and officially support Python 3.11 for Kumiko
-- Update Alpine Linux to 3.17
 - Moved all checkers into tasks
 - Rewrite Admin Logs to use Tortoise ORM
 - Include caching with Admin Logs
@@ -48,6 +46,7 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Use aerich for migrations, and initializing db tables
 - Small datetime util to help figure out whether the given datetime is a ISO-8601 datetime or not
 - Reconnect/retry logic for DB connections (for PostgreSQL)
+- Full GWS rewrite
 
 ## ➖ Removals
 - SQLAlchemy ORM code
@@ -56,3 +55,5 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Old Library packages (GWS, Admin Logs, Eco)
 - Old Economy V2 code
 - Remove Jisho, Twitter, and MCSrvStats integration
+- Auction House
+- Admin Logs

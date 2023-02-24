@@ -46,7 +46,6 @@ COPY /Bot/kumikocore.py /Kumiko/Bot/
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
 COPY /Bot/Libs/ /Kumiko/Bot/Libs/
 COPY /scripts/init-db.py /Kumiko/init-db.py
-COPY /scripts/seeder.py /Kumiko/seeder.py
 COPY /Docker/Debian-Docker/start.sh /Kumiko/start.sh
 COPY /Docker/Debian-Docker/wait-for /Kumiko/wait-for
 
