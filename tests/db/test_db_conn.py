@@ -10,7 +10,6 @@ sys.path.append(packagePath)
 
 CONNECTION_URI = "asyncpg://postgres:postgres@localhost:5432/postgres"
 MODELS = [
-    "kumiko_genshin_wish_sim.models",
     "kumiko_servers.models",
     "kumiko_economy.models",
 ]
