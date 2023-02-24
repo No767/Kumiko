@@ -13,7 +13,7 @@ from rin_exceptions import NoItemsError
 
 load_dotenv()
 
-Tenor_API_Key = os.getenv("Kumiko_Tenor_API_Key")
+Tenor_API_Key = os.environ["TENOR_API_KEY"]
 parser = simdjson.Parser()
 
 

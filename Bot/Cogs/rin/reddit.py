@@ -18,8 +18,8 @@ from rin_exceptions import NoItemsError
 
 load_dotenv()
 
-Reddit_ID = os.getenv("Reddit_ID")
-Reddit_Secret = os.getenv("Reddit_Secret")
+Reddit_ID = os.environ["REDDIT_ID"]
+Reddit_Secret = os.environ["REDDIT_SECRET"]
 jsonParser = simdjson.Parser()
 
 

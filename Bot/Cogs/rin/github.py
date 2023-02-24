@@ -16,7 +16,7 @@ jsonParser = simdjson.Parser()
 
 load_dotenv()
 
-githubAPIKey = os.getenv("GitHub_API_Access_Token")
+githubAPIKey = os.getenv("GITHUB_API_KEY")
 
 
 class GitHub(commands.Cog):
