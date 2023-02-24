@@ -1,17 +1,19 @@
 import asyncio
 import uuid
+from typing import List
 
 import discord
 import uvloop
 from dateutil import parser
-from economy_utils import (
-    KumikoAuctionHouseUtils,
+from kumiko_economy import EcoMarketplace, EcoUser
+from kumiko_economy_utils import (
     KumikoEcoUserUtils,
     KumikoEcoUtils,
     KumikoQuestsUtils,
     KumikoUserInvUtils,
 )
-from genshin_wish_sim_utils import KumikoWSUserInvUtils
+from kumiko_genshin_wish_sim import KumikoGWSCacheUtils, WSUserInv
+from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound
 
 
@@ -247,49 +249,6 @@ class QuestsUpdateTimeModal(discord.ui.Modal):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-class GWSDeleteOneInv(discord.ui.Modal):
-    def __init__(self, uri: str, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.userInv = KumikoWSUserInvUtils()
-
-        self.add_item(
-            discord.ui.InputText(
-                label="Item to delete",
-                style=discord.InputTextStyle.short,
-                min_length=1,
-                required=True,
-                placeholder="Type in the item name to delete",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        checkUserInv = await self.userInv.getWSItemUserInvOne(
-            user_id=interaction.user.id, name=self.children[0].value, uri=self.uri
-        )
-        try:
-            if len(checkUserInv) == 0:
-                raise ItemNotFound
-            else:
-                for items in checkUserInv:
-                    await self.userInv.deleteOneUserInv(
-                        user_id=interaction.user.id,
-                        uuid=dict(items)["item_uuid"],
-                        uri=self.uri,
-                    )
-                await interaction.response.send_message(
-                    f"The item {self.children[0].value} has been deleted from your inventory",
-                    ephemeral=True,
-                )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "Sorry, but it seems like there are no items in your inventory. Please try again.",
-                ephemeral=True,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
 class MarketplaceAddItem(discord.ui.Modal):
     def __init__(self, mongo_uri: str, postgres_uri: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -519,160 +478,6 @@ class MarketplaceUpdateItemPrice(discord.ui.Modal):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-class AHCreateItemModal(discord.ui.Modal):
-    def __init__(
-        self, uri: str, redis_host: str, redis_port: int, *args, **kwargs
-    ) -> None:
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.redis_host = redis_host
-        self.redis_port = redis_port
-        self.ahUtils = KumikoAuctionHouseUtils()
-        self.userUtils = KumikoEcoUserUtils()
-
-        self.add_item(
-            discord.ui.InputText(
-                label="Name",
-                style=discord.InputTextStyle.short,
-                min_length=1,
-                max_length=255,
-                required=True,
-                placeholder="Type in the item name here to create",
-            )
-        )
-        self.add_item(
-            discord.ui.InputText(
-                label="Description",
-                style=discord.InputTextStyle.short,
-                min_length=1,
-                max_length=255,
-                required=True,
-                placeholder="What will the description be ?",
-            )
-        )
-        self.add_item(
-            discord.ui.InputText(
-                label="Price",
-                style=discord.InputTextStyle.short,
-                min_length=1,
-                max_length=255,
-                required=True,
-                placeholder="Type in the new price of the item",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        try:
-            getUserInfo = await self.userUtils.getFirstUser(
-                user_id=interaction.user.id, uri=self.uri
-            )
-            if getUserInfo is None:
-                raise ItemNotFound
-            else:
-                userInfo = dict(getUserInfo)
-                if userInfo["rank"] < 25:
-                    await interaction.response.send_message(
-                        f"Sorry, you need to be at least rank 25 to create an item in the Auction House. Your rank is {userInfo['rank']}",
-                        ephemeral=True,
-                    )
-                elif userInfo["rank"] > 25 and userInfo["lavender_petals"] < 1500:
-                    await interaction.response.send_message(
-                        "it seems like you don't have enough money to list. You need at the very least 1500 Petals to list",
-                        ephemeral=True,
-                    )
-                elif userInfo["rank"] > 25 and userInfo["lavender_petals"] >= 1500:
-                    ahItemUUID = str(uuid.uuid4())
-                    await self.ahUtils.addAuctionHouseItem(
-                        uuid=ahItemUUID,
-                        user_id=interaction.user.id,
-                        name=self.children[0].value,
-                        description=self.children[1].value,
-                        date_added=discord.utils.utcnow().isoformat(),
-                        price=int(self.children[2].value),
-                        passed=False,
-                        uri=self.uri,
-                    )
-                    await self.ahUtils.setItemKey(
-                        key=ahItemUUID,
-                        value=self.children[2].value,
-                        db=0,
-                        ttl=86400,
-                        redis_server_ip=self.redis_host,
-                        redis_port=self.redis_port,
-                    )
-                    await interaction.response.send_message(
-                        "Successfully added the item to the auction house",
-                        ephemeral=True,
-                    )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "It seems like you don't have an account to begin with. Please go ahead and create one.",
-                ephemeral=True,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
-class AHDeleteItemModal(discord.ui.Modal):
-    def __init__(self, uri: str, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.userUtils = KumikoEcoUserUtils()
-        self.ahUtils = KumikoAuctionHouseUtils()
-        self.add_item(
-            discord.ui.InputText(
-                label="Name",
-                style=discord.InputTextStyle.short,
-                min_length=1,
-                max_length=255,
-                required=True,
-                placeholder="Type in the item name here to delete",
-            )
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        try:
-            getUser = await self.userUtils.getFirstUser(
-                user_id=interaction.user.id, uri=self.uri
-            )
-            if getUser is None:
-                raise ItemNotFound
-            else:
-                if dict(getUser)["rank"] < 25:
-                    await interaction.response.send_message(
-                        f"Sorry, you need to be at least rank 25 to delete an item in the Auction House. Your rank is {dict(getUser)['rank']}",
-                        ephemeral=True,
-                    )
-                else:
-                    getUserItem = await self.ahUtils.selectUserItemNameFirst(
-                        user_id=interaction.user.id,
-                        name=self.children[0].value,
-                        uri=self.uri,
-                    )
-                    if getUserItem is None:
-                        await interaction.response.send_message(
-                            f"The item requested ({self.children[0].value}) could not be found. Please try again",
-                            ephemeral=True,
-                        )
-                    else:
-                        await self.ahUtils.deleteUserAHItem(
-                            user_id=interaction.user.id,
-                            uuid=dict(getUserItem)["uuid"],
-                            uri=self.uri,
-                        )
-                        await interaction.response.send_message(
-                            f"Successfully deleted {self.children[0].value} from the Auction House",
-                            ephemeral=True,
-                        )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "It seems like you don't have an account to begin with. Please go ahead and create one.",
-                ephemeral=True,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
 class MarketplacePurchaseItemModal(discord.ui.Modal):
     def __init__(self, mongo_uri: str, postgres_uri: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -783,3 +588,134 @@ class MarketplacePurchaseItemModal(discord.ui.Modal):
                 )
 
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+class GWSDeleteOneUserInvItemModal(discord.ui.Modal):
+    def __init__(
+        self,
+        uri: str,
+        models: List,
+        redis_host: str,
+        redis_port: int,
+        command_name: str,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.uri = uri
+        self.models = models
+        self.redis_host = redis_host
+        self.redis_port = redis_port
+        self.command_name = command_name
+        self.cache = KumikoGWSCacheUtils(
+            uri=self.uri,
+            models=self.models,
+            redis_host=self.redis_host,
+            redis_port=self.redis_port,
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Name",
+                placeholder="Type in the item name to delete",
+                min_length=1,
+                max_length=255,
+                required=True,
+                style=discord.InputTextStyle.short,
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                label="Amount",
+                placeholder="Type in the item amount to delete",
+                min_length=1,
+                max_length=255,
+                required=True,
+                style=discord.InputTextStyle.short,
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        async with KumikoCM(uri=self.uri, models=self.models):
+            userInvItem = await self.cache.cacheUserInvItem(
+                user_id=interaction.user.id,
+                name=self.children[0].value,
+                command_name=self.command_name,
+            )
+            if userInvItem is None:
+                return await interaction.response.send_message(
+                    f"The item ({self.children[0].value}) could not be found. Please try again",
+                    ephemeral=True,
+                )
+            elif int(self.children[1].value) > userInvItem["amount"]:
+                return await interaction.response.send_message(
+                    f"The amount requested ({self.children[1].value}) is more than the amount you have ({userInvItem['amount']}). Please try again",
+                    ephemeral=True,
+                )
+            else:
+                await WSUserInv.filter(
+                    user_id=interaction.user.id, name=userInvItem["name"]
+                ).update(amount=userInvItem["amount"] - int(self.children[1].value))
+                return await interaction.response.send_message(
+                    f"Deleted {self.children[1].value} {self.children[0].value}(s) from your inventory",
+                    ephemeral=True,
+                )
+
+
+class EcoMarketplaceListItemModal(discord.ui.Modal):
+    def __init__(
+        self,
+        *args,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.add_item(
+            discord.ui.InputText(
+                style=discord.InputTextStyle.short,
+                label="Item Name",
+                min_length=3,
+                max_length=255,
+                required=True,
+                row=0,
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                style=discord.InputTextStyle.short,
+                label="Price",
+                min_length=1,
+                max_length=20,
+                required=True,
+                row=2,
+            )
+        )
+        self.add_item(
+            discord.ui.InputText(
+                style=discord.InputTextStyle.long,
+                label="Description",
+                min_length=1,
+                max_length=512,
+                required=True,
+                row=1,
+            )
+        )
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        # Wish i could use the cache here... but whatever
+        currUser = await EcoUser.filter(user_id=interaction.user.id).get_or_none()
+        if currUser is None:
+            await interaction.response.send_message(
+                "You do not have an account. Please create one using the /eco-user init command",
+                ephemeral=True,
+            )
+        else:
+            await EcoMarketplace(
+                owner=currUser,
+                owner_name=interaction.user.name,
+                name=self.children[0].value,
+                description=self.children[2].value,
+                price=self.children[1].value,
+                amount=1,
+            ).save()
+            await interaction.response.send_message(
+                f"Added {self.children[0].value} to the marketplace", ephemeral=True
+            )

@@ -1,37 +1,55 @@
 [tool.poetry]
 name = "Kumiko"
-version = "0.3.0"
+version = "0.5.0"
 description = "A multipurpose Discord bot built with freedom and choice in mind"
 authors = ["No767 <73260931+No767@users.noreply.github.com>"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
-python-dotenv = "^0.21.0"
+python-dotenv = "^0.21.1"
 aiodns = "^3.0.0"
 Brotli = "^1.0.9"
-SQLAlchemy = "^1.4.43"
-orjson = "^3.8.1"
-asyncpraw = "^7.6.0"
+SQLAlchemy = "^2.0.4"
+orjson = "^3.8.6"
+asyncpraw = "^7.6.1"
 asyncpg = "^0.27.0"
 uvloop = "^0.17.0"
 pysimdjson = "^5.0.2"
 gql = { extras = ["aiohttp"], version = "^3.4.0" }
 python-dateutil = "^2.8.2"
 rin-exceptions = "^1.0.3"
-beanie = "^1.15.0"
-numpy = "^1.23.4"
-py-cord = {version = "2.2.2", extras = ["voice"]}
+beanie = "^1.17.0"
+numpy = "^1.24.2"
+py-cord = {version = "2.4.0", extras = ["voice"]}
 pytimeparse = "^1.1.8"
-coredis = "^4.8.3"
-charset-normalizer = "^2.1.1"
+coredis = "^4.10.2"
+charset-normalizer = "^3.0.1"
+tortoise-orm = {extras = ["accel"], version = "^0.19.3"}
+python-rapidjson = "^1.9"
+ormsgpack = "^1.2.5"
+better-ipc = "^2.0.1"
+aerich = "^0.7.1"
+aiocache = "^0.12.0"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "^2.20.0"
+pre-commit = "^3.1.0"
 pyinstrument = "^4.4.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.1"
+pytest-asyncio = "^0.20.3"
+nox = "^2022.11.21"
+nox-poetry = "^1.0.2"
+pytest-cov = "^4.0.0"
 
 [tool.isort]
 profile = 'black'
+
+[tool.aerich]
+tortoise_orm = "settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

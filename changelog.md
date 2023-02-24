@@ -1,139 +1,67 @@
-# ✨ Kumiko v0.4.0 ✨
+# ✨ Kumiko v0.5.0 ✨
 
-This update brings a ton of new things, and a complete overhaul from what things used to be in `v0.3.0`. With this update, we have reached over 2000 commits for Kumiko, and merges all commits from upstream Rin v2.2.x. With a stable codebase for the economy system, tons of new features and critical improvements, Kumiko has never been better. In fact, this release of Kumiko fixes almost everything that `v0.3.0` had wrong. For details for upstream changes from Rin, please refer to the links below (latest point release):
+This release focuses just on major backend performances, and rewrites of the core to use Tortoise ORM instead of SQLAlchemy ORM. This update also basically fully rewrites almost all of Kumiko's core features to using Redis caching.
 
-- Rin v2.2.8: https://github.com/No767/Rin/releases/tag/v2.2.8
+**Note that Kumiko will undergo major backend changes, and this release is known to be quite unstable and has not been tested. v0.6 is a full rewrite of the core backend**
 
+## :boom: Breaking Changes :boom:
+
+- **Dropped support for Alpine-based images and `-alpine` tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base. See [this gist](https://gist.github.com/No767/76d87bce5e6fcb1e682d2ff932c2a6b7) for more info.
+- **Removed MongoDB for Kumiko**. The new marketplace system will use PostgreSQL instead. This is done in order to correctly map relations with users, and to merge that feature into using PostgreSQL over MongoDB.
 ## ✨ TD;LR
 
-A ton of new features, including:
-
-- Kumiko's Quests System
-- Genshin-based Wish Sim (GWS)
-- Kumiko's Auction House
-- Basic Admin Commands
-- Admin Logs System
-
-And some backend changes w/ Docker support:
-
-- Switch to a Dockerfile system based off of `tini` and `alpine` instead of PM2 (Credits for @TheSilkky for developing the Alpine Dockerfile)
-- Deploy both Alpine and Debian-based Dockerfiles
-- Automatic DB schema creator (called the "seeder")
-- Improved Docker Compose support + Standalone support
-- Docker Compose version bumps w/ Postgres, MongoDB and Redis
-
-## 🔥 Breaking Changes
-
-- **Switched from Pipenv to Poetry**
-- **Remove support for prefixed commands**
-- **Remove legacy help cog**
-- **Remove the use of RabbitMQ**
+- Migrate from SQLAlchemy ORM to Tortoise ORM
+- Kumiko's custom caching library (w/ coredis)
+- Removal of old cogs, and old code
+- Unit tests
 
 ## 🛠️ Changes
-
-- Swap from SQLAlchemy Core to SQLAlchemy ORM
-- Rename the currency from coins to Lavender Petals
-- Standardize all datetime as ISO-8601 for all timestamps
-- Charge initial fee for selling items on the marketplace 
-- Audit all service commands from Rin
-- Require all DB Coroutines to include URI argument for URI Connection Strings
-- Migrate from Env Variables to URI Connection Strings for Marketplace
-- Allow for ext envs to be passed through for Docker deployment
-- Fix Postgres-Init script (#144)
-- Include improvements for Reddit + Waifu cog from Reina
-- Use `discord.Member` for avatar cmds inputs instead of using `str`
-- Make Debian now the latest `edge` tag
-- Require input type to be `discord.Member` instead of `str` in UwU cog
-- Swap from `github.repository_owner` to `github.actor` to fix GHCR build workflows
-- Display Pycord version w/ bot info command
-- Optimize Dynamic Cog Loader
-- Update Docs
-- Don't `echo` database schema creations w/ SQLAlchemy
-- Improved Docker Compose setup (literally just download some stuff, set up the env file, and run)
-- Append `eco` to all economy commands
-- Provide a general exception embed for admin commands
-- Completely redid Help command
-- Organize Cogs into different directories determined by if the cogs came from Rin or Kumiko
-- Display what bot user is being logged into
-- Merged all PostgreSQL DBs into one (instead of having them separated)
-- Updated `ws_data.sql` and `ws_data.csv` files
-- Condensed all Dockerfiles into one main directory
-- Move all of the packages into a `Libs` folder within the `Bot` folder (this is to clean things up)
-- Condensed down the `/eco-quests view` commands into one command
-- Change to use general versions for Python Dockerfiles
-- Move all of the views into a separate package (`kumiko_ui_components`)
-- Use views and modals for updating, deleting, and creating quests
-- Use views and modals for deleting inventory items for GWS
-- Defer the interaction for gws wishes
-- Raise the max amount of wishes for the multiple wish to 10
-- Use Modals for updating, deleting and creating items in the Marketplace
-- Move the models into a separate file and rename models
-- Completely optimized a ton of backend stuff with the Marketplace 
-- Use `discord.utils.utcnow()` instead of `datetime.utcnow()` for most creation timestamps
-- Merged all Docker Build workflows into one workflow
-- All `edge` tags will be based on Debian 11 instead of Alpine 3.16
-- Use Modals for adding, and deleting items from the Auction House
-- Selections and bids will be now stored on Redis instead
-- Use coredis as the redis client instead of asyncio_redis
-- Completely revamp Kumiko's purchasing command and system for the Marketplace
-- Use Python 3.10.8 as the default 
-- If the user profile for GWS isn't there, the wish commands will generate a new one for that user
+- Subclass Kumiko instead of creating the instance from `discord.Bot`
+- Replace SQLAlchemy with Tortoise ORM
+- Cache GWS Profiles, invs, etc
+- Optimize GWS pull command
+- Update Python constraints (>=3.8,<4.0)
+- Upgrade PostgreSQL Dockerfile versions to 15
+- Use Ormsgpack for MessagePack serialization
+- Rewrite `contributing.md` and docs to further clarify topics.
+- Switch to using Python 3.11 for Dockerfiles, and officially support Python 3.11 for Kumiko
+- Moved all checkers into tasks
+- Rewrite Admin Logs to use Tortoise ORM
+- Include caching with Admin Logs
+- Rewrite the economy system for the 3rd time in a row
+- Ensure that the DB connection is first instantiated when Kumiko starts up
+- Export some Tortoise ORM models to Pydantic models for easier serialization and caching
+- Use ciso8601 for parsing ISO-8601 datetimes
+- Add voice support libs for Dockerfile
+- Caching for Marketplace, User profile, and User Inv
 
 ## ✨ Additions
-- Kumiko's Quests System
-- Genshin-based Wish Sim (GWS)
-- Kumiko's Auction House (Uses Redis)
-- Docker Compose Example + ENV Examples
-- Docker Compose Support
-- Alpine + Debian Dockerfiles w/ `tini` for running Kumiko
-- Redis for selecting and caching
-- Basic Admin Commands
-- UwU Commands
-- Avatar fetcher commands (#109)
-- AH Checker + Quests Checker Cogs
-- Add marketplace listing cooldowns
-- Basic info commands
-- Use Dynamic Cog Loader instead of loading cogs from a list
-- Add new self-host guide
-- Automatic DB schema creator (called the "seeder")
-- Database init scripts for Docker Compose 
-- `setup.sh` and `standalone-setup.sh` for both Docker Compose setups and standalone setups
-- `wait-for` script within Docker Compose (to wait until PostgreSQL and Redis start accepting connections)
-- Custom PostgreSQL docker image for Docker Compose
-- Admin Logs
-- New Help Command
-- `POSTGRES_KUMIKO_DB` env var for `start.sh`
-- Class descriptions for all cogs
-- Use views and modals for updating, deleting, and creating quests
-- Use views and modals for deleting inventory items for GWS
-- Use Modals for updating, deleting and creating items in the Marketplace
+
+- Kumiko's custom caching library (w/ coredis)
+- New delete interface for GWS inv
+- MessagePack serialization for Redis
+- Vagrant Support
+- IPC Support with better-ipc
+- Server configs
+- Warn command
+- Server Configs (with Server Join Handlers)
+- Completely rewritten economy system using Tortoise ORM, and with proper SQL and 3nf complaint relations.
+- New caching system for Kumiko's economy using Redis
+- Use aerich for migrations, and initializing db tables
+- Small datetime util to help figure out whether the given datetime is a ISO-8601 datetime or not
+- Reconnect/retry logic for DB connections (for PostgreSQL)
+- Internal memory cache for Redis connection pools
+- Full GWS rewrite
+- Finally add unit tests, and code coverage
+- Recursive cog loading
+- ConnPool system for Redis
 
 ## ➖ Removals
-
-- Deprecated code using SQLAlchemy Core instead of SQLAlchemy ORM
-- DeviantArt Cog (from Rin)
-- More old libs
-- QRCode Maker Cog
-- GWS Banner Commands
-- Arch + Ubuntu Dockerfile
-- `kumikoinfo.py` Cog
-- `kumikoping.py` Cog
-- `kumiko-platform.py` Cog
-- Unload `advice.py`, `blue-alliance.py`, `discord-bots.py`, `first-frc-events.py`, `hypixel.py`, `spiget.py`, `top-gg.py`, and `twitch.py` Cogs (this is due to the new help system only allowing up to 25 options, and therefore only 25 categories can be shown)
-- Remove `BLUE_ALLIANCE_API_KEY`, `DISCORD_BOTS_API_KEY`, `FIRST_EVENTS_FINAL_KEY`, `HYPIXEL_API_KEY`,  `TOP_GG_API_KEY`, `TWITCH_API_ACCESS_TOKEN`, `TWITCH_API_CLIENT_ID` env vars from `start.sh` and `.env-docker-example`
-- Remove `POSTGRES_ECO_USERS_DB`, `POSTGRES_WS_DB`, `POSTGRES_AH_DB`, `POSTGRES_QUESTS_DB`, and `POSTGRES_AL_DB` env vars from `start.sh` and `.env-docker-example`
-- Remove old `exceptions package`
-- Remove old `WS-Data` folder
-- Remove unloaded cogs and moved them to a different repo
-- `/eco-quests view ...` commands
-- Datetime Timeout command
-- `/eco-quests reward` command (too unbalanced and can be easily abused)
-- Removed unused coroutines in the `eco_main.py` file 
-- Remove Marketplace filters
-- RabbitMQ Consumer
-- RabbitMQ within Docker Compose and requirements
-- AH RabbitMQ Bidder
-- `asyncio_redis` package
-- `aiormq` package
-- `ccharet` package
-- Unused coroutines (this is to reduce the amount of code that Kumiko ships with)
+- SQLAlchemy ORM code
+- Old SQLAlchemy-based GWSs
+- Old GWS Purge Inv View
+- Old Library packages (GWS, Admin Logs, Eco)
+- Old Economy V2 code
+- Remove Jisho, Twitter, and MCSrvStats integration
+- Auction House
+- Admin Logs

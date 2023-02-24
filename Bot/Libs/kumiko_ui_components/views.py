@@ -1,143 +1,15 @@
 import asyncio
+from typing import List
 
 import discord
 import uvloop
-from admin_logs_utils import KumikoAdminLogsUtils
-from economy_utils import (
-    KumikoAuctionHouseUtils,
-    KumikoEcoUserUtils,
-    KumikoEcoUtils,
-    KumikoQuestsUtils,
-)
-from genshin_wish_sim_utils import KumikoWSUserInvUtils
+from kumiko_economy import EcoUser
+from kumiko_economy_utils import KumikoEcoUserUtils, KumikoEcoUtils, KumikoQuestsUtils
+from kumiko_genshin_wish_sim import WSUserInv
+from kumiko_utils import KumikoCM
 from rin_exceptions import ItemNotFound, NoItemsError
 
-from .modals import GWSDeleteOneInv, QuestsDeleteOneModal
-
-
-class ALPurgeDataView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    def __init__(self, uri: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.alUtils = KumikoAdminLogsUtils(self.uri)
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        selectAllALGuildData = await self.alUtils.selAllGuildRows(
-            guild_id=interaction.guild.id
-        )
-        try:
-            if len(selectAllALGuildData) == 0:
-                raise ItemNotFound
-            else:
-                await self.alUtils.purgeData(guild_id=interaction.guild.id)
-                await interaction.response.send_message(
-                    "Confirmed. All of the Admin Logs for this server have been purged",
-                    ephemeral=True,
-                    delete_after=10,
-                )
-        except ItemNotFound:
-            await interaction.response.send_message(
-                "It seems like you don't have any to delete from at all...",
-                ephemeral=True,
-                delete_after=10,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The action has been canceled by {interaction.user.name}", ephemeral=True
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
-class AHPurgeAllView(discord.ui.View):
-    async def on_timeout(self):
-        for child in self.children:
-            child.disabled = True
-
-    def __init__(self, uri: str, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.uri = uri
-        self.userUtils = KumikoEcoUserUtils()
-        self.auctionHouseUtils = KumikoAuctionHouseUtils()
-
-    @discord.ui.button(
-        label="Yes",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
-    )
-    async def button_callback(self, button, interaction):
-        try:
-            getUserInfo = await self.userUtils.selectUserRank(
-                interaction.user.id, self.uri
-            )
-            if len(getUserInfo) == 0:
-                raise NoItemsError
-            else:
-                for items in getUserInfo:
-                    if items < 25:
-                        await interaction.response.send_message(
-                            f"Sorry, but your current rank is {items}. You need at the very least rank 25 or higher to use this command."
-                        )
-                    else:
-                        itemUUIDAuth = await self.auctionHouseUtils.obtainItemUUIDAuth(
-                            user_id=interaction.user.id, uri=self.uri
-                        )
-                        try:
-                            if len(itemUUIDAuth) == 0:
-                                raise ItemNotFound
-                            else:
-                                await self.auctionHouseUtils.purgeUserAHItems(
-                                    user_id=interaction.user.id, uri=self.uri
-                                )
-                                await interaction.response.send_message(
-                                    "Confirmed. All Auction House Listings have now been completely purged from your account. This is permanent and irreversible.",
-                                    ephemeral=True,
-                                )
-                        except ItemNotFound:
-                            await interaction.response.send_message(
-                                "It seems like you don't have any to delete from at all...",
-                                ephemeral=True,
-                            )
-        except NoItemsError:
-            await interaction.response.send_message(
-                "It seems like you don't even have an account to begin with. Go ahead and create one first.",
-                ephemeral=True,
-            )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-    @discord.ui.button(
-        label="No",
-        row=0,
-        style=discord.ButtonStyle.primary,
-        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
-    )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            "The action has been canceled", ephemeral=True
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+from .modals import QuestsDeleteOneModal
 
 
 class MarketplacePurgeAllView(discord.ui.View):
@@ -399,14 +271,15 @@ class QuestsDeleteOneConfirmView(discord.ui.View):
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-class GWSDeleteOneInvView(discord.ui.View):
+class GWSPurgeInvView(discord.ui.View):
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
 
-    def __init__(self, uri: str, *args, **kwargs):
+    def __init__(self, uri: str, models: List, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.uri = uri
+        self.models = models
 
     @discord.ui.button(
         label="Yes",
@@ -414,12 +287,30 @@ class GWSDeleteOneInvView(discord.ui.View):
         style=discord.ButtonStyle.primary,
         emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
     )
-    async def button_callback(self, button, interaction):
-        await interaction.response.send_modal(
-            GWSDeleteOneInv(uri=self.uri, title="Delete a item")
-        )
-
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    async def button_callback(self, button, interaction: discord.Interaction):
+        async with KumikoCM(uri=self.uri, models=self.models):
+            invExist = await WSUserInv.filter(user_id=interaction.user.id).exists()
+            if invExist is False:
+                for child in self.children:
+                    child.disabled = True
+                await interaction.response.edit_message(
+                    embed=discord.Embed(
+                        description="It seems like you don't have anything in your GWS inventory. Please try again"
+                    ),
+                    view=self,
+                    delete_after=15.0,
+                )
+            else:
+                await WSUserInv.filter(user_id=interaction.user.id).delete()
+                for child in self.children:
+                    child.disabled = True
+                await interaction.response.edit_message(
+                    embed=discord.Embed(
+                        description="Everything has been purged from your inventory. This cannot be recovered from."
+                    ),
+                    view=self,
+                    delete_after=15.0,
+                )
 
     @discord.ui.button(
         label="No",
@@ -427,23 +318,25 @@ class GWSDeleteOneInvView(discord.ui.View):
         style=discord.ButtonStyle.primary,
         emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
     )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            f"The action has been cancelled by the user {interaction.user.name}",
-            ephemeral=True,
+    async def second_button_callback(self, button, interaction: discord.Interaction):
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
         )
 
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-
-class GWSPurgeAllInvView(discord.ui.View):
+class EcoUserCreationView(discord.ui.View):
     async def on_timeout(self):
         for child in self.children:
             child.disabled = True
 
-    def __init__(self, uri: str):
-        self.uri = uri
-        self.userInv = KumikoWSUserInvUtils()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @discord.ui.button(
         label="Yes",
@@ -451,25 +344,32 @@ class GWSPurgeAllInvView(discord.ui.View):
         style=discord.ButtonStyle.primary,
         emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
     )
-    async def button_callback(self, button, interaction):
-        checkUserInv = await self.userInv.getUserInv(
-            user_id=interaction.user.id, uri=self.uri
-        )
-        try:
-            if len(checkUserInv) == 0:
-                raise NoItemsError
-            else:
-                await self.userInv.purgeUserInv(
-                    user_id=interaction.user.id, uri=self.uri
-                )
-                await interaction.response.send_message(
-                    "Everything has been purged from your inventory. This cannot be recovered from.",
-                    ephemeral=True,
-                )
-        except NoItemsError:
-            await interaction.response.send_message(
-                "It seems like you don't have anything in your GWS inventory. Please try again",
-                ephemeral=True,
+    async def confirm_create_callabck(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        doesUserExist = await EcoUser.filter(user_id=interaction.user.id).exists()
+        if doesUserExist is False:
+            await EcoUser(
+                user_id=interaction.user.id,
+                username=interaction.user.name,
+                date_joined=discord.utils.utcnow(),
+            ).save()
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="Your economy account has been created! Have fun!"
+                ),
+                view=self,
+                delete_after=15.0,
+            )
+        else:
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(description="You already have an economy account!"),
+                view=self,
+                delete_after=15.0,
             )
 
     @discord.ui.button(
@@ -478,7 +378,75 @@ class GWSPurgeAllInvView(discord.ui.View):
         style=discord.ButtonStyle.primary,
         emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
     )
-    async def second_button_callback(self, button, interaction):
-        await interaction.response.send_message(
-            "Well glad you choose not to...", ephemeral=True
+    async def cancel_action_callback(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
+        )
+
+
+class EcoUserPurgeView(discord.ui.View):
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @discord.ui.button(
+        label="Yes",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:check:314349398811475968>"),
+    )
+    async def confirm_create_callabck(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        doesUserExist = await EcoUser.filter(user_id=interaction.user.id).exists()
+        if doesUserExist is True:
+            await EcoUser.filter(user_id=interaction.user.id).delete()
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="Your economy account has been deleted. All of your items that is associated with your account has been deleted as well."
+                ),
+                view=self,
+                delete_after=15.0,
+            )
+        else:
+            for child in self.children:
+                child.disabled = True
+            return await interaction.response.edit_message(
+                embed=discord.Embed(
+                    description="You don't have an economy account to delete!"
+                ),
+                view=self,
+                delete_after=15.0,
+            )
+
+    @discord.ui.button(
+        label="No",
+        row=0,
+        style=discord.ButtonStyle.primary,
+        emoji=discord.PartialEmoji.from_str("<:xmark:314349398824058880>"),
+    )
+    async def cancel_action_callback(
+        self, button, interaction: discord.Interaction
+    ) -> None:
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(
+            embed=discord.Embed(
+                description=f"This action has been canceled by {interaction.user.name}"
+            ),
+            view=self,
+            delete_after=15.0,
         )

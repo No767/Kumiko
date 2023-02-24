@@ -2,301 +2,24 @@
 
 We are glad that you're willing to contribute to this project. We are usually very lenient and relaxed with the submissions of PRs, and Issues reports. But there are some stuff that you need to know before contributing.
 
-## Requirements
+## Note to new contributors
 
-To get started, you'll need these things installed: 
+When you contribute to this project, you are subject to the [Code of Conduct](./CODE_OF_CONDUCT.md). Any violations of the Code Of Conduct will be handled as stated. Read the contributing guide. **Support is not given if you didn't bother reading the documentation for setting up any of the requirements, or if you didn't bother to read the contributing guide.**
 
-- [Git](https://git-scm.com/)
-- [Python 3.10](https://www.python.org/)
-- [Poetry](https://python-poetry.org/)
-- [WSL2](https://docs.microsoft.com/en-us/windows/wsl/) (If working on Windows)
-- Discord Account + Discord App
+## Before Starting
 
-## Installing Dependencies
+Make sure to read these guides listed below (read them in order):
 
-Getting the environment set up for the bot is a kinda complex process. Kumiko now uses [Uvloop](https://github.com/MagicStack/uvloop), which is a drop-in replacement for [Asyncio](https://docs.python.org/3/library/asyncio.html) and is just as fast as Node.js. If you want to get set up, here are the instructions to do so:
+- [Installing Requirements](./installing-requirements.md)
+- [Getting the Discord Bot](./getting-discord-bot.md)
+- [Database Setup](./database-setup.md)
 
-## Windows 
-
-1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/). Pick your distro of choice. In this example, we will use Ubuntu 22.04
-2. Install the suggested build dependencies for pyenv. 
-
-    ```sh
-    sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
-    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3.10-dev git
-    ```
-
-3. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-    ```sh
-    curl https://pyenv.run | bash
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-4. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-5. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-
-6. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
-
-## Linux
-    
-### Ubuntu
-
-1. Install the suggested build dependencies for pyenv. 
-
-    ```sh
-    sudo apt-get update; sudo apt-get install make build-essential libssl-dev zlib1g-dev \
-    libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev python3.10-dev git
-    ```
-
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-    ```sh
-    curl https://pyenv.run | bash
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-5. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
-
-### OpenSUSE
-
-1. Install the suggested build dependencies for pyenv.
-
-    ```sh
-    sudo zypper install gcc automake bzip2 libbz2-devel xz xz-devel openssl-devel ncurses-devel \
-    readline-devel zlib-devel tk-devel libffi-devel sqlite3-devel python310-devel
-    ```
-
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-    ```sh
-    curl https://pyenv.run | bash
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-5. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
-
-### Fedora/CentOS
-
-1. Install the suggested build dependencies for pyenv
-
-    Fedora 22 and above:
-
-    ```sh
-    sudo dnf install make gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel python-devel git curl
-    ```
-
-    CentOS or Fedora 22 and below:
-
-    ```sh
-    sudo yum install gcc zlib-devel bzip2 bzip2-devel readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel python-devel git curl
-    ```
-
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-    ```sh
-    curl https://pyenv.run | bash
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-5. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
-### Arch/Manjaro
-
-1. Install the suggested build dependencies for pyenv
-
-    ```sh
-    sudo pacman -S --needed base-devel openssl zlib xz tk python libffi
-    ```
-
-2. Install Pyenv. Also make sure to follow the instructions [here](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-    ```sh
-    curl https://pyenv.run | bash
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-3. Restart your shell (make sure you have added it to your path and configured it either in your `.zshrc`, or `.bashrc` files)
-    
-    ```sh
-    exec "$SHELL"
-    ```
-
-4. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-5. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
-
-## MacOS
-
-1. Install Xcode Command Line Tools (`xcode-select --install`) and [Homebrew](https://brew.sh/)
-
-2. Install the suggested build dependencies for pyenv
-
-    ```sh
-    brew install openssl readline sqlite3 xz zlib tcl-tk git curl make
-    ```
-3. Install Pyenv via Homebrew
-
-    ```sh
-    brew update
-    brew install pyenv
-    ```
-
-4. Install Python
-
-    ```sh
-    pyenv update
-    pyenv install 3.10.8
-    pyenv global 3.10.8
-    pyenv rehash
-    ```
-
-5. Follow the rest of the steps, starting on [Set Up Your shell Environment For Pyenv](https://github.com/pyenv/pyenv#set-up-your-shell-environment-for-pyenv)
-
-5. Fork and clone the repo
-
-    ```sh
-    git clone https://github.com/[username]/Kumiko.git && cd Kumiko
-    ```
-
-6. Run Make to create the venv and install dependencies
-
-    ```sh
-    make dev-setup
-    ```
 ## Getting Started
-
-### Getting the Discord Bot
-
-First things first, you'll more than likely need a dev bot to run Kumiko. Luckily you'll find the steps below to help you on that
-
-![images](../assets/getting-started-assets/create-app.png)
-
-1. Create the app that will be needed for the bot. Once done, you should see the page as shown above
-
-![yesyes](../assets/getting-started-assets/create-bot.png)
-
-2. Now head done to the bot section, and click on the button that says "Add Bot". 
-
-![ewom](../assets/getting-started-assets/allow-bot.png)
-
-3. You'll see a pop-up that asks you if you want to create the bot. 
-
-![intents](../assets/getting-started-assets/allow-intents.png)
-
-4. Make sure to have all 3 of the buttons enabled. Kumiko will need all 3 of them to work.
-
-![whyyy](../assets/getting-started-assets/reset-token.png)
-
-5. You'll see a page just like the one above. We'll need access the the token for the bot, and the only way to do it is to reset the token.
-
-![confirm](../assets/getting-started-assets/allow-reset-token.png)
-
-6. Allow for the token to be reset. Note that if your account is hooked up with 2FA, it will ask you to enter your 2FA code. Go to your authenticator app and enter the code from the app.
-
-![copytoken](../assets/getting-started-assets/copy-token.png)
-
-7. Now click on the copy button and copy the token
-
-8. Head back into the root directory of the repo, and run this command: 
-
-   ```sh
-   make init BOT_TOKEN="[token]"
-   ```
-
-   This will create a `.env` file and add the token into it.
-
 ### Developing Kumiko
 
 Once you have the discord bot up, there's a few things that needs to be done before development can begin. 
 
-1. Follow the steps in [Installing Dependencies](#installing-dependencies) to get all of the dependencies installed.
+1. Follow all of the guides in the [Before Starting](#Before-Starting) section to make sure that you have everything installed.
 2. Now create a shell that poetry needs. Run the following command:
 
     ```sh
@@ -315,7 +38,7 @@ Once you have the discord bot up, there's a few things that needs to be done bef
    make run
    ```
 
-   To exit out of Kumiko, hit Ctrl + C to kill the process. 
+   To stop Kumiko, hit Ctrl + C to kill the process. 
 
 ### Things to keep in mind
 
@@ -345,129 +68,83 @@ Make sure to always keep this in mind: Always add exception handling for Kumiko.
       await ctx.respond("That item doesn't exist! Please try again")
    ```
 
-## Database Setup
-
-Kumiko requires PostgreSQL and MongoDB to get started. 
-
-### PostgreSQL Setup
-
-Kumiko's Economy requires PostgreSQL first. The easiest way to do so is to use PostgreSQL on Docker. You can find instructions on how to do this [here](https://hub.docker.com/_/postgres). In short, when you are going to run it, input these 2 env variables: `POSTGRES_PASSWORD` and `POSTGRES_USER`. `POSTGRES_USER` should be named `Kumiko` ideally, but you could change it. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Asyncpg will complain about it and not connect to the database. Now use psql and login into the Postgres server with the password and username that you just created. Once you are in, create a database called kumiko_eco_users. Next, cd into the bot folder, and create an `.env` file. This is where you are going to store all of the credentials. The file should look like this:
-
-```
-# Bot/.env
-Postgres_Password = "Password for Postgres"
-Postgres_IP = 127.0.0.1 # if localhost doesn't work, use your ipv4 address instead
-Postgres_User = "Kumiko"
-Postgres_Database_Dev = "db"
-Postgres_Wish_Sim_Database = "db"
-Postgres_Database_AH_Dev = "db"
-Postgres_Quests_Database = "db"
-```
-
-Now connect to your postgres server and create the databases. So for example, if I had these 4 set like this:
-
-```.env
-Postgres_Database_Dev="kumiko_users"
-Postgres_Wish_Sim_Database="kumiko_ws"
-Postgres_Database_AH_Dev="kumiko_ah"
-Postgres_Quests_Database="kumiko_quests"
-```
-
-then I would have to create the databases like this:
-```sql
-CREATE DATABASE kumiko_users;
-CREATE DATABASE kumiko_ws;
-CREATE DATABASE kumiko_ah;
-CREATE DATABASE kumiko_quests;
-```
-
-Now run `postgres-init.py` located within the scripts folder. This will create the table within the database that will store all of the data. 
-
-### MongoDB Setup
-
-Kumiko's Economy (specifically the marketplace) relies on MongoDB to deal with the database storage. And the easiest way to deal with that is to use MongoDB on Docker. You'll need to put in 2 env variables, which are `MONGO_INITDB_ROOT_USERNAME` and `MONGO_INITDB_ROOT_PASSWORD`. `MONGO_INITDB_ROOT_USERNAME` should be named `Kumiko`, and `MONGO_INITDB_ROOT_PASSWORD` is the password you choose to set. Make sure to keep note of it some secure. When making the password, please don't include anything with `@` in it. Beanie may also start complaining about special characters and then refuses to connect because of it (also blame MongoDB for that as well). Assuming you have the `Bot/.env` file made, insert these env variables into the file:
-
-```
-# Bot/.env
-MongoDB_Password_Dev = "MongoDB Password"
-MongoDB_Username_Dev = "Kumiko"
-MongoDB_Server_IP_Dev = "127.0.0.1" # also could use ipv4 address if localhost doesn't work
-```
-
-Now connect to the MongoDB server with MongoDBCompass or Mongosh and create a database called `kumiko_marketplace`. There is no need to create any collections, since beanie will create them when needed. 
-
-### RabbitMQ Setup
-
-Kumiko's Auction House (AH) relies on RabbitMQ to distribute massive pub/sub queue messages safely and securely. There are 2 ways to set this up: either on a standard Linux server (eg on Ubuntu Server, Debian, Rocky, etc) or on Docker. For development, it's recommended to use Docker. You should set 2 variables that you more than likely will need: `RABBITMQ_DEFAULT_USER` and `RABBITMQ_DEFAULT_PASS`. Set those 2 accordingly, and please also don't use `@` symbols in your password. Assuming you have the `Bot/.env` file made, insert these env variables into the file:
-
-```
-# Bot/.env
-RabbitMQ_Password_Dev = "password"
-RabbitMQ_Username_Dev = "Kumiko"
-RabbitMQ_Server_IP_Dev = "ip"
-RabbitMQ_Port_Dev = "port"
-```
-
-## Docker Compose 
-
-Instead of adding or adjusting the values from the `.env` file, there is a easier and faster way of doing things. If you have Docker and Docker Compose installed, rename the `docker-compose-example.yml` file into `docker-compose.yml`. You will notice that the section where Kumiko normally runs is commented out. Leave it like that for development purposes. Edit and change the default passwords for each of the services, and make sure that the passwords you set for the services are the exact same as the ones you'll be using in the `.env` file (inside the `Bot` folder, there is a `.env.dev-example` file. Rename that to `.env`, and you can adjust the values there instead). Then just start up the docker compose stack, create the databases and tables for postgres, and that's it.
-
-```sh
-sudo docker compose up -d
-```
-
 ## API Keys
 
-Kumiko is built on top of Kumiko, and Kumiko requires some API keys. Here's a list of current services that require API keys:
+Kumiko is built on top of Rin, and Kumiko requires some API keys. Here's a list of current services that require API keys:
 
-- [Blue Alliance](https://www.thebluealliance.com/apidocs)
-- [Discord.bots.gg](https://discord.bots.gg/) (may need to login with Discord in order to access API keys)
-- [FIRST FRC](https://frc-events.firstinspires.org/services/API) 
 - [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
-- [Hypixel](https://api.hypixel.net/#section/Authentication/ApiKey)
 - [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
 - [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
-- [Top.gg](https://docs.top.gg/)
-- [Twitch](https://dev.twitch.tv/docs/api/get-started) (Get both the Access Token and Client ID. [Use an Implicit grant flow for this](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth#implicit-grant-flow))
-- [Twitter](https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api) (Get the Bearer Token that supports both API v2 and v1.1)
 - [YouTube](https://developers.google.com/youtube/registering_an_application)
 
 ## Docker Build System
-All commits on the `dev` branch will be tagged with `edge` on Docker Hub and GHCR. These builds are dev builds, which means they are unstable and should be not used in an production environment. If you are interested in just testing out Kumiko, and are willing to deal with the instability, you can use the dev builds. Kumiko is built using Alpine Linux as a base.
+All commits on the `dev` branch will be tagged with `edge` on Docker Hub and GHCR. These builds are dev builds, which means they are unstable and should be not used in an production environment. If you are interested in just testing out Kumiko, and are willing to deal with the instability, you can use the dev builds. Kumiko is built using Debian 11 as a base.
 
 In short:
 
 - If you want to use Kumiko in a production environment, use a versioned tag.
 - If you want to test out Kumiko, use the `edge` tag.
 
-## Coding Style
+## Python Version Update
 
+Generally Kumiko will use the latest version of Python. The project will start migrating to the next version of Python (eg from Python 3.10 to 3.11) only if either the dependencies or the point releases of the next Python version (eg Python 3.11.1, etc) has released.
+
+## Coding Style
 ### Variables
 
-Most of the code written uses camelCasing for variables, PascalCasing for classes, and snake_casing for args. To sum it up:
+Most of the code written uses camelCasing for variables, `PascalCasing` for classes, and `snake_casing` for args. To sum it up:
 
-- camelCasing for variables
-- PascalCasing for classes
-- snake_casing for args
-- ALL_CAPS for constants
-- kebab-casing for files
+- `camelCasing` for variables
+- `PascalCasing` for classes
+- `snake_casing` for args
+- `ALL_CAPS` for constants
+- `kebab-casing` for files
 
-## Pull Requests and Commits
+### Formatting
 
-You have 2 option: Fork the repo and make a pull request back into the main one, or commit to the branch directly. Option 2 is preferred. **If it's not for any fixes including any hotfixes, please submit it to the dev branch, not the master branch**
+Kumiko uses pre-commit hooks to format all of the code. Make sure run `git add --all` before committing to add all of the files. More than likely you'll need to commit twice due to the formatting that pre-commit does afterwards.
 
-## Formatting
+### Docstrings
 
-Kumiko uses pre-commit hooks to format all of the code. Make sure run `git add --all` before committing to add all of the files. And if you get stuck in a loop, (mainly if black or isort constantly keeps on formatting for no reason), append the `--no-verify` flag to the command to commit it directly.
+Just like how major programs are documented, the libraries that are custom made for Kumiko also have to be documented. The current standard for this project is to use [Google's Docstring format](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings). A handy VS Code extension that should be used is the [autoDocstring](https://marketplace.visualstudio.com/items?itemName=njpwerner.autodocstring) extension. By default it will generate the docstring in the Google format. Docstrings should be used on all coroutines and methods (excluding cogs), and on classes as well. 
 
-## Issue and Feature Requests Reports
+For Cogs, docstrings formats are not needed. All you need to do is to add a basic docstring and Pycord will pick it up.
+
+Example Cog:
+
+```py 
+import discord
+from discord.commands import slash_command
+from discord.ext import commands
+
+class MyCog(commands.Cog):
+    """An example cog for demo purposes"""
+    def __init__(self, bot):
+        self.bot = bot
+
+    @slash_command(name="hello")
+    async def myCommand(self, ctx: discord.ApplicationContext):
+        """This is an example of a description for a slash command"""
+        await ctx.respond(f"Hello {ctx.user.name}!")
+
+def setup(bot):
+    bot.add_cog(MyCog(bot))
+```
+## GitHub Contributing Guidelines
+### Issue and Feature Requests Reports
 
 If there is an issue or a feature you want to be added, use the built-in GitHub issue tracker. Though a system like Jira could be used, it would be more efficient to just use the issue tracker that GitHub provides. 
 
 - If submitting a issue report, follow the template. Duplicates will not receive support
 - If submitting a feature request, follow the template as well. As with issue reports, duplicate requests will not receive support
 
-## Releasing Tags
+### Git Commit Styleguides
+
+- If updating any other files that aren't project files or not important (stuff like README.md, contributing.md, etc), add the [skip ci] label in the front
+- With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
+- If releasing tags, have it in this style. `Release: v[version number]`, `Update: v[version number]`, and `Fix: v[version number]`. Release is a major release. This means it bumps from 1.0.0 to 2.0.0. Minor means it bumps up the version from 1.4 to 1.5 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.2.
+
+### Releasing Tags
 In order to automate the release system, you have to make sure that in order to use it, the git commit message must be done correctly. Only use this if there is a new update that is ready to be released. Kumiko uses [SemVer](https://semver.org/) as the standard for versioning. Here's a table that should help with explaining this:
 
 | Type of Release, Update, or Patch | Example |
@@ -476,9 +153,10 @@ In order to automate the release system, you have to make sure that in order to 
 | Minor Release (For updates that are backwards compatible) | `Update: v2.5.0`|
 | Patch Release (For critical security patches and bug fixes) | `Fix: v2.5.1` |
 
+### Deploying a Production Release
 
-## Git Commit StyleGuides
+All production releases of Kumiko are located in the `master` branch. To deploy a full production release, there has to be a few things:
 
-- If updating any other files that aren't project files or not important (stuff like README.md, contributing.md, etc), add the [skip ci] label in the front
-- With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
-- If releasing tags, have it in this style. `Release: v[version number]`, `Update: v[version number]`, and `Fix: v[version number]`. Release is a major release. This means it bumps from 1.0.0 to 2.0.0. Minor means it bumps up the version from 1.4 to 1.5 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.2.
+- A full audit of the release needs to be done (every command, and tons of edge cases will be needed to be tested)
+- Changelogs need to be written 
+- Tests by the owner (Noelle should be the one who does this) to make sure it meets quality control and standards

@@ -1,6 +1,7 @@
 import discord
 from discord.commands import Option, SlashCommandGroup
 from discord.ext import commands
+from discord.utils import format_dt
 
 
 class Info(commands.Cog):
@@ -25,26 +26,24 @@ class Info(commands.Cog):
         embed.title = user.display_name
         embed.add_field(
             name="On Nitro Since (UTC)",
-            value=user.premium_since.strftime("%Y-%m-%d %H:%M:%S")
+            value=format_dt(user.premium_since)
             if user.premium_since is not None
             else None,
             inline=True,
         )
         embed.add_field(
             name="Account Creation Date (UTC)",
-            value=user.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+            value=format_dt(user.created_at),
             inline=True,
         )
         embed.add_field(
             name="Server Join Date (UTC)",
-            value=user.joined_at.strftime("%Y-%m-%d %H:%M:%S")
-            if user.joined_at is not None
-            else None,
+            value=format_dt(user.joined_at) if user.joined_at is not None else None,
             inline=True,
         )
         embed.add_field(
             name="Timeout Since",
-            value=user.communication_disabled_until.strftime("%Y-%m-%d %H:%M:%S")
+            value=format_dt(user.communication_disabled_until)
             if user.communication_disabled_until is not None
             else None,
             inline=True,

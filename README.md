@@ -6,7 +6,7 @@
 
 ![Kumiko](./assets/kumiko-resized-round.svg)
 
-[![Required Python Version](https://img.shields.io/badge/Python-3.10-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Docker Build](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_shield) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE) [![Kumiko](https://img.shields.io/badge/Kumiko-Oumae-white)](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae)
+[![Required Python Version](https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Docker Build](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml) [![Tests](https://github.com/No767/Kumiko/actions/workflows/tests.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/tests.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/No767/Kumiko/branch/dev/graph/badge.svg?token=CwcMp3LIFx)](https://codecov.io/gh/No767/Kumiko) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/no767/kumiko?label=Docker%20Release&logo=docker&logoColor=white&sort=semver) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE) [![Kumiko](https://img.shields.io/badge/Kumiko-Oumae-white)](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae)
 
 A multipurpose Discord bot built with freedom and choice in mind
 
@@ -14,7 +14,8 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, an Genshin wish sim, and many more features. Just like Rin, Kumiko is completely written in Python, and is a direct upstream fork from Rin. Which means that Rin's services are directly integrated within Kumiko 
+Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, an Genshin wish sim, and many more features. Kumiko also has integration with Rin, which means that services such as AniList and Reddit are also available for users to consume. 
+
 ## Rin (リン)
 
 Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
@@ -32,11 +33,12 @@ hood, which is 2 times faster than Node.js and reaches the same speeds as many G
     - Rank system (WIP)
     - Custom quests
 - Genshin-Based Wish Sim (GWS)
-- Basic Administration Commands + Admin Logs
-- All of the services from upstream Rin
+- Basic Administration Commands
+- 10+ services from upstream Rin
 
 And some ones that are planned:
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
+- Annoucement releaser with support from GitHub (Pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 
@@ -60,24 +62,25 @@ Kumiko uses the same prefix as Rin, which is `/`.
 
 # Inviting the Bot
 
-Still in early production. Not ready for release yet. Currently Kumiko is under v0, which means it's alpha-level software, and thus should not be used in production. Kumiko is subject to breaking changes within this version. Kumiko will be ready to be invited once it reaches to v1, which is production-ready software.
+Currently under beta stages. Not ready for release yet. Currently Kumiko is under v0, which means it's beta-level software as of now, and thus should not be used in production. Kumiko is subject to breaking changes within this version. Kumiko will be ready to be invited once it reaches to v1, which is production-ready software.
+
+> Beta production versions of Kumiko may soon be releasing for public testing... Keep an eye out for that!
 
 # Support 
 
-If you would like to support me with projects like this, please consider starring this project and other ones! Both Rin and Kumiko take a lot of time to make, so please consider supporting me if you can.
+If you would like to support me with projects like this, please consider starring this project and other ones! Bots like Kumiko, Akari, and Rin take a lot of time to make, so please consider supporting me if you can.
 
 # Getting Started
 
 If you would like to get started, here are some links to help you with that:
 
-- [Getting Started Guide](./Community/getting-started-guide.md)
-- [Getting Started (For Developers)](./Community/getting-started.md)
+- [Manual Deployment (Self Hosting)](https://kumiko-docs.vercel.app/docs/deployment/manual-deployment)
 - [Contributing](./Community/contributing.md)
-- [Documentation](https://docs.kumiko-bot.tech/)
+- [Documentation](https://kumiko-docs.vercel.app/)
 
 # Resources and Links
 
-- [Documentation](https://docs.kumiko-bot.tech/)
+- [Documentation](https://kumiko-docs.vercel.app/)
 - [Docker Hub](https://hub.docker.com/r/no767/kumiko)
 - [GHCR](https://github.com/No767/Kumiko/pkgs/container/kumiko)
 

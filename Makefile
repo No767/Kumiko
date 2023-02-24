@@ -1,15 +1,11 @@
-BOT_TOKEN ?=
-DOCKER_TAG_VERSION ?=
-
 all: run
 
 dev-setup:
-	poetry env use 3.10
+	poetry env use 3.11
 	poetry install
-
-init:
-	touch Bot/.env
-	echo 'TOKEN="$(BOT_TOKEN)"'  >> Bot/.env
+	cp .env-dev-example ./Bot/.env
+	cp .env-docker-example .env
+	cp ./docker-compose-dev.yml ./docker-compose.yml
 
 run:
-	python Bot/kumikobot.py
+	poetry run python Bot/kumikobot.py

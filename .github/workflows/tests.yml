@@ -1,0 +1,74 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - dev
+    
+  pull_request:
+    branches:
+      - dev
+
+  
+jobs: 
+  Test:
+    name: Test (${{ matrix.version }})
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7
+        ports: 
+          - 6379:6379
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [3.8, 3.9, '3.10', '3.11']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Codecov Uploader
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov
+
+      - name: Set up Python
+        id: setup-python
+        uses: actions/setup-python@v4.4.0
+        with:
+          python-version: ${{ matrix.version }}
+
+      - name: Set up Poetry
+        uses: Gr1N/setup-poetry@v8
+
+      - name: Install Nox
+        run: |
+          pip install --upgrade nox
+
+      - name: Run Tests
+        run: |
+          RAW_PYTHON_VERSION=${{ matrix.version }}
+          PYTHON_VERSION=$(echo $RAW_PYTHON_VERSION | sed 's/\.//')
+          nox --sessions test$PYTHON_VERSION
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml

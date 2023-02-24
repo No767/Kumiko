@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.10-slim-bullseye AS builder
+FROM python:3.11-slim-bullseye AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
@@ -22,28 +22,30 @@ WORKDIR /Kumiko
 COPY /pyproject.toml /Kumiko/
 COPY /poetry.lock /Kumiko/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes \
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --without=dev,test \
   && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
 
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bullseye
+
 RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
   ca-certificates \
   bash \
-  netcat
+  netcat \
+  libopus-dev \
+  libffi-dev \
+  libnacl-dev
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
+COPY /Bot/kumikocore.py /Kumiko/Bot/
 COPY /Bot/Cogs/ /Kumiko/Bot/Cogs
-COPY /scripts/seeder.py /Kumiko/seeder.py
-COPY /Bot/Libs/economy_utils/ /Kumiko/Bot/Libs/economy_utils
-COPY /Bot/Libs/genshin_wish_sim_utils /Kumiko/Bot/Libs/genshin_wish_sim_utils
-COPY /Bot/Libs/admin_logs_utils /Kumiko/Bot/Libs/admin_logs_utils
-COPY /Bot/Libs/kumiko_ui_components /Kumiko/Bot/Libs/kumiko_ui_components
+COPY /Bot/Libs/ /Kumiko/Bot/Libs/
+COPY /scripts/init-db.py /Kumiko/init-db.py
 COPY /Docker/Debian-Docker/start.sh /Kumiko/start.sh
 COPY /Docker/Debian-Docker/wait-for /Kumiko/wait-for
 

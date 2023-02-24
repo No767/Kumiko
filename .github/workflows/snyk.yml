@@ -12,26 +12,26 @@ jobs:
     steps:
       - name: Checkout Repository  
         uses: actions/checkout@v3
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         id: setup-python
-        uses: actions/setup-python@v4.3.0
+        uses: actions/setup-python@v4.5.0
         with:
-          python-version: '3.10'
+          python-version: '3.11'
       - name: Set up Node.js 18
-        uses: actions/setup-node@v3.5.1
+        uses: actions/setup-node@v3.6.0
         with:
           node-version: '18'
       - name: Install Snyk CLI
         run: |
           npm install --location=global snyk@latest 
       - name: Set up Poetry
-        uses: Gr1N/setup-poetry@v7
+        uses: Gr1N/setup-poetry@v8
       - name: Cache Poetry
         id: cache-poetry
-        uses: actions/cache@v3.0.11
+        uses: actions/cache@v3.2.6
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-v2-${{ hashFiles('**/Pipfile.lock') }}
+          key: ${{ runner.os }}-poetry-v2-${{ hashFiles('**/poetry.lock') }}
       - name: Install Poetry Dependencies
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |

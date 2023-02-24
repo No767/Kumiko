@@ -2,8 +2,7 @@ version: "3.9"
 services:
   postgres:
     container_name: Kumiko-Postgres
-    image: no767/kumiko-postgres:latest
-    restart: always
+    image: no767/kumiko-postgres:edge
     env_file:
       - .env
     volumes:
@@ -12,44 +11,24 @@ services:
       - 5432:5432
 
   redis:
-    container_name: Kumiko-Redis
-    image: redis:7
+    container_name: Kumiko-Redis-Stack
+    image: redis/redis-stack:7.0.6-RC6
     ports:
       - 6379:6379
     volumes:
       - redis_volume:/data
-    command: redis-server --save 60 1 --loglevel warning
+    command: redis-stack-server --protected-mode no
 
   kumiko:
     container_name: Kumiko
-    image: no767/kumiko:latest
-    restart: always
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 0s
-        max_attempts: 5
-        window: 120s
-      mode: replicated
+    image: no767/kumiko:edge
     command: sh -c '/Kumiko/wait-for postgres:5432 -- echo "[Wait-for] PostgreSQL is fully up. Waiting for Redis" && /Kumiko/wait-for redis:6379 -- echo "[Wait-for] Both PostgreSQL and Redis are fully ready. Starting up Kumiko" && /Kumiko/start.sh'
     env_file:
       - .env
     depends_on:
       - postgres
       - redis
-    
-  mongodb:
-    container_name: Kumiko-MongoDB
-    image: mongo:6
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb_volume:/data/db
 
 volumes:
   postgres_volume:
-  mongodb_volume:
   redis_volume:
