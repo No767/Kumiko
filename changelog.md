@@ -3,6 +3,7 @@
 This release focuses just on major backend performances, and rewrites of the core to use Tortoise ORM instead of SQLAlchemy ORM. This update also basically fully rewrites almost all of Kumiko's core features to using Redis caching.
 
 **Note that Kumiko will undergo major backend changes, and this release is known to be quite unstable and has not been tested. v0.6 is a full rewrite of the core backend**
+
 ## :boom: Breaking Changes :boom:
 
 - **Dropped support for Alpine-based images and `-alpine` tags**. This means v0.4.x will be the last supported version to have Alpine Linux as a base. Debian 11 will now be the new base. See [this gist](https://gist.github.com/No767/76d87bce5e6fcb1e682d2ff932c2a6b7) for more info.
@@ -12,6 +13,7 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Migrate from SQLAlchemy ORM to Tortoise ORM
 - Kumiko's custom caching library (w/ coredis)
 - Removal of old cogs, and old code
+- Unit tests
 
 ## 🛠️ Changes
 - Subclass Kumiko instead of creating the instance from `discord.Bot`
@@ -30,6 +32,8 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Ensure that the DB connection is first instantiated when Kumiko starts up
 - Export some Tortoise ORM models to Pydantic models for easier serialization and caching
 - Use ciso8601 for parsing ISO-8601 datetimes
+- Add voice support libs for Dockerfile
+- Caching for Marketplace, User profile, and User Inv
 
 ## ✨ Additions
 
@@ -46,7 +50,11 @@ This release focuses just on major backend performances, and rewrites of the cor
 - Use aerich for migrations, and initializing db tables
 - Small datetime util to help figure out whether the given datetime is a ISO-8601 datetime or not
 - Reconnect/retry logic for DB connections (for PostgreSQL)
+- Internal memory cache for Redis connection pools
 - Full GWS rewrite
+- Finally add unit tests, and code coverage
+- Recursive cog loading
+- ConnPool system for Redis
 
 ## ➖ Removals
 - SQLAlchemy ORM code

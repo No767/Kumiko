@@ -27,7 +27,7 @@ MODELS = [
     "kumiko_economy.models",
 ]
 
-DISCORD_BOT_TOKEN = os.getenv("Dev_Bot_Token")
+DISCORD_BOT_TOKEN = os.getenv("Kumiko_Token")
 IPC_SECRET_KEY = os.getenv("IPC_Secret_Key")
 
 intents = discord.Intents.default()
