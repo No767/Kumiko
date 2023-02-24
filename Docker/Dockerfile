@@ -41,10 +41,10 @@ RUN apt update \
   libnacl-dev
 
 WORKDIR /Kumiko
-COPY /kumikobot.py /Kumiko/Bot/
-COPY /kumikocore.py /Kumiko/Bot/
-COPY /Cogs /Kumiko/Bot/Cogs
-COPY / /Kumiko/Bot/Libs/
+COPY /Bot/kumikobot.py /Kumiko/Bot/
+COPY /Bot/kumikocore.py /Kumiko/Bot/
+COPY /Bot/Cogs /Kumiko/Bot/Cogs
+COPY /Bot/Libs /Kumiko/Bot/Libs/
 COPY /scripts/init-db.py /Kumiko/init-db.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
