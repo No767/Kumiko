@@ -14,27 +14,19 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, an Genshin wish sim, and many more features. Kumiko also has integration with Rin, which means that services such as AniList and Reddit are also available for users to consume. 
+Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, and many more features. Kumiko also includes integration with AniList, Reddit, Twitter, and others.
 
-## Rin (リン)
-
-Rin is a Discord bot written with Pycord and Python, and is focused on fetching data from third-party services with lighting performance in mind. For example, you could look up some memes with the Reddit service, 
-or find your favorite anime with the MyAnimeList service. Rin supports a lot of services, such as Twitter, MangaDex, Reddit, YouTube, Hypixel, and many more. Rin is also designed to be fast, and uses [Uvloop](https://github.com/MagicStack/uvloop) under the 
-hood, which is 2 times faster than Node.js and reaches the same speeds as many Go programs. On top on that, Rin is powered by the fastest JSON parser in the world, SIMDJSON. For more info, please check out the [Docs](https://docs.rinbot.live/).
-
-**For the future of Rin, please see this [gist](https://gist.github.com/No767/de27c61dc471ac331a45ea7c2bda62c0).**
 
 # Features
 
 - An **Opt-In** Economy System with jobs system and marketplace (WIP, pinned for v1)
-    - Includes a marketplace and an auction house 
+    - Includes a marketplace
     - Custom currency (Lavender Petals)
     - Custom jobs (WIP)
     - Rank system (WIP)
     - Custom quests
-- Genshin-Based Wish Sim (GWS)
 - Basic Administration Commands
-- 10+ services from upstream Rin
+- Integration with AniList, Reddit, and Twitter
 
 And some ones that are planned:
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
@@ -42,23 +34,9 @@ And some ones that are planned:
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 
-## Rin's Supported Services
-
-Kumiko comes with integration from Rin's services. Some of these services that are fully supported and integrated include:
-
-- AniList
-- MyAnimeList
-- Twitter
-- Modrinth
-- YouTube
-- Waifu.IM
-- MangaDex
-- Twitch
-- GitHub
-
 # Prefix
 
-Kumiko uses the same prefix as Rin, which is `/`.
+Kumiko uses slash commands (`/`)
 
 # Inviting the Bot
 

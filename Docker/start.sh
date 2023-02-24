@@ -20,7 +20,6 @@ if [[ -v GITHUB_API_ACCESS_TOKEN ]]; then
 else
     echo "Missing GitHub API token! GITHUB_API_ACCESS_TOKEN environment variable is not set."
 fi 
-# Hypixel
 # Reddit ID
 if [[ -v REDDIT_ID ]]; then
     echo "Reddit_ID=${REDDIT_ID}" >> /Kumiko/Bot/.env
@@ -48,6 +47,14 @@ else
     exit 1;
 fi
 
+if [[ -v DATABASE_URL ]]; then
+    echo "DATABASE_URL=${DATABASE_URL}" >> /Kumiko/.env
+else
+    echo "Missing DATABASE_URL env var! DATABASE_URL environment variable is not set."
+    exit 1;
+fi
+
+### Not really needed anymore
 if [[ -v POSTGRES_PASSWORD ]]; then
     echo "Postgres_Password=${POSTGRES_PASSWORD}" >> /Kumiko/Bot/.env
 else
@@ -82,6 +89,7 @@ else
     echo "Missing Postgres_Kumiko_Database env var! Postgres_Kumiko_Database environment variable is not set."
     exit 1;
 fi
+###
 
 if [[ -v REDIS_IP ]]; then
     echo "Redis_Server_IP=${REDIS_IP}" >> /Kumiko/Bot/.env
