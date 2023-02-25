@@ -55,22 +55,13 @@ class KumikoCore(discord.Bot):
     def load_cogs(self):
         """Kumiko's system to load cogs"""
         cogsPath = Path(__file__).parent.joinpath("Cogs")
-        for cog in cogsPath.rglob("*.py"):
-            relativeParentName = cog.parents[1].name
-            parentName = cog.parent.name
-            cogName = cog.name
-            if relativeParentName != "Cogs":
-                self.logger.debug(
-                    f"Loaded Cog: Cogs.{relativeParentName}.{parentName}.{cogName[:-3]}"
-                )
-                self.load_extension(
-                    f"Cogs.{relativeParentName}.{parentName}.{cogName[:-3]}"
-                )
+        for cog in cogsPath.rglob("**/*.py"):
+            if cog.parent.name == "Cogs":
+                self.logger.debug(f"Loaded Cog: {cog.parent.name}.{cog.name[:-3]}")
+                self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
             else:
-                self.logger.debug(
-                    f"Loaded Cog: {relativeParentName}.{parentName}.{cogName[:-3]}"
-                )
-                self.load_extension(f"{relativeParentName}.{parentName}.{cogName[:-3]}")
+                self.logger.debug(f"Loaded Cog: Cogs.{cog.parent.name}.{cog.name[:-3]}")
+                self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
 
     async def redisCheck(self) -> None:
         try:

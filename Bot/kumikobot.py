@@ -22,13 +22,12 @@ POSTGRES_PORT = os.getenv("Postgres_Port")
 POSTGRES_USERNAME = os.getenv("Postgres_Username")
 CONNECTION_URI = f"asyncpg://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_IP}:{POSTGRES_PORT}/{POSTGRES_DB}"
 MODELS = [
-    "kumiko_genshin_wish_sim.models",
     "kumiko_servers.models",
     "kumiko_economy.models",
 ]
 
-DISCORD_BOT_TOKEN = os.environ["DEV_TOKEN"]
-IPC_SECRET_KEY = os.environ["IPC_SECRET_KEY"]
+DISCORD_BOT_TOKEN = os.getenv("DEV_BOT_TOKEN")
+IPC_SECRET_KEY = os.getenv("IPC_SECRET_KEY")
 
 intents = discord.Intents.default()
 intents.members = True
