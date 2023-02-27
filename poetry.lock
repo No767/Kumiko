@@ -338,14 +338,14 @@ test = ["flake8 (>=5.0.4,<5.1.0)", "uvloop (>=0.15.3)"]
 
 [[package]]
 name = "asyncpraw"
-version = "7.6.1"
+version = "7.7.0"
 description = "Async PRAW, an abbreviation for \"Asynchronous Python Reddit API Wrapper\", is a python package that allows for simple access to Reddit's API."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "asyncpraw-7.6.1-py3-none-any.whl", hash = "sha256:b7a424d9357ff5991de71341ddf8d0f133b0b28cbc7f65e20e4e399e334e0d2b"},
-    {file = "asyncpraw-7.6.1.tar.gz", hash = "sha256:17567c517afa06bb33996a01632ee7f1d733307fd2820ed982da9bfb13adb98a"},
+    {file = "asyncpraw-7.7.0-py3-none-any.whl", hash = "sha256:e73fdaf3663eaf91f00c58a14340131076e841f38e01152ce18bdf050d8b5b92"},
+    {file = "asyncpraw-7.7.0.tar.gz", hash = "sha256:1e598d587a9ff8e3c95140fa799ee37b3f08b16f4c717e29738378b2f1c272ef"},
 ]
 
 [package.dependencies]
@@ -358,10 +358,10 @@ update-checker = ">=0.18"
 
 [package.extras]
 ci = ["coveralls"]
-dev = ["asynctest (>=0.13.0)", "mock (>=0.8)", "packaging", "pre-commit", "pytest (>=7.2.0,<7.3.0)", "pytest-asyncio", "pytest-vcr", "sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio", "testfixtures (>4.13.2,<7)", "vcrpy (>=4.1.1)"]
+dev = ["asynctest (>=0.13.0,<0.14.0)", "mock (>=4.0.0,<5.0.0)", "packaging", "pre-commit", "pytest (>=7.0.0,<8.0.0)", "pytest-asyncio (>=0.18.0,<0.19.0)", "pytest-vcr (>=1.0.0,<2.0.0)", "sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio", "testfixtures (>=6.0.0,<7.0.0)", "vcrpy (>=4.0.0,<5.0.0)"]
 lint = ["pre-commit", "sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio"]
 readthedocs = ["sphinx", "sphinx-rtd-dark-mode", "sphinx-rtd-theme", "sphinxcontrib-trio"]
-test = ["asynctest (>=0.13.0)", "mock (>=0.8)", "pytest (>=7.2.0,<7.3.0)", "pytest-asyncio", "pytest-vcr", "testfixtures (>4.13.2,<7)", "vcrpy (>=4.1.1)"]
+test = ["asynctest (>=0.13.0,<0.14.0)", "mock (>=4.0.0,<5.0.0)", "pytest (>=7.0.0,<8.0.0)", "pytest-asyncio (>=0.18.0,<0.19.0)", "pytest-vcr (>=1.0.0,<2.0.0)", "testfixtures (>=6.0.0,<7.0.0)", "vcrpy (>=4.0.0,<5.0.0)"]
 
 [[package]]
 name = "asyncprawcore"
@@ -2817,4 +2817,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "8110035cacd564baeebda765aac471621a00d5ac002e175d7e27eb76a93c8107"
+content-hash = "0ecf5977ef9124bd1918374cea246353e1f27d8a6ff7d987a110b5f7a1b28881"
