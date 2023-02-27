@@ -34,21 +34,21 @@ And some ones that are planned:
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 
-# Prefix
+## Prefix
 
 Kumiko uses slash commands (`/`)
 
-# Inviting the Bot
+## Inviting the Bot
 
 Currently under beta stages. Not ready for release yet. Currently Kumiko is under v0, which means it's beta-level software as of now, and thus should not be used in production. Kumiko is subject to breaking changes within this version. Kumiko will be ready to be invited once it reaches to v1, which is production-ready software.
 
 > Beta production versions of Kumiko may soon be releasing for public testing... Keep an eye out for that!
 
-# Support 
+## Support 
 
 If you would like to support me with projects like this, please consider starring this project and other ones! Bots like Kumiko, Akari, and Rin take a lot of time to make, so please consider supporting me if you can.
 
-# Getting Started
+## Getting Started
 
 If you would like to get started, here are some links to help you with that:
 
@@ -56,16 +56,16 @@ If you would like to get started, here are some links to help you with that:
 - [Contributing](./Community/contributing.md)
 - [Documentation](https://kumiko-docs.vercel.app/)
 
-# Resources and Links
+## Resources and Links
 
 - [Documentation](https://kumiko-docs.vercel.app/)
 - [Docker Hub](https://hub.docker.com/r/no767/kumiko)
 - [GHCR](https://github.com/No767/Kumiko/pkgs/container/kumiko)
 
-# Licensing
+## Licensing
 
 Kumiko and any software that is a part of Kumiko is licensed under [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
 
-# Name Inspiration
+## Name Inspiration
 
 Kumiko's name comes from the anime character [Kumiko Oumae](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae) from the anime [Hibike! Euphonium](https://anilist.co/anime/20912/Hibike-Euphonium/).
