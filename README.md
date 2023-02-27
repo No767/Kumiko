@@ -16,7 +16,7 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, and many more features. Kumiko also includes integration with AniList, Reddit, Twitter, and others.
 
-# Features
+## Features
 
 - An **Opt-In** Economy System with jobs system and marketplace (WIP, pinned for v1)
     - Includes a marketplace
