@@ -16,7 +16,6 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, and many more features. Kumiko also includes integration with AniList, Reddit, Twitter, and others.
 
-
 # Features
 
 - An **Opt-In** Economy System with jobs system and marketplace (WIP, pinned for v1)
@@ -26,10 +25,11 @@ Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumi
     - Rank system (WIP)
     - Custom quests
 - Basic Administration Commands
-- Integration with AniList, Reddit, and Twitter
+- Search memes, posts, anime, manga, and others!
 
 And some ones that are planned:
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
+- Event Logging (Pinned for v1)
 - Annoucement releaser with support from GitHub (Pinned for v2)
 - AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
@@ -64,11 +64,7 @@ If you would like to get started, here are some links to help you with that:
 
 # Licensing
 
-Kumiko being a direct upstream fork of Rin, is licensed under the same license as Rin, which is [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
-
-# FOSSA Status
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNo767%2FKumiko.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FNo767%2FKumiko?ref=badge_large)
+Kumiko and any software that is a part of Kumiko is licensed under [Apache-2.0](https://github.com/No767/Kumiko/blob/dev/LICENSE).
 
 # Name Inspiration
 
