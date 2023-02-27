@@ -1,4 +1,5 @@
 version: "3.9"
+name: "kumiko-dev"
 services:
   postgres:
     container_name: Kumiko-Postgres-Dev

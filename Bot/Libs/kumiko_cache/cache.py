@@ -2,6 +2,7 @@ from typing import Dict, Optional, Union
 
 import ormsgpack
 from coredis import ConnectionPool, Redis
+from redis.asyncio.connection import ConnectionPool
 
 from .key_builder import commandKeyBuilder
 

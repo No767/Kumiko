@@ -79,3 +79,4 @@ image-testspy
 .vagrant
 migrations
 .env-old
+database.db
