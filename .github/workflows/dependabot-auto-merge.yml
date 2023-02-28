@@ -4,7 +4,7 @@ on:
     types:
       - opened
   workflow_run:
-    workflows: ["Test", "Analyze"]
+    workflows: ["Tests", "CodeQL", "Snyk", "Docker Build"]
     branches: [dev]
     types: 
       - completed
