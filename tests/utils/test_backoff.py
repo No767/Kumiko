@@ -8,7 +8,7 @@ path = Path(__file__).parents[2]
 packagePath = os.path.join(str(path), "Bot", "Libs")
 sys.path.append(packagePath)
 
-from kumiko_utils import backoff
+from utils import backoff
 
 
 @pytest.fixture(scope="session")

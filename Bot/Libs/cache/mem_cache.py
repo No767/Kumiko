@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 
 class MemoryCache:
@@ -17,6 +17,14 @@ class MemoryCache:
             Any: The value from the cache
         """
         return self._cache.get(key)
+
+    def getAll(self) -> List[Any]:
+        """Gets all values from the cache
+
+        Returns:
+            List[Any]: A list of all of the values
+        """
+        return list(self._cache.values())
 
     def set(self, key: str, value: Any) -> Any:
         """Sets a value in the cache
