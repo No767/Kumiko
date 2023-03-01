@@ -1,4 +1,4 @@
-name: Dependabot auto-merge
+name: Dependabot Auto-Merge
 on: 
   pull_request_target:
     types:
@@ -16,7 +16,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
+    if: ${{ github.actor == 'dependabot[bot]' && steps.metadata.outputs.update-type != 'version-update:semver-major'}}
     steps:
       - name: Dependabot metadata
         id: metadata
