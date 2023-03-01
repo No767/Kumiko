@@ -10,84 +10,10 @@ When you contribute to this project, you are subject to the [Code of Conduct](./
 
 Make sure to read these guides listed below (read them in order):
 
-- [Installing Requirements](./installing-requirements.md)
-- [Getting the Discord Bot](./getting-discord-bot.md)
-- [Database Setup](./database-setup.md)
-
-## Getting Started
-### Developing Kumiko
-
-Once you have the discord bot up, there's a few things that needs to be done before development can begin. 
-
-1. Follow all of the guides in the [Before Starting](#Before-Starting) section to make sure that you have everything installed.
-2. Now create a shell that poetry needs. Run the following command:
-
-    ```sh
-    poetry shell
-    ```
-
-3. To run Kumiko, run the following command:
-
-   ```sh
-   make
-   ```
-
-   You could also run this command, which does the same thing:
-
-   ```sh
-   make run
-   ```
-
-   To stop Kumiko, hit Ctrl + C to kill the process. 
-
-### Things to keep in mind
-
-Make sure to always keep this in mind: Always add exception handling for Kumiko. And make sure it is done correctly. A poor example would be this:
-
-   ```py
-   try:
-      async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-         async with session.get(url) as resp:
-            data = await resp.content.read()
-            dataMain = parser.parse(data, recursive=True)
-            print(dataMain["data"]["children"][0]["data"]["title"]) # Doesn't exist within JSON data
-   except Exception as e:
-      await ctx.respond(e)
-   ```
-   But rather actually specify the exception that you want to handle.
-
-   ```py
-
-   try:
-      async with aiohttp.ClientSession(json_serialize=ujson.dumps) as session:
-         async with session.get(url) as resp:
-            data = await resp.content.read()
-            dataMain = parser.parse(data, recursive=True)
-            print(dataMain["data"]["children"][0]["data"]["title"]) # Doesn't exist within JSON data
-   except ValueError:
-      await ctx.respond("That item doesn't exist! Please try again")
-   ```
-
-## API Keys
-
-Kumiko is built on top of Rin, and Kumiko requires some API keys. Here's a list of current services that require API keys:
-
-- [GitHub](https://docs.github.com/en/rest/guides/basics-of-authentication)
-- [Reddit](https://www.reddit.com/prefs/apps) (Get both the ID and Secret)
-- [Tenor](https://developers.google.com/tenor/guides/quickstart#setup)
-- [YouTube](https://developers.google.com/youtube/registering_an_application)
-
-## Docker Build System
-All commits on the `dev` branch will be tagged with `edge` on Docker Hub and GHCR. These builds are dev builds, which means they are unstable and should be not used in an production environment. If you are interested in just testing out Kumiko, and are willing to deal with the instability, you can use the dev builds. Kumiko is built using Debian 11 as a base.
-
-In short:
-
-- If you want to use Kumiko in a production environment, use a versioned tag.
-- If you want to test out Kumiko, use the `edge` tag.
-
-## Python Version Update
-
-Generally Kumiko will use the latest version of Python. The project will start migrating to the next version of Python (eg from Python 3.10 to 3.11) only if either the dependencies or the point releases of the next Python version (eg Python 3.11.1, etc) has released.
+- [Dev Prerequisites](./Docs/dev-prerequisites.md)
+- [Getting the Dev Discord Bot](./Docs/getting-dev-discord-bot.md)
+- [API Keys](./Docs/api-keys.md)
+- [Database Setup](./Docs/database-setup.md)
 
 ## Coding Style
 ### Variables
@@ -152,11 +78,3 @@ In order to automate the release system, you have to make sure that in order to 
 | Major Release (For updates that are not backwards compatible) | `Release: v2.0.0` | 
 | Minor Release (For updates that are backwards compatible) | `Update: v2.5.0`|
 | Patch Release (For critical security patches and bug fixes) | `Fix: v2.5.1` |
-
-### Deploying a Production Release
-
-All production releases of Kumiko are located in the `master` branch. To deploy a full production release, there has to be a few things:
-
-- A full audit of the release needs to be done (every command, and tons of edge cases will be needed to be tested)
-- Changelogs need to be written 
-- Tests by the owner (Noelle should be the one who does this) to make sure it meets quality control and standards

@@ -53,7 +53,7 @@ If you would like to support me with projects like this, please consider starrin
 If you would like to get started, here are some links to help you with that:
 
 - [Manual Deployment (Self Hosting)](https://kumiko-docs.vercel.app/docs/deployment/manual-deployment)
-- [Contributing](./Community/contributing.md)
+- [Contributing](contributing.md)
 - [Documentation](https://kumiko-docs.vercel.app/)
 
 ## Resources and Links
