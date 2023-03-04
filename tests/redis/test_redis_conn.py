@@ -1,36 +1,36 @@
-import os
+import builtins
 import sys
 from pathlib import Path
 
 import pytest
-from aiocache import Cache
-from coredis import ConnectionPool
+from redis.asyncio.connection import ConnectionPool
 
-path = Path(__file__).parents[2]
-packagePath = os.path.join(str(path), "Bot", "Libs")
-sys.path.append(packagePath)
+path = Path(__file__).parents[2].joinpath("Bot")
+sys.path.append(str(path))
 
-from kumiko_utils import pingRedis
-from kumiko_utils.redis import pingRedisServer, setupRedisConnPool
-
-
-@pytest.fixture(autouse=True, scope="session")
-def mem_cache():
-    memCache = Cache()
-    return memCache
+from Libs.cache import MemoryCache
+from Libs.utils.redis import pingRedis, redisCheck, setupRedisPool
 
 
 @pytest.mark.asyncio
-async def test_setup_redis_conn_pool(mem_cache):
-    await setupRedisConnPool(mem_cache=mem_cache)
-    getConnPool = await mem_cache.get("main")
+async def test_setup_redis_pool():
+    await setupRedisPool()
+    getConnPool = builtins.memCache.get(key="main")
     assert isinstance(getConnPool, ConnectionPool)  # nosec
 
 
 @pytest.mark.asyncio
-async def test_ping_redis_server(mem_cache):
-    await mem_cache.add("main2", ConnectionPool().from_url("redis://localhost:6379/0"))
-    getConnPool = await mem_cache.get("main2")
-    res = await pingRedisServer(connection_pool=getConnPool)
-    otherRes = await pingRedis(connection_pool=getConnPool)
-    assert res is True and otherRes is True  # nosec
+async def test_redis_ping():
+    memCache = MemoryCache()
+    memCache.add(
+        key="main", value=ConnectionPool().from_url("redis://localhost:6379/0")
+    )
+    connPool = memCache.get(key="main")
+    res = await pingRedis(connection_pool=connPool)
+    assert res is True  # nosec
+
+
+@pytest.mark.asyncio
+async def test_redis_check():
+    res = await redisCheck()
+    assert res is True  # nosec

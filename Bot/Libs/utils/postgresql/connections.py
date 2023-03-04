@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from typing import Literal
 
 from prisma import Prisma
 from prisma.engine.errors import EngineConnectionError
@@ -11,16 +12,20 @@ backoffSec = 10
 backoffSecIndex = 0
 
 
-async def connPostgres() -> None:
+async def connPostgres() -> Literal[True]:
     """Connects to the PostgreSQL database
 
     Args:
         uri (str): PostgreSQL Connection URI
+
+    Returns:
+        Literal[True]: Returns True if the PostgreSQL server is alive
     """
     try:
         db = Prisma(auto_register=True)
         await db.connect()
         logger.info("Successfully connected to PostgreSQL server")
+        return True
     except EngineConnectionError:
         backoffTime = backoff(backoff_sec=backoffSec, backoff_sec_index=backoffSecIndex)
         logger.error(

@@ -1,6 +1,7 @@
 import asyncio
 import builtins
 import logging
+from typing import Literal
 
 import redis.asyncio as redis
 from Libs.cache import MemoryCache
@@ -47,7 +48,7 @@ async def pingRedis(connection_pool: ConnectionPool) -> bool:
 
 async def redisCheck(
     host: str = "localhost", port: int = 6379, key: str = "main", timeout: float = 15.0
-):
+) -> Literal[True]:
     """Integration method to check if the Redis server is alive
 
     Also sets up the conn pool cache
@@ -57,12 +58,16 @@ async def redisCheck(
         port (int, optional): Redis port. Defaults to 6379.
         key (str, optional): The key of the mem cache. Defaults to "main".
         timeout (float, optional): Socket connection timeout. Defaults to 15.0.
+
+    Returns:
+        Literal[True]: Returns True if the Redis server is alive
     """
     try:
         await setupRedisPool(host=host, port=port, key=key, timeout=timeout)
         res = await pingRedis(connection_pool=builtins.memCache.get(key=key))
         if res is True:
             logger.info("Successfully connected to Redis server")
+            return True
     except ConnectionError:
         backoffTime = backoff(backoff_sec=backoffSec, backoff_sec_index=backoffSecIndex)
         logger.error(
