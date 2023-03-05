@@ -7,7 +7,7 @@ from redis.asyncio.connection import ConnectionPool
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from cache import CommandKeyBuilder, KumikoCache
+from Libs.cache import CommandKeyBuilder, KumikoCache
 
 DATA = "Hello World"
 DICT_DATA = {"message": "Hello World"}
