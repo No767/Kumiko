@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Any, Dict, Optional, Union
 
 import ormsgpack
 import redis.asyncio as redis
@@ -41,6 +41,35 @@ class KumikoCache:
         res = ormsgpack.unpackb(await conn.get(key))
         await conn.close()
         return res
+
+    async def setJSONCache(self, key: str, value: Dict[str, Any], ttl: int = 5) -> None:
+        """Sets the JSON cache on Redis
+
+        Args:
+            key (str): The key to use for Redis
+            value (Dict[str, Any]): The value of the key-pair value
+            ttl (Optional[int], optional): TTL of the key-value pair. Defaults to 5.
+        """
+        client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        await client.json().set(name=key, path="$", obj=value)
+        await client.expire(name=key, time=ttl)
+        await client.close()
+
+    async def getJSONCache(self, key: str) -> Union[str, None]:
+        """Gets the JSON cache on Redis
+
+        Args:
+            key (str): The key of the key-value pair to get
+
+        Returns:
+            Dict[str, Any]: The value of the key-value pair
+        """
+        client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        value = await client.json().get(name=key)
+        await client.close()
+        if value is None:
+            return None
+        return value
 
     async def cacheExists(self, key: str) -> bool:
         """Checks to make sure if the cache exists

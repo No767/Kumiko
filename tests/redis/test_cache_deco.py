@@ -20,3 +20,17 @@ async def test_cache_deco():
 
     res = await testFunc()
     assert (await testFunc() == "Hello World") and isinstance(res, str)  # nosec
+
+
+@pytest.mark.asyncio
+async def test_cache_deco_json():
+    connPool = ConnectionPool(max_connections=25)
+
+    @cached(connection_pool=connPool, command_key=None)
+    async def testFuncJSON():
+        return {"message": "Hello World"}
+
+    res = await testFuncJSON()
+    assert (await testFuncJSON() == {"message": "Hello World"}) and isinstance(  # nosec
+        res, dict
+    )
