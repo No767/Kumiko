@@ -1,14 +1,12 @@
-import os
 import sys
 from pathlib import Path
 
 import pytest
 
-path = Path(__file__).parents[2]
-packagePath = os.path.join(str(path), "Bot", "Libs")
-sys.path.append(packagePath)
+path = Path(__file__).parents[2].joinpath("Bot")
+sys.path.append(str(path))
 
-from utils import backoff
+from Libs.utils import backoff
 
 
 @pytest.fixture(scope="session")

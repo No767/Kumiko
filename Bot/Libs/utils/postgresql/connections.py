@@ -15,9 +15,6 @@ backoffSecIndex = 0
 async def connPostgres() -> Literal[True]:
     """Connects to the PostgreSQL database
 
-    Args:
-        uri (str): PostgreSQL Connection URI
-
     Returns:
         Literal[True]: Returns True if the PostgreSQL server is alive
     """

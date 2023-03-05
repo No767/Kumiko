@@ -1,13 +1,11 @@
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-path = Path(__file__).parents[2]
-packagePath = os.path.join(str(path), "Bot", "Libs")
-sys.path.append(packagePath)
+path = Path(__file__).parents[2].joinpath("Bot")
+sys.path.append(str(path))
 
-from kumiko_utils import parseDatetime
+from Libs.utils import parseDatetime
 
 
 def test_parse_date_obj():

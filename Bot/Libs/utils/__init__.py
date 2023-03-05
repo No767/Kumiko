@@ -1,3 +1,4 @@
 from .backoff import backoff
+from .utils import parseDatetime
 
-__all__ = ["backoff"]
+__all__ = ["backoff", "parseDatetime"]
