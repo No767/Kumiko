@@ -1,4 +1,4 @@
-from .decorators import cached
+from .decorators import cached, cachedJson
 from .global_cache import setupMemCacheBuiltin
 from .key_builder import CommandKeyBuilder
 from .mem_cache import MemoryCache
@@ -10,4 +10,5 @@ __all__ = [
     "CommandKeyBuilder",
     "KumikoCache",
     "cached",
+    "cachedJson",
 ]
