@@ -11,11 +11,6 @@ class KumikoCache:
     """Kumiko's custom caching library. Uses Redis as the backend."""
 
     def __init__(self, connection_pool: ConnectionPool) -> None:
-        """Kumiko's custom caching library. Uses Redis as the backend.
-
-        Args:
-            connection_pool (ConnectionPool): Redis Connection Pool
-        """
         self.connection_pool = connection_pool
 
     async def setBasicCache(
@@ -33,7 +28,7 @@ class KumikoCache:
             ttl (Optional[int], optional): TTL for the key-value pair. Defaults to 30.
         """
         conn: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await conn.set(key=key, value=ormsgpack.packb(value), ex=ttl)
+        await conn.set(name=key, value=ormsgpack.packb(value), ex=ttl)
         await conn.close()
 
     async def getBasicCache(self, key: str) -> str:
@@ -46,3 +41,17 @@ class KumikoCache:
         res = ormsgpack.unpackb(await conn.get(key))
         await conn.close()
         return res
+
+    async def cacheExists(self, key: str) -> bool:
+        """Checks to make sure if the cache exists
+
+        Args:
+            key (str): Redis key to check
+
+        Returns:
+            bool: Whether the key exists or not
+        """
+        client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        keyExists = await client.exists(key) >= 1
+        await client.close()
+        return True if keyExists else False
