@@ -16,17 +16,17 @@ model User {
   date_joined  DateTime      @default(now())
   marketplace  Marketplace? // A user can also optionally own a marketplace
   inv          Inv[] // Give the user a default inventory that has one item that is worth 0 petals
-  quests       Quest[] // This default quest may be used to get the user to explore the marketplace
-  QuestClaimer QuestClaimer? // A user can only claim one quest
+  // quests       Quest[] // This default quest may be used to get the user to explore the marketplace
+  // QuestClaimer QuestClaimer? // A user can only claim one quest
 }
 
-model QuestClaimer {
-  id         BigInt   @id @unique
-  user       User     @relation(fields: [user_id], references: [id])
-  user_id    BigInt   @unique
-  claimed_at DateTime
-  quest      Quest[]
-}
+// model QuestClaimer {
+//   id         BigInt   @id @unique
+//   user       User     @relation(fields: [user_id], references: [id])
+//   user_id    BigInt   @unique
+//   claimed_at DateTime
+//   quest      Quest[]
+// }
 
 model Inv {
   id      BigInt @id @unique
@@ -34,21 +34,21 @@ model Inv {
   user_id BigInt
 }
 
-model Quest {
-  id             String       @id @default(uuid())
-  author         User         @relation(fields: [author_id], references: [id])
-  author_id      BigInt
-  claimer        QuestClaimer @relation(fields: [claimer_id], references: [id])
-  claimer_id     BigInt
-  name           String
-  description    String       @db.Text
-  reward         Int          @default(0)
-  active         Boolean      @default(true)
-  claimed        Boolean      @default(false)
-  date_created   DateTime     @default(now())
-  date_completed DateTime?
-  end_datetime   DateTime?
-}
+// model Quest {
+//   id             String       @id @default(uuid())
+//   author         User         @relation(fields: [author_id], references: [id])
+//   author_id      BigInt
+//   claimer        QuestClaimer @relation(fields: [claimer_id], references: [id])
+//   claimer_id     BigInt
+//   name           String
+//   description    String       @db.Text
+//   reward         Int          @default(0)
+//   active         Boolean      @default(true)
+//   claimed        Boolean      @default(false)
+//   date_created   DateTime     @default(now())
+//   date_completed DateTime?
+//   end_datetime   DateTime?
+// }
 
 model Item {
   id             String      @id @default(uuid())
