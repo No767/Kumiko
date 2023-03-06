@@ -2,6 +2,7 @@ from typing import Any, Dict, Optional, Union
 
 import ormsgpack
 import redis.asyncio as redis
+from Libs.utils import encodeDatetime
 from redis.asyncio.connection import ConnectionPool
 
 from .key_builder import CommandKeyBuilder
@@ -51,7 +52,7 @@ class KumikoCache:
             ttl (Optional[int], optional): TTL of the key-value pair. Defaults to 5.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json().set(name=key, path="$", obj=value)
+        await client.json().set(name=key, path="$", obj=encodeDatetime(value))
         await client.expire(name=key, time=ttl)
         await client.close()
 

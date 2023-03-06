@@ -70,6 +70,8 @@ def cachedJson(
         @wraps(func)
         async def wrapped(*args: Any, **kwargs: Any) -> Any:
             currFunc = await func(*args, **kwargs)
+            if currFunc is None:
+                return None
             cache = KumikoCache(connection_pool=connection_pool)
             key = (
                 CommandKeyBuilder(id=uuid.uuid4(), command=cachedJson.__name__)
