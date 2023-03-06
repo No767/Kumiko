@@ -1745,14 +1745,14 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "prisma"
-version = "0.8.1"
+version = "0.8.2"
 description = "Prisma Client Python is an auto-generated and fully type-safe database client"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "prisma-0.8.1-py3-none-any.whl", hash = "sha256:62a87032f19cddb0cacdb33c56f4606ece7e09f1c372de994d1ebcc682e978e9"},
-    {file = "prisma-0.8.1.tar.gz", hash = "sha256:c4933064e211888e943bb0dbef45b6067144f0a23d735f7ceba5a204cff0330b"},
+    {file = "prisma-0.8.2-py3-none-any.whl", hash = "sha256:4d0ebf63ecd21bc4fda633867403429d24f89e6af5889944b2f9ca4203f50835"},
+    {file = "prisma-0.8.2.tar.gz", hash = "sha256:b3a639941f4bf33dbd414fee3e02cf30218968d05b108f8a4d5b7c331dcbc19c"},
 ]
 
 [package.dependencies]
@@ -2817,4 +2817,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "843c7729894e6411285e9704fc9d624d20b5b7e408959219b3786296aadbaa0a"
+content-hash = "11a963db40308a66f43522e54975040227c4e25d7168aa019594f031a99ec5af"
