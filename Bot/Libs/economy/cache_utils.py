@@ -1,27 +1,27 @@
-import os
+import builtins
 import uuid
 from typing import Dict, Union
 
 from prisma.models import User
 from redis.asyncio.connection import ConnectionPool
 
-from ..cache import CommandKeyBuilder, MemoryCache, cachedJson
+from ..cache import CommandKeyBuilder, cachedJson
+from ..utils.redis import setupRedisPool
 
-REDIS_HOST = (
-    os.getenv("REDIS_HOST") if os.getenv("REDIS_HOST") is not None else "localhost"
-)
-REDIS_PORT = (
-    int(os.getenv("REDIS_PORT")) if os.getenv("REDIS_PORT") is not None else 6379
-)
 
-connPool = ConnectionPool.from_url(f"redis://{REDIS_HOST}:{REDIS_PORT}/0")
+def getConnPool() -> ConnectionPool:
+    """[Function] Helper function to obtain the connection pool for Redis
 
-memCache = MemoryCache()
-memCache.set(key="main", value=connPool)
+    Returns:
+        ConnectionPool: The connection pool for Redis
+    """
+    if not hasattr(builtins, "memCache"):
+        setupRedisPool()
+    return builtins.memCache.get(key="main")
 
 
 @cachedJson(
-    connection_pool=memCache.get(key="main"),
+    connection_pool=getConnPool(),
     command_key=CommandKeyBuilder(
         prefix="cache", namespace="kumiko", id=uuid.uuid4(), command="internal_get_user"
     ),
