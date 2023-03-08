@@ -15,7 +15,7 @@ backoffSec = 15
 backoffSecIndex = 0
 
 
-async def setupRedisPool(
+def setupRedisPool(
     host: str = "localhost", port: int = 6379, key: str = "main", timeout: float = 15.0
 ) -> None:
     """Sets up the Redis connection pool
@@ -51,7 +51,7 @@ async def redisCheck(
 ) -> Literal[True]:
     """Integration method to check if the Redis server is alive
 
-    Also sets up the conn pool cache
+    Also sets up the conn pool cache. This is handled recursively actually.
 
     Args:
         host (str, optional): Redis host. Defaults to "localhost".
@@ -63,7 +63,7 @@ async def redisCheck(
         Literal[True]: Returns True if the Redis server is alive
     """
     try:
-        await setupRedisPool(host=host, port=port, key=key, timeout=timeout)
+        setupRedisPool(host=host, port=port, key=key, timeout=timeout)
         res = await pingRedis(connection_pool=builtins.memCache.get(key=key))
         if res is True:
             logger.info("Successfully connected to Redis server")

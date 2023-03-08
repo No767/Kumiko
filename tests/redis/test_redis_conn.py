@@ -12,9 +12,8 @@ from Libs.cache import MemoryCache
 from Libs.utils.redis import pingRedis, redisCheck, setupRedisPool
 
 
-@pytest.mark.asyncio
-async def test_setup_redis_pool():
-    await setupRedisPool()
+def test_setup_redis_pool():
+    setupRedisPool()
     getConnPool = builtins.memCache.get(key="main")
     assert isinstance(getConnPool, ConnectionPool)  # nosec
 
