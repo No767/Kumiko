@@ -21,7 +21,7 @@ rin-exceptions = "^1.0.3"
 numpy = "^1.24.2"
 py-cord = {version = "2.4.0", extras = ["voice"]}
 pytimeparse = "^1.1.8"
-coredis = "^4.10.2"
+coredis = "^4.10.3"
 charset-normalizer = "^3.1.0"
 tortoise-orm = {extras = ["accel"], version = "^0.19.3"}
 ormsgpack = "^1.2.5"
