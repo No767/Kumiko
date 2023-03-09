@@ -36,3 +36,5 @@ This release focuses on cleaning out any old code, and getting ready for the mig
 - Old packages (utils, economy, cache, etc)
 - GWS (will be replaced by a gacha system in the future)
 - A ton of libs
+- Removed standalone setup scrips
+- Removed old DB seeder scripts

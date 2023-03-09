@@ -54,20 +54,6 @@ else
     exit 1;
 fi
 
-# if [[ -v REDIS_HOST ]]; then
-#     echo "REDIS_HOST=${REDIS_HOST}" >> /Kumiko/Bot/.env
-# else
-#     echo "Missing REDS_HOST env var! REIDS_HOST environment variable is not set."
-#     exit 1;
-# fi
-
-# if [[ -v REDIS_PORT ]]; then
-#     echo "REDIS_PORT=${REDIS_PORT}" >> /Kumiko/Bot/.env
-# else
-#     echo "Missing REDIS_PORT env var! REDIS_PORT environment variable is not set."
-#     exit 1;
-# fi
-
 KUMIKO_FIRST_START_CHECK="KUMIKO_FIRST_START"
 
 if [ ! -f $KUMIKO_FIRST_START_CHECK ]; then

@@ -22,7 +22,7 @@ WORKDIR /Kumiko
 COPY /pyproject.toml /Kumiko/
 COPY /poetry.lock /Kumiko/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --without=dev,test \
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main \
   && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
 
 ####################################################################################################
@@ -45,7 +45,6 @@ COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/kumikocore.py /Kumiko/Bot/
 COPY /Bot/Cogs /Kumiko/Bot/Cogs
 COPY /Bot/Libs /Kumiko/Bot/Libs/
-COPY /scripts/init-db.py /Kumiko/init-db.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
 
