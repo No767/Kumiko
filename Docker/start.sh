@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ -v KUMIKO_TOKEN ]]; then
-    echo "Kumiko_Token=${KUMIKO_TOKEN}" >> /Kumiko/Bot/.env
+    echo "KUMIKO_TOKEN=${KUMIKO_TOKEN}" >> /Kumiko/Bot/.env
 else
     echo "Missing Kumiko's bot token! KUMIKO_TOKEN environment variable is not set."
     exit 1;
@@ -48,7 +48,7 @@ fi
 # fi
 
 if [[ -v DATABASE_URL ]]; then
-    echo "DATABASE_URL=${DATABASE_URL}" >> /Kumiko/.env
+    echo "DATABASE_URL=${DATABASE_URL}" >> /Kumiko/Bot/.env
 else
     echo "Missing DATABASE_URL env var! DATABASE_URL environment variable is not set."
     exit 1;
