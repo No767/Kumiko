@@ -12,7 +12,7 @@ load_dotenv()
 REDIS_HOST = os.getenv("REDIS_HOST")
 REDIS_PORT = os.getenv("REDIS_PORT")
 
-DISCORD_BOT_TOKEN = os.getenv("DEV_BOT_TOKEN")
+DISCORD_BOT_TOKEN = os.getenv("KUMIKO_TOKEN")
 
 intents = discord.Intents.default()
 intents.members = True

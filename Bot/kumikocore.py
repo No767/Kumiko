@@ -20,6 +20,7 @@ class KumikoCore(discord.Bot):
         super().__init__(*args, **kwargs)
         self.loop.create_task(connPostgres())
         self.loop.create_task(redisCheck(redis_host, redis_port))
+        self.setupHandler.start()
         self.logger = logging.getLogger("kumikobot")
         self.load_cogs()
 
