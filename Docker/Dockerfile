@@ -43,6 +43,7 @@ RUN apt update \
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/kumikocore.py /Kumiko/Bot/
+COPY /schema.prisma /Kumiko/Bot
 COPY /Bot/Cogs /Kumiko/Bot/Cogs
 COPY /Bot/Libs /Kumiko/Bot/Libs/
 COPY /Docker/start.sh /Kumiko/start.sh
