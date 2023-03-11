@@ -9,6 +9,9 @@ on:
     branches:
       - dev
 
+env:
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+
   
 jobs: 
   Test:
@@ -17,9 +20,10 @@ jobs:
 
     services:
       redis:
-        image: redis:7
+        image: redis/redis-stack-server:7.0.6-RC6
         ports: 
           - 6379:6379
+
       postgres:
         image: postgres:15
         env:
@@ -51,7 +55,7 @@ jobs:
 
       - name: Set up Python
         id: setup-python
-        uses: actions/setup-python@v4.4.0
+        uses: actions/setup-python@v4.5.0
         with:
           python-version: ${{ matrix.version }}
 

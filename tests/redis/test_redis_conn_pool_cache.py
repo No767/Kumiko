@@ -1,53 +1,47 @@
-import os
 import sys
 from pathlib import Path
 
-import pytest
-from aiocache import Cache
-from coredis import ConnectionPool, Redis
+import redis
 
-path = Path(__file__).parents[2]
-packagePath = os.path.join(str(path), "bot", "libs")
-sys.path.append(packagePath)
+path = Path(__file__).parents[2].joinpath("Bot")
+sys.path.append(str(path))
+
+from Libs.cache import MemoryCache
+from redis.connection import ConnectionPool
 
 
-@pytest.mark.asyncio
-async def test_pool_mem_cache_add():
+def test_pool_mem_cache_add():
     connPool = ConnectionPool(max_connections=25)
-    memCache = Cache(Cache.MEMORY)
-    await memCache.add(key="conn1", value=connPool)
-    assert isinstance(await memCache.get(key="conn1"), ConnectionPool)  # nosec
+    memCache = MemoryCache()
+    memCache.add(key="conn1", value=connPool)
+    assert isinstance(memCache.get(key="conn1"), ConnectionPool)  # nosec
 
 
-@pytest.mark.asyncio
-async def test_pool_mem_cache_delete():
+def test_pool_mem_cache_delete():
     connPool = ConnectionPool(max_connections=25)
-    memCache = Cache(Cache.MEMORY)
-    await memCache.add(key="conn1", value=connPool)
-    await memCache.delete(key="conn1")
-    assert await memCache.get(key="conn1") is None  # nosec
+    memCache = MemoryCache()
+    memCache.add(key="conn1", value=connPool)
+    memCache.delete(key="conn1")
+    assert memCache.get(key="conn1") is None  # nosec
 
 
-@pytest.mark.asyncio
-async def test_pool_mem_cache_set():
+def test_pool_mem_cache_set():
     connPool = ConnectionPool(max_connections=25)
-    memCache = Cache(Cache.MEMORY)
-    await memCache.set(key="conn1", value=connPool)
-    await memCache.set(key="conn2", value=connPool)
+    memCache = MemoryCache()
+    memCache.set(key="conn2", value=connPool)
+    memCache.set(key="conn1", value=connPool)
     assert (  # nosec
-        await memCache.get(key="conn1") is not None
-        and await memCache.get(key="conn2") is not None
+        memCache.get(key="conn1") is not None and memCache.get(key="conn2") is not None
     )
 
 
-@pytest.mark.asyncio
-async def test_pool_mem_integration():
+def test_pool_mem_integration():
     connPool = ConnectionPool(max_connections=25)
-    memCache = Cache(Cache.MEMORY)
-    await memCache.add(key="conn1", value=connPool)
-    currPool = await memCache.get(key="conn1")
-    r = Redis(connection_pool=currPool)
-    await r.set("foo", "bar")
-    res = await r.get("foo")
-    await r.quit()
+    memCache = MemoryCache()
+    memCache.add(key="conn1", value=connPool)
+    currPool = memCache.get(key="conn1")
+    r = redis.Redis(connection_pool=currPool)
+    r.set("foo", "bar")
+    res = r.get("foo")
+    r.close()
     assert res == b"bar"  # nosec

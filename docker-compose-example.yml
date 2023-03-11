@@ -2,7 +2,7 @@ version: "3.9"
 services:
   postgres:
     container_name: Kumiko-Postgres
-    image: no767/kumiko-postgres:edge
+    image: postgres:15 
     env_file:
       - .env
     volumes:

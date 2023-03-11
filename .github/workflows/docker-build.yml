@@ -46,10 +46,10 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PACKAGE_TOKEN }}
 
       - name: Cache Docker layers
-        uses: actions/cache@v3.2.6
+        uses: actions/cache@v3.3.0
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-debian-ghcr-${{ github.sha }}
@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
-          file: ./Docker/Debian-Docker/Dockerfile
+          file: ./Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -108,7 +108,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Cache Docker layers
-        uses: actions/cache@v3.2.6
+        uses: actions/cache@v3.3.0
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-debian-hub-${{ github.sha }}
@@ -119,7 +119,7 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
-          file: ./Docker/Debian-Docker/Dockerfile
+          file: ./Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -129,56 +129,3 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new-debian-hub /tmp/.buildx-cache
-
-  Build-Kumiko-Postgres:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Prepare Docker Meta
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            no767/kumiko-postgres
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=edge,branch=dev
-
-      - name: Setup Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: latest
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3.2.6
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-kumiko-postgres-hub-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-kumiko-postgres-hub-
-
-      - name: Build and push
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: .
-          file: ./Docker/Postgres-Docker/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-kumiko-postgres
-
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-kumiko-postgres /tmp/.buildx-cache
