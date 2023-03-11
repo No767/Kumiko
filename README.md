@@ -12,6 +12,8 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 <div align=left>
 
+| :bangbang: | Kumiko is currently undergoing a migration from Pycord to Discord.py (including a full rewrite). At this stage, Kumiko may not be working as intended. |
+| :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 ## Kumiko (久美子)
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, and many more features. Kumiko also includes integration with AniList, Reddit, Twitter, and others.
