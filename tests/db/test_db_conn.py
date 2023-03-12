@@ -10,11 +10,6 @@ sys.path.append(str(path))
 from Libs.utils.postgresql import PrismaClientSession
 from prisma.models import User
 
-# @pytest.mark.asyncio
-# async def test_postgres_conn():
-#     await connPostgres()
-#     assert True  # nosec
-
 
 @pytest.mark.asyncio
 async def test_prisma_client_session():

@@ -1,49 +1,56 @@
 import logging
-from pathlib import Path
+from typing import Optional
 
 import discord
-from discord.ext import tasks
-from Libs.utils.postgresql import connPostgres
+from anyio import Path
+from discord.ext import commands
 from Libs.utils.redis import redisCheck
 
 
-class KumikoCore(discord.Bot):
+class KumikoCore(commands.Bot):
     """The core of Kumiko - Subclassed this time"""
 
     def __init__(
         self,
-        redis_host: str,
-        redis_port: int,
+        intents: discord.Intents,
+        command_prefix: str = "?k",
+        redis_host: str = "localhost",
+        redis_port: int = 6379,
+        testing_guild_id: Optional[int] = None,
         *args,
         **kwargs,
     ):
-        super().__init__(*args, **kwargs)
-        self.loop.create_task(connPostgres())
-        self.loop.create_task(redisCheck(redis_host, redis_port))
-        self.setupHandler.start()
+        super().__init__(
+            intents=intents,
+            command_prefix=command_prefix,
+            help_command=commands.DefaultHelpCommand(),
+            *args,
+            **kwargs,
+        )
+        self.redis_host = redis_host
+        self.redis_port = redis_port
+        self.testing_guild_id = testing_guild_id
         self.logger = logging.getLogger("kumikobot")
-        self.load_cogs()
 
-    def load_cogs(self):
-        """Kumiko's system to load cogs"""
+    async def setup_hook(self) -> None:
         cogsPath = Path(__file__).parent.joinpath("Cogs")
-        for cog in cogsPath.rglob("**/*.py"):
+        async for cog in cogsPath.rglob("**/*.py"):
             if cog.parent.name == "Cogs":
                 self.logger.debug(f"Loaded Cog: {cog.parent.name}.{cog.name[:-3]}")
-                self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
+                await self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
             else:
                 self.logger.debug(f"Loaded Cog: Cogs.{cog.parent.name}.{cog.name[:-3]}")
-                self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
+                await self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
 
-    @tasks.loop(count=1)
-    async def setupHandler(self):
-        await self.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
-        )
+        self.loop.create_task(redisCheck(self.redis_host, self.redis_port))
 
-    @setupHandler.before_loop
-    async def beforeReady(self):
-        await self.wait_until_ready()
+        # if self.testing_guild_id:
+        #     guild = discord.Object(self.testing_guild_id)
+        #     self.tree.copy_global_to(guild=guild)
+        #     await self.tree.sync(guild=guild)
 
     async def on_ready(self):
         self.logger.info(f"{self.user.name} is fully ready!")
+        await self.change_presence(
+            activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
+        )

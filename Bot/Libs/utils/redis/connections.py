@@ -6,7 +6,7 @@ from typing import Literal
 import redis.asyncio as redis
 from Libs.cache import MemoryCache
 from redis.asyncio.connection import ConnectionPool
-from redis.exceptions import ConnectionError
+from redis.exceptions import ConnectionError, TimeoutError
 
 from ..backoff import backoff
 
@@ -62,13 +62,14 @@ async def redisCheck(
     Returns:
         Literal[True]: Returns True if the Redis server is alive
     """
+    backoffSec = 15
     try:
         setupRedisPool(host=host, port=port, key=key, timeout=timeout)
         res = await pingRedis(connection_pool=builtins.memCache.get(key=key))
         if res is True:
             logger.info("Successfully connected to Redis server")
             return True
-    except ConnectionError:
+    except (ConnectionError, TimeoutError):
         backoffTime = backoff(backoff_sec=backoffSec, backoff_sec_index=backoffSecIndex)
         logger.error(
             f"Failed to connect to Redis server - Restarting connection in {int(backoffTime)} seconds"

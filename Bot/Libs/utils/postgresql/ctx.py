@@ -1,15 +1,14 @@
 import logging
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from prisma import Prisma
 from prisma.engine.errors import EngineConnectionError
 
 logger = logging.getLogger("discord") or logging.getLogger(__name__)
 
-
+# This will only really be kept around for either test scripts or for other purposes
 @asynccontextmanager
-async def PrismaClientSession() -> AsyncIterator[None]:
+async def PrismaClientSession():
     """Implements an asynchronous context manager for Prisma client sessions
 
     Raises:
@@ -18,9 +17,10 @@ async def PrismaClientSession() -> AsyncIterator[None]:
     Returns:
         AsyncIterator[None]: Returns an asynchronous context manager for Prisma client sessions
     """
-    db = Prisma(auto_register=True)
-    conn = await db.connect()
     try:
+        db = Prisma(auto_register=True)
+        conn = await db.connect()
+        logger.info("Successfully connected to PostgreSQL database")
         yield conn
     except EngineConnectionError:
         logger.error("Failed to connect to PostgreSQL database")
