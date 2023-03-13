@@ -27,7 +27,7 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 async def main() -> None:
     async with KumikoCore(
         intents=intents,
-        command_prefix="?",
+        command_prefix="?k ",
         redis_host=REDIS_HOST,
         redis_port=REDIS_PORT,
         testing_guild_id=970159505390325842,

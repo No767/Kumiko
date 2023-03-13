@@ -13,7 +13,7 @@ class KumikoCore(commands.Bot):
     def __init__(
         self,
         intents: discord.Intents,
-        command_prefix: str = "?k",
+        command_prefix: str = "?k ",
         redis_host: str = "localhost",
         redis_port: int = 6379,
         testing_guild_id: Optional[int] = None,
@@ -24,6 +24,7 @@ class KumikoCore(commands.Bot):
             intents=intents,
             command_prefix=command_prefix,
             help_command=commands.DefaultHelpCommand(),
+            activity=discord.Activity(type=discord.ActivityType.watching, name="/help"),
             *args,
             **kwargs,
         )
@@ -51,6 +52,3 @@ class KumikoCore(commands.Bot):
 
     async def on_ready(self):
         self.logger.info(f"{self.user.name} is fully ready!")
-        await self.change_presence(
-            activity=discord.Activity(type=discord.ActivityType.watching, name="/help")
-        )
