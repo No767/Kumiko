@@ -1,6 +1,5 @@
 from typing import Any, Dict, Optional, Union
 
-import ormsgpack
 import redis.asyncio as redis
 from Libs.utils import encodeDatetime
 from redis.asyncio.connection import ConnectionPool
@@ -16,10 +15,8 @@ class KumikoCache:
 
     async def setBasicCache(
         self,
-        key: Optional[str] = CommandKeyBuilder(
-            prefix="cache", namespace="kumiko", id=None, command=None
-        ),
-        value: Union[str, bytes] = None,
+        key: Optional[str],
+        value: Union[str, bytes] = "",
         ttl: Optional[int] = 30,
     ) -> None:
         """Sets the command cache on Redis
@@ -28,18 +25,21 @@ class KumikoCache:
             value (Union[str, bytes, dict]): Value to set on Redis. Defaults to None.
             ttl (Optional[int], optional): TTL for the key-value pair. Defaults to 30.
         """
+        defaultKey = CommandKeyBuilder(
+            prefix="cache", namespace="kumiko", id=None, command=None
+        )
         conn: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await conn.set(name=key, value=ormsgpack.packb(value), ex=ttl)
+        await conn.set(name=key if key is not None else defaultKey, value=value, ex=ttl)
         await conn.close()
 
-    async def getBasicCache(self, key: str) -> str:
+    async def getBasicCache(self, key: str) -> Union[str, None]:
         """Gets the command cache from Redis
 
         Args:
             key (str): Key to get from Redis
         """
         conn: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        res = ormsgpack.unpackb(await conn.get(key))
+        res = await conn.get(key)
         await conn.close()
         return res
 

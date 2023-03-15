@@ -29,7 +29,7 @@ class DevTools(commands.Cog):
             if spec == "~":
                 synced = await self.bot.tree.sync(guild=ctx.guild)
             elif spec == "*":
-                self.bot.tree.copy_global_to(guild=ctx.guild)
+                self.bot.tree.copy_global_to(guild=ctx.guild)  # type: ignore
                 synced = await self.bot.tree.sync(guild=ctx.guild)
             elif spec == "^":
                 self.bot.tree.clear_commands(guild=ctx.guild)

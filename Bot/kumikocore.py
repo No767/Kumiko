@@ -51,4 +51,5 @@ class KumikoCore(commands.Bot):
         #     await self.tree.sync(guild=guild)
 
     async def on_ready(self):
-        self.logger.info(f"{self.user.name} is fully ready!")
+        currUser = None if self.user is None else self.user.name
+        self.logger.info(f"{currUser} is fully ready!")

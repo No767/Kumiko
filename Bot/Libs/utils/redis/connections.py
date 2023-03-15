@@ -1,7 +1,7 @@
 import asyncio
 import builtins
 import logging
-from typing import Literal
+from typing import Literal, Union
 
 import redis.asyncio as redis
 from Libs.cache import MemoryCache
@@ -29,8 +29,8 @@ def setupRedisPool(
     connPool = ConnectionPool(
         host=host, port=port, db=0, socket_connect_timeout=timeout
     )
-    builtins.memCache = MemoryCache()
-    builtins.memCache.add(key=key, value=connPool)
+    builtins.memCache = MemoryCache()  # type: ignore
+    builtins.memCache.add(key=key, value=connPool)  # type: ignore
 
 
 async def pingRedis(connection_pool: ConnectionPool) -> bool:
@@ -47,8 +47,13 @@ async def pingRedis(connection_pool: ConnectionPool) -> bool:
 
 
 async def redisCheck(
-    host: str = "localhost", port: int = 6379, key: str = "main", timeout: float = 15.0
-) -> Literal[True]:
+    host: str = "localhost",
+    port: int = 6379,
+    key: str = "main",
+    timeout: float = 15.0,
+    backoff_sec: int = 15,
+    backoff_index: int = 0,
+) -> Union[Literal[True], None]:
     """Integration method to check if the Redis server is alive
 
     Also sets up the conn pool cache. This is handled recursively actually.
@@ -58,21 +63,29 @@ async def redisCheck(
         port (int, optional): Redis port. Defaults to 6379.
         key (str, optional): The key of the mem cache. Defaults to "main".
         timeout (float, optional): Socket connection timeout. Defaults to 15.0.
+        backoff_sec (int, optional): Backoff time in seconds. Defaults to 15.
+        backoff_index (int, optional): Backoff index. This is used privately Defaults to 0.
 
     Returns:
-        Literal[True]: Returns True if the Redis server is alive
+        Union[Literal[True], None]: Returns True if the Redis server is alive. Returns None if the coroutine is in a recursive loop.
     """
-    backoffSec = 15
     try:
         setupRedisPool(host=host, port=port, key=key, timeout=timeout)
-        res = await pingRedis(connection_pool=builtins.memCache.get(key=key))
+        res = await pingRedis(connection_pool=builtins.memCache.get(key=key))  # type: ignore
         if res is True:
             logger.info("Successfully connected to Redis server")
             return True
     except (ConnectionError, TimeoutError):
-        backoffTime = backoff(backoff_sec=backoffSec, backoff_sec_index=backoffSecIndex)
+        backoffTime = backoff(backoff_sec=backoff_sec, backoff_sec_index=backoff_index)
         logger.error(
             f"Failed to connect to Redis server - Restarting connection in {int(backoffTime)} seconds"
         )
         await asyncio.sleep(backoffTime)
-        await redisCheck(host=host, port=port, key=key, timeout=timeout)
+        await redisCheck(
+            host=host,
+            port=port,
+            key=key,
+            timeout=timeout,
+            backoff_sec=backoff_sec,
+            backoff_index=backoff_index + 1,
+        )

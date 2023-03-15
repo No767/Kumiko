@@ -1213,14 +1213,14 @@ socks = ["socksio (>=1.0.0,<2.0.0)"]
 
 [[package]]
 name = "identify"
-version = "2.5.15"
+version = "2.5.20"
 description = "File identification library for Python"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "identify-2.5.15-py2.py3-none-any.whl", hash = "sha256:1f4b36c5f50f3f950864b2a047308743f064eaa6f6645da5e5c780d1c7125487"},
-    {file = "identify-2.5.15.tar.gz", hash = "sha256:c22aa206f47cc40486ecf585d27ad5f40adbfc494a3fa41dc3ed0499a23b123f"},
+    {file = "identify-2.5.20-py2.py3-none-any.whl", hash = "sha256:5dfef8a745ca4f2c95f27e9db74cb4c8b6d9916383988e8791f3595868f78a33"},
+    {file = "identify-2.5.20.tar.gz", hash = "sha256:c8b288552bc5f05a08aff09af2f58e6976bf8ac87beb38498a0e3d98ba64eb18"},
 ]
 
 [package.extras]
@@ -1901,6 +1901,25 @@ docs = ["sphinx (>=1.6.5)", "sphinx-rtd-theme"]
 tests = ["hypothesis (>=3.27.0)", "pytest (>=3.2.1,!=3.3.0)"]
 
 [[package]]
+name = "pyright"
+version = "1.1.298"
+description = "Command line wrapper for pyright"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyright-1.1.298-py3-none-any.whl", hash = "sha256:b492371519706459324eb2b468e2f57ae943568469b5353dbd2e44b281677198"},
+    {file = "pyright-1.1.298.tar.gz", hash = "sha256:94a26bf56ba4eef582dffa61be20aa913db3096f4ee102c4c86592f0bced857d"},
+]
+
+[package.dependencies]
+nodeenv = ">=1.6.0"
+
+[package.extras]
+all = ["twine (>=3.4.1)"]
+dev = ["twine (>=3.4.1)"]
+
+[[package]]
 name = "pysimdjson"
 version = "5.0.2"
 description = "simdjson bindings for python"
@@ -2564,4 +2583,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "dbe07325ad854854ccf5798388840ebeba5f42a54553fb279cf6ca79effbb56b"
+content-hash = "0fc3de8c959d0bdde41979b03da5b20a100fc4a49d8f671961ab91e06e407a81"

@@ -1,19 +1,17 @@
 import uuid
 from functools import wraps
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Optional
 
 from redis.asyncio.connection import ConnectionPool
 
 from .redis_cache import CommandKeyBuilder, KumikoCache
-
-T = TypeVar("T")
 
 
 def cached(
     connection_pool: ConnectionPool,
     command_key: Optional[str],
     ttl: int = 30,
-) -> Callable[..., T]:
+) -> Callable[..., Any]:
     """A decorator to cache the result of a function that returns a `str` to Redis.
 
     **Note**: The return type of the corountine used has to be `str` or `bytes`
@@ -27,7 +25,7 @@ def cached(
         Callable[..., T]: The wrapper function
     """
 
-    def wrapper(func: Callable[..., T]) -> Any:
+    def wrapper(func: Callable[..., Any]) -> Any:
         @wraps(func)
         async def wrapped(*args: Any, **kwargs: Any) -> Any:
             currFunc = await func(*args, **kwargs)
@@ -52,7 +50,7 @@ def cachedJson(
     connection_pool: ConnectionPool,
     command_key: Optional[str],
     ttl: int = 30,
-) -> Callable[..., T]:
+) -> Callable[..., Any]:
     """A decorator to cache the result of a function that returns a `dict` to Redis.
 
     **Note**: The return type of the corountine used has to be `dict`
@@ -66,7 +64,7 @@ def cachedJson(
         Callable[..., T]: The wrapper function
     """
 
-    def wrapper(func: Callable[..., T]) -> Any:
+    def wrapper(func: Callable[..., Any]) -> Any:
         @wraps(func)
         async def wrapped(*args: Any, **kwargs: Any) -> Any:
             currFunc = await func(*args, **kwargs)

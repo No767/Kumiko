@@ -29,7 +29,7 @@ async def main() -> None:
         intents=intents,
         command_prefix="?k ",
         redis_host=REDIS_HOST,
-        redis_port=REDIS_PORT,
+        redis_port=int(REDIS_PORT),
         testing_guild_id=970159505390325842,
     ) as bot:
         await bot.start(KUMIKO_TOKEN)

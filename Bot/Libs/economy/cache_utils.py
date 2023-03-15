@@ -3,6 +3,7 @@ import uuid
 from typing import Dict, Union
 
 from prisma.models import User
+from prisma.types import UserInclude
 from redis.asyncio.connection import ConnectionPool
 
 from ..cache import CommandKeyBuilder, cachedJson
@@ -17,7 +18,7 @@ def getConnPool() -> ConnectionPool:
     """
     if not hasattr(builtins, "memCache"):
         setupRedisPool()
-    return builtins.memCache.get(key="main")
+    return builtins.memCache.get(key="main")  # type: ignore
 
 
 @cachedJson(
@@ -27,7 +28,7 @@ def getConnPool() -> ConnectionPool:
     ),
 )
 async def getUser(
-    user_id: int, includes: Dict[str, bool] = {"inv": False, "marketplace": False}
+    user_id: int, includes: UserInclude = {"inv": False, "marketplace": False}
 ) -> Union[Dict, None]:
     """[Coroutine] Helper coroutine to obtain a user's profile from the database
 

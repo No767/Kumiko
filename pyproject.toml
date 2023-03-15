@@ -28,10 +28,6 @@ ciso8601 = "^2.3.0"
 faust-cchardet = "^2.1.18"
 discord-py = {extras = ["voice"], version = "^2.2.2"}
 
-[tool.poetry.dev-dependencies]
-pre-commit = "^3.1.1"
-pyinstrument = "^4.4.0"
-
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.2"
 pytest-asyncio = "^0.20.3"
@@ -39,8 +35,21 @@ nox = "^2022.11.21"
 nox-poetry = "^1.0.2"
 pytest-cov = "^4.0.0"
 
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.1.1"
+pyinstrument = "^4.4.0"
+pyright = "^1.1.298"
+
 [tool.isort]
 profile = 'black'
+
+[tool.pyright]
+include = ["Bot/**"]
+exclude = ["**/__pycache__", "**/.mypy_cache", "**/.dmpypy.json", "Bot/Libs/kumiko_*", "Bot/Unloaded-Cogs", "Bot/Cogs-Old"]
+ignore = ["Docker"]
+reportMissingImports = true
+reportMissingTypeStubs = false
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -41,8 +41,8 @@ class Kumiko(commands.Cog):
     async def kumikoInfo(self, ctx: commands.Context) -> None:
         """Shows some basic info about Kumiko"""
         embed = Embed()
-        embed.title = f"{self.bot.user.name} Info"
-        embed.set_thumbnail(url=self.bot.user.display_avatar.url)
+        embed.title = f"{self.bot.user.name} Info"  # type: ignore
+        embed.set_thumbnail(url=self.bot.user.display_avatar.url)  # type: ignore
         embed.add_field(name="Server Count", value=len(self.bot.guilds), inline=True)
         embed.add_field(name="User Count", value=len(self.bot.users), inline=True)
         embed.add_field(

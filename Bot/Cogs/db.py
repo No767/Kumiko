@@ -15,10 +15,10 @@ class PrismaClientSession(commands.Cog):
         self.db = Prisma(auto_register=True)
         self.logger = logging.getLogger("discord")
 
-    async def cog_load(self):
+    async def cog_load(self) -> None:
         self.connect.start()
 
-    async def cog_unload(self):
+    async def cog_unload(self) -> None:
         try:
             await self.db.disconnect()
         except EngineConnectionError as e:
@@ -27,12 +27,12 @@ class PrismaClientSession(commands.Cog):
             )
 
     @tasks.loop(count=1)
-    async def connect(self):
+    async def connect(self) -> None:
         await self.db.connect()
         self.logger.info("Successfully connected to PostgreSQL database")
 
-    @connect.error
-    async def connError(self, exc: Exception):
+    @connect.error  # type: ignore
+    async def connError(self, exc: Exception) -> None:
         backoffTime = backoff(
             backoff_sec=self.backoffSec, backoff_sec_index=self.backoffSecIndex
         )
