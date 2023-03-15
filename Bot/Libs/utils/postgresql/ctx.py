@@ -1,7 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
-from prisma import Prisma
+from prisma import Prisma  # type: ignore
 from prisma.engine.errors import EngineConnectionError
 
 logger = logging.getLogger("discord") or logging.getLogger(__name__)
