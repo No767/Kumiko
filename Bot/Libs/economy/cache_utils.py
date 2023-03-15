@@ -2,8 +2,8 @@ import builtins
 import uuid
 from typing import Dict, Union
 
-from prisma.models import User
-from prisma.types import UserInclude
+from prisma.models import User  # type: ignore
+from prisma.types import UserInclude  # type: ignore
 from redis.asyncio.connection import ConnectionPool
 
 from ..cache import CommandKeyBuilder, cachedJson
