@@ -38,7 +38,7 @@ pytest-cov = "^4.0.0"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.1.1"
 pyinstrument = "^4.4.0"
-pyright = "^1.1.298"
+pyright = "^1.1.299"
 
 [tool.isort]
 profile = 'black'
