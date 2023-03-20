@@ -19,7 +19,7 @@ rin-exceptions = "^1.0.3"
 ormsgpack = "^1.2.5"
 better-ipc = "^2.0.1"
 prisma = "^0.8.2"
-redis = {extras = ["hiredis"], version = "^4.5.1"}
+redis = {extras = ["hiredis"], version = "^4.5.2"}
 ciso8601 = "^2.3.0"
 faust-cchardet = "^2.1.18"
 discord-py = {extras = ["voice"], version = "^2.2.2"}
