@@ -22,6 +22,6 @@ This release focuses on cleaning out any old code, and getting ready for the mig
 
 
 ## ➖ Removals
-
+- MsgPack Serialization
 
 # ⬆️ Dependabot Updates
