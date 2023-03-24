@@ -1,9 +1,9 @@
 import logging
-from typing import Optional
 
 import discord
 from anyio import Path
 from discord.ext import commands
+from Libs.utils.help import KumikoHelp
 from Libs.utils.redis import redisCheck
 
 
@@ -16,21 +16,19 @@ class KumikoCore(commands.Bot):
         command_prefix: str = "?k ",
         redis_host: str = "localhost",
         redis_port: int = 6379,
-        testing_guild_id: Optional[int] = None,
         *args,
         **kwargs,
     ):
         super().__init__(
             intents=intents,
             command_prefix=command_prefix,
-            help_command=commands.DefaultHelpCommand(),
+            help_command=KumikoHelp(),
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help"),
             *args,
             **kwargs,
         )
         self.redis_host = redis_host
         self.redis_port = redis_port
-        self.testing_guild_id = testing_guild_id
         self.logger = logging.getLogger("kumikobot")
 
     async def setup_hook(self) -> None:
@@ -44,11 +42,6 @@ class KumikoCore(commands.Bot):
                 await self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
 
         self.loop.create_task(redisCheck(self.redis_host, self.redis_port))
-
-        # if self.testing_guild_id:
-        #     guild = discord.Object(self.testing_guild_id)
-        #     self.tree.copy_global_to(guild=guild)
-        #     await self.tree.sync(guild=guild)
 
     async def on_ready(self):
         currUser = None if self.user is None else self.user.name
