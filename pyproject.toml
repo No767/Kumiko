@@ -16,7 +16,6 @@ uvloop = "^0.17.0"
 pysimdjson = "^5.0.2"
 gql = { extras = ["aiohttp"], version = "^3.4.0" }
 rin-exceptions = "^1.0.3"
-ormsgpack = "^1.2.5"
 better-ipc = "^2.0.1"
 prisma = "^0.8.2"
 redis = {extras = ["hiredis"], version = "^4.5.3"}
@@ -47,6 +46,8 @@ ignore = ["Docker"]
 reportMissingImports = true
 reportMissingTypeStubs = false
 
+[tool.bandit]
+skips = ["B311"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

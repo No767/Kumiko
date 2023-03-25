@@ -4,14 +4,16 @@ from typing import Any, Dict, List
 
 import discord
 from discord.ext import menus
+from discord.ext.commands import Paginator as CommandPaginator
 
 from ..embeds import Embed
+from .paginator import KumikoPages
 
 
 class BasicListSource(menus.ListPageSource):
     """Basic list source for the paginator"""
 
-    async def format_page(self, menu: menus.Menu, entries: List[Any]):
+    async def format_page(self, menu: KumikoPages, entries: List[Any]) -> Embed:
         """Formats the given page
 
         Args:
@@ -19,18 +21,43 @@ class BasicListSource(menus.ListPageSource):
             entries (List[Any]): List of all of the entries
 
         Returns:
-            _type_: _description_
+            Embed: An embed with the formatted entries
         """
-        embed = discord.Embed(
+        embed = Embed(
             description=f"This is number {entries}.", color=discord.Colour.random()
         )
         return embed
 
 
+class TextPageSource(menus.ListPageSource):
+    """A text based source for the paginator"""
+
+    def __init__(self, text, *, prefix="```", suffix="```", max_size=2000):
+        pages = CommandPaginator(prefix=prefix, suffix=suffix, max_size=max_size - 200)
+        for line in text.split("\n"):
+            pages.add_line(line)
+
+        super().__init__(entries=pages.pages, per_page=1)
+
+    async def format_page(self, menu: KumikoPages, content: str):
+        """Formats the given page
+
+        Args:
+            menu (KumikoPages): Default menu passed in
+            content (str): Content to format
+        """
+        maximum = self.get_max_pages()
+        if maximum > 1:
+            return f"{content}\nPage {menu.current_page + 1}/{maximum}"
+        return content
+
+
 class EmbedListSource(menus.ListPageSource):
     """Source for taking contents of an Embed, and formatting them into a page"""
 
-    async def format_page(self, menu, entries: Dict[str, Any]) -> discord.Embed:
+    async def format_page(
+        self, menu: KumikoPages, entries: Dict[str, Any]
+    ) -> discord.Embed:
         """Formatter for the embed list source
 
         Ideally the structure of the entries should be:
@@ -61,20 +88,13 @@ class EmbedListSource(menus.ListPageSource):
             discord.Embed: An embed with the formatted entries
         """
         maximum = self.get_max_pages()
-        embed = Embed(
-            title=entries["title"] if entries["title"] is not None else None,
-            description=entries["description"]
-            if entries["description"] is not None
-            else None,
-        )
-        embed.set_image(url=entries["image"] if entries["image"] is not None else None)
-        embed.set_thumbnail(
-            url=entries["thumbnail"] if entries["thumbnail"] is not None else None
-        )
-        embed.set_footer(
-            text=f"Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)"
-        )
-        if entries["fields"] is not None:
+        embed = Embed()
+        embed.title = entries["title"] if "title" in entries else ""
+        embed.description = entries["description"] if "description" in entries else ""
+        embed.set_image(url=entries["image"]) if "image" in entries else ...
+        embed.set_thumbnail(url=entries["thumbnail"]) if "thumbnail" in entries else ...
+        embed.set_footer(text=f"Page {menu.current_page + 1}/{maximum}")
+        if "fields" in entries:
             for item in entries["fields"]:
                 for k, v in item.items():
                     embed.add_field(name=k, value=v)

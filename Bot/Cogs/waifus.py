@@ -1,3 +1,5 @@
+import random
+
 import aiohttp
 import orjson
 from discord.ext import commands
@@ -29,11 +31,11 @@ class Waifu(commands.Cog):
         ]
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:  # type: ignore
             params = {
-                "included_tags": waifuTagList,
-                "is_nsfw": False,
+                "included_tags": random.choice(waifuTagList),
+                "is_nsfw": "false",
                 "excluded_tags": "oppai",
             }
-            async with session.get("https://api.waifu.im/random/", params=params) as r:
+            async with session.get("https://api.waifu.im/search/", params=params) as r:
                 data = await r.json(loads=orjson.loads)  # type: ignore
                 embed = Embed().set_image(url=data["images"][0]["url"])
                 await ctx.send(embed=embed)
@@ -52,21 +54,15 @@ class Waifu(commands.Cog):
         ]
         async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:  # type: ignore
             params = {
-                "included_tags": "uniform",
+                "included_tags": random.choice(waifuTagList),
                 "is_nsfw": "False",
                 "excluded_tags": "oppai",
                 "many": "true",
             }
             async with session.get("https://api.waifu.im/search/", params=params) as r:
                 data = await r.json(loads=orjson.loads)  # type: ignore
-                print(data)
-                embedData = {
-                    "title": None,
-                    "description": None,
-                    "images": [item["url"] for item in data["images"]],
-                    "fields": None,
-                }
-                embedSource = EmbedListSource(embedData, per_page=1)
+                mainData = [{"image": item["url"]} for item in data["images"]]
+                embedSource = EmbedListSource(mainData, per_page=1)
                 menu = KumikoPages(source=embedSource, ctx=ctx, compact=False)
                 await menu.start()
 
