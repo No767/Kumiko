@@ -1,3 +1,4 @@
 ignore:
   - "Bot/Libs/ui/**"
   - "Bot/Libs/utils/help/**"
+  - "Bot/Libs/utils/pages/**"

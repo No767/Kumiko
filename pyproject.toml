@@ -23,6 +23,7 @@ redis = {extras = ["hiredis"], version = "^4.5.3"}
 ciso8601 = "^2.3.0"
 faust-cchardet = "^2.1.18"
 discord-py = {extras = ["voice"], version = "^2.2.2"}
+discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"}
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.2"
