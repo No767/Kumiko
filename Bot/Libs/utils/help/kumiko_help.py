@@ -63,7 +63,7 @@ class KumikoHelp(commands.HelpCommand):
         signature = self.get_command_signature(
             command
         )  # get_command_signature gets the signature of a command in <required> [optional]
-        embed = Embed(title=signature, description=command.help or "No help found...")
+        embed = Embed(title=signature, description=command.brief or "No help found...")
 
         if cog := command.cog:
             embed.add_field(name="Category", value=cog.qualified_name)

@@ -25,6 +25,7 @@ class DevTools(commands.Cog):
             guilds (Greedy[discord.Object]): Which guilds to sync to. Greedily accepts a number of guilds
             spec (Optional[Literal["~", "*", "^"], optional): Specs to sync.
         """
+        await ctx.defer()
         if not guilds:
             if spec == "~":
                 synced = await self.bot.tree.sync(guild=ctx.guild)
