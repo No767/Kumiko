@@ -22,7 +22,7 @@ def cached(
         ttl (int, optional): TTL (Time-To-Live). Defaults to 30.
 
     Returns:
-        Callable[..., T]: The wrapper function
+        Callable[..., Any]: The wrapper function
     """
 
     def wrapper(func: Callable[..., Any]) -> Any:
@@ -61,7 +61,7 @@ def cachedJson(
         ttl (int, optional): TTL (Time-To-Live). Defaults to 30.
 
     Returns:
-        Callable[..., T]: The wrapper function
+        Callable[..., Any]: The wrapper function
     """
 
     def wrapper(func: Callable[..., Any]) -> Any:

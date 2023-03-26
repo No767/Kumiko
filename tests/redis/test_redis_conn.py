@@ -1,4 +1,3 @@
-import builtins
 import sys
 from pathlib import Path
 
@@ -9,13 +8,7 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 from Libs.cache import MemoryCache
-from Libs.utils.redis import pingRedis, redisCheck, setupRedisPool
-
-
-def test_setup_redis_pool():
-    setupRedisPool()
-    getConnPool = builtins.memCache.get(key="main")
-    assert isinstance(getConnPool, ConnectionPool)  # nosec
+from Libs.utils.redis import pingRedis, redisCheck
 
 
 @pytest.mark.asyncio

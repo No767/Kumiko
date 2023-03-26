@@ -14,8 +14,6 @@ class KumikoCore(commands.Bot):
         self,
         intents: discord.Intents,
         command_prefix: str = "?k ",
-        redis_host: str = "localhost",
-        redis_port: int = 6379,
         *args,
         **kwargs,
     ):
@@ -27,8 +25,6 @@ class KumikoCore(commands.Bot):
             *args,
             **kwargs,
         )
-        self.redis_host = redis_host
-        self.redis_port = redis_port
         self.logger = logging.getLogger("kumikobot")
 
     async def setup_hook(self) -> None:
@@ -41,7 +37,7 @@ class KumikoCore(commands.Bot):
                 self.logger.debug(f"Loaded Cog: Cogs.{cog.parent.name}.{cog.name[:-3]}")
                 await self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
 
-        self.loop.create_task(redisCheck(self.redis_host, self.redis_port))
+        self.loop.create_task(redisCheck())
 
     async def on_ready(self):
         currUser = None if self.user is None else self.user.name

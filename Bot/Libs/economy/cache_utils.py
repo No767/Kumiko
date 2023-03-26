@@ -1,28 +1,14 @@
-import builtins
 import uuid
 from typing import Dict, Union
 
-from prisma.models import User  # type: ignore
-from prisma.types import UserInclude  # type: ignore
-from redis.asyncio.connection import ConnectionPool
+from prisma.models import User
+from prisma.types import UserInclude
 
-from ..cache import CommandKeyBuilder, cachedJson
-from ..utils.redis import setupRedisPool
-
-
-def getConnPool() -> ConnectionPool:
-    """[Function] Helper function to obtain the connection pool for Redis
-
-    Returns:
-        ConnectionPool: The connection pool for Redis
-    """
-    if not hasattr(builtins, "memCache"):
-        setupRedisPool()
-    return builtins.memCache.get(key="main")  # type: ignore
+from ..cache import CommandKeyBuilder, cachedJson, kumikoCP
 
 
 @cachedJson(
-    connection_pool=getConnPool(),
+    connection_pool=kumikoCP.getConnPool(),
     command_key=CommandKeyBuilder(
         prefix="cache", namespace="kumiko", id=uuid.uuid4(), command="internal_get_user"
     ),

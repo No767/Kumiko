@@ -9,8 +9,6 @@ from kumikocore import KumikoCore
 load_dotenv()
 
 KUMIKO_TOKEN = os.environ["DEV_BOT_TOKEN"]
-REDIS_HOST = os.environ["REDIS_HOST"]
-REDIS_PORT = os.environ["REDIS_PORT"]
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -25,12 +23,7 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    async with KumikoCore(
-        intents=intents,
-        command_prefix="?k ",
-        redis_host=REDIS_HOST,
-        redis_port=int(REDIS_PORT),
-    ) as bot:
+    async with KumikoCore(intents=intents, command_prefix="?k ") as bot:
         await bot.start(KUMIKO_TOKEN)
 
 

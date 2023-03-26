@@ -24,7 +24,7 @@ async def test_basic_cache():
 
 
 @pytest.mark.asyncio
-async def test_basic_cache():
+async def test_json_cache():
     key = CommandKeyBuilder(id=None, command=None)
     connPool = ConnectionPool().from_url("redis://localhost:6379/0")
     cache = KumikoCache(connection_pool=connPool)
