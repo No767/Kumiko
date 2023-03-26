@@ -36,7 +36,7 @@ class Waifu(commands.Cog):
                 "excluded_tags": "oppai",
             }
             async with session.get("https://api.waifu.im/search/", params=params) as r:
-                data = await r.json(loads=orjson.loads)  # type: ignore
+                data = await r.json(loads=orjson.loads)
                 embed = Embed().set_image(url=data["images"][0]["url"])
                 await ctx.send(embed=embed)
 
@@ -60,7 +60,7 @@ class Waifu(commands.Cog):
                 "many": "true",
             }
             async with session.get("https://api.waifu.im/search/", params=params) as r:
-                data = await r.json(loads=orjson.loads)  # type: ignore
+                data = await r.json(loads=orjson.loads)
                 mainData = [{"image": item["url"]} for item in data["images"]]
                 embedSource = EmbedListSource(mainData, per_page=1)
                 menu = KumikoPages(source=embedSource, ctx=ctx, compact=False)

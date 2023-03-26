@@ -1,4 +1,4 @@
 from .paginator import KumikoPages
-from .sources import BasicListSource, EmbedListSource
+from .sources import BasicListSource, EmbedListSource, FieldPageSource
 
-__all__ = ["KumikoPages", "BasicListSource", "EmbedListSource"]
+__all__ = ["KumikoPages", "BasicListSource", "EmbedListSource", "FieldPageSource"]

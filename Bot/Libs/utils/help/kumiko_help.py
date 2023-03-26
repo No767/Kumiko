@@ -63,7 +63,9 @@ class KumikoHelp(commands.HelpCommand):
         signature = self.get_command_signature(
             command
         )  # get_command_signature gets the signature of a command in <required> [optional]
-        embed = Embed(title=signature, description=command.brief or "No help found...")
+        embed = Embed(
+            title=signature, description=command.short_doc or "No help found..."
+        )
 
         if cog := command.cog:
             embed.add_field(name="Category", value=cog.qualified_name)
@@ -95,10 +97,18 @@ class KumikoHelp(commands.HelpCommand):
             for command in filtered_commands:
                 embed.add_field(
                     name=self.get_command_signature(command),
-                    value=command.help or "No help found...",
+                    value=command.short_doc or "No help found...",
                 )
 
         await self.send(embed=embed)
+        # cmdList = []
+        # if filtered_commands := await self.filter_commands(commands):
+        #     for command in filtered_commands:
+        #         cmdList.append((self.get_command_signature(command), command.help or "No help found..."))
+
+        # source = FieldPageSource(cmdList, per_page=3)
+        # pages = KumikoPages(source, ctx=self.context)
+        # await pages.start_help(channel=self.get_destination())
 
     async def send_group_help(self, group):
         """triggers when a `<prefix>help <group>` is called"""

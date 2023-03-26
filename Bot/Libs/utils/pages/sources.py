@@ -29,6 +29,42 @@ class BasicListSource(menus.ListPageSource):
         return embed
 
 
+class FieldPageSource(menus.ListPageSource):
+    """A page source that requires (field_name, field_value) tuple items."""
+
+    def __init__(
+        self,
+        entries: list[tuple[Any, Any]],
+        *,
+        per_page: int = 5,
+        inline: bool = False,
+        clear_description: bool = True,
+    ) -> None:
+        super().__init__(entries, per_page=per_page)
+        self.embed: Embed = Embed()
+        self.clear_description: bool = clear_description
+        self.inline: bool = inline
+
+    async def format_page(
+        self, menu: KumikoPages, entries: list[tuple[Any, Any]]
+    ) -> discord.Embed:
+        self.embed.clear_fields()
+        if self.clear_description:
+            self.embed.description = None
+
+        for key, value in entries:
+            self.embed.add_field(name=key, value=value, inline=self.inline)
+
+        maximum = self.get_max_pages()
+        if maximum > 1:
+            text = (
+                f"Page {menu.current_page + 1}/{maximum} ({len(self.entries)} entries)"
+            )
+            self.embed.set_footer(text=text)
+
+        return self.embed
+
+
 class TextPageSource(menus.ListPageSource):
     """A text based source for the paginator"""
 
