@@ -1,23 +1,18 @@
 import os
-from datetime import datetime
 from typing import Literal, Optional
 
 import aiohttp
-import asyncpraw
+import ciso8601
 import orjson
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
-from Libs.utils import parseSubreddit
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
 load_dotenv()
 
-GITHUB_API_KEY = os.environ["GITHUB_API_KEY"]
-REDDIT_ID = os.environ["REDDIT_ID"]
-REDDIT_SECRET = os.environ["REDDIT_SECRET"]
 TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 
@@ -30,7 +25,8 @@ class Searches(commands.Cog):
     @commands.hybrid_group(name="search")
     async def search(self, ctx: commands.Context) -> None:
         """Base parent command for searches - See the subcommands for more info"""
-        ...
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
 
     @search.command(name="anime")
     async def searchAnime(self, ctx: commands.Context, *, name: str) -> None:
@@ -243,196 +239,67 @@ class Searches(commands.Cog):
                 pages = KumikoPages(source=embedSource, ctx=ctx)
                 await pages.start()
 
-    @search.command(name="memes")
-    async def searchMemes(
-        self, ctx: commands.Context, subreddit: str, amount: Optional[int] = 5
+    @search.command(name="mc-mods")
+    async def searchMods(
+        self,
+        ctx: commands.Context,
+        *,
+        mod_name: str,
+        modloader: Optional[Literal["Forge", "Fabric"]] = "Forge",
     ) -> None:
-        """Searches for memes on Reddit
+        """Search for Minecraft mods and plugins on Modrinth
 
         Args:
             ctx (commands.Context): Base context
-            subreddit (str): The subreddit to search
-            amount (Optional[int], optional): The amount of memes to return. Defaults to 5.
+            mod_name (str): The name of the mod to search for
+            modloader (Optional[Literal["Forge", "Fabric"]], optional): Which modloader to use. Defaults to "Forge".
         """
         async with aiohttp.ClientSession() as session:
+            params = {
+                "query": mod_name,
+                "index": "relevance",
+                "limit": 25,
+                "facets": f'[["categories:{str(modloader).lower()}"]]',
+            }
             async with session.get(
-                f"https://meme-api.com/gimme/{parseSubreddit(subreddit)}/{amount}"
+                "https://api.modrinth.com/v2/search", params=params
             ) as r:
                 data = await r.json(loads=orjson.loads)
                 mainData = [
                     {
                         "title": item["title"],
-                        "image": item["url"],
+                        "description": item["description"],
+                        "thumbnail": item["icon_url"],
                         "fields": [
                             {"name": "Author", "value": item["author"]},
-                            {"name": "Subreddit", "value": item["subreddit"]},
-                            {"name": "Upvotes", "value": item["ups"]},
-                            {"name": "NSFW", "value": item["nsfw"]},
-                            {"name": "Spoiler", "value": item["spoiler"]},
-                            {"name": "Reddit URL", "value": item["postLink"]},
+                            {"name": "Categories", "value": item["categories"]},
+                            {"name": "Versions", "value": item["versions"]},
+                            {"name": "Latest Version", "value": item["latest_version"]},
+                            {
+                                "name": "Date Created",
+                                "value": format_dt(
+                                    ciso8601.parse_datetime(item["date_created"])
+                                ),
+                            },
+                            {
+                                "name": "Date Modified",
+                                "value": format_dt(
+                                    ciso8601.parse_datetime(item["date_modified"])
+                                ),
+                            },
+                            {"name": "Downloads", "value": item["downloads"]},
+                            {"name": "License", "value": item["license"]},
+                            {
+                                "name": "Modrinth URL",
+                                "value": f"https://modrinth.com/{item['project_type']}/{item['slug']}",
+                            },
                         ],
                     }
-                    for item in data["memes"]
+                    for item in data["hits"]
                 ]
                 embedSource = EmbedListSource(mainData, per_page=1)
                 pages = KumikoPages(source=embedSource, ctx=ctx)
                 await pages.start()
-
-    @search.command(name="reddit-feed")
-    async def redditFeed(
-        self,
-        ctx: commands.Context,
-        subreddit: str,
-        filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
-    ) -> None:
-        """Gets a feed of posts from a subreddit
-
-        Args:
-            ctx (commands.Context): Base context
-            subreddit (str): Subreddit to search
-            filter (Optional[Literal["New", "Hot", "Rising"]], optional): Sort filters. Defaults to "New".
-        """
-        async with asyncpraw.Reddit(
-            client_id=REDDIT_ID,
-            client_secret=REDDIT_SECRET,
-            user_agent="Kumiko (by /u/No767)",
-        ) as reddit:
-            sub = await reddit.subreddit(parseSubreddit(subreddit))
-            subGen = (
-                sub.new(limit=25)
-                if filter == "New"
-                else sub.hot(limit=25)
-                if filter == "Hot"
-                else sub.rising(limit=25)
-            )
-            data = [
-                {
-                    "title": post.title,
-                    "description": post.selftext,
-                    "image": post.url,
-                    "fields": [
-                        {"name": "Author", "value": post.author},
-                        {"name": "Upvotes", "value": post.score},
-                        {"name": "NSFW", "value": post.over_18},
-                        {"name": "Flair", "value": post.link_flair_text},
-                        {"name": "Number of Comments", "value": post.num_comments},
-                        {
-                            "name": "Reddit URL",
-                            "value": f"https://reddit.com{post.permalink}",
-                        },
-                        {
-                            "name": "Created At",
-                            "value": format_dt(
-                                datetime.fromtimestamp(post.created_utc)
-                            ),
-                        },
-                    ],
-                }
-                async for post in subGen
-            ]
-            embedSource = EmbedListSource(data, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
-            await pages.start()
-
-    @search.command(name="reddit-eggirl")
-    async def redditEggIRL(
-        self,
-        ctx: commands.Context,
-        filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
-    ) -> None:
-        """Literally just shows you r/egg_irl posts. No comment.
-
-        Args:
-            ctx (commands.Context): Base context
-            filter (Optional[Literal["New", "Hot", "Rising"]], optional): Sort filters. Defaults to "New".
-        """
-        async with asyncpraw.Reddit(
-            client_id=REDDIT_ID,
-            client_secret=REDDIT_SECRET,
-            user_agent="Kumiko (by /u/No767)",
-        ) as reddit:
-            sub = await reddit.subreddit(parseSubreddit("egg_irl"))
-            subGen = (
-                sub.new(limit=25)
-                if filter == "New"
-                else sub.hot(limit=25)
-                if filter == "Hot"
-                else sub.rising(limit=25)
-            )
-            data = [
-                {
-                    "title": post.title,
-                    "description": post.selftext,
-                    "image": post.url,
-                    "fields": [
-                        {"name": "Author", "value": post.author},
-                        {"name": "Upvotes", "value": post.score},
-                        {"name": "NSFW", "value": post.over_18},
-                        {"name": "Flair", "value": post.link_flair_text},
-                        {"name": "Number of Comments", "value": post.num_comments},
-                        {
-                            "name": "Reddit URL",
-                            "value": f"https://reddit.com{post.permalink}",
-                        },
-                        {
-                            "name": "Created At",
-                            "value": format_dt(
-                                datetime.fromtimestamp(post.created_utc)
-                            ),
-                        },
-                    ],
-                }
-                async for post in subGen
-            ]
-            embedSource = EmbedListSource(data, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
-            await pages.start()
-
-    @search.command(name="reddit")
-    async def redditSearch(
-        self, ctx: commands.Context, *, search: str, subreddit: Optional[str] = "all"
-    ) -> None:
-        """Searches for base context
-
-        Args:
-            ctx (commands.Context): Base context
-            search (str): The search query to use
-            subreddit (Optional[str], optional): Which subreddit to use. Defaults to "all".
-        """
-        async with asyncpraw.Reddit(
-            client_id=REDDIT_ID,
-            client_secret=REDDIT_SECRET,
-            user_agent="Kumiko (by /u/No767)",
-        ) as reddit:
-            sub = await reddit.subreddit(parseSubreddit(subreddit))
-            data = [
-                {
-                    "title": post.title,
-                    "description": post.selftext,
-                    "image": post.url,
-                    "fields": [
-                        {"name": "Author", "value": post.author},
-                        {"name": "Upvotes", "value": post.score},
-                        {"name": "NSFW", "value": post.over_18},
-                        {"name": "Flair", "value": post.link_flair_text},
-                        {"name": "Number of Comments", "value": post.num_comments},
-                        {
-                            "name": "Reddit URL",
-                            "value": f"https://reddit.com{post.permalink}",
-                        },
-                        {
-                            "name": "Created At",
-                            "value": format_dt(
-                                datetime.fromtimestamp(post.created_utc)
-                            ),
-                        },
-                    ],
-                }
-                async for post in sub.search(search)
-            ]
-            embedSource = EmbedListSource(data, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
-            await pages.start()
 
 
 async def setup(bot: commands.Bot) -> None:

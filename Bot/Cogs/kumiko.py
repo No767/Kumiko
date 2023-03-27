@@ -23,7 +23,8 @@ class Kumiko(commands.Cog):
     @commands.hybrid_group(name="kumiko")
     async def kumiko(self, ctx: commands.Context) -> None:
         """Base parent command for Kumiko - See the subcommands for more info"""
-        ...
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
 
     @kumiko.command(name="uptime")
     async def botUptime(self, ctx: commands.Context) -> None:

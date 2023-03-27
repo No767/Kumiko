@@ -16,7 +16,8 @@ class Waifu(commands.Cog):
     @commands.hybrid_group(name="waifu")
     async def waifu(self, ctx: commands.Context) -> None:
         """Base parent command for waifu - See the subcommands for more info"""
-        ...
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
 
     @waifu.command(name="one")
     async def randomWaifu(self, ctx: commands.Context) -> None:
