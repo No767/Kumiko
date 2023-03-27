@@ -38,7 +38,7 @@ And some ones that are planned:
 
 ## Prefix
 
-Kumiko uses both a prefixed command and slash commands. The currently supported prefixes are `?k ` (note the space), and `/`.
+Kumiko uses both a prefixed command and slash commands. The currently supported prefixes are `>` , and `/`.
 
 ## Inviting the Bot
 

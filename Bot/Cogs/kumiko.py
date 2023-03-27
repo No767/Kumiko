@@ -22,11 +22,7 @@ class Kumiko(commands.Cog):
 
     @commands.hybrid_group(name="kumiko")
     async def kumiko(self, ctx: commands.Context) -> None:
-        """Base parent command for Kumiko
-
-        Args:
-            ctx (commands.Context): Context
-        """
+        """Base parent command for Kumiko - See the subcommands for more info"""
         ...
 
     @kumiko.command(name="uptime")

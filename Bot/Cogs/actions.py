@@ -1,5 +1,3 @@
-import asyncio
-
 import aiohttp
 import discord
 import orjson
@@ -21,7 +19,6 @@ class Actions(commands.Cog):
             ctx (commands.Context): The context of the command.
             user (discord.Member): The user to hug
         """
-        print(asyncio.get_event_loop_policy())
         async with aiohttp.ClientSession() as session:
             async with session.get("https://nekos.life/api/v2/img/hug") as r:
                 data = await r.json(loads=orjson.loads)

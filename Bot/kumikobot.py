@@ -23,7 +23,7 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    async with KumikoCore(intents=intents, command_prefix="?k ") as bot:
+    async with KumikoCore(intents=intents) as bot:
         await bot.start(KUMIKO_TOKEN)
 
 

@@ -132,6 +132,5 @@ class EmbedListSource(menus.ListPageSource):
         embed.set_footer(text=f"Page {menu.current_page + 1}/{maximum}")
         if "fields" in entries:
             for item in entries["fields"]:
-                for k, v in item.items():
-                    embed.add_field(name=k, value=v)
+                embed.add_field(name=item["name"] or ..., value=item["value"] or ...)
         return embed

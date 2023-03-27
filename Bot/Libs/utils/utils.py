@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from typing import Any, Dict, Union
 
@@ -31,3 +32,17 @@ def encodeDatetime(dict: Dict[str, Any]) -> Dict[str, Any]:
         if isinstance(v, datetime):
             dict[k] = v.isoformat()
     return dict
+
+
+def parseSubreddit(subreddit: Union[str, None]) -> str:
+    """Parses a subreddit name to be used in a reddit url
+
+    Args:
+        subreddit (Union[str, None]): Subreddit name to parse
+
+    Returns:
+        str: Parsed subreddit name
+    """
+    if subreddit is None:
+        return "all"
+    return re.sub(r"^[r/]{2}", "", subreddit, re.IGNORECASE)

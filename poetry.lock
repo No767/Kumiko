@@ -786,6 +786,22 @@ tomli = {version = "*", optional = true, markers = "python_full_version <= \"3.1
 toml = ["tomli"]
 
 [[package]]
+name = "cysimdjson"
+version = "21.11"
+description = "Cython-based wrapper for SIMDJSON"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cysimdjson-21.11-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d04e64389371550339a4bc2bdd69579fe5393cba930c429ce42c56f57733baed"},
+    {file = "cysimdjson-21.11-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7c7ffea88d5e833e6e20b52821747632a3604d3f04f72266da0f817abf46ddf5"},
+    {file = "cysimdjson-21.11-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6790955528dc6177165ef977b938c82c3b148b9f01486430613da8770888c7e8"},
+    {file = "cysimdjson-21.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:452fb96cc3a7f60ab8130ae53309a9369d8389c42d847731638552cd39537e76"},
+    {file = "cysimdjson-21.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c5bbaa0544454c19dcb145397c55990dcb3b8bfdea54b9648dfcf3e6f9f45589"},
+    {file = "cysimdjson-21.11.tar.gz", hash = "sha256:d571af7d6fca8cb77d1192970f1322c0e5346b957f94ed03d5414ec57d611d03"},
+]
+
+[[package]]
 name = "discord-ext-menus"
 version = "1.0.0a32+g8686b5d"
 description = "An extension module to make reaction based menus with discord.py"
@@ -2482,4 +2498,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "9fffa1d98ad9c5c942971b510602bfb913f970ca652b2b579bcf8f24952ff810"
+content-hash = "2ef0128a167a97b75733322960c693695e5ed7d3aaf8081e5a3bfa08fc45223c"

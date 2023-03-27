@@ -13,13 +13,12 @@ class KumikoCore(commands.Bot):
     def __init__(
         self,
         intents: discord.Intents,
-        command_prefix: str = "?k ",
         *args,
         **kwargs,
     ):
         super().__init__(
             intents=intents,
-            command_prefix=command_prefix,
+            command_prefix=commands.when_mentioned_or(">"),
             help_command=KumikoHelp(),
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help"),
             *args,

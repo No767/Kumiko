@@ -15,6 +15,7 @@ class Waifu(commands.Cog):
 
     @commands.hybrid_group(name="waifu")
     async def waifu(self, ctx: commands.Context) -> None:
+        """Base parent command for waifu - See the subcommands for more info"""
         ...
 
     @waifu.command(name="one")
@@ -29,7 +30,7 @@ class Waifu(commands.Cog):
             "raiden-shogun",
             "selfies",
         ]
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:  # type: ignore
+        async with aiohttp.ClientSession() as session:
             params = {
                 "included_tags": random.choice(waifuTagList),
                 "is_nsfw": "false",
@@ -52,7 +53,7 @@ class Waifu(commands.Cog):
             "raiden-shogun",
             "selfies",
         ]
-        async with aiohttp.ClientSession(json_serialize=orjson.dumps) as session:  # type: ignore
+        async with aiohttp.ClientSession() as session:
             params = {
                 "included_tags": random.choice(waifuTagList),
                 "is_nsfw": "False",
