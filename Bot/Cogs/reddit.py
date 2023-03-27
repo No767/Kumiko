@@ -5,6 +5,7 @@ from typing import Literal, Optional
 import aiohttp
 import asyncpraw
 import orjson
+from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
@@ -30,16 +31,14 @@ class Reddit(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @reddit.command(name="search")
+    @app_commands.describe(
+        search="The search query to use",
+        subreddit="Which subreddit to use. Defaults to all.",
+    )
     async def redditSearch(
         self, ctx: commands.Context, *, search: str, subreddit: Optional[str] = "all"
     ) -> None:
-        """Searches for posts on Reddit
-
-        Args:
-            ctx (commands.Context): Base context
-            search (str): The search query to use
-            subreddit (Optional[str], optional): Which subreddit to use. Defaults to "all".
-        """
+        """Searches for posts on Reddit"""
         async with asyncpraw.Reddit(
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
@@ -76,17 +75,13 @@ class Reddit(commands.Cog):
             await pages.start()
 
     @reddit.command(name="eggirl")
+    @app_commands.describe(filter="Sort filters. Defaults to New")
     async def redditEggIRL(
         self,
         ctx: commands.Context,
         filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
     ) -> None:
-        """Literally just shows you r/egg_irl posts. No comment.
-
-        Args:
-            ctx (commands.Context): Base context
-            filter (Optional[Literal["New", "Hot", "Rising"]], optional): Sort filters. Defaults to "New".
-        """
+        """Literally just shows you r/egg_irl posts. No comment."""
         async with asyncpraw.Reddit(
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
@@ -130,19 +125,16 @@ class Reddit(commands.Cog):
             await pages.start()
 
     @reddit.command(name="feed")
+    @app_commands.describe(
+        subreddit="Subreddit to search", filter="Sort filters. Defaults to New"
+    )
     async def redditFeed(
         self,
         ctx: commands.Context,
         subreddit: str,
         filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
     ) -> None:
-        """Gets a feed of posts from a subreddit
-
-        Args:
-            ctx (commands.Context): Base context
-            subreddit (str): Subreddit to search
-            filter (Optional[Literal["New", "Hot", "Rising"]], optional): Sort filters. Defaults to "New".
-        """
+        """Gets a feed of posts from a subreddit"""
         async with asyncpraw.Reddit(
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
@@ -186,16 +178,14 @@ class Reddit(commands.Cog):
             await pages.start()
 
     @reddit.command(name="memes")
+    @app_commands.describe(
+        subreddit="Subreddit to search",
+        amount="Amount of memes to return. Defaults to 5",
+    )
     async def searchMemes(
         self, ctx: commands.Context, subreddit: str, amount: Optional[int] = 5
     ) -> None:
-        """Searches for memes on Reddit
-
-        Args:
-            ctx (commands.Context): Base context
-            subreddit (str): The subreddit to search
-            amount (Optional[int], optional): The amount of memes to return. Defaults to 5.
-        """
+        """Searches for memes on Reddit"""
         async with aiohttp.ClientSession() as session:
             async with session.get(
                 f"https://meme-api.com/gimme/{parseSubreddit(subreddit)}/{amount}"

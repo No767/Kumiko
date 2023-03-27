@@ -4,6 +4,7 @@ from typing import Literal, Optional
 import aiohttp
 import ciso8601
 import orjson
+from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
@@ -29,13 +30,9 @@ class Searches(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @search.command(name="anime")
+    @app_commands.describe(name="The name of the anime to search")
     async def searchAnime(self, ctx: commands.Context, *, name: str) -> None:
-        """Searches up animes
-
-        Args:
-            ctx (commands.Context): Base context
-            name (str): The name of the anime to look up
-        """
+        """Searches up animes"""
         transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
         async with Client(
             transport=transport,
@@ -122,13 +119,9 @@ class Searches(commands.Cog):
             await pages.start()
 
     @search.command(name="manga")
+    @app_commands.describe(name="The name of the manga to search")
     async def searchManga(self, ctx: commands.Context, *, name: str):
-        """Searches for manga on AniList
-
-        Args:
-            ctx (commands.Context): Base context
-            name (str): The name of the manga to look up
-        """
+        """Searches for manga on AniList"""
         transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
         async with Client(
             transport=transport,
@@ -212,13 +205,9 @@ class Searches(commands.Cog):
             await pages.start()
 
     @search.command(name="gifs")
+    @app_commands.describe(search="The search term to use")
     async def searchGifs(self, ctx: commands.Context, *, search: str) -> None:
-        """Searches for gifs on Tenor
-
-        Args:
-            ctx (commands.Context): Base context
-            search (str): The search term to use
-        """
+        """Searches for gifs on Tenor"""
         async with aiohttp.ClientSession() as session:
             params = {
                 "q": search,
@@ -240,6 +229,10 @@ class Searches(commands.Cog):
                 await pages.start()
 
     @search.command(name="mc-mods")
+    @app_commands.describe(
+        mod_name="The name of the mod to search for",
+        modloader="Which modloader to use. Defaults to Forge.",
+    )
     async def searchMods(
         self,
         ctx: commands.Context,
@@ -247,13 +240,7 @@ class Searches(commands.Cog):
         mod_name: str,
         modloader: Optional[Literal["Forge", "Fabric"]] = "Forge",
     ) -> None:
-        """Search for Minecraft mods and plugins on Modrinth
-
-        Args:
-            ctx (commands.Context): Base context
-            mod_name (str): The name of the mod to search for
-            modloader (Optional[Literal["Forge", "Fabric"]], optional): Which modloader to use. Defaults to "Forge".
-        """
+        """Search for Minecraft mods and plugins on Modrinth"""
         async with aiohttp.ClientSession() as session:
             params = {
                 "query": mod_name,
