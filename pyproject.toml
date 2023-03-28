@@ -34,6 +34,8 @@ pytest-cov = "^4.0.0"
 pre-commit = "^3.2.1"
 pyinstrument = "^4.4.0"
 pyright = "^1.1.300"
+watchfiles = "^0.19.0"
+jishaku = "^2.5.1"
 
 [tool.isort]
 profile = 'black'

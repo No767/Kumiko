@@ -9,7 +9,7 @@ from kumikocore import KumikoCore
 load_dotenv()
 
 KUMIKO_TOKEN = os.environ["DEV_BOT_TOKEN"]
-
+DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -23,7 +23,7 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    async with KumikoCore(intents=intents) as bot:
+    async with KumikoCore(intents=intents, dev_mode=DEV_MODE) as bot:
         await bot.start(KUMIKO_TOKEN)
 
 
