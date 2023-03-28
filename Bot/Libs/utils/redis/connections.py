@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Literal, Union
+from typing import Union
 
 import redis.asyncio as redis
 from Libs.cache import kumikoCP
@@ -28,10 +28,11 @@ async def pingRedis(connection_pool: ConnectionPool) -> bool:
 async def redisCheck(
     backoff_sec: int = 15,
     backoff_index: int = 0,
-) -> Union[Literal[True], None]:
+) -> Union[bool, None]:
     """Integration method to check if the Redis server is alive
 
     Also sets up the conn pool cache. This is handled recursively actually.
+    There is a base case of 5 so the recursion only goes 5 calls deep on the stack. This is to prevent infinite calls on the stack from piling up.
 
     Args:
         backoff_sec (int, optional): Backoff time in seconds. Defaults to 15.
@@ -43,6 +44,9 @@ async def redisCheck(
     try:
         connPool = kumikoCP.getConnPool()
         res = await pingRedis(connection_pool=connPool)
+        if backoff_index == 5:
+            logger.error("Unable to connect to Redis server")
+            return False
         if res is True:
             logger.info("Successfully connected to Redis server")
             return True
