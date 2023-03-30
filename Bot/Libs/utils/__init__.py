@@ -1,6 +1,6 @@
 from .backoff import backoff
 from .embeds import Embed, ErrorEmbed
-from .utils import encodeDatetime, parseDatetime, parseSubreddit
+from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 
 __all__ = [
     "backoff",
@@ -9,4 +9,5 @@ __all__ = [
     "Embed",
     "ErrorEmbed",
     "parseSubreddit",
+    "parseTimeStr",
 ]
