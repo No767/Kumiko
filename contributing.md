@@ -34,27 +34,27 @@ Kumiko uses pre-commit hooks to format all of the code. Make sure run `git add -
 
 Just like how major programs are documented, the libraries that are custom made for Kumiko also have to be documented. The current standard for this project is to use [Google's Docstring format](https://google.github.io/styleguide/pyguide.html#s3.8-comments-and-docstrings). A handy VS Code extension that should be used is the [autoDocstring](https://marketplace.visualstudio.com/items?itemName=njpwerner.autodocstring) extension. By default it will generate the docstring in the Google format. Docstrings should be used on all coroutines and methods (excluding cogs), and on classes as well. 
 
-For Cogs, docstrings formats are not needed. All you need to do is to add a basic docstring and Pycord will pick it up.
+Google, Numpy, and Sphinx docstrings are also supported for commands. Kumiko is documented w/ Google docstrings, so please make sure to use that format.
 
 Example Cog:
 
 ```py 
 import discord
-from discord.commands import slash_command
 from discord.ext import commands
+from discord.ext.commands import Context, Bot
 
 class MyCog(commands.Cog):
     """An example cog for demo purposes"""
-    def __init__(self, bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
-    @slash_command(name="hello")
-    async def myCommand(self, ctx: discord.ApplicationContext):
+    @commands.hybrid_command(name="hello")
+    async def myCommand(self, ctx: Context):
         """This is an example of a description for a slash command"""
-        await ctx.respond(f"Hello {ctx.user.name}!")
+        await ctx.send(f"Hello {ctx.user.name}!")
 
-def setup(bot):
-    bot.add_cog(MyCog(bot))
+async def setup(bot: Bot):
+    await bot.add_cog(MyCog(bot))
 ```
 ## GitHub Contributing Guidelines
 ### Issue and Feature Requests Reports

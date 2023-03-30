@@ -1,35 +1,34 @@
-import asyncio
 import logging
 import os
 
 import discord
-import uvloop
+from anyio import run
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 
 load_dotenv()
 
-REDIS_HOST = os.getenv("REDIS_HOST")
-REDIS_PORT = os.getenv("REDIS_PORT")
-
-DISCORD_BOT_TOKEN = os.getenv("KUMIKO_TOKEN")
-
+KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
+DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
 intents = discord.Intents.default()
-intents.members = True
-intents.bans = True
-intents.guilds = True
+intents.message_content = True
 
-bot = KumikoCore(redis_host=REDIS_HOST, redis_port=REDIS_PORT, intents=intents)
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(levelname)s] | %(asctime)s >> %(message)s",
-    datefmt="[%m/%d/%Y] [%I:%M:%S %p %Z]",
+FORMATTER = logging.Formatter(
+    fmt="%(asctime)s %(levelname)s    %(message)s", datefmt="[%Y-%m-%d %H:%M:%S]"
 )
+discord.utils.setup_logging(formatter=FORMATTER)
 
-logging.getLogger("tortoise").setLevel(logging.WARNING)
+logger = logging.getLogger("discord")
 logging.getLogger("gql").setLevel(logging.WARNING)
 
+
+async def main() -> None:
+    async with KumikoCore(intents=intents, dev_mode=DEV_MODE) as bot:
+        await bot.start(KUMIKO_TOKEN)
+
+
 if __name__ == "__main__":
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    bot.run(DISCORD_BOT_TOKEN)
+    try:
+        run(main, backend_options={"use_uvloop": True})
+    except KeyboardInterrupt:
+        logger.info("Shutting down...")

@@ -1,4 +1,5 @@
 import sys
+import uuid
 from pathlib import Path
 
 import pytest
@@ -20,12 +21,12 @@ async def test_basic_cache():
     cache = KumikoCache(connection_pool=connPool)
     await cache.setBasicCache(key=key, value=DATA)
     res = await cache.getBasicCache(key=key)
-    assert (res == DATA) and (isinstance(res, str))  # nosec
+    assert (res == DATA.encode("utf-8")) and (isinstance(res, bytes))  # nosec
 
 
 @pytest.mark.asyncio
-async def test_basic_cache():
-    key = CommandKeyBuilder(id=None, command=None)
+async def test_json_cache():
+    key = CommandKeyBuilder(id=uuid.uuid4(), command=None)
     connPool = ConnectionPool().from_url("redis://localhost:6379/0")
     cache = KumikoCache(connection_pool=connPool)
     await cache.setJSONCache(key=key, value=DICT_DATA)

@@ -6,12 +6,14 @@
 
 ![Kumiko](./assets/kumiko-resized-round.svg)
 
-[![Required Python Version](https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Docker Build](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml) [![Tests](https://github.com/No767/Kumiko/actions/workflows/tests.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/tests.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/No767/Kumiko/branch/dev/graph/badge.svg?token=CwcMp3LIFx)](https://codecov.io/gh/No767/Kumiko) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/No767/Kumiko?display_name=tag&label=Release&logo=github)](https://github.com/No767/Kumiko/releases) ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/no767/kumiko?label=Docker%20Release&logo=docker&logoColor=white&sort=semver) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE) [![Kumiko](https://img.shields.io/badge/Kumiko-Oumae-white)](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae)
+[![Required Python Version](https://img.shields.io/badge/Python-3.8%20|%203.9%20|%203.10%20|%203.11-blue?logo=python&logoColor=white)](https://github.com/No767/Kumiko/blob/dev/pyproject.toml) [![CodeQL](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/codeql-analysis.yml) [![Snyk](https://github.com/No767/Kumiko/actions/workflows/snyk.yml/badge.svg?branch=dev)](https://github.com/No767/Kumiko/actions/workflows/snyk.yml) [![Lint](https://github.com/No767/Kumiko/actions/workflows/lint.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/lint.yml) [![Docker Build](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/docker-build.yml) [![Tests](https://github.com/No767/Kumiko/actions/workflows/tests.yml/badge.svg)](https://github.com/No767/Kumiko/actions/workflows/tests.yml) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/950cd812f1e04f0d813bb0298fdaa225)](https://www.codacy.com/gh/No767/Kumiko/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=No767/Kumiko&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/No767/Kumiko/branch/dev/graph/badge.svg?token=CwcMp3LIFx)](https://codecov.io/gh/No767/Kumiko) [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver)](https://github.com/No767/Kumiko/releases) ![Docker Image Version (latest semver)](https://img.shields.io/docker/v/no767/kumiko?label=Docker%20Release&logo=docker&logoColor=white&sort=semver) [![GitHub License](https://img.shields.io/github/license/No767/Rin?label=License&logo=github)](https://github.com/No767/Kumiko/blob/dev/LICENSE) [![Kumiko](https://img.shields.io/badge/Kumiko-Oumae-white)](https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae)
 
 A multipurpose Discord bot built with freedom and choice in mind
 
 <div align=left>
 
+| :bangbang: | Kumiko is currently undergoing a migration from Pycord to Discord.py (including a full rewrite). At this stage, Kumiko may not be working as intended. |
+| :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 ## Kumiko (久美子)
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, and many more features. Kumiko also includes integration with AniList, Reddit, Twitter, and others.
@@ -36,7 +38,7 @@ And some ones that are planned:
 
 ## Prefix
 
-Kumiko uses slash commands (`/`)
+Kumiko uses both a prefixed command and slash commands. The currently supported prefixes are `>` , and `/`.
 
 ## Inviting the Bot
 

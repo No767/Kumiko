@@ -1,0 +1,64 @@
+name: Lint
+on:
+  push:
+    branches:
+      - dev
+      
+  pull_request:
+    branches:
+      - dev
+      
+env:
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+
+jobs:
+  Analyze:
+    runs-on: ubuntu-latest
+    
+    services:
+       postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository  
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        id: setup-python
+        uses: actions/setup-python@v4.5.0
+        with:
+          python-version: '3.11'
+
+      - name: Set up Poetry
+        uses: Gr1N/setup-poetry@v8
+
+      - name: Cache Poetry
+        id: cache-poetry
+        uses: actions/cache@v3.3.1
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install Poetry Dependencies
+        if: steps.cache-poetry.outputs.cache-hit != 'true'
+        run: |
+          poetry install --with dev
+          
+      - name: Generate Prisma Client
+        run: |
+          poetry run prisma db push
+
+      - name: Run Pyright
+        run: |
+          poetry run pyright Bot

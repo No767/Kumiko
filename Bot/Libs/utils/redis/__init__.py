@@ -1,3 +1,3 @@
-from .connections import pingRedis, redisCheck, setupRedisPool
+from .connections import pingRedis, redisCheck
 
-__all__ = ["setupRedisPool", "pingRedis", "redisCheck"]
+__all__ = ["pingRedis", "redisCheck"]

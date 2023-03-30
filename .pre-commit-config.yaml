@@ -8,8 +8,10 @@ repos:
     rev: 1.7.4
     hooks:
     -  id: bandit
+       args: ["-c", "pyproject.toml"]
        name: Bandit
        stages: [commit]
+       additional_dependencies: ["bandit[toml]"]
        
         
 # -   repo: https://github.com/pre-commit/mirrors-autopep8

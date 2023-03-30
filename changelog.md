@@ -1,57 +1,62 @@
-# ✨ Kumiko v0.6.0 ✨
+# ✨ Kumiko v0.7.0 ✨
 
-This release focuses on cleaning out any old code, and getting ready for the migration to discord.py. This release is just the setup for v0.7.x, where everything is going to be re-implemented but in a more stable, and cleaner state. For more info on why, please see https://github.com/No767/Kumiko/discussions/267.
-
-**Note that this release is considered semi-stable, but removes the whole entire economy system in preparation for a full rewrite**
+This release is the foundation for v0.8.x. This release implements almost everything back (excluding the advanced moderation features, and economy system) from previous versions of Kumiko, and now Kumiko is migrated to Discord.py (sorry Pycord devs). The economy system and improved moderation commands will be coming in v0.8.x instead. There might be some that might have been missed, so if you want to see the full list of changes, please see the changes here: [`v0.6.0...v0.7.x`](https://github.com/No767/Kumiko/compare/v0.6.0...v0.7.0)
 
 ## :boom: Breaking Changes :boom:
 
-- Removed the whole entire economy system (will be re-implemented in v0.7.x) - Most of the commands will need to be re-synced globally
-- Also removed GWS - Will be implemented in v0.7.x or later as a gacha system
+- Literally rewrote Kumiko from the ground up to use Discord.py instead of Pycord. Expect a ton of things to be broken
+- A ton of cogs, and commands have been either moved or deleted since v0.6.x. Please consider resyncing your commands with the include dev-tool cog (or by activating jishaku)
+
 ## ✨ TD;LR
 
-- Removed a ton of things in preparation for v0.7.x
+- Migrated from Pycord to Discord.py. Literally this took way too long
+- Kumiko now supports both prefixed and slash commands (default prefix is `>`)
+- Migration from Coredis to Redis-py, and migration from Tortoise ORM to Prisma
+- Kumiko is now properly type hinted/statically typed now.
 
 ## 🛠️ Changes
-- Significant changes to the way Kumiko is built 
-- Significant changes to the subclass for Kumiko
-- Move IPC into a separate extension
-- Rework the docs
-- Merged all of Rin's cogs into one cog - Searches
-- Ensure that the setup function for Redis conn pools are sync
-- Cleaner recursive cog loading
-- Recursive DB + Redis connections - Also uses exponential backoffs
+- RedisCheck is now fully recursive
+- Properly implemented static type checking
+- Improved DB connections via DB cog
+- Migrate searches cog to dpy
+- Spilt Reddit and GitHub commands to their respective cogs
+- Use `@app_commands.describe` to describe the slash command inputs. Removed the docstring args bc it was conflicting w/ the help cmd
+- Now using a singleton object for storing Redis connection pools. (Known as the KumikoCPM)
+- Improved the Vagrantfile (possible Ansible provisioning in the future)
+- Using orjson for parsing JSON instead of pysimdjson or cysimdjson
 
 ## ✨ Additions
+- Context manager for Prisma sessions - Useful for debugging and testing
+- Recursive RedisCheck coroutine - Actually now cleans up the stack calls for once (thanks to a base case)
+- Vasic help command - Will be improved in v0.8.x
+- New unit tests
+- Pagination - Taken from Rapptz's (Danny) RoboDanny bot, and improved to work w/ Kumiko
+- EmbedListSource for paginating embeds
+- TextSources, and ListSources for paginating text and lists
+- Actions cog - Replacement for the UwU Cog
+- Error Handler cog - Now uses custom exceptions
+- exceptions and utils (including datetime parsing utils, and much much more)
+- Dev Mode - It's an environment variable that toggles the dev mode. This is useful for testing, and debugging Kumiko (includes Jishaku and a custom extension reloader)
 
-- New cache, utils, and economy packages (cache package uses redis-py)
-- `@cached` and `@cachedJson` decorators - These will automatically cache the return value of any coroutines, and cache them on Redis
-- Prisma schema
-- Auto Merge Workflow for Dependabot
-- Builtin global memory cache for Redis connection pools
-- Datetime utils
-- MsgPack support
 
 ## ➖ Removals
-- The whole entire economy system
-- Rin's Cogs (Merged into search feature)
-- Quests (for now)
-- Old packages (utils, economy, cache, etc)
-- GWS (will be replaced by a gacha system in the future)
-- A ton of libs
-- Removed standalone setup scrips
-- Removed old DB seeder scripts
-- Remove of any trace of Tortoise ORM
-- Tortoise ORM, Coredis, and others
+- MsgPack Serialization
+- Literally all of the cogs from v0.6.x
+- Removed python-dateutil, numpy, pytimeparse, aiocache, ormsgpack, and pysimdjson (yay no C compilations anymore) 
+- Old libs
+- Pycord itself
+- Builtlins cache in favor of KumikoCPM
 
 # ⬆️ Dependabot Updates
-- \[Actions](deps)\: Bump actions/setup-python from 4.4.0 to 4.5.0 (@dependabot)
-- \[pip](deps)\: Bump python-dotenv from 0.21.1 to 1.0.0 (@dependabot)
-- \[pip](deps)\: Bump asyncpraw from 7.6.1 to 7.7.0 (@dependabot)
-- \[pip](deps-dev)\: Bump pre-commit from 3.1.0 to 3.1.1 (#273) (@dependabot)
-- \[pip](deps)\: Bump orjson from 3.8.6 to 3.8.7 (#274) (@dependabot)
-- \[pip](deps)\: Bump prisma from 0.8.1 to 0.8.2 (#276) (@dependabot)
-- \[pip](deps-dev)\: Bump pytest from 7.2.1 to 7.2.2 (#277) (@dependabot)
-- \[pip](deps)\: Bump charset-normalizer from 3.0.1 to 3.1.0 (#278) (@dependabot)
-- \[pip](deps)\: Bump coredis from 4.10.2 to 4.10.3 (#279) (@dependabot)
-- \[Actions](deps)\: Bump actions/cache from 3.2.6 to 3.3.0 (#280) (@dependabot)
+- \[Actions](deps)\: Bump actions/cache from 3.3.0 to 3.3.1 (#282) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.298 to 1.1.299 (#283) (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.1.1 to 3.2.0 (#284) (@dependabot)
+- \[pip](deps)\: Bump redis from 4.5.1 to 4.5.2 (#285) (@dependabot)
+- \[pip](deps-dev)\: Bump pytest-asyncio from 0.20.3 to 0.21.0 (#286) (@\dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.7 to 3.8.8 (#288) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.299 to 1.1.300 (#289) (@dependabot)
+- \[pip](deps)\: Bump redis from 4.5.2 to 4.5.3 (#290) (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.2.0 to 3.2.1 (#291) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.8 to 3.8.9 (#293) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.300 to 1.1.301 (#294) (@dependabot)
+- \[pip](deps)\: Bump redis from 4.5.3 to 4.5.4 (#295) (@dependabot)

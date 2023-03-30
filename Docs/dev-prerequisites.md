@@ -52,7 +52,7 @@ libffi-devel python311-devel python311-libnacl opus libopus0 wget git curl
 sudo pacman -S --needed base-devel openssl openssl-1.1 libffi python python-libnacl opus
 ```
 
-### MacOS/Homebrew
+### MacOS
 
 ```sh
 brew install openssl openssl@1.1 libffi git curl make opus

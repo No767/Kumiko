@@ -1,4 +1,13 @@
 from .backoff import backoff
-from .utils import encodeDatetime, parseDatetime
+from .embeds import Embed, ErrorEmbed
+from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 
-__all__ = ["backoff", "parseDatetime", "encodeDatetime"]
+__all__ = [
+    "backoff",
+    "parseDatetime",
+    "encodeDatetime",
+    "Embed",
+    "ErrorEmbed",
+    "parseSubreddit",
+    "parseTimeStr",
+]
