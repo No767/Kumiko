@@ -8,7 +8,7 @@ from kumikocore import KumikoCore
 
 load_dotenv()
 
-KUMIKO_TOKEN = os.environ["DEV_BOT_TOKEN"]
+KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
 intents = discord.Intents.default()
 intents.message_content = True
