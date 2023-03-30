@@ -1,8 +1,6 @@
-# ✨ Kumiko v0.6.0 ✨
+# ✨ Kumiko v0.7.0 ✨
 
-This release focuses on cleaning out any old code, and getting ready for the migration to discord.py. This release is just the setup for v0.7.x, where everything is going to be re-implemented but in a more stable, and cleaner state. For more info on why, please see https://github.com/No767/Kumiko/discussions/267.
-
-**Note that this release is considered semi-stable, but removes the whole entire economy system in preparation for a full rewrite**
+This release is just a setup release for v0.8.x. This release implements almost everything back (excluding the advanced moderation features, and economy system) from previous versions of Kumiko, and now Kumiko is migrated to Discord.py (sorry Pycord devs). The 
 
 ## :boom: Breaking Changes :boom:
 

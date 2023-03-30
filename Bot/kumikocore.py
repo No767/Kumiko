@@ -59,11 +59,12 @@ class KumikoCore(commands.Bot):
                 )
                 await self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
 
+        self.loop.create_task(redisCheck())
+
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
             self.loop.create_task(self.fsWatcher())
             await self.load_extension("jishaku")
-        self.loop.create_task(redisCheck())
 
     async def on_ready(self):
         currUser = None if self.user is None else self.user.name
