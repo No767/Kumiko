@@ -1,10 +1,12 @@
-# 🛠️ Kumiko v0.7.1 🛠️
+# 🛠️ Kumiko v0.7.2 🛠️
 
-This small release is to fix some issues and to reduce the size of the Docker image. 
+This release just fixes the deployment. Accidently deployed an update, not a patch.
 
 Full changes can be found below:
-- [`v0.6.0...v0.7.1`](https://github.com/No767/Kumiko/compare/v0.6.0...v0.7.1)
-- [`v0.7.0...v0.7.1`](https://github.com/No767/Kumiko/compare/v0.7.0...v0.7.1)
+- [`v0.6.0...v0.7.2`](https://github.com/No767/Kumiko/compare/v0.6.0...v0.7.2)
+- [`v0.7.0...v0.7.2`](https://github.com/No767/Kumiko/compare/v0.7.0...v0.7.2)
+
+**Note: See changelog for v0.7.1 for full information**
 
 ## :boom: Breaking Changes :boom:
 
@@ -12,18 +14,17 @@ Full changes can be found below:
 
 ## ✨ TD;LR
 
-- Reduced the size of the Docker image by removing unneeded local packages
+- None
 
 ## 🛠️ Changes
-- Reduced the size of the Docker image by removing unneeded local packages
-- Optionally set an Redis password (through the `REDIS_PASSWORD` environment variable) for KumikoCPM
+- None
 
 ## ✨ Additions
 - None
 
 
 ## ➖ Removals
-- Removed unneeded libs packages
+- None
 
 # ⬆️ Dependabot Updates
 - None
