@@ -1,4 +1,4 @@
-# ✨ Kumiko v0.7.1 ✨
+# 🛠️ Kumiko v0.7.1 🛠️
 
 This small release is to fix some issues and to reduce the size of the Docker image. 
 
