@@ -30,15 +30,20 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [3.8, 3.9, '3.10', '3.11']
+
     steps:
       - name: Checkout Repository  
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
+      - name: Set up Python ${{ matrix.version }}
         id: setup-python
         uses: actions/setup-python@v4.5.0
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.version }}
 
       - name: Set up Poetry
         uses: Gr1N/setup-poetry@v8
@@ -48,7 +53,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-lint-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Poetry Dependencies
         if: steps.cache-poetry.outputs.cache-hit != 'true'

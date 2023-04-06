@@ -36,6 +36,7 @@ pyinstrument = "^4.4.0"
 pyright = "^1.1.302"
 watchfiles = "^0.19.0"
 jishaku = "^2.5.1"
+ruff = "^0.0.261"
 
 [tool.isort]
 profile = 'black'
