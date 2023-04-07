@@ -53,7 +53,7 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-lint-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-lint-${{ matrix.version }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install Poetry Dependencies
         if: steps.cache-poetry.outputs.cache-hit != 'true'
