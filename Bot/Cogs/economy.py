@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 from Libs.economy import getUser
+from Libs.ui.economy import RegisterView
 from Libs.utils import Embed
-from prisma.models import User
 
 
 class Economy(commands.Cog):
@@ -25,22 +25,12 @@ class Economy(commands.Cog):
     @commands.hybrid_command(name="register")
     async def register(self, ctx: commands.Context) -> discord.Message:
         """Create an account for the economy"""
-        doesUserExist = (
-            await User.prisma().count(where={"id": ctx.author.id}, take=1) == 1
+        view = RegisterView()
+        embed = Embed(
+            title="Register",
+            description="Register for the economy! Before you do so, please make sure to follow the TOS. By registering, you are agreeing to use these services.",
         )
-        if doesUserExist:
-            return await ctx.send(
-                embed=Embed(
-                    title="Already Registered",
-                    description="You already have an account!",
-                )
-            )
-        await User.prisma().create(data={"id": ctx.author.id, "name": ctx.author.name})
-        return await ctx.send(
-            embed=Embed(
-                title="Registered", description="You have successfully registered!"
-            )
-        )
+        return await ctx.send(embed=embed, view=view)
 
     @commands.hybrid_command(name="wallet")
     async def wallet(self, ctx: commands.Context) -> discord.Message:
