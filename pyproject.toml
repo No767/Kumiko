@@ -23,7 +23,7 @@ discord-py = {extras = ["voice"], version = "^2.2.2"}
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"}
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.3.0"
+pytest = "^7.3.1"
 pytest-asyncio = "^0.21.0"
 nox = "^2022.11.21"
 nox-poetry = "^1.0.2"
