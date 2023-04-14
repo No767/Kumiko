@@ -2208,18 +2208,6 @@ idna = {version = "*", optional = true, markers = "extra == \"idna2008\""}
 idna2008 = ["idna"]
 
 [[package]]
-name = "rin-exceptions"
-version = "1.0.3"
-description = "A set of base exceptions for Rin"
-category = "main"
-optional = false
-python-versions = ">=3.7,<4.0"
-files = [
-    {file = "rin-exceptions-1.0.3.tar.gz", hash = "sha256:8044e89f50280b0d0e14639e0727405b49a0cf54a73b6993c2dd4cc56d0182c2"},
-    {file = "rin_exceptions-1.0.3-py3-none-any.whl", hash = "sha256:7d0e467a313d208589f1340c6225636ae2325e5b0a7be39e0361f1ab0d986fee"},
-]
-
-[[package]]
 name = "ruff"
 version = "0.0.261"
 description = "An extremely fast Python linter, written in Rust."
@@ -2662,4 +2650,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "6f0ab9ce64e1ed3e6647205e1eb837b6362a6eacfdf54ffbf1df7f4080193354"
+content-hash = "f08f2b08d55989439c792d295d7b62189b4e23d968fa626cb7d8af7aa4dd0eaf"

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Kumiko"
-version = "0.7.0"
+version = "0.9.0"
 description = "A multipurpose Discord bot built with freedom and choice in mind"
 authors = ["No767 <73260931+No767@users.noreply.github.com>"]
 license = "Apache-2.0"
@@ -14,7 +14,6 @@ orjson = "^3.8.10"
 asyncpraw = "^7.7.0"
 uvloop = "^0.17.0"
 gql = { extras = ["aiohttp"], version = "^3.4.0" }
-rin-exceptions = "^1.0.3"
 better-ipc = "^2.0.3"
 prisma = "^0.8.2"
 redis = {extras = ["hiredis"], version = "^4.5.4"}
