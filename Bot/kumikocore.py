@@ -2,9 +2,9 @@ import logging
 from pathlib import Path as SyncPath
 
 import discord
-import starlight
 from anyio import Path
 from discord.ext import commands
+from Libs.utils.help import KumikoHelpPaginated
 from Libs.utils.redis import redisCheck
 
 # Some weird import logic to ensure that watchfiles is there
@@ -28,9 +28,7 @@ class KumikoCore(commands.Bot):
         super().__init__(
             intents=intents,
             command_prefix=commands.when_mentioned_or(">"),
-            help_command=starlight.MenuHelpCommand(
-                per_page=5, accent_color=0xFFCCCB, error_color=discord.Color.red()
-            ),
+            help_command=KumikoHelpPaginated(),
             activity=discord.Activity(type=discord.ActivityType.watching, name="/help"),
             *args,
             **kwargs,
