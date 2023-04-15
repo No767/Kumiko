@@ -6,7 +6,7 @@ import discord
 from discord.ext import commands
 from Libs.utils import Embed
 
-VERSION = "v0.7.0"
+VERSION = "v0.9.0"
 
 
 class Kumiko(commands.Cog):

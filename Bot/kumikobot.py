@@ -2,8 +2,11 @@ import logging
 import os
 
 import discord
+from aiohttp import ClientSession
 from anyio import run
 from dotenv import load_dotenv
+from gql import Client
+from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
 
 load_dotenv()
@@ -23,8 +26,18 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    async with KumikoCore(intents=intents, dev_mode=DEV_MODE) as bot:
-        await bot.start(KUMIKO_TOKEN)
+    async with ClientSession() as session:
+        async with Client(
+            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
+            fetch_schema_from_transport=True,
+        ) as gql_session:
+            async with KumikoCore(
+                intents=intents,
+                session=session,
+                gql_session=gql_session,
+                dev_mode=DEV_MODE,
+            ) as bot:
+                await bot.start(KUMIKO_TOKEN)
 
 
 if __name__ == "__main__":

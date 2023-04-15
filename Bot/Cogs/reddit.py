@@ -9,6 +9,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
+from kumikocore import KumikoCore
 from Libs.utils import parseSubreddit
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
@@ -21,7 +22,7 @@ REDDIT_SECRET = os.environ["REDDIT_SECRET"]
 class Reddit(commands.Cog):
     """Search, and view posts and memes from Reddit"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
     @commands.hybrid_group(name="reddit")
@@ -211,5 +212,5 @@ class Reddit(commands.Cog):
                 await pages.start()
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(Reddit(bot))
