@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from kumikocore import KumikoCore
 from Libs.economy import getUser
 from Libs.ui.economy import RegisterView
 from Libs.utils import Embed
@@ -8,7 +9,7 @@ from Libs.utils import Embed
 class Economy(commands.Cog):
     """Earn, sell, and interact with Kumiko's economy!"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         super().__init__()
 
@@ -49,5 +50,5 @@ class Economy(commands.Cog):
         return await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(Economy(bot))

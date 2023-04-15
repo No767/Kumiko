@@ -3,10 +3,11 @@ from typing import Literal, Optional
 import discord
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
+from kumikocore import KumikoCore
 
 
 class DevTools(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: KumikoCore):
         self.bot = bot
 
     @commands.hybrid_command(name="sync")
@@ -56,5 +57,5 @@ class DevTools(commands.Cog):
         await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: KumikoCore):
     await bot.add_cog(DevTools(bot))

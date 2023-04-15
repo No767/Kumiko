@@ -2,6 +2,7 @@ from typing import Union
 
 from discord.app_commands.errors import CommandInvokeError
 from discord.ext import commands
+from kumikocore import KumikoCore
 from Libs.errors import HTTPError, KumikoException, NoItemsError, NotFoundError
 from Libs.utils import Embed, ErrorEmbed
 
@@ -9,7 +10,7 @@ from Libs.utils import Embed, ErrorEmbed
 class ErrorHandler(commands.Cog):
     """Cog to handle errors"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
     def fullException(self, obj):
@@ -145,5 +146,5 @@ class ErrorHandler(commands.Cog):
             await ctx.send(embed=errorEmbed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(ErrorHandler(bot))

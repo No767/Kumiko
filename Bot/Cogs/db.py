@@ -2,13 +2,14 @@ import asyncio
 import logging
 
 from discord.ext import commands, tasks
+from kumikocore import KumikoCore
 from Libs.utils import backoff
 from prisma import Prisma  # type: ignore
 from prisma.engine.errors import EngineConnectionError  # type: ignore
 
 
 class PrismaClientSession(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: KumikoCore):
         self.bot = bot
         self.backoffSec = 10
         self.backoffSecIndex = 0
@@ -44,5 +45,5 @@ class PrismaClientSession(commands.Cog):
         self.connect.restart()
 
 
-async def setup(bot: commands.Bot):
+async def setup(bot: KumikoCore):
     await bot.add_cog(PrismaClientSession(bot))

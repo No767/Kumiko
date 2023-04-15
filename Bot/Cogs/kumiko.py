@@ -4,6 +4,7 @@ import time
 
 import discord
 from discord.ext import commands
+from kumikocore import KumikoCore
 from Libs.utils import Embed
 
 VERSION = "v0.9.0"
@@ -12,7 +13,7 @@ VERSION = "v0.9.0"
 class Kumiko(commands.Cog):
     """Commands to get basic info about Kumiko"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
     @commands.Cog.listener()
@@ -66,5 +67,5 @@ class Kumiko(commands.Cog):
         await ctx.send(embed=embed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(Kumiko(bot))
