@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 
-Welcome to Kumiko
+Kumiko
 ==================================
 
 .. toctree::
@@ -25,12 +25,24 @@ Welcome to Kumiko
    
 
 .. figure:: https://raw.githubusercontent.com/No767/Kumiko/dev/assets/kumiko-resized-round.svg
-   :align: center
+   :align: right
+
+.. image:: https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver
+   :alt: GitHub release (latest SemVer)
+
+.. image:: https://img.shields.io/github/license/No767/Kumiko?label=License&logo=github
+   :alt: GitHub
+
+.. image:: https://img.shields.io/badge/Kumiko-Oumae-white
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko takes a unique approach to what a multipurpose bot is defined as. 
 
 Features
 ----------
+
+.. CAUTION::
+   Some of these features are not implemented yet. Kumiko is still under heavy development.
+
 - Customizable prefix module
 - Global or guild economy with jobs and marketplaces 
 - Custom logging module
