@@ -81,3 +81,4 @@ migrations
 .env-old
 database.db
 json-tests
+Kumiko-Docs/build
