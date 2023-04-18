@@ -54,7 +54,6 @@ And some ones that are planned:
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - Event Logging (Pinned for v1)
 - Annoucement releaser with support from GitHub (Pinned for v2)
-- AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 
 Guides
@@ -62,8 +61,8 @@ Guides
 
 Are you interested in contributing to Kumiko as a developer? Or are you interested in learning how to use Kumiko as the end user? This is the place to get started!
 
-- :doc:`guides/dev/index`
 - :doc:`guides/user/index`
+- :doc:`guides/dev/index`
 
 Resources and Links
 -------------------

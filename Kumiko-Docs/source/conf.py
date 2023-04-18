@@ -30,3 +30,14 @@ html_title = "Kumiko"
 
 html_theme = "furo"
 html_static_path = ["_static"]
+
+html_theme_options = {
+    "dark_css_variables": {
+        "color-brand-primary": "#A685E2",
+        "color-brand-content": "#FFABE1",
+    },
+    "light_css_variables": {
+        "color-brand-primary": "#6867AC",
+        "color-brand-content": "#CE7BB0",
+    },
+}
