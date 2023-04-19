@@ -54,13 +54,13 @@ If you would like to support me with projects like this, please consider starrin
 
 If you would like to get started, here are some links to help you with that:
 
-- [Manual Deployment (Self Hosting)](https://kumiko-docs.vercel.app/docs/deployment/manual-deployment)
+- [Trying out Kumiko](https://kumiko.readthedocs.io/en/latest/guides/user/trying-out.html)
 - [Contributing](contributing.md)
-- [Documentation](https://kumiko-docs.vercel.app/)
+- [Documentation](https://kumiko.readthedocs.io/)
 
 ## Resources and Links
 
-- [Documentation](https://kumiko-docs.vercel.app/)
+- [Documentation](https://kumiko.readthedocs.io/)
 - [Docker Hub](https://hub.docker.com/r/no767/kumiko)
 - [GHCR](https://github.com/No767/Kumiko/pkgs/container/kumiko)
 
