@@ -7,13 +7,13 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Kumiko"
-copyright = "2023, Noelle"
-author = "Noelle"
+copyright = "2023, No767"
+author = "No767"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = ["sphinx.ext.napoleon", "sphinxext.opengraph"]
 
 
 templates_path = ["_templates"]
@@ -41,3 +41,8 @@ html_theme_options = {
         "color-brand-content": "#CE7BB0",
     },
 }
+
+ogp_site_url = "https://kumiko.readthedocs.io"
+ogp_image = (
+    "https://raw.githubusercontent.com/No767/Kumiko/dev/assets/kumiko-resized-round.png"
+)

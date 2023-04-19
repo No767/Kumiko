@@ -24,7 +24,7 @@ Kumiko
    terms-of-service/privacy-policy.rst
    
 
-.. figure:: https://raw.githubusercontent.com/No767/Kumiko/dev/assets/kumiko-resized-round.svg
+.. figure:: /_static/kumiko-resized-round.svg
    :align: right
 
 .. image:: https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver
@@ -71,3 +71,10 @@ Resources and Links
 - `GHCR <https://github.com/No767/Kumiko/pkgs/container/kumiko>`_
 - `GitHub <https://github.com/No767/Kumiko>`_
 - Discord Server
+
+Project Links
+^^^^^^^^^^^^^
+
+- `Contributing <https://github.com/No767/Kumiko/blob/dev/contributing.md>`_
+- `Roadmap <https://github.com/No767/Kumiko/discussions/266>`_
+- `Project License <https://github.com/No767/Kumiko/blob/dev/LICENSE>`_

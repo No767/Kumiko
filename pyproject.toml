@@ -43,6 +43,7 @@ sphinx = "^6.1.3"
 myst-parser = "^1.0.0"
 sphinx-autobuild = "^2021.3.14"
 furo = "^2023.3.27"
+sphinxext-opengraph = "^0.8.2"
 
 [tool.isort]
 profile = 'black'

@@ -5,5 +5,7 @@ Kumiko offers a user guide where users can find information on commands, feature
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
    
+   bot-setup
+   trying-out
+   configurations/index
