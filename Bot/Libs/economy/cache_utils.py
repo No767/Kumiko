@@ -13,9 +13,7 @@ from ..cache import CommandKeyBuilder, cachedJson, kumikoCP
         prefix="cache", namespace="kumiko", id=uuid.uuid4(), command="internal_get_user"
     ),
 )
-async def getUser(
-    user_id: int, includes: UserInclude = {"inv": False, "marketplace": False}
-) -> Union[Dict, None]:
+async def getUser(user_id: int, includes: UserInclude) -> Union[Dict, None]:
     """[Coroutine] Helper coroutine to obtain a user's profile from the database
 
     For reducing the latency for accessing the data, this helper coroutine is cached on Redis (w/ RedisJSON). Also note that this coroutine expects that the Prisma query engine and database are already connected.
