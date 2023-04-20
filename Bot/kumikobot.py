@@ -1,6 +1,7 @@
 import logging
 import os
 
+import asyncpraw
 import discord
 from aiohttp import ClientSession
 from anyio import run
@@ -10,6 +11,10 @@ from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
 
 load_dotenv()
+
+
+REDDIT_ID = os.environ["REDDIT_ID"]
+REDDIT_SECRET = os.environ["REDDIT_SECRET"]
 
 KUMIKO_TOKEN = os.environ["DEV_BOT_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
@@ -31,13 +36,19 @@ async def main() -> None:
             transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
             fetch_schema_from_transport=True,
         ) as gql_session:
-            async with KumikoCore(
-                intents=intents,
-                session=session,
-                gql_session=gql_session,
-                dev_mode=DEV_MODE,
-            ) as bot:
-                await bot.start(KUMIKO_TOKEN)
+            async with asyncpraw.Reddit(
+                client_id=REDDIT_ID,
+                client_secret=REDDIT_SECRET,
+                user_agent="Kumiko (by /u/No767)",
+            ) as reddit:
+                async with KumikoCore(
+                    intents=intents,
+                    session=session,
+                    gql_session=gql_session,
+                    reddit_session=reddit,
+                    dev_mode=DEV_MODE,
+                ) as bot:
+                    await bot.start(KUMIKO_TOKEN)
 
 
 if __name__ == "__main__":

@@ -9,15 +9,44 @@ generator client {
 }
 
 model User {
-  id           BigInt        @id @unique
-  name         String
-  rank         Int           @default(0)
-  petals       Int           @default(0)
-  date_joined  DateTime      @default(now())
-  marketplace  Marketplace? // A user can also optionally own a marketplace
-  inv          Inv[] // Give the user a default inventory that has one item that is worth 0 petals
+  id          BigInt       @id @unique
+  name        String
+  rank        Int          @default(0)
+  petals      Int          @default(0)
+  date_joined DateTime     @default(now())
+  marketplace Marketplace? // A user can also optionally own a marketplace
+  user_inv    UserInv[] // Give the user a default inventory that has one item that is worth 0 petals
   // quests       Quest[] // This default quest may be used to get the user to explore the marketplace
   // QuestClaimer QuestClaimer? // A user can only claim one quest
+}
+
+model UserInv {
+  id      BigInt @id @unique
+  user    User   @relation(fields: [user_id], references: [id])
+  items   Item[]
+  user_id BigInt
+  amount  Int
+}
+
+model Item {
+  id             String      @id @default(uuid())
+  marketplace    Marketplace @relation(fields: [marketplace_id], references: [id])
+  marketplace_id String
+  user_inv       UserInv     @relation(fields: [user_inv_id], references: [id])
+  user_inv_id    BigInt
+  name           String
+  description    String      @db.Text
+  price          Float
+}
+
+model Marketplace {
+  id           String   @id @default(uuid())
+  name         String
+  description  String   @db.Text
+  date_created DateTime @default(now())
+  owner        User     @relation(fields: [owner_id], references: [id])
+  owner_id     BigInt   @unique
+  items        Item[]
 }
 
 // model QuestClaimer {
@@ -27,12 +56,6 @@ model User {
 //   claimed_at DateTime
 //   quest      Quest[]
 // }
-
-model Inv {
-  id      BigInt @id @unique
-  user    User   @relation(fields: [user_id], references: [id])
-  user_id BigInt
-}
 
 // model Quest {
 //   id             String       @id @default(uuid())
@@ -49,23 +72,3 @@ model Inv {
 //   date_completed DateTime?
 //   end_datetime   DateTime?
 // }
-
-model Item {
-  id             String      @id @default(uuid())
-  marketplace    Marketplace @relation(fields: [marketplace_id], references: [id])
-  marketplace_id String
-  name           String
-  description    String      @db.Text
-  price          Float
-  amount         Int
-}
-
-model Marketplace {
-  id           String   @id @default(uuid())
-  name         String
-  description  String   @db.Text
-  date_created DateTime @default(now())
-  owner        User     @relation(fields: [owner_id], references: [id])
-  owner_id     BigInt   @unique
-  items        Item[]
-}

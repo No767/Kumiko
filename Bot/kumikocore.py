@@ -5,6 +5,7 @@ from typing import Union
 import discord
 from aiohttp import ClientSession
 from anyio import Path
+from asyncpraw import Reddit
 from discord.ext import commands
 from gql.client import AsyncClientSession, ReconnectingAsyncClientSession
 from Libs.utils.help import KumikoHelpPaginated
@@ -26,6 +27,7 @@ class KumikoCore(commands.Bot):
         intents: discord.Intents,
         session: ClientSession,
         gql_session: Union[ReconnectingAsyncClientSession, AsyncClientSession],
+        reddit_session: Reddit,
         dev_mode: bool = False,
         *args,
         **kwargs,
@@ -41,6 +43,7 @@ class KumikoCore(commands.Bot):
         self.dev_mode = dev_mode
         self._session = session
         self._gql_session = gql_session
+        self._reddit_session = reddit_session
         self.logger: logging.Logger = logging.getLogger("kumikobot")
 
     @property
@@ -62,6 +65,15 @@ class KumikoCore(commands.Bot):
             Union[ReconnectingAsyncClientSession, AsyncClientSession]: The current GQL session
         """
         return self._gql_session
+
+    @property
+    def reddit_session(self) -> Reddit:
+        """A global Reddit session used throughout the lifetime of the bot
+
+        Returns:
+            Reddit: The current Reddit session
+        """
+        return self._reddit_session
 
     async def fsWatcher(self) -> None:
         cogsPath = SyncPath(__file__).parent.joinpath("Cogs")
