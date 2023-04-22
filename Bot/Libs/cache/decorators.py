@@ -1,87 +1,87 @@
 import uuid
 from functools import wraps
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Union
 
 from redis.asyncio.connection import ConnectionPool
 
 from .redis_cache import CommandKeyBuilder, KumikoCache
 
 
-def cached(
-    connection_pool: ConnectionPool,
-    command_key: Optional[str],
-    ttl: int = 30,
-) -> Callable[..., Any]:
+class cache:
     """A decorator to cache the result of a function that returns a `str` to Redis.
 
-    **Note**: The return type of the corountine used has to be `str` or `bytes`
+    **Note**: The return type of the coroutine used has to be `str` or `bytes`
 
     Args:
         connection_pool (ConnectionPool): Redis connection pool to use
-        command_key (Optional[str]): Command key to use
         ttl (int, optional): TTL (Time-To-Live). Defaults to 30.
-
-    Returns:
-        Callable[..., Any]: The wrapper function
     """
 
-    def wrapper(func: Callable[..., Any]) -> Any:
+    def __init__(self, connection_pool: ConnectionPool, ttl: int = 30):
+        self.connection_pool = connection_pool
+        self.ttl = ttl
+
+    def __call__(self, func: Callable, *args: Any, **kwargs: Any):
         @wraps(func)
-        async def wrapped(*args: Any, **kwargs: Any) -> Any:
-            currFunc = await func(*args, **kwargs)
-            cache = KumikoCache(connection_pool=connection_pool)
-            key = (
-                CommandKeyBuilder(id=uuid.uuid4(), command=cached.__name__)
-                if command_key is None
-                else command_key
-            )
-            if await cache.cacheExists(key=key) is False:
-                await cache.setBasicCache(key=key, value=currFunc, ttl=ttl)
-            else:
-                return await cache.getBasicCache(key=key)
-            return currFunc
+        async def wrapper(id: int, *args: Any, **kwargs: Any):
+            return await self.deco(func, id, *args, **kwargs)
 
-        return wrapped
+        return wrapper
 
-    return wrapper
+    async def deco(self, func: Callable, id: Union[int, None], *args, **kwargs):
+        res = await func(id, *args, **kwargs)
+        if res is None:
+            return None
+        cache = KumikoCache(connection_pool=self.connection_pool)
+        key = CommandKeyBuilder(
+            prefix="cache",
+            namespace="kumiko",
+            id=id if id is not None else uuid.uuid4(),
+            command=func.__name__,
+        )
+
+        if await cache.cacheExists(key=key) is False:
+            await cache.setBasicCache(key=key, value=res, ttl=self.ttl)
+            return res
+        return await cache.getBasicCache(key=key)
 
 
-def cachedJson(
-    connection_pool: ConnectionPool,
-    command_key: Optional[str],
-    ttl: int = 30,
-) -> Callable[..., Any]:
-    """A decorator to cache the result of a function that returns a `dict` to Redis.
+class cacheJson:
+    """
+    A decorator to cache the result of a function that returns a `dict` to Redis.
 
-    **Note**: The return type of the corountine used has to be `dict`
+    **Note**: The return type of the coroutine used has to be `dict`
 
     Args:
         connection_pool (ConnectionPool): Redis connection pool to use
-        command_key (Optional[str]): Command key to use
-        ttl (int, optional): TTL (Time-To-Live). Defaults to 30.
-
-    Returns:
-        Callable[..., Any]: The wrapper function
+        ttl (int, optional): TTL (Time-To-Live).
+        Defaults to 30.
     """
 
-    def wrapper(func: Callable[..., Any]) -> Any:
+    def __init__(self, connection_pool: ConnectionPool, ttl: int = 30):
+        self.connection_pool = connection_pool
+        self.ttl = ttl
+
+    def __call__(self, func: Callable, *args: Any, **kwargs: Any):
         @wraps(func)
-        async def wrapped(*args: Any, **kwargs: Any) -> Any:
-            currFunc = await func(*args, **kwargs)
-            if currFunc is None:
-                return None
-            cache = KumikoCache(connection_pool=connection_pool)
-            key = (
-                CommandKeyBuilder(id=uuid.uuid4(), command=cachedJson.__name__)
-                if command_key is None
-                else command_key
-            )
-            if await cache.cacheExists(key=key) is False:
-                await cache.setJSONCache(key=key, value=currFunc, ttl=ttl)
-            else:
-                return await cache.getJSONCache(key=key)
-            return currFunc
+        async def wrapper(id: int, *args: Any, **kwargs: Any):
+            return await self.deco(func, id, *args, **kwargs)
 
-        return wrapped
+        return wrapper
 
-    return wrapper
+    async def deco(self, func: Callable, id: Union[int, None], *args, **kwargs):
+        res = await func(id, *args, **kwargs)
+        if res is None:
+            return None
+        cache = KumikoCache(connection_pool=self.connection_pool)
+        key = CommandKeyBuilder(
+            prefix="cache",
+            namespace="kumiko",
+            id=id if id is not None else uuid.uuid4(),
+            command=func.__name__,
+        )
+
+        if await cache.cacheExists(key=key) is False:
+            await cache.setJSONCache(key=key, value=res, ttl=self.ttl)
+            return res
+        return await cache.getJSONCache(key=key)

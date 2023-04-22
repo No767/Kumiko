@@ -1,6 +1,3 @@
-from typing import Union
-
-import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.economy import getUser
@@ -63,21 +60,24 @@ class Economy(commands.Cog):
         await ctx.send(embed=embed, view=view)
 
     @commands.hybrid_command(name="wallet")
-    async def wallet(self, ctx: commands.Context) -> Union[discord.Message, None]:
+    async def wallet(self, ctx: commands.Context) -> None:
         """Checks your wallet"""
-        user = await getUser(ctx.author.id)
+        user = await getUser(
+            id=ctx.author.id, includes={"user_inv": False, "marketplace": False}
+        )
         if user is None:
-            return await ctx.send(
+            await ctx.send(
                 embed=Embed(
                     title="No Wallet", description="You don't have a wallet yet!"
                 )
             )
-        userDesc = f"**Rank**: {user['rank']}\n\n**Balance**: {user['petals']}"
-        embed = Embed(
-            title=f"{ctx.author.name}'s Wallet",
-            description=userDesc,
-        )
-        await ctx.send(embed=embed)
+        else:
+            userDesc = f"**Rank**: {user['rank']}\n\n**Balance**: {user['petals']}"  # type: ignore
+            embed = Embed(
+                title=f"{ctx.author.name}'s Wallet",
+                description=userDesc,
+            )
+            await ctx.send(embed=embed)
 
 
 async def setup(bot: KumikoCore) -> None:

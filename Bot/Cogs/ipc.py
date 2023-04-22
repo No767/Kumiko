@@ -29,7 +29,7 @@ class IPCServer(commands.Cog):
     @Server.route()
     async def get_user_data(self, data: ClientPayload) -> Dict:
         user = self.bot.get_user(data.user_id)
-        return user._to_minimal_user_json()  # type: ignore
+        return user.to_minimal_user_json()  # type: ignore
 
 
 async def setup(bot: KumikoCore):

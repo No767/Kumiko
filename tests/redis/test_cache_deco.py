@@ -6,7 +6,7 @@ import pytest
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.cache import cached, cachedJson
+from Libs.cache import cache, cacheJson
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -14,23 +14,27 @@ from redis.asyncio.connection import ConnectionPool
 async def test_cache_deco():
     connPool = ConnectionPool(max_connections=25)
 
-    @cached(connection_pool=connPool, command_key=None)
-    async def testFunc():
+    @cache(connection_pool=connPool)
+    async def testFunc(id=1235):
         return "Hello World"
 
-    res = await testFunc()
-    assert (await testFunc() == "Hello World") and isinstance(res, str)  # nosec
+    res = await testFunc(1235)
+    assert (await testFunc(1235) == "Hello World".encode("utf-8")) and isinstance(
+        res, str
+    )  # nosec
 
 
 @pytest.mark.asyncio
 async def test_cache_deco_json():
     connPool = ConnectionPool(max_connections=25)
 
-    @cachedJson(connection_pool=connPool, command_key=None)
-    async def testFuncJSON():
+    @cacheJson(connection_pool=connPool)
+    async def testFuncJSON(id=182348478):
         return {"message": "Hello World"}
 
-    res = await testFuncJSON()
-    assert (await testFuncJSON() == {"message": "Hello World"}) and isinstance(  # nosec
+    res = await testFuncJSON(182348478)
+    assert (
+        await testFuncJSON(182348478) == {"message": "Hello World"}
+    ) and isinstance(  # nosec
         res, dict
     )
