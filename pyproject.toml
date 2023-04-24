@@ -25,7 +25,7 @@ discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.1"
 pytest-asyncio = "^0.21.0"
-nox = "^2022.11.21"
+nox = "^2023.4.22"
 nox-poetry = "^1.0.2"
 pytest-cov = "^4.0.0"
 
