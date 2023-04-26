@@ -20,20 +20,17 @@ Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumi
 
 ## Features
 
-- An **Opt-In** Economy System with jobs system and marketplace (WIP, pinned for v1)
-    - Includes a marketplace
-    - Custom currency (Lavender Petals)
-    - Custom jobs (WIP)
-    - Rank system (WIP)
-    - Custom quests
-- Basic Administration Commands
-- Search memes, posts, anime, manga, and others!
+- Customizable prefix module
+- Global or guild economy with jobs and marketplaces 
+- Custom logging module
+- Basic moderation commands
+- Search for memes, posts, anime, manga, and others!
 
 And some ones that are planned:
+
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
 - Event Logging (Pinned for v1)
 - Annoucement releaser with support from GitHub (Pinned for v2)
-- AI Driven GAN Anime Waifu Generator (Not implemented yet)
 - Selector Roles (pinned for v2)
 
 ## Prefix
