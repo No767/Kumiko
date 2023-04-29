@@ -1,8 +1,9 @@
 from discord.ext import commands
+from discord.utils import format_dt
 from kumikocore import KumikoCore
 from Libs.economy import getUser
 from Libs.ui.economy import RegisterView
-from Libs.utils import Embed
+from Libs.utils import Embed, parseDatetime
 from prisma.models import User
 
 
@@ -72,11 +73,12 @@ class Economy(commands.Cog):
                 )
             )
         else:
-            userDesc = f"**Rank**: {user['rank']}\n\n**Balance**: {user['petals']}"  # type: ignore
+            userDesc = f"**Rank**: {user['rank']}\n**Balance**: {user['petals']}\n**Date Joined**: {format_dt(parseDatetime(user['date_joined']))}"  # type: ignore
             embed = Embed(
                 title=f"{ctx.author.name}'s Wallet",
                 description=userDesc,
             )
+            embed.set_footer(text=f"User ID: {user['id']}")  # type: ignore
             await ctx.send(embed=embed)
 
 
