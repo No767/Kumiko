@@ -65,7 +65,7 @@ class Economy(commands.Cog):
         """Checks your wallet"""
         user = await getUser(
             id=ctx.author.id, includes={"user_inv": False, "marketplace": False}
-        )
+        )  # type: ignore
         if user is None:
             await ctx.send(
                 embed=Embed(
