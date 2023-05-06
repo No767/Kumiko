@@ -66,9 +66,9 @@ class KumikoHelpPaginated(commands.HelpCommand):
 
         for (
             cog,
-            commands,
+            cmds,
         ) in mapping.items():  # iterating through our mapping of cog: commands
-            if filtered_commands := await self.filter_commands(commands):
+            if filtered_commands := await self.filter_commands(cmds):
                 # if no commands are usable in this category, we don't want to display it
                 amount_commands = len(filtered_commands)
                 usable += amount_commands

@@ -67,3 +67,7 @@ jobs:
       - name: Run Pyright
         run: |
           poetry run pyright Bot
+
+      - name: Run Ruff
+        run: |
+          poetry run ruff Bot
