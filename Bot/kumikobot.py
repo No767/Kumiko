@@ -1,20 +1,16 @@
+import asyncio
+import contextlib
 import logging
 import os
 
-import asyncpraw
 import discord
 from aiohttp import ClientSession
 from anyio import run
 from dotenv import load_dotenv
-from gql import Client
-from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
+from Libs.utils.postgresql import PrismaSessionManager
 
 load_dotenv()
-
-
-REDDIT_ID = os.environ["REDDIT_ID"]
-REDDIT_SECRET = os.environ["REDDIT_SECRET"]
 
 KUMIKO_TOKEN = os.environ["DEV_BOT_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
@@ -31,28 +27,20 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    async with ClientSession() as session:
-        async with Client(
-            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
-            fetch_schema_from_transport=True,
-        ) as gql_session:
-            async with asyncpraw.Reddit(
-                client_id=REDDIT_ID,
-                client_secret=REDDIT_SECRET,
-                user_agent="Kumiko (by /u/No767)",
-            ) as reddit:
-                async with KumikoCore(
-                    intents=intents,
-                    session=session,
-                    gql_session=gql_session,
-                    reddit_session=reddit,
-                    dev_mode=DEV_MODE,
-                ) as bot:
-                    await bot.start(KUMIKO_TOKEN)
+    async with PrismaSessionManager():
+        async with ClientSession() as session:
+            async with KumikoCore(
+                intents=intents,
+                session=session,
+                dev_mode=DEV_MODE,
+            ) as bot:
+                await bot.start(KUMIKO_TOKEN)
 
 
 if __name__ == "__main__":
-    try:
-        run(main, backend_options={"use_uvloop": True})
-    except KeyboardInterrupt:
-        logger.info("Shutting down...")
+    # I hate having to do this, but it's the only way to not get AIOHTTP to throw an cancellederror on me
+    with contextlib.suppress(asyncio.CancelledError):
+        try:
+            run(main, backend_options={"use_uvloop": True})
+        except KeyboardInterrupt:
+            logger.info("Shutting down...")

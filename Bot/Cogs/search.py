@@ -7,7 +7,8 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
-from gql import gql
+from gql import Client, gql
+from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
 from Libs.errors import NoItemsError
 from Libs.utils.pages import EmbedListSource, KumikoPages
@@ -23,7 +24,6 @@ class Searches(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
-        self.gql_session = self.bot.gql_session
 
     @commands.hybrid_group(name="search")
     async def search(self, ctx: commands.Context) -> None:
@@ -35,172 +35,180 @@ class Searches(commands.Cog):
     @app_commands.describe(name="The name of the anime to search")
     async def searchAnime(self, ctx: commands.Context, *, name: str) -> None:
         """Searches up animes"""
-        query = gql(
-            """
-        query ($animeName: String!, $perPage: Int, $isAdult: Boolean!) {
-            Page (perPage: $perPage){
-                media(search: $animeName, isAdult: $isAdult, type: ANIME) {
-                    title {
-                        native
-                        english
-                        romaji
+        async with Client(
+            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
+            fetch_schema_from_transport=True,
+        ) as gql_session:
+            query = gql(
+                """
+            query ($animeName: String!, $perPage: Int, $isAdult: Boolean!) {
+                Page (perPage: $perPage){
+                    media(search: $animeName, isAdult: $isAdult, type: ANIME) {
+                        title {
+                            native
+                            english
+                            romaji
+                        }
+                        description
+                        format
+                        status
+                        seasonYear
+                        startDate {
+                            day
+                            month
+                            year
+                        }
+                        endDate {
+                            day
+                            month
+                            year
+                        }
+                        coverImage {
+                            extraLarge
+                        }
+                        genres
+                        tags {
+                            name
+                        }
+                        synonyms
+                        id
+
                     }
-                    description
-                    format
-                    status
-                    seasonYear
-                    startDate {
-                        day
-                        month
-                        year
-                    }
-                    endDate {
-                        day
-                        month
-                        year
-                    }
-                    coverImage {
-                        extraLarge
-                    }
-                    genres
-                    tags {
-                        name
-                    }
-                    synonyms
-                    id
-                    
                 }
             }
-        }
-        """
-        )
+            """
+            )
 
-        params = {"animeName": name, "perPage": 25, "isAdult": False}
-        data = await self.gql_session.execute(query, variable_values=params)
+            params = {"animeName": name, "perPage": 25, "isAdult": False}
+            data = await gql_session.execute(query, variable_values=params)
 
-        if len(data["Page"]["media"]) == 0:
-            raise NoItemsError
-        else:
-            mainData = [
-                {
-                    "title": item["title"]["romaji"],
-                    "description": str(item["description"]).replace("<br>", ""),
-                    "image": item["coverImage"]["extraLarge"],
-                    "fields": [
-                        {"name": "Native Name", "value": item["title"]["native"]},
-                        {"name": "English Name", "value": item["title"]["english"]},
-                        {"name": "Status", "value": item["status"]},
-                        {
-                            "name": "Start Date",
-                            "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
-                        },
-                        {
-                            "name": "End Date",
-                            "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
-                        },
-                        {"name": "Genres", "value": item["genres"]},
-                        {"name": "Synonyms", "value": item["synonyms"]},
-                        {"name": "Format", "value": item["format"]},
-                        {"name": "Season Year", "value": item["seasonYear"]},
-                        {
-                            "name": "Tags",
-                            "value": [tagItem["name"] for tagItem in item["tags"]],
-                        },
-                        {
-                            "name": "AniList URL",
-                            "value": f"https://anilist.co/anime/{item['id']}",
-                        },
-                    ],
-                }
-                for item in data["Page"]["media"]
-            ]
-            embedSource = EmbedListSource(mainData, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
-            await pages.start()
+            if len(data["Page"]["media"]) == 0:
+                raise NoItemsError
+            else:
+                mainData = [
+                    {
+                        "title": item["title"]["romaji"],
+                        "description": str(item["description"]).replace("<br>", ""),
+                        "image": item["coverImage"]["extraLarge"],
+                        "fields": [
+                            {"name": "Native Name", "value": item["title"]["native"]},
+                            {"name": "English Name", "value": item["title"]["english"]},
+                            {"name": "Status", "value": item["status"]},
+                            {
+                                "name": "Start Date",
+                                "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
+                            },
+                            {
+                                "name": "End Date",
+                                "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
+                            },
+                            {"name": "Genres", "value": item["genres"]},
+                            {"name": "Synonyms", "value": item["synonyms"]},
+                            {"name": "Format", "value": item["format"]},
+                            {"name": "Season Year", "value": item["seasonYear"]},
+                            {
+                                "name": "Tags",
+                                "value": [tagItem["name"] for tagItem in item["tags"]],
+                            },
+                            {
+                                "name": "AniList URL",
+                                "value": f"https://anilist.co/anime/{item['id']}",
+                            },
+                        ],
+                    }
+                    for item in data["Page"]["media"]
+                ]
+                embedSource = EmbedListSource(mainData, per_page=1)
+                pages = KumikoPages(source=embedSource, ctx=ctx)
+                await pages.start()
 
     @search.command(name="manga")
     @app_commands.describe(name="The name of the manga to search")
     async def searchManga(self, ctx: commands.Context, *, name: str):
         """Searches for manga on AniList"""
-        query = gql(
-            """
-        query ($mangaName: String!, $perPage: Int, $isAdult: Boolean!) {
-            Page (perPage: $perPage){
-                media(search: $mangaName, isAdult: $isAdult, type: MANGA) {
-                    title {
-                        native
-                        english
-                        romaji
+        async with Client(
+            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
+            fetch_schema_from_transport=True,
+        ) as gql_session:
+            query = gql(
+                """
+            query ($mangaName: String!, $perPage: Int, $isAdult: Boolean!) {
+                Page (perPage: $perPage){
+                    media(search: $mangaName, isAdult: $isAdult, type: MANGA) {
+                        title {
+                            native
+                            english
+                            romaji
+                        }
+                        description
+                        format
+                        status
+                        startDate {
+                            day
+                            month
+                            year
+                        }
+                        endDate {
+                            day
+                            month
+                            year
+                        }
+                        coverImage {
+                            extraLarge
+                        }
+                        genres
+                        tags {
+                            name
+                        }
+                        synonyms
+                        id
+
                     }
-                    description
-                    format
-                    status
-                    startDate {
-                        day
-                        month
-                        year
-                    }
-                    endDate {
-                        day
-                        month
-                        year
-                    }
-                    coverImage {
-                        extraLarge
-                    }
-                    genres
-                    tags {
-                        name
-                    }
-                    synonyms
-                    id
-                    
                 }
             }
-        }
-        """
-        )
+            """
+            )
 
-        params = {"mangaName": name, "perPage": 25, "isAdult": False}
-        data = await self.gql_session.execute(query, variable_values=params)
-        if len(data["Page"]["media"]) == 0:
-            raise NoItemsError
-        else:
-            mainData = [
-                {
-                    "title": item["title"]["romaji"],
-                    "description": str(item["description"]).replace("<br>", ""),
-                    "image": item["coverImage"]["extraLarge"],
-                    "fields": [
-                        {"name": "Native Name", "value": item["title"]["native"]},
-                        {"name": "English Name", "value": item["title"]["english"]},
-                        {"name": "Status", "value": item["status"]},
-                        {
-                            "name": "Start Date",
-                            "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
-                        },
-                        {
-                            "name": "End Date",
-                            "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
-                        },
-                        {"name": "Genres", "value": item["genres"]},
-                        {"name": "Synonyms", "value": item["synonyms"]},
-                        {"name": "Format", "value": item["format"]},
-                        {
-                            "name": "Tags",
-                            "value": [tagItem["name"] for tagItem in item["tags"]],
-                        },
-                        {
-                            "name": "AniList URL",
-                            "value": f"https://anilist.co/anime/{item['id']}",
-                        },
-                    ],
-                }
-                for item in data["Page"]["media"]
-            ]
-            embedSource = EmbedListSource(mainData, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
-            await pages.start()
+            params = {"mangaName": name, "perPage": 25, "isAdult": False}
+            data = await gql_session.execute(query, variable_values=params)
+            if len(data["Page"]["media"]) == 0:
+                raise NoItemsError
+            else:
+                mainData = [
+                    {
+                        "title": item["title"]["romaji"],
+                        "description": str(item["description"]).replace("<br>", ""),
+                        "image": item["coverImage"]["extraLarge"],
+                        "fields": [
+                            {"name": "Native Name", "value": item["title"]["native"]},
+                            {"name": "English Name", "value": item["title"]["english"]},
+                            {"name": "Status", "value": item["status"]},
+                            {
+                                "name": "Start Date",
+                                "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
+                            },
+                            {
+                                "name": "End Date",
+                                "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
+                            },
+                            {"name": "Genres", "value": item["genres"]},
+                            {"name": "Synonyms", "value": item["synonyms"]},
+                            {"name": "Format", "value": item["format"]},
+                            {
+                                "name": "Tags",
+                                "value": [tagItem["name"] for tagItem in item["tags"]],
+                            },
+                            {
+                                "name": "AniList URL",
+                                "value": f"https://anilist.co/anime/{item['id']}",
+                            },
+                        ],
+                    }
+                    for item in data["Page"]["media"]
+                ]
+                embedSource = EmbedListSource(mainData, per_page=1)
+                pages = KumikoPages(source=embedSource, ctx=ctx)
+                await pages.start()
 
     @search.command(name="gifs")
     @app_commands.describe(search="The search term to use")

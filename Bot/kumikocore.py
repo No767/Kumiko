@@ -1,13 +1,10 @@
 import logging
 from pathlib import Path as SyncPath
-from typing import Union
 
 import discord
 from aiohttp import ClientSession
 from anyio import Path
-from asyncpraw import Reddit
 from discord.ext import commands
-from gql.client import AsyncClientSession, ReconnectingAsyncClientSession
 from Libs.utils.help import KumikoHelpPaginated
 from Libs.utils.redis import redisCheck
 
@@ -26,8 +23,6 @@ class KumikoCore(commands.Bot):
         self,
         intents: discord.Intents,
         session: ClientSession,
-        gql_session: Union[ReconnectingAsyncClientSession, AsyncClientSession],
-        reddit_session: Reddit,
         dev_mode: bool = False,
         *args,
         **kwargs,
@@ -42,8 +37,6 @@ class KumikoCore(commands.Bot):
         )
         self.dev_mode = dev_mode
         self._session = session
-        self._gql_session = gql_session
-        self._reddit_session = reddit_session
         self.logger: logging.Logger = logging.getLogger("kumikobot")
 
     @property
@@ -54,26 +47,6 @@ class KumikoCore(commands.Bot):
             ClientSession: AIOHTTP's ClientSession
         """
         return self._session
-
-    @property
-    def gql_session(self) -> Union[ReconnectingAsyncClientSession, AsyncClientSession]:
-        """A global GraphQL session used throughout the lifetime of the bot
-
-        This is exclusively used for the AniList integration, thus the URL is set to the AniList GraphQL endpoints.
-
-        Returns:
-            Union[ReconnectingAsyncClientSession, AsyncClientSession]: The current GQL session
-        """
-        return self._gql_session
-
-    @property
-    def reddit_session(self) -> Reddit:
-        """A global Reddit session used throughout the lifetime of the bot
-
-        Returns:
-            Reddit: The current Reddit session
-        """
-        return self._reddit_session
 
     async def fsWatcher(self) -> None:
         cogsPath = SyncPath(__file__).parent.joinpath("Cogs")

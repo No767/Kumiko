@@ -1,3 +1,3 @@
-from .ctx import PrismaClientSession
+from .ctx import PrismaSessionManager
 
-__all__ = ["PrismaClientSession"]
+__all__ = ["PrismaSessionManager"]
