@@ -10,13 +10,13 @@ python = ">=3.8,<4.0"
 python-dotenv = "^1.0.0"
 aiodns = "^3.0.0"
 Brotli = "^1.0.9"
-orjson = "^3.8.11"
+orjson = "^3.8.12"
 asyncpraw = "^7.7.0"
 uvloop = "^0.17.0"
-gql = { extras = ["aiohttp"], version = "^3.4.0" }
+gql = { extras = ["aiohttp"], version = "^3.4.1" }
 better-ipc = "^2.0.3"
 prisma = "^0.8.2"
-redis = {extras = ["hiredis"], version = "^4.5.4"}
+redis = {extras = ["hiredis"], version = "^4.5.5"}
 ciso8601 = "^2.3.0"
 faust-cchardet = "^2.1.18"
 discord-py = {extras = ["voice"], version = "^2.2.3"}
@@ -32,7 +32,7 @@ pytest-cov = "^4.0.0"
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.1"
 pyinstrument = "^4.4.0"
-pyright = "^1.1.306"
+pyright = "^1.1.307"
 watchfiles = "^0.19.0"
 jishaku = "^2.5.1"
 ruff = "^0.0.265"
