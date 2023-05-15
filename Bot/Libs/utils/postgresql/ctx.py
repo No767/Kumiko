@@ -2,8 +2,7 @@ import logging
 from types import TracebackType
 from typing import Optional, Type, TypeVar
 
-from prisma import Prisma  # type: ignore
-from prisma.engine.errors import EngineConnectionError  # type: ignore
+from prisma import Prisma
 from prisma.utils import async_run
 
 BE = TypeVar("BE", bound=BaseException)
