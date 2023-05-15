@@ -4,6 +4,7 @@ from typing import Optional, Type, TypeVar
 
 from prisma import Prisma  # type: ignore
 from prisma.engine.errors import EngineConnectionError  # type: ignore
+from prisma.utils import async_run
 
 BE = TypeVar("BE", bound=BaseException)
 
@@ -17,18 +18,16 @@ class PrismaSessionManager:
         self.self = self
         self.db = Prisma(auto_register=True)
 
-    async def __aenter__(self) -> None:
-        await self.db.connect()
+    def __enter__(self) -> None:
+        async_run(self.db.connect())
         logger.info("Successfully connected to PostgreSQL database")
 
-    async def __aexit__(
+    def __exit__(
         self,
         exc_type: Optional[Type[BE]],
         exc: Optional[BE],
         traceback: Optional[TracebackType],
     ) -> None:
-        if isinstance(exc, EngineConnectionError):
-            logging.error(f"Failed to connect to PostgreSQL database - {str(exc)}")
-        elif self.db.is_connected() is True:
-            await self.db.disconnect()
+        if self.db.is_connected() is True:
+            async_run(self.db.disconnect())
             logging.info("Safely disconnected from PostgreSQL database")

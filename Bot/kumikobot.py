@@ -1,5 +1,3 @@
-import asyncio
-import contextlib
 import logging
 import os
 
@@ -27,20 +25,22 @@ logging.getLogger("gql").setLevel(logging.WARNING)
 
 
 async def main() -> None:
-    async with PrismaSessionManager():
-        async with ClientSession() as session:
-            async with KumikoCore(
-                intents=intents,
-                session=session,
-                dev_mode=DEV_MODE,
-            ) as bot:
-                await bot.start(KUMIKO_TOKEN)
+    async with ClientSession() as session:
+        async with KumikoCore(
+            intents=intents,
+            session=session,
+            dev_mode=DEV_MODE,
+        ) as bot:
+            await bot.start(KUMIKO_TOKEN)
+
+
+def launch() -> None:
+    with PrismaSessionManager():
+        run(main, backend_options={"use_uvloop": True})
 
 
 if __name__ == "__main__":
-    # I hate having to do this, but it's the only way to not get AIOHTTP to throw an cancellederror on me
-    with contextlib.suppress(asyncio.CancelledError):
-        try:
-            run(main, backend_options={"use_uvloop": True})
-        except KeyboardInterrupt:
-            logger.info("Shutting down...")
+    try:
+        launch()
+    except KeyboardInterrupt:
+        logger.info("Shutting down...")
