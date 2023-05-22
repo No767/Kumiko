@@ -42,7 +42,7 @@ ruff = "^0.0.269"
 sphinx = "^6.2.1"
 myst-parser = "^1.0.0"
 sphinx-autobuild = "^2021.3.14"
-furo = "^2023.3.27"
+furo = "^2023.5.20"
 sphinxext-opengraph = "^0.8.2"
 
 [tool.isort]
