@@ -6,7 +6,9 @@ from aiohttp import ClientSession
 from anyio import Path
 from discord.ext import commands
 from Libs.utils.help import KumikoHelpPaginated
-from Libs.utils.redis import redisCheck
+from Libs.utils.redis import ensureOpenRedisConn
+from Libs.utils.postgresql import ensureOpenPostgresConn
+import asyncpg
 
 # Some weird import logic to ensure that watchfiles is there
 _fsw = True
@@ -23,6 +25,7 @@ class KumikoCore(commands.Bot):
         self,
         intents: discord.Intents,
         session: ClientSession,
+        pool: asyncpg.Pool,
         dev_mode: bool = False,
         *args,
         **kwargs,
@@ -37,6 +40,7 @@ class KumikoCore(commands.Bot):
         )
         self.dev_mode = dev_mode
         self._session = session
+        self._pool = pool
         self.logger: logging.Logger = logging.getLogger("kumikobot")
 
     @property
@@ -48,6 +52,16 @@ class KumikoCore(commands.Bot):
         """
         return self._session
 
+    @property
+    def pool(self) -> asyncpg.Pool:
+        """A global object managed throughout the lifetime of Kumiko
+        
+        Holds the asyncpg 
+
+        Returns:
+            asyncpg.Pool: asyncpg connection pool
+        """
+        return self._pool
     async def fsWatcher(self) -> None:
         cogsPath = SyncPath(__file__).parent.joinpath("Cogs")
         async for changes in awatch(cogsPath):
@@ -60,18 +74,23 @@ class KumikoCore(commands.Bot):
     async def setup_hook(self) -> None:
         cogsPath = Path(__file__).parent.joinpath("Cogs")
         async for cog in cogsPath.rglob("**/*.py"):
-            if cog.parent.name == "Cogs":
-                self.logger.debug(
-                    f"Loaded extension: {cog.parent.name}.{cog.name[:-3]}"
-                )
-                await self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
-            else:
-                self.logger.debug(
-                    f"Loaded extension: Cogs.{cog.parent.name}.{cog.name[:-3]}"
-                )
-                await self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
+            self.logger.debug(
+                f"Loaded extension: {cog.parent.name}.{cog.name[:-3]}"
+            )
+            await self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
+            # if cog.parent.name == "Cogs":
+                # self.logger.debug(
+                    # f"Loaded extension: {cog.parent.name}.{cog.name[:-3]}"
+                # )
+                # await self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
+            # else:
+                # self.logger.debug(
+                    # f"Loaded extension: Cogs.{cog.parent.name}.{cog.name[:-3]}"
+                # )
+                # await self.load_extension(f"Cogs.{cog.parent.name}.{cog.name[:-3]}")
 
-        self.loop.create_task(redisCheck())
+        self.loop.create_task(ensureOpenPostgresConn(self._pool))
+        self.loop.create_task(ensureOpenRedisConn())
 
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
