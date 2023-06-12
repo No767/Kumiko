@@ -2247,13 +2247,13 @@ virtualenv = ">=20.10.0"
 
 [[package]]
 name = "prisma"
-version = "0.8.2"
+version = "0.9.0"
 description = "Prisma Client Python is an auto-generated and fully type-safe database client"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "prisma-0.8.2-py3-none-any.whl", hash = "sha256:4d0ebf63ecd21bc4fda633867403429d24f89e6af5889944b2f9ca4203f50835"},
-    {file = "prisma-0.8.2.tar.gz", hash = "sha256:b3a639941f4bf33dbd414fee3e02cf30218968d05b108f8a4d5b7c331dcbc19c"},
+    {file = "prisma-0.9.0-py3-none-any.whl", hash = "sha256:bff4b239faeb5d427e8337eadc6fe2d2e2ee4f82e30048fd7de46f8aaf9ef07d"},
+    {file = "prisma-0.9.0.tar.gz", hash = "sha256:1f9321efc099401995067d921cab848f5a82cd64ecdb5924fa91fb2f1379897f"},
 ]
 
 [package.dependencies]
@@ -2264,7 +2264,7 @@ nodeenv = "*"
 pydantic = ">=1.8.0"
 python-dotenv = ">=0.12.0"
 tomlkit = "*"
-typing-extensions = ">=3.7"
+typing-extensions = ">=4.0.1"
 
 [package.extras]
 all = ["nodejs-bin"]
@@ -3381,4 +3381,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "7ae49da45d19b5bd67b460d37b1a22e3adbc89b6797b8968906e8e0bb2efb144"
+content-hash = "3e5f86738b4ba88d47957a49352268c636b5adc6d0b840856469b8cab10b9601"
