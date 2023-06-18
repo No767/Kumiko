@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.11-slim-bullseye AS builder
+FROM python:3.11-slim-bookworm AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
@@ -29,7 +29,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 RUN apt update \
   && apt install -y --no-install-recommends \
