@@ -8,8 +8,6 @@ path = Path(__file__).parents[2].joinpath(".env")
 
 load_dotenv(dotenv_path=path)
 
-REDIS_HOST = os.environ["REDIS_HOST"]
-REDIS_PORT = os.environ["REDIS_PORT"]
-REDIS_PASSWORD = os.environ["REDIS_PASSWORD"]
+REDIS_URI = os.environ["REDIS_URI"]
 
-kumikoCP: KumikoCPManager = KumikoCPManager(host=REDIS_HOST, port=int(REDIS_PORT))
+kumikoCP: KumikoCPManager = KumikoCPManager(uri=REDIS_URI)

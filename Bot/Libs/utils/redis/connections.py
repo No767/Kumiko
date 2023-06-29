@@ -24,6 +24,25 @@ async def pingRedis(connection_pool: ConnectionPool) -> bool:
     r: redis.Redis = redis.Redis(connection_pool=connection_pool, socket_timeout=10.0)
     return await r.ping()
 
+async def ensureOpenRedisConn() -> bool:
+    """Pings the Redis server to check if it's open or not
+
+    Args:
+        connection_pool (Union[ConnectionPool, None]): The supplied connection pool. If none, it will be created automatically
+
+    Returns:
+        bool: Whether the server is up or not
+    """
+    connPool = kumikoCP.getConnPool()
+    r: redis.Redis = redis.Redis(connection_pool=connPool)
+    resultPing = await r.ping()
+    if resultPing:
+        logger.info("Sucessfully connected to the Redis server")
+        return True
+    logger.error("Failed to connect to the Redis server - Restart Kumiko to reconnect")
+    return False
+
+
 
 async def redisCheck(
     backoff_sec: int = 15,
