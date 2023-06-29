@@ -10,39 +10,39 @@ python = ">=3.8,<4.0"
 python-dotenv = "^1.0.0"
 aiodns = "^3.0.0"
 Brotli = "^1.0.9"
-orjson = "^3.8.14"
+orjson = "^3.9.1"
 asyncpraw = "^7.7.0"
 uvloop = "^0.17.0"
 gql = { extras = ["aiohttp"], version = "^3.4.1" }
 better-ipc = "^2.0.3"
-prisma = "^0.8.2"
-redis = {extras = ["hiredis"], version = "^4.5.5"}
+prisma = "^0.9.0"
+redis = {extras = ["hiredis"], version = "^4.6.0"}
 ciso8601 = "^2.3.0"
 faust-cchardet = "^2.1.18"
-discord-py = {extras = ["voice"], version = "^2.2.3"}
+discord-py = {extras = ["voice"], version = "^2.3.1"}
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"}
 asyncpg = "^0.27.0"
 asyncpg-trek = "^0.3.1"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.3.1"
+pytest = "^7.4.0"
 pytest-asyncio = "^0.21.0"
 nox = "^2023.4.22"
 nox-poetry = "^1.0.2"
 pytest-cov = "^4.1.0"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.3.2"
-pyinstrument = "^4.4.0"
-pyright = "^1.1.310"
+pre-commit = "^3.3.3"
+pyinstrument = "^4.5.0"
+pyright = "^1.1.316"
 watchfiles = "^0.19.0"
 jishaku = "^2.5.1"
-ruff = "^0.0.270"
+ruff = "^0.0.275"
 
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^6.2.1"
-myst-parser = "^1.0.0"
+sphinx = "^7.0.1"
+myst-parser = "^2.0.0"
 sphinx-autobuild = "^2021.3.14"
 furo = "^2023.5.20"
 sphinxext-opengraph = "^0.8.2"
