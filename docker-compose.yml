@@ -1,0 +1,25 @@
+# This docker compose file is actually not used by Kumiko, since Kumiko relies on the db and other stuff via a seperate server
+# This is just for example
+# MAKE SURE TO CHANGE THE VALUES FOR KUMIKO
+
+version: "3.9"
+name: "kumiko"
+services:
+  postgres:
+    container_name: Kumiko-Postgres
+    image: postgres:15 
+    env_file:
+      - .env
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  redis:
+    container_name: Kumiko-Redis
+    image: redis/redis-stack-server:latest
+    ports:
+      - 6379:6379
+
+volumes:
+  postgres_volume:
