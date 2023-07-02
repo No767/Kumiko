@@ -37,9 +37,9 @@ async def migrate(
 
 
 async def main():
-    async with asyncpg.create_pool(POSTGRES_URI) as pool:
-        async with pool.acquire() as conn:
-            await migrate(conn, TARGET_REVISION)
+    conn = await asyncpg.connect(dsn=POSTGRES_URI)
+    await migrate(conn, TARGET_REVISION)
+    await conn.close()
 
 
 if __name__ == "__main__":

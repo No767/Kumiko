@@ -23,6 +23,7 @@ discord-py = {extras = ["voice"], version = "^2.3.1"}
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"}
 asyncpg = "^0.27.0"
 asyncpg-trek = "^0.3.1"
+lru-dict = "^1.2.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.0"

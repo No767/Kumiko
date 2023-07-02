@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS eco_user (
 
 CREATE TABLE IF NOT EXISTS eco_item (
     id SERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
-    name VARCHAR(255) NOT NULL,
+    user_id BIGINT,
+    name VARCHAR(255),
     description TEXT,
     price INT DEFAULT 0,
     amount INT DEFAULT 0,
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS eco_item (
 
 CREATE TABLE IF NOT EXISTS marketplace (
     id SERIAL PRIMARY KEY,
-    guild_id BIGINT NOT NULL,
-    name VARCHAR(255) NOT NULL,
+    guild_id BIGINT,
+    name VARCHAR(255),
     description TEXT,
     date_created timestamp WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT fk_guild FOREIGN KEY (guild_id) REFERENCES guild (id) ON DELETE CASCADE

@@ -1,8 +1,9 @@
 from .backoff import backoff
 from .embeds import Embed, ErrorEmbed
 from .greedy_formatter import formatGreedy
-from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 from .kumiko_logger import KumikoLogger
+from .prefix import get_prefix
+from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 
 __all__ = [
     "backoff",
@@ -13,5 +14,6 @@ __all__ = [
     "parseSubreddit",
     "parseTimeStr",
     "formatGreedy",
-    "KumikoLogger"
+    "KumikoLogger",
+    "get_prefix",
 ]
