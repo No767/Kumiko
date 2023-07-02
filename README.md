@@ -37,6 +37,8 @@ And some ones that are planned:
 
 Kumiko uses both a prefixed command and slash commands. The currently supported prefixes are `>` , and `/`.
 
+`>` is the default prefix, but this can be customized to be any custom prefix that you wish to have. For example, if you wanted to, you could set the prefix to be `?` instead. These do not change the global prefix; only on the current server where you have set it up 
+
 ## Inviting the Bot
 
 Currently under beta stages. Not ready for release yet. Currently Kumiko is under v0, which means it's beta-level software as of now, and thus should not be used in production. Kumiko is subject to breaking changes within this version. Kumiko will be ready to be invited once it reaches to v1, which is production-ready software.
