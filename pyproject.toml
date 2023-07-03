@@ -15,7 +15,7 @@ asyncpraw = "^7.7.0"
 uvloop = "^0.17.0"
 gql = { extras = ["aiohttp"], version = "^3.4.1" }
 better-ipc = "^2.0.3"
-prisma = "^0.9.0"
+prisma = "^0.9.1"
 redis = {extras = ["hiredis"], version = "^4.6.0"}
 ciso8601 = "^2.3.0"
 faust-cchardet = "^2.1.18"
