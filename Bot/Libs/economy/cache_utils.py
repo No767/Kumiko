@@ -1,26 +1,35 @@
 from typing import Dict, Union
 
-from prisma.models import User
-from prisma.types import UserInclude
+import asyncpg
 from redis.asyncio.connection import ConnectionPool
 
 from ..cache import cacheJson
 
 
+# TODO - Add an join for the items owned
 @cacheJson()
 async def getUser(
-    id: int, redis_pool: ConnectionPool, includes: UserInclude
+    id: int, redis_pool: ConnectionPool, pool: asyncpg.Pool
 ) -> Union[Dict, None]:
     """[Coroutine] Helper coroutine to obtain a user's profile from the database
 
-    For reducing the latency for accessing the data, this helper coroutine is cached on Redis (w/ RedisJSON). Also note that this coroutine expects that the Prisma query engine and database are already connected.
+    For reducing the latency for accessing the data, this helper coroutine is cached on Redis (w/ RedisJSON).
 
     Args:
         id (int): User ID to use to search up the user
-        includes (UserInclude, optional): Which schemas to include (for 1-n relations) Note that it must be a dict containing the column, and to include it or not.
+        redis_pool (ConnectionPool): Redis connection pool to use
+        pool (asyncpg.Pool): Asyncpg pool
 
     Returns:
         Union[Dict, None]: The user's profile, or None if the user is not found
     """
-    user = await User.prisma().find_unique(where={"id": id}, include=includes)
-    return user.dict() if user is not None else None
+    query = """
+    SELECT rank, petals, created_at
+    FROM eco_user
+    WHERE id=$1;
+    """
+    async with pool.acquire() as conn:
+        user = await conn.fetchval(query, id)
+        if user is None:
+            return None
+        return dict(user)
