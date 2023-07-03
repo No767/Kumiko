@@ -40,7 +40,7 @@ class cache:
     ):
         res = await func(id, redis_pool, *args, **kwargs)
         if isinstance(res, str) is False:
-            return None
+            return res
         cache = KumikoCache(connection_pool=redis_pool)
         key = CommandKeyBuilder(
             prefix="cache",
@@ -90,7 +90,7 @@ class cacheJson:
     ):
         res = await func(id, *args, **kwargs)
         if isinstance(res, dict) is False:
-            return None
+            return res
         cache = KumikoCache(connection_pool=redis_pool)
         key = CommandKeyBuilder(
             prefix="cache",
