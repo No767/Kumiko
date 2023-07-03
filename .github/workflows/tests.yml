@@ -10,10 +10,11 @@ on:
       - dev
 
 env:
-  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
+  POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/postgres
   REDIS_HOST: localhost
   REDIS_PORT: 6379
   REDIS_PASSWORD: kumiko
+  REDIS_URI: redis://localhost:6379/0
 
   
 jobs: 
