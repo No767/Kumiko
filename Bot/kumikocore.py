@@ -11,6 +11,7 @@ from Libs.utils.help import KumikoHelpPaginated
 from Libs.utils.postgresql import ensureOpenPostgresConn
 from Libs.utils.redis import ensureOpenRedisConn
 from lru import LRU
+from redis.asyncio.connection import ConnectionPool
 
 # Some weird import logic to ensure that watchfiles is there
 _fsw = True
@@ -28,6 +29,7 @@ class KumikoCore(commands.Bot):
         intents: discord.Intents,
         session: ClientSession,
         pool: asyncpg.Pool,
+        redis_pool: ConnectionPool,
         lru_size: int = 50,
         dev_mode: bool = False,
         *args,
@@ -45,6 +47,7 @@ class KumikoCore(commands.Bot):
         self.lru_size = lru_size
         self._session = session
         self._pool = pool
+        self._redis_pool = redis_pool
         self._prefixes: LRU = LRU(self.lru_size)
         self.default_prefix = ">"
         self.logger: logging.Logger = logging.getLogger("kumikobot")
@@ -62,12 +65,21 @@ class KumikoCore(commands.Bot):
     def pool(self) -> asyncpg.Pool:
         """A global object managed throughout the lifetime of Kumiko
 
-        Holds the asyncpg
+        Holds the asyncpg pool for connections
 
         Returns:
             asyncpg.Pool: asyncpg connection pool
         """
         return self._pool
+
+    @property
+    def redis_pool(self) -> ConnectionPool:
+        """A global object managed throughout the lifetime of Kumiko
+
+        Returns:
+            ConnectionPool: Redis connection pool
+        """
+        return self._redis_pool
 
     # It is preffered in this case to keep an LRU cache instead of a regular Dict cache
     # For example, if an running instance keeps 100 entries ({guild_id: prefix})
@@ -106,7 +118,7 @@ class KumikoCore(commands.Bot):
             await self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
 
         self.loop.create_task(ensureOpenPostgresConn(self._pool))
-        self.loop.create_task(ensureOpenRedisConn())
+        self.loop.create_task(ensureOpenRedisConn(self._redis_pool))
 
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")

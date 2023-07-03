@@ -1,4 +1,3 @@
-from .backoff import backoff
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -12,7 +11,6 @@ from .prefix import get_prefix, validatePrefix
 from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 
 __all__ = [
-    "backoff",
     "parseDatetime",
     "encodeDatetime",
     "Embed",

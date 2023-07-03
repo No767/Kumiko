@@ -30,7 +30,6 @@ class KumikoCache:
         )
         conn: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await conn.set(name=key if key is not None else defaultKey, value=value, ex=ttl)
-        await conn.close()
 
     async def getBasicCache(self, key: str) -> Union[str, None]:
         """Gets the command cache from Redis
@@ -40,7 +39,6 @@ class KumikoCache:
         """
         conn: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         res = await conn.get(key)
-        await conn.close()
         return res
 
     async def setJSONCache(self, key: str, value: Dict[str, Any], ttl: int = 5) -> None:
@@ -54,7 +52,6 @@ class KumikoCache:
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await client.json().set(name=key, path="$", obj=encodeDatetime(value))
         await client.expire(name=key, time=ttl)
-        await client.close()
 
     async def getJSONCache(self, key: str) -> Union[str, None]:
         """Gets the JSON cache on Redis
@@ -67,7 +64,6 @@ class KumikoCache:
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         value = await client.json().get(name=key)
-        await client.close()
         if value is None:
             return None
         return value
@@ -83,5 +79,4 @@ class KumikoCache:
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         keyExists = await client.exists(key) >= 1
-        await client.close()
         return True if keyExists else False

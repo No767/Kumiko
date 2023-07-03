@@ -1,30 +1,38 @@
-from typing import Optional
+from types import TracebackType
+from typing import Optional, Type, TypeVar
 
 from redis.asyncio.connection import ConnectionPool
+from yarl import URL
+
+BE = TypeVar("BE", bound=BaseException)
 
 
 class KumikoCPManager:
-    """Redis connection pool manager"""
-
-    def __init__(
-        self, host: str = "127.0.0.1", port: int = 6379, password: Optional[str] = None, uri: Optional[str] = None
-    ) -> None:
-        self.host = host
-        self.port = port
-        self.password = password
-        self.connPool = None
+    def __init__(self, uri: str, max_size: int = 20) -> None:
         self.uri = uri
+        self.max_size = max_size
+        self.connPool = None
 
-    def createConnPool(self) -> ConnectionPool:
-        if self.uri is not None:
-            self.connPool = ConnectionPool(
-                host=self.host, port=self.port, password=self.password, db=0
-            )
-            return self.connPool
-        self.connPool = ConnectionPool.from_url(self.uri)
+    async def __aenter__(self) -> ConnectionPool:
+        return self.createPool()
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BE]],
+        exc: Optional[BE],
+        traceback: Optional[TracebackType],
+    ) -> None:
+        if self.connPool is not None:
+            await self.connPool.disconnect()
+
+    def createPool(self) -> ConnectionPool:
+        completeURI = URL(self.uri) % {"decode_responses": "True"}
+        self.connPool = ConnectionPool(max_connections=self.max_size).from_url(
+            str(completeURI)
+        )
         return self.connPool
 
     def getConnPool(self) -> ConnectionPool:
         if not self.connPool:
-            return self.createConnPool()
+            return self.createPool()
         return self.connPool

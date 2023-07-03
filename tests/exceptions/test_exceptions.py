@@ -12,6 +12,7 @@ from Libs.errors import (
     KumikoException,
     NoItemsError,
     NotFoundError,
+    ValidationError,
 )
 
 
@@ -63,4 +64,13 @@ def test_not_found_error():
         (e.type == NotFoundError)
         and (e.value.status == 404)
         and ("Resource or endpoint not found" in str(e.value))
+    )
+
+
+def test_validation_error():
+    with pytest.raises(ValidationError) as e:
+        raise ValidationError("There is an validation error")
+
+    assert (e.type == ValidationError) and (
+        "There is an validation error" in str(e.value)
     )

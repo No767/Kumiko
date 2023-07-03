@@ -2,3 +2,5 @@ ignore:
   - "Bot/Libs/ui/**"
   - "Bot/Libs/utils/help/**"
   - "Bot/Libs/utils/pages/**"
+  - "Bot/Libs/utils/kumiko_logger.py"
+  - "Bot/Libs/utils/embeds.py"

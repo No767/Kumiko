@@ -2,12 +2,15 @@ from typing import Dict, Union
 
 from prisma.models import User
 from prisma.types import UserInclude
+from redis.asyncio.connection import ConnectionPool
 
-from ..cache import cacheJson, kumikoCP
+from ..cache import cacheJson
 
 
-@cacheJson(connection_pool=kumikoCP.getConnPool())
-async def getUser(id: int, includes: UserInclude) -> Union[Dict, None]:
+@cacheJson()
+async def getUser(
+    id: int, redis_pool: ConnectionPool, includes: UserInclude
+) -> Union[Dict, None]:
     """[Coroutine] Helper coroutine to obtain a user's profile from the database
 
     For reducing the latency for accessing the data, this helper coroutine is cached on Redis (w/ RedisJSON). Also note that this coroutine expects that the Prisma query engine and database are already connected.

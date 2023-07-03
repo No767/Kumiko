@@ -1,3 +1,3 @@
-from .connections import pingRedis, redisCheck, ensureOpenRedisConn
+from .connections import ensureOpenRedisConn
 
-__all__ = ["pingRedis", "redisCheck", "ensureOpenRedisConn"]
+__all__ = ["ensureOpenRedisConn"]
