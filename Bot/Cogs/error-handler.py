@@ -3,7 +3,13 @@ from typing import Union
 from discord.app_commands.errors import CommandInvokeError
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.errors import HTTPError, KumikoException, NoItemsError, NotFoundError
+from Libs.errors import (
+    HTTPError,
+    KumikoException,
+    NoItemsError,
+    NotFoundError,
+    ValidationError,
+)
 from Libs.utils import Embed, ErrorEmbed
 
 
@@ -134,6 +140,11 @@ class ErrorHandler(commands.Cog):
             errorEmbed.description = (
                 f"You are missing the following argument(s): {error.param.name}"
             )
+            await ctx.send(embed=errorEmbed)
+        elif isinstance(error, ValidationError):
+            errorEmbed = ErrorEmbed()
+            errorEmbed.title = "Validation Error"
+            errorEmbed.description = str(error)
             await ctx.send(embed=errorEmbed)
         else:
             errorEmbed = ErrorEmbed()

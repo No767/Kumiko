@@ -1,0 +1,1 @@
+ALTER TABLE guild ADD COLUMN local_economy_name VARCHAR(255) DEFAULT 'Server Economy';

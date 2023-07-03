@@ -26,12 +26,3 @@ CREATE TABLE IF NOT EXISTS eco_item (
     amount INT DEFAULT 0,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES eco_user (id) ON DELETE CASCADE
 );
-
-CREATE TABLE IF NOT EXISTS marketplace (
-    id SERIAL PRIMARY KEY,
-    guild_id BIGINT,
-    name VARCHAR(255),
-    description TEXT,
-    created_at timestamp WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT fk_guild FOREIGN KEY (guild_id) REFERENCES guild (id) ON DELETE CASCADE
-);
