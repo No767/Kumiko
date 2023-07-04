@@ -24,16 +24,16 @@ jobs:
           images: |
             ghcr.io/no767/kumiko
           tags: |
-            type=semver,pattern={{raw}},suffix=-bullseye
-            type=semver,pattern={{version}},suffix=-bullseye
-            type=semver,pattern={{major}}.{{minor}},suffix=-bullseye
-            type=semver,pattern={{major}},suffix=-bullseye
+            type=semver,pattern={{raw}},suffix=-bookworm
+            type=semver,pattern={{version}},suffix=-bookworm
+            type=semver,pattern={{major}}.{{minor}},suffix=-bookworm
+            type=semver,pattern={{major}},suffix=-bookworm
             type=semver,pattern={{raw}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=edge,branch=dev
-            type=edge,branch=dev,suffix=-bullseye
+            type=edge,branch=dev,suffix=-bookworm
 
       - name: Setup Docker Buildx
         id: buildx
@@ -84,16 +84,16 @@ jobs:
           images: |
             no767/kumiko
           tags: |
-            type=semver,pattern={{raw}},suffix=-bullseye
-            type=semver,pattern={{version}},suffix=-bullseye
-            type=semver,pattern={{major}}.{{minor}},suffix=-bullseye
-            type=semver,pattern={{major}},suffix=-bullseye
+            type=semver,pattern={{raw}},suffix=-bookworm
+            type=semver,pattern={{version}},suffix=-bookworm
+            type=semver,pattern={{major}}.{{minor}},suffix=-bookworm
+            type=semver,pattern={{major}},suffix=-bookworm
             type=semver,pattern={{raw}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=edge,branch=dev
-            type=edge,branch=dev,suffix=-bullseye
+            type=edge,branch=dev,suffix=-bookworm
 
       - name: Setup Docker Buildx
         id: buildx

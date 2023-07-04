@@ -1,62 +1,115 @@
-# ✨ Kumiko v0.7.0 ✨
+# ✨ Kumiko v0.9.0 ✨
 
-This release is the foundation for v0.8.x. This release implements almost everything back (excluding the advanced moderation features, and economy system) from previous versions of Kumiko, and now Kumiko is migrated to Discord.py (sorry Pycord devs). The economy system and improved moderation commands will be coming in v0.8.x instead. There might be some that might have been missed, so if you want to see the full list of changes, please see the changes here: [`v0.6.0...v0.7.x`](https://github.com/No767/Kumiko/compare/v0.6.0...v0.7.0)
+More reworks of literally everything... This release migrates from Prisma to pure SQL (asyncpg), and fully stabilities the repo to use discord.py instead of Pycord. Nearly all of the planned features are implemented in this release, except the economy module.
+For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://github.com/No767/Kumiko/compare/v0.8.0...v0.9.0)
 
 ## :boom: Breaking Changes :boom:
 
-- Literally rewrote Kumiko from the ground up to use Discord.py instead of Pycord. Expect a ton of things to be broken
-- A ton of cogs, and commands have been either moved or deleted since v0.6.x. Please consider resyncing your commands with the include dev-tool cog (or by activating jishaku)
+- All of the SQL queries have been rewritten to use SQL w/ asyncpg instead of Prisma
+- A ton of cogs, and commands have been either moved or deleted since v0.8.x. Please consider resyncing your commands with the include dev-tool cog (or by activating jishaku)
 
 ## ✨ TD;LR
 
-- Migrated from Pycord to Discord.py. Literally this took way too long
-- Kumiko now supports both prefixed and slash commands (default prefix is `>`)
-- Migration from Coredis to Redis-py, and migration from Tortoise ORM to Prisma
-- Kumiko is now properly type hinted/statically typed now.
+- Migration from Prisma to asyncpg
+- Kumiko now supports custom prefixes (max is 10). The default that will be set is `>`
+- asyncpg-trek migration system
+- Kumiko's logging module has been implemented
+- Docs has been merged into one repo (https://kumiko.readthedocs.io/en/latest/index.html)
 
 ## 🛠️ Changes
-- RedisCheck is now fully recursive
-- Properly implemented static type checking
-- Improved DB connections via DB cog
-- Migrate searches cog to dpy
-- Spilt Reddit and GitHub commands to their respective cogs
-- Use `@app_commands.describe` to describe the slash command inputs. Removed the docstring args bc it was conflicting w/ the help cmd
-- Now using a singleton object for storing Redis connection pools. (Known as the KumikoCPM)
-- Improved the Vagrantfile (possible Ansible provisioning in the future)
-- Using orjson for parsing JSON instead of pysimdjson or cysimdjson
+- Allow actions commands to greedily consume users to mention
+- Replaced RedisCheck with an simple ping check (`ensureOpenRedisConn`)
+- Replace all Prisma related code with asyncpg code
+- Reuse AIOHTTP `ClientSession`, `asyncpg.Pool`, `redis.asyncio.connection.ConnectionPool`, and `LRU` objects throughout the lifecycle of the bot
+- Hide `.python-version` file from the repo
+- Expect `id` and `redis_pool` args to be in an function when using `@cache` or `@cacheJson` decos
+- Update docs to add new instructions for hosting, and new requirements
+- Don't stack context managers, but rather spawn 3 new ones in one go (this is recommended instead)
+- Update Dockerfile to use Debian 12 (Bookworm)
+- Use `Embed.timestamp` for some embeds to show timestamps
+- Replaced `.gitignore` with a proper one from GitHub
+
 
 ## ✨ Additions
-- Context manager for Prisma sessions - Useful for debugging and testing
-- Recursive RedisCheck coroutine - Actually now cleans up the stack calls for once (thanks to a base case)
-- Vasic help command - Will be improved in v0.8.x
-- New unit tests
-- Pagination - Taken from Rapptz's (Danny) RoboDanny bot, and improved to work w/ Kumiko
-- EmbedListSource for paginating embeds
-- TextSources, and ListSources for paginating text and lists
-- Actions cog - Replacement for the UwU Cog
-- Error Handler cog - Now uses custom exceptions
-- exceptions and utils (including datetime parsing utils, and much much more)
-- Dev Mode - It's an environment variable that toggles the dev mode. This is useful for testing, and debugging Kumiko (includes Jishaku and a custom extension reloader)
-
+- Migrations system using asyncpg-trek
+- SQL migrations
+- SQL based code to replace Prisma
+- Context manager based logging system
+- Custom prefix module (aka Kumiko supports custom prefixes for guilds)
+- Ansible playbooks, proper Vagrant config
+- Discord API events handler, custom dispatch events
+- Prefix utils
+- Better logging system
+- Ping checks to ensure that the connections are open for PostgreSQL and Redis
+- Docs merged into one repo - this repo
 
 ## ➖ Removals
-- MsgPack Serialization
-- Literally all of the cogs from v0.6.x
-- Removed python-dateutil, numpy, pytimeparse, aiocache, ormsgpack, and pysimdjson (yay no C compilations anymore) 
-- Old libs
-- Pycord itself
-- Builtlins cache in favor of KumikoCPM
+- Global KumikoCPM variable in favor of having it stored during runtime instead
+- Old economy packages
+- cog-ext module
+- Prisma along with other unused libs
 
 # ⬆️ Dependabot Updates
-- \[Actions](deps)\: Bump actions/cache from 3.3.0 to 3.3.1 (#282) (@dependabot)
-- \[pip](deps-dev)\: Bump pyright from 1.1.298 to 1.1.299 (#283) (@dependabot)
-- \[pip](deps-dev)\: Bump pre-commit from 3.1.1 to 3.2.0 (#284) (@dependabot)
-- \[pip](deps)\: Bump redis from 4.5.1 to 4.5.2 (#285) (@dependabot)
-- \[pip](deps-dev)\: Bump pytest-asyncio from 0.20.3 to 0.21.0 (#286) (@\dependabot)
-- \[pip](deps)\: Bump orjson from 3.8.7 to 3.8.8 (#288) (@dependabot)
-- \[pip](deps-dev)\: Bump pyright from 1.1.299 to 1.1.300 (#289) (@dependabot)
-- \[pip](deps)\: Bump redis from 4.5.2 to 4.5.3 (#290) (@dependabot)
-- \[pip](deps-dev)\: Bump pre-commit from 3.2.0 to 3.2.1 (#291) (@dependabot)
-- \[pip](deps)\: Bump orjson from 3.8.8 to 3.8.9 (#293) (@dependabot)
-- \[pip](deps-dev)\: Bump pyright from 1.1.300 to 1.1.301 (#294) (@dependabot)
-- \[pip](deps)\: Bump redis from 4.5.3 to 4.5.4 (#295) (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.2.1 to 3.2.2 (#300) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.301 to 1.1.302 (#301) (@dependabot)
+- \[pip](deps-dev)\: Bump pytest from 7.2.2 to 7.3.0 (#302) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.9 to 3.8.10 (#303) (@dependabot)
+- \[pip](deps-dev)\: Bump pytest from 7.3.0 to 7.3.1 (#304) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.302 to 1.1.303 (#305) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.261 to 0.0.262 (#306) (@dependabot)
+- \[Actions](deps)\: Bump actions/setup-python from 4.5.0 to 4.6.0 (#307) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.303 to 1.1.304 (#308) (@dependabot)
+- \[pip](deps-dev)\: Bump sphinx from 6.1.3 to 6.2.0 (#310) (@dependabot)
+- \[pip](deps-dev)\: Bump nox from 2022.11.21 to 2023.4.22 (@dependabot)
+- \[pip](deps-dev)\: Bump sphinx from 6.2.0 to 6.2.1 (#312) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.262 to 0.0.263 (#313) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.304 to 1.1.305 (#314) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.10 to 3.8.11 (#315) (@dependabot)
+- \[pip](deps)\: Bump discord-py from 2.2.2 to 2.2.3 (#316) (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.2.2 to 3.3.0 (#317) (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.3.0 to 3.3.1 (#318) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.263 to 0.0.264 (#319) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.305 to 1.1.306 (#320) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.264 to 0.0.265 (#321) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.11 to 3.8.12 (#322) (@dependabot)
+- \[pip](deps)\: Bump redis from 4.5.4 to 4.5.5 (#324) (@dependabot)
+- \[pip](deps)\: Bump gql from 3.4.0 to 3.4.1 (#323) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.306 to 1.1.307 (#325) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.307 to 1.1.308 (#326) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.265 to 0.0.267 (#327) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.308 to 1.1.309 (#328) (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.3.1 to 3.3.2 (#329) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.267 to 0.0.269 (#330) (@dependabot)
+- \[pip](deps-dev)\: Bump furo from 2023.3.27 to 2023.5.20 (#331) (@dependabot)
+- \[pip](security)\: Bump requests from 2.28.2 to 2.31.0 (#332) (@dependabot)
+- \[Actions](deps)\: Bump actions/setup-python from 4.6.0 to 4.6.1 (#333) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.12 to 3.8.13 (#334) (@dependabot)
+- \[pip](security)\: Bump tornado from 6.2 to 6.3.2 (#336) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.309 to 1.1.310 (#337) (@dependabot)
+- \[pip](deps-dev)\: Bump pytest-cov from 4.0.0 to 4.1.0 (#335) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.269 to 0.0.270 (#338) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.13 to 3.8.14 (#339) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.310 to 1.1.311 (#340) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.8.14 to 3.9.0 (#341) (@dependabot)
+- \[pip](deps-dev)\: Bump pyinstrument from 4.4.0 to 4.5.0 (#342) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.270 to 0.0.271 (#343) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.311 to 1.1.313 (#344) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.271 to 0.0.272 (#345) (@dependabot)
+- \[Actions](deps)\: Bump docker/build-push-action from 4.0.0 to 4.1.0 (#346) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.9.0 to 3.9.1 (#347) (@dependabot)
+- \[pip](deps-dev)\: Bump pytest from 7.3.1 to 7.3.2 (#348) (@dependabot)
+- \[pip](deps)\: Bump prisma from 0.8.2 to 0.9.0 (#349) (@dependabot)
+- \[pip](deps)\: Bump discord-py from 2.2.3 to 2.3.0 (#350) (@dependabot)
+- \[Actions](deps)\: Bump docker/build-push-action from 4.1.0 to 4.1.1 (#352) (@dependabot)
+- \[pip](deps-dev)\: Bump myst-parser from 1.0.0 to 2.0.0 (@dependabot)
+- \[pip](deps-dev)\: Bump pre-commit from 3.3.2 to 3.3.3 (#354) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.313 to 1.1.314 (#356) (@dependabot)
+- \[pip](deps-dev)\: Bump sphinx from 6.2.1 to 7.0.1 (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.314 to 1.1.315 (#357) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.272 to 0.0.274 (#358) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.274 to 0.0.275 (#359) (@dependabot)
+- \[pip](deps-dev)\: Bump pytest from 7.3.2 to 7.4.0 (#360) (@dependabot)
+- \[pip](deps)\: Bump discord-py from 2.3.0 to 2.3.1 (#361) (@dependabot)
+- \[pip](deps)\: Bump redis from 4.5.5 to 4.6.0 (#363) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.315 to 1.1.316 (#362) (@dependabot)
+- \[pip](deps)\: Bump prisma from 0.9.0 to 0.9.1 (#367) (@dependabot)
