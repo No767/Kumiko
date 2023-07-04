@@ -18,6 +18,7 @@ REDIS_URI = os.environ["REDIS_URI"]
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 
 
 async def main() -> None:
