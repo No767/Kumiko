@@ -24,18 +24,11 @@ Debian/Ubuntu
 
 .. code-block:: bash
 
-    sudo apt-get install libffi-dev python3-dev libnacl-dev libopus-dev libopus0 \
+    sudo apt-get install libffi-dev python3-dev libnacl-dev libopus-dev  \
     libopusenc-dev build-essentials libssl-dev curl wget git
 
-RHEL/CentOS/Fedora 22 or below
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: bash
-
-    sudo yum install make gcc libffi-devel python-devel \
-    openssl-devel opus-devel opus curl wget git
-
-Fedora 23+
+Fedora
 ^^^^^^^^^^
 
 .. code-block:: bash
