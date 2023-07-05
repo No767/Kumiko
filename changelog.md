@@ -13,7 +13,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Migration from Prisma to asyncpg
 - Kumiko now supports custom prefixes (max is 10). The default that will be set is `>`
 - asyncpg-trek migration system
-- Kumiko's logging module has been implemented
+- Kumiko's EventsLog module has been implemented
 - Docs has been merged into one repo (https://kumiko.readthedocs.io/en/latest/index.html)
 
 ## 🛠️ Changes
@@ -39,7 +39,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Ansible playbooks, proper Vagrant config
 - Discord API events handler, custom dispatch events
 - Prefix utils
-- Better logging system
+- EventsLog module
 - Ping checks to ensure that the connections are open for PostgreSQL and Redis
 - Docs merged into one repo - this repo
 
