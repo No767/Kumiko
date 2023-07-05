@@ -56,6 +56,18 @@ class DevTools(commands.Cog):
 
         await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
 
+    @commands.hybrid_command(name="dispatch")
+    @commands.guild_only()
+    @commands.is_owner()
+    async def dispatch_event(self, ctx: commands.Context) -> None:
+        """Dispatches an custom event
+
+        Args:
+            ctx (commands.Context): _description_
+        """
+        self.bot.dispatch("log", ctx.author)
+        await ctx.send("Dispatched event")
+
 
 async def setup(bot: KumikoCore):
     await bot.add_cog(DevTools(bot))

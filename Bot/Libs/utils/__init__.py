@@ -3,6 +3,8 @@ from .embeds import (
     ConfirmEmbed,
     Embed,
     ErrorEmbed,
+    JoinEmbed,
+    LeaveEmbed,
     SuccessActionEmbed,
 )
 from .greedy_formatter import formatGreedy
@@ -24,4 +26,6 @@ __all__ = [
     "ConfirmEmbed",
     "SuccessActionEmbed",
     "CancelledActionEmbed",
+    "JoinEmbed",
+    "LeaveEmbed",
 ]
