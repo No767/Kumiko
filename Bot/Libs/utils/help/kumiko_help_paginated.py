@@ -58,7 +58,7 @@ class GroupHelpPageSource(menus.ListPageSource):
 
 
 class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
-    def __init__(self, entries: dict[commands.Cog, List[commands.Command]], bot):
+    def __init__(self, entries: Dict[commands.Cog, List[commands.Command]], bot):
         super().__init__(
             placeholder="Select a category...",
             min_values=1,
