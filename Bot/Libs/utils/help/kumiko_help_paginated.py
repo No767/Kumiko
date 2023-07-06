@@ -1,5 +1,5 @@
 import itertools
-from typing import Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import discord
 from discord.ext import commands, menus
@@ -20,7 +20,7 @@ class GroupHelpPageSource(menus.ListPageSource):
     def __init__(
         self,
         group: Union[commands.Group, commands.Cog],
-        entries: list[commands.Command],
+        entries: List[commands.Command],
         *,
         prefix: str,
     ):
@@ -30,7 +30,7 @@ class GroupHelpPageSource(menus.ListPageSource):
         self.title: str = f"{self.group.qualified_name} Commands"
         self.description: str = self.group.description
 
-    async def format_page(self, menu: KumikoPages, commands: list[commands.Command]):
+    async def format_page(self, menu: KumikoPages, commands: List[commands.Command]):
         embed = discord.Embed(
             title=self.title,
             description=self.description,
@@ -58,14 +58,14 @@ class GroupHelpPageSource(menus.ListPageSource):
 
 
 class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
-    def __init__(self, entries: dict[commands.Cog, list[commands.Command]], bot):
+    def __init__(self, entries: dict[commands.Cog, List[commands.Command]], bot):
         super().__init__(
             placeholder="Select a category...",
             min_values=1,
             max_values=1,
             row=0,
         )
-        self.cmds: dict[commands.Cog, list[commands.Command]] = entries
+        self.cmds: dict[commands.Cog, List[commands.Command]] = entries
         self.bot = bot
         self.__fill_options()
 
@@ -119,7 +119,7 @@ class HelpMenu(KumikoPages):
         super().__init__(source, ctx=ctx, compact=True)
 
     def add_categories(
-        self, commands: dict[commands.Cog, list[commands.Command]]
+        self, commands: Dict[commands.Cog, List[commands.Command]]
     ) -> None:
         self.clear_items()
         self.add_item(HelpSelectMenu(commands, self.ctx.bot))
@@ -254,7 +254,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
             bot.commands, sort=True, key=key
         )
 
-        all_commands: dict[commands.Cog, list[commands.Command]] = {}
+        all_commands: dict[commands.Cog, List[commands.Command]] = {}
         for name, children in itertools.groupby(entries, key=key):
             if name == "\U0010ffff":
                 continue
