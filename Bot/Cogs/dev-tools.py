@@ -1,6 +1,7 @@
 from typing import Literal, Optional
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
@@ -59,13 +60,14 @@ class DevTools(commands.Cog):
     @commands.hybrid_command(name="dispatch")
     @commands.guild_only()
     @commands.is_owner()
-    async def dispatch_event(self, ctx: commands.Context) -> None:
+    @app_commands.describe(event="The event to dispatch")
+    async def dispatch_event(self, ctx: commands.Context, event: str) -> None:
         """Dispatches an custom event
 
         Args:
             ctx (commands.Context): _description_
         """
-        self.bot.dispatch("log", ctx.author)
+        self.bot.dispatch(event, ctx.author)
         await ctx.send("Dispatched event")
 
 

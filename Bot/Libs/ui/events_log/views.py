@@ -36,7 +36,7 @@ class RegisterView(discord.ui.View):
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 await interaction.response.send_message("There are duplicate records")
-            except:
+            except Exception:
                 await tr.rollback()
                 await interaction.response.send_message("Could not create records.")
             else:
@@ -93,7 +93,7 @@ class UnregisterView(discord.ui.View):
                 await interaction.response.edit_message(
                     embed=uniqueViolationEmbed, view=self
                 )
-            except:
+            except Exception:
                 await tr.rollback()
                 self.clear_items()
                 failedEmbed = ErrorEmbed(

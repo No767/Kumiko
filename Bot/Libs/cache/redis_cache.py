@@ -41,17 +41,20 @@ class KumikoCache:
         res = await conn.get(key)
         return res
 
-    async def setJSONCache(self, key: str, value: Dict[str, Any], ttl: int = 5) -> None:
+    async def setJSONCache(
+        self, key: str, value: Dict[str, Any], ttl: Union[int, None] = 5
+    ) -> None:
         """Sets the JSON cache on Redis
 
         Args:
             key (str): The key to use for Redis
             value (Dict[str, Any]): The value of the key-pair value
-            ttl (Optional[int], optional): TTL of the key-value pair. Defaults to 5.
+            ttl (Union[int, None], optional): TTL of the key-value pair. If None, then the TTL will not be set. Defaults to 5.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await client.json().set(name=key, path="$", obj=encodeDatetime(value))
-        await client.expire(name=key, time=ttl)
+        if isinstance(ttl, int):
+            await client.expire(name=key, time=ttl)
 
     async def getJSONCache(self, key: str) -> Union[str, None]:
         """Gets the JSON cache on Redis

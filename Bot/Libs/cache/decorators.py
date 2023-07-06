@@ -42,12 +42,14 @@ class cache:
         if isinstance(res, str) is False:
             return res
         cache = KumikoCache(connection_pool=redis_pool)
-        key = CommandKeyBuilder(
-            prefix="cache",
-            namespace="kumiko",
-            id=id or self.key or uuid.uuid4(),  # type: ignore
-            command=func.__name__,
-        )
+        key = self.key
+        if key is None:
+            key = CommandKeyBuilder(
+                prefix="cache",
+                namespace="kumiko",
+                id=id or uuid.uuid4(),
+                command=func.__name__,
+            )
 
         if await cache.cacheExists(key=key) is False:
             await cache.setBasicCache(key=key, value=res, ttl=self.ttl)
@@ -63,11 +65,10 @@ class cacheJson:
 
     Args:
         connection_pool (ConnectionPool): Redis connection pool to use
-        ttl (int, optional): TTL (Time-To-Live).
-        Defaults to 30.
+        ttl (int, optional): TTL (Time-To-Live). If None, then the TTL will not be set. Defaults to 30.
     """
 
-    def __init__(self, key: Optional[str] = None, ttl: int = 30):
+    def __init__(self, key: Optional[str] = None, ttl: Union[int, None] = 30):
         self.key = key
         self.ttl = ttl
 
@@ -88,16 +89,18 @@ class cacheJson:
         *args,
         **kwargs
     ):
-        res = await func(id, *args, **kwargs)
+        res = await func(id, redis_pool, *args, **kwargs)
         if isinstance(res, dict) is False:
             return res
         cache = KumikoCache(connection_pool=redis_pool)
-        key = CommandKeyBuilder(
-            prefix="cache",
-            namespace="kumiko",
-            id=id or self.key or uuid.uuid4(),  # type: ignore
-            command=func.__name__,
-        )
+        key = self.key
+        if key is None:
+            key = CommandKeyBuilder(
+                prefix="cache",
+                namespace="kumiko",
+                id=id or uuid.uuid4(),
+                command=func.__name__,
+            )
 
         if await cache.cacheExists(key=key) is False:
             await cache.setJSONCache(key=key, value=res, ttl=self.ttl)

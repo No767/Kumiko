@@ -65,7 +65,7 @@ class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
             max_values=1,
             row=0,
         )
-        self.commands: dict[commands.Cog, list[commands.Command]] = entries
+        self.cmds: dict[commands.Cog, list[commands.Command]] = entries
         self.bot = bot
         self.__fill_options()
 
@@ -76,8 +76,8 @@ class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
             value="__index",
             description="The help page showing how to use the bot.",
         )
-        for cog, commands in self.commands.items():
-            if not commands:
+        for cog, cmds in self.cmds.items():
+            if not cmds:
                 continue
             description = cog.description.split("\n", 1)[0] or None
             emoji = getattr(cog, "display_emoji", None)
@@ -101,7 +101,7 @@ class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
                 )
                 return
 
-            commands = self.commands[cog]
+            commands = self.cmds[cog]
             if not commands:
                 await interaction.response.send_message(
                     "This category has no commands for you", ephemeral=True
