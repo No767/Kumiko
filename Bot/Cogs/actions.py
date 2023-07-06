@@ -8,11 +8,15 @@ from Libs.utils import Embed, formatGreedy
 
 
 class Actions(commands.Cog):
-    """Hug, pet, or kiss someone on Discord!"""
+    """Hug, pet, or kiss someone on Discord"""
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
+
+    @property
+    def display_emoji(self) -> discord.PartialEmoji:
+        return discord.PartialEmoji.from_str("<:headpat:1020641548645437491>")
 
     @commands.hybrid_command(name="hug")
     @app_commands.describe(user="The user to hug")

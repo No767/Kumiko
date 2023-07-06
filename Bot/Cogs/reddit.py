@@ -4,7 +4,7 @@ from typing import Literal, Optional
 
 import asyncpraw
 import orjson
-from discord import app_commands
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
@@ -26,9 +26,13 @@ class Reddit(commands.Cog):
         self.bot = bot
         self.session = self.bot.session
 
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<:reddit:314349923103670272>")
+
     @commands.hybrid_group(name="reddit")
     async def reddit(self, ctx: commands.Context) -> None:
-        """Base command for Reddit"""
+        """Reddit search and utility commands"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

@@ -2,7 +2,7 @@ import os
 
 import ciso8601
 import orjson
-from discord import app_commands
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
@@ -23,8 +23,13 @@ class Github(commands.Cog):
         self.bot = bot
         self.session = self.bot.session
 
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<:github:744345792172654643>")
+
     @commands.hybrid_group(name="github")
     async def github(self, ctx: commands.Context) -> None:
+        """Github search and utility commands"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

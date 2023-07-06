@@ -3,7 +3,7 @@ from typing import Literal, Optional
 
 import ciso8601
 import orjson
-from discord import app_commands
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
@@ -19,15 +19,19 @@ TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 
 class Searches(commands.Cog):
-    """Search for anime, manga, gifs, memes, and much more!"""
+    """Search for anime, manga, gifs, memes, and much more"""
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
 
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<a:typing:597589448607399949>")
+
     @commands.hybrid_group(name="search")
     async def search(self, ctx: commands.Context) -> None:
-        """Base parent command for searches - See the subcommands for more info"""
+        """Search for anime, manga, gifs, memes, and much more"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

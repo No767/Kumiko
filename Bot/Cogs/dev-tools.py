@@ -8,8 +8,14 @@ from kumikocore import KumikoCore
 
 
 class DevTools(commands.Cog):
+    """Tools for developing Kumiko"""
+
     def __init__(self, bot: KumikoCore):
         self.bot = bot
+
+    @property
+    def display_emoji(self) -> discord.PartialEmoji:
+        return discord.PartialEmoji(name="\U0001f6e0")
 
     @commands.hybrid_command(name="sync")
     @commands.guild_only()

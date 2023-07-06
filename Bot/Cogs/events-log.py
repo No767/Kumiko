@@ -1,3 +1,4 @@
+from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.ui.events_log import RegisterView, UnregisterView
@@ -5,14 +6,19 @@ from Libs.utils import ConfirmEmbed, Embed
 
 
 class EventsLog(commands.Cog):
-    """Events logging module - Optional module to log member joins and others"""
+    """Logging module to track joins, and economy events"""
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.pool = self.bot.pool
 
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji(name="\U0001f4f0")
+
     @commands.hybrid_group(name="logs")
     async def logs(self, ctx: commands.Context) -> None:
+        """Logs events and actions on your server"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

@@ -1,4 +1,4 @@
-from discord import app_commands
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from discord.utils import utcnow
 from kumikocore import KumikoCore
@@ -9,14 +9,19 @@ from Libs.utils import ConfirmEmbed, Embed, get_prefix
 
 # TODO - Straight up slap an GIN index on the prefixes column
 class Prefix(commands.Cog):
-    """Kumiko's custom prefix manager! Set a custom prefix for your server!"""
+    """Manages custom prefixes for your server"""
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.pool = self.bot.pool
 
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji(name="\U000025b6")
+
     @commands.hybrid_group(name="prefix")
     async def prefix(self, ctx: commands.Context) -> None:
+        """Utilities to manage and view your server prefixes"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

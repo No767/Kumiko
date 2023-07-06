@@ -1,6 +1,7 @@
 import random
 
 import orjson
+from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.utils import Embed
@@ -8,15 +9,19 @@ from Libs.utils.pages import EmbedListSource, KumikoPages
 
 
 class Waifu(commands.Cog):
-    """Commands for getting some waifu pics"""
+    """Gives you random waifu pics"""
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
 
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<:UwU:1013221555003719772>")
+
     @commands.hybrid_group(name="waifu")
     async def waifu(self, ctx: commands.Context) -> None:
-        """Base parent command for waifu - See the subcommands for more info"""
+        """Waifu waifu waifus Mai Sakurajima is the best"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

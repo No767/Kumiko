@@ -1,3 +1,4 @@
+import inspect
 import itertools
 from typing import Any, Dict, List, Optional, Union
 
@@ -14,6 +15,11 @@ from Libs.utils.pages import KumikoPages
 #         super().__init__(placeholder="Select a category...", options=options)
 
 #     async def callback(self, interaction: discord.Interaction):
+
+# RGB Colors:
+# Pink (255, 161, 231) - Used for the main bot page
+# Lavender (197, 184, 255) - Used for cog and group pages
+# Light Orange (255, 199, 184) - Used for command pages
 
 
 class GroupHelpPageSource(menus.ListPageSource):
@@ -34,7 +40,7 @@ class GroupHelpPageSource(menus.ListPageSource):
         embed = discord.Embed(
             title=self.title,
             description=self.description,
-            colour=discord.Colour(0xA8B9CD),
+            colour=discord.Colour.from_rgb(197, 184, 255),
         )
 
         for command in commands:
@@ -154,53 +160,58 @@ class FrontPageSource(menus.PageSource):
         return self
 
     def format_page(self, menu: HelpMenu, page: Any):
-        embed = discord.Embed(title="Bot Help", colour=discord.Colour(0xA8B9CD))
-        embed.description = "help"
-        # embed.description = inspect.cleandoc(
-        #     f"""
-        #     Hello! Welcome to the help page.
+        embed = discord.Embed(
+            title="Bot Help", colour=discord.Colour.from_rgb(255, 161, 231)
+        )
+        # embed.description = "help"
+        embed.description = inspect.cleandoc(
+            f"""
+            Hello! Welcome to the help page.
 
-        #     Use "{menu.ctx.clean_prefix}help command" for more info on a command.
-        #     Use "{menu.ctx.clean_prefix}help category" for more info on a category.
-        #     Use the dropdown menu below to select a category.
-        # """
-        # )
+            Use "{menu.ctx.clean_prefix}help command" for more info on a command.
+            Use "{menu.ctx.clean_prefix}help category" for more info on a category.
+            Use the dropdown menu below to select a category.
+        """
+        )
 
-        # embed.add_field(
-        #     name='Support Server',
-        #     value='For more help, consider joining the official server over at https://discord.gg/DWEaqMy',
-        #     inline=False,
-        # )
+        embed.add_field(
+            name="Support Server",
+            value="For more help, consider joining the official server over at https://discord.gg/sYP7z2sUda",
+            inline=False,
+        )
 
         # created_at = time.format_dt(menu.ctx.bot.user.created_at, 'F')
-        # if self.index == 0:
-        #     embed.add_field(
-        #         name='Who are you?',
-        #         value=(
-        #             "I'm a bot made by Danny#0007. I'm the oldest running Discord bot! I've been running since "
-        #             f'{created_at}. I have features such as moderation, tags, starboard, and more. You can get more '
-        #             'information on my commands by using the dropdown below.\n\n'
-        #             "I'm also open source. You can see my code on [GitHub](https://github.com/Rapptz/RoboDanny)!"
-        #         ),
-        #         inline=False,
-        #     )
-        # elif self.index == 1:
-        #     entries = (
-        #         ('<argument>', 'This means the argument is __**required**__.'),
-        #         ('[argument]', 'This means the argument is __**optional**__.'),
-        #         ('[A|B]', 'This means that it can be __**either A or B**__.'),
-        #         (
-        #             '[argument...]',
-        #             'This means you can have multiple arguments.\n'
-        #             'Now that you know the basics, it should be noted that...\n'
-        #             '__**You do not type in the brackets!**__',
-        #         ),
-        #     )
+        if self.index == 0:
+            embed.add_field(
+                name="About Kumiko",
+                value=(
+                    "Kumiko is an multipurpose bot that takes an unique and alternative approach to "
+                    "what an multipurpose bot is. Kumiko offers features such as moderation, economy, and many more. You can get more "
+                    "information on the commands offered by using the dropdown below.\n\n"
+                    "Kumiko is also open source. You can see the code on [GitHub](https://github.com/No767/Kumiko)"
+                ),
+                inline=False,
+            )
+        elif self.index == 1:
+            entries = (
+                ("<argument>", "This means the argument is __**required**__."),
+                ("[argument]", "This means the argument is __**optional**__."),
+                ("[A|B]", "This means that it can be __**either A or B**__."),
+                (
+                    "[argument...]",
+                    "This means you can have multiple arguments.\n"
+                    "Now that you know the basics, it should be noted that...\n"
+                    "__**You do not type in the brackets!**__",
+                ),
+            )
 
-        #     embed.add_field(name='How do I use this bot?', value='Reading the bot signature is pretty simple.')
+            embed.add_field(
+                name="How do I use this bot?",
+                value="Reading the bot signature is pretty simple.",
+            )
 
-        #     for name, value in entries:
-        #         embed.add_field(name=name, value=value, inline=False)
+            for name, value in entries:
+                embed.add_field(name=name, value=value, inline=False)
 
         return embed
 
@@ -284,7 +295,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
 
     async def send_command_help(self, command):
         # No pagination necessary for a single command.
-        embed = discord.Embed(colour=discord.Colour(0xA8B9CD))
+        embed = discord.Embed(colour=discord.Colour.from_rgb(255, 199, 184))
         self.common_command_formatting(embed, command)
         await self.context.send(embed=embed)
 
