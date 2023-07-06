@@ -28,6 +28,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Update Dockerfile to use Debian 12 (Bookworm)
 - Use `Embed.timestamp` for some embeds to show timestamps
 - Replaced `.gitignore` with a proper one from GitHub
+- Replaced `kumiko.py` with `meta.py` to allow for clearer purpose
 
 
 ## ✨ Additions
@@ -42,6 +43,8 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - EventsLog module
 - Ping checks to ensure that the connections are open for PostgreSQL and Redis
 - Docs merged into one repo - this repo
+- Added `display_emoji` property to allow for cogs to have emojis when being loaded in the select menus
+- The final version of what an help command should be (taken from RDanny directly as usual)
 
 ## ➖ Removals
 - Global KumikoCPM variable in favor of having it stored during runtime instead
@@ -113,3 +116,6 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - \[pip](deps)\: Bump redis from 4.5.5 to 4.6.0 (#363) (@dependabot)
 - \[pip](deps-dev)\: Bump pyright from 1.1.315 to 1.1.316 (#362) (@dependabot)
 - \[pip](deps)\: Bump prisma from 0.9.0 to 0.9.1 (#367) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.275 to 0.0.276 (#370) (@dependabot)
+- \[pip](deps-dev)\: Bump ruff from 0.0.276 to 0.0.277 (#371) (@dependabot)
+- \[Actions](deps)\: Bump actions/setup-node from 3.6.0 to 3.7.0 (#372) (@dependabot)
