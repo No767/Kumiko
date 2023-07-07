@@ -1,9 +1,5 @@
-# This docker compose file is actually not used by Kumiko, since Kumiko relies on the db and other stuff via a seperate server
-# This is just for example
-# MAKE SURE TO CHANGE THE VALUES FOR KUMIKO
-
 version: "3.9"
-name: "kumiko"
+name: "kumiko-prod"
 services:
   postgres:
     container_name: Kumiko-Postgres
@@ -20,6 +16,16 @@ services:
     image: redis/redis-stack-server:latest
     ports:
       - 6379:6379
+
+  kumiko:
+    container_name: Kumiko
+    image: no767/kumiko:latest
+    command: sh -c '/Kumiko/wait-for postgres:5432 -- echo "[Wait-for] PostgreSQL is fully up. Waiting for Redis" && /Kumiko/wait-for redis:6379 -- echo "[Wait-for] Both PostgreSQL and Redis are fully ready. Starting up Kumiko" && /Kumiko/start.sh'
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
 
 volumes:
   postgres_volume:
