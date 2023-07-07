@@ -52,10 +52,9 @@ Features
 And some ones that are planned:
 
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
-- Event Logging (Pinned for v1)
 - Annoucement releaser with support from GitHub (Pinned for v2)
-- Selector Roles (pinned for v2)
 
+To see the full list of planned features, please see the roadmap `here <https://github.com/No767/Kumiko/discussions/266>`_.
 Guides
 ----------------
 
