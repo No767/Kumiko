@@ -55,6 +55,7 @@ And some ones that are planned:
 - Annoucement releaser with support from GitHub (Pinned for v2)
 
 To see the full list of planned features, please see the roadmap `here <https://github.com/No767/Kumiko/discussions/266>`_.
+
 Guides
 ----------------
 
