@@ -36,7 +36,7 @@ RUN apt update \
   tini \
   ca-certificates \
   bash \
-  netcat \
+  netcat-traditional \
   libopus-dev \
   libffi-dev \
   libnacl-dev \
