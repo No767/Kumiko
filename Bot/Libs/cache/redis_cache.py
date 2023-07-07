@@ -42,21 +42,31 @@ class KumikoCache:
         return res
 
     async def setJSONCache(
-        self, key: str, value: Dict[str, Any], ttl: Union[int, None] = 5
+        self,
+        key: str,
+        value: Union[Dict[str, Any], Any],
+        path: str = "$",
+        ttl: Union[int, None] = 5,
     ) -> None:
         """Sets the JSON cache on Redis
 
         Args:
             key (str): The key to use for Redis
-            value (Dict[str, Any]): The value of the key-pair value
+            value (Union[Dict[str, Any], Any]): The value of the key-pair value
+            path (str): The path to look for or set. Defautls to "$"
             ttl (Union[int, None], optional): TTL of the key-value pair. If None, then the TTL will not be set. Defaults to 5.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json().set(name=key, path="$", obj=encodeDatetime(value))
+        await client.json().set(
+            name=key,
+            path=path,
+            obj=encodeDatetime(value) if isinstance(value, dict) else value,
+        )
         if isinstance(ttl, int):
             await client.expire(name=key, time=ttl)
 
-    async def getJSONCache(self, key: str) -> Union[str, None]:
+    # The output type comes from here: https://github.com/redis/redis-py/blob/9f503578d1ffed20d63e8023bcd8a7dccd15ecc5/redis/commands/json/_util.py#L3C1-L3C73
+    async def getJSONCache(self, key: str) -> Union[str, None, Dict[str, Any]]:
         """Gets the JSON cache on Redis
 
         Args:
