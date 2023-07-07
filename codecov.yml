@@ -4,3 +4,4 @@ ignore:
   - "Bot/Libs/utils/pages/**"
   - "Bot/Libs/utils/kumiko_logger.py"
   - "Bot/Libs/utils/embeds.py"
+  - "Bots/Libs/utils/prefix.py" # This contains an coroutine that we can't even test to begin with

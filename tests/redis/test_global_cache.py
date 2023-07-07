@@ -27,3 +27,10 @@ def test_get_cp():
     kumikoCP = KumikoCPManager(uri=REDIS_URI)
     connPool = kumikoCP.getConnPool()
     assert isinstance(connPool, ConnectionPool)
+
+
+def test_created_cp():
+    kumikoCP = KumikoCPManager(uri=REDIS_URI)
+    kumikoCP.createPool()
+    newConnPool = kumikoCP.getConnPool()
+    assert isinstance(newConnPool, ConnectionPool)
