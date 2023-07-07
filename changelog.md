@@ -29,6 +29,8 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Use `Embed.timestamp` for some embeds to show timestamps
 - Replaced `.gitignore` with a proper one from GitHub
 - Replaced `kumiko.py` with `meta.py` to allow for clearer purpose
+- Updated the return types of `KumikoCache().getJSONCache()`
+- Allow for custom paths to search for `KumikoCache().setJSONCache()`
 
 
 ## ✨ Additions
