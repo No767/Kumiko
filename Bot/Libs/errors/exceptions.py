@@ -19,6 +19,10 @@ class ItemNotFoundError(KumikoException):
     """Generally used if any item of the economy system is not found"""
 
 
+class ValidationError(KumikoException):
+    """Raised when a validation of any function fails"""
+
+
 class HTTPError(KumikoException):
     """Raised when an HTTP request fails.
 

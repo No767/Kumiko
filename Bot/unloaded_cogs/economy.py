@@ -4,7 +4,7 @@ from kumikocore import KumikoCore
 from Libs.economy import getUser
 from Libs.ui.economy import RegisterView
 from Libs.utils import Embed, parseDatetime
-from prisma.models import User
+from prisma.models import User  # type: ignore
 
 
 class Economy(commands.Cog):

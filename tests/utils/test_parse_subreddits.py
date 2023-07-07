@@ -13,3 +13,7 @@ def test_rslash_egg_irl():
 
 def test_egg_irl():
     assert parseSubreddit("egg_irl") == "egg_irl"
+
+
+def test_none_subreddit():
+    assert parseSubreddit(subreddit=None) == "all"

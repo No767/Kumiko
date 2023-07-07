@@ -1,14 +1,21 @@
 from typing import Literal, Optional
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
 
 
 class DevTools(commands.Cog):
+    """Tools for developing Kumiko"""
+
     def __init__(self, bot: KumikoCore):
         self.bot = bot
+
+    @property
+    def display_emoji(self) -> discord.PartialEmoji:
+        return discord.PartialEmoji(name="\U0001f6e0")
 
     @commands.hybrid_command(name="sync")
     @commands.guild_only()
@@ -55,6 +62,19 @@ class DevTools(commands.Cog):
                 ret += 1
 
         await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
+
+    @commands.hybrid_command(name="dispatch")
+    @commands.guild_only()
+    @commands.is_owner()
+    @app_commands.describe(event="The event to dispatch")
+    async def dispatch_event(self, ctx: commands.Context, event: str) -> None:
+        """Dispatches an custom event
+
+        Args:
+            ctx (commands.Context): _description_
+        """
+        self.bot.dispatch(event, ctx.author)
+        await ctx.send("Dispatched event")
 
 
 async def setup(bot: KumikoCore):

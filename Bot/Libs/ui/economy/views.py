@@ -1,6 +1,6 @@
 import discord
 from Libs.utils import Embed
-from prisma.models import User
+from prisma.models import User  # type: ignore
 
 
 class RegisterView(discord.ui.View):

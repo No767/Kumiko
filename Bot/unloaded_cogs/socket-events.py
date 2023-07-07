@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from prisma.models import Guild
+from prisma.models import Guild  # type: ignore
 
 
 class SocketEvents(commands.Cog):

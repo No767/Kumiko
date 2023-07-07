@@ -1,3 +1,3 @@
-from .ctx import PrismaSessionManager
-
-__all__ = ["PrismaSessionManager"]
+# from .ctx import PrismaSessionManager
+from .ensure_open_conns import ensureOpenPostgresConn
+__all__ = ["ensureOpenPostgresConn"]

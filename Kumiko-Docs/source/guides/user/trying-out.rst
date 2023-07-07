@@ -14,7 +14,7 @@ Prerequisites
 Standalone Requirements
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-If you are running Kumiko on a standalone machine (w/o Docker Compose), you will need to install the following:
+If you are running Kumiko on a standalone machine (w/o Docker Compose or using Systemd), you will need to install the following:
 
 - `PostgreSQL <https://www.postgresql.org/>`_
 - `Redis Stack <https://redis.io/docs/stack>`_ (or Redis w/ RedisJSON and RedisSearch modules loaded)
@@ -53,6 +53,62 @@ Standalone (Docker CLI)
         .. code-block:: bash
     
             sudo docker run -d --env-file .env --name Kumiko no767/kumiko:latest
+
+Standalone (Systemd)
+--------------------
+
+**Before you start, ensure that you have PostgreSQL and Redis correctly configured and is running**
+
+1. Clone the repo
+
+    .. code-block:: bash
+
+        git clone https://github.com/No767/Kumiko.git && cd Kumiko
+    
+
+    Or if you have the `gh` cli tool installed:
+
+    .. code-block:: bash
+
+        gh repo clone No767/Kumiko
+
+    .. note:: 
+
+        By default, this will clone the dev branch. For stable releases, run ``git checkout master`` to checkout into stable releases (or checkout the latest tag)
+
+2. Set up the prod ENV file. During this step, please also fill your credentials in the ENV file 
+
+    .. code-block:: bash
+        
+        cp Envs/prod.env Bot/.env
+
+2. Create an systemd service file. This is an example, and you will need to edit it to point to the correct directory and user.
+
+    .. code-block:: ini
+
+        [Unit]
+        Description=Kumiko
+        After=network-online.target
+        Requires=postgresql.service
+
+        [Service]
+        Type=simple
+        WorkingDirectory=/your/bots/directory
+        ExecStart=/usr/bin/python3 /your/bots/directory/Bot/kumikobot.py
+        User=username
+        Restart=on-failure
+        EnvironmentFile=/your/bots/directory/Bot/.env
+
+        [Install]
+        WantedBy=multi-user.target
+
+3. Test whether you have everything set up. If you have ``make`` installed, you can run ``make prod-run`` in order to run the bot. Otherwise, just run ``kumikobot.py``
+
+4. Run and enable the systemd service. 
+    
+    .. code-block:: bash
+
+        sudo systemctl enable --now kumiko
 
 Docker Compose
 --------------

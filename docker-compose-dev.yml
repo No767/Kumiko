@@ -13,7 +13,7 @@ services:
 
   redis:
     container_name: Kumiko-Redis-Stack-Dev
-    image: redis/redis-stack:7.0.6-RC6
+    image: redis/redis-stack:7.2.0-M01
     ports:
       - 6379:6379
     volumes:

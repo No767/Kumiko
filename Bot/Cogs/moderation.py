@@ -2,7 +2,7 @@ from datetime import timedelta
 from typing import Optional
 
 import discord
-from discord import app_commands
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.utils import Embed, parseTimeStr
@@ -13,6 +13,10 @@ class Moderation(commands.Cog):
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
+
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<:blobban:759935431847968788>")
 
     @commands.hybrid_group(name="mod")
     async def mod(self, ctx: commands.Context):

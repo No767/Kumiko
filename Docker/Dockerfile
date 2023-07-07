@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.11-slim-bullseye AS builder
+FROM python:3.11-slim-bookworm AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
@@ -29,7 +29,7 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 RUN apt update \
   && apt install -y --no-install-recommends \
@@ -45,9 +45,10 @@ RUN apt update \
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/kumikocore.py /Kumiko/Bot/
-COPY /schema.prisma /Kumiko/Bot
+COPY /Migrations /Kumiko/Migrations
 COPY /Bot/Cogs /Kumiko/Bot/Cogs
 COPY /Bot/Libs /Kumiko/Bot/Libs/
+COPY /migrations-runner.py /Kumiko/migrations-runner.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
 

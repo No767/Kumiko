@@ -14,30 +14,29 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 <div align=left>
 
-| :bangbang: | Kumiko is currently undergoing a migration from Pycord to Discord.py (including a full rewrite). At this stage, Kumiko may not be working as intended. |
-| :--------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 ## Kumiko (久美子)
 
-Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko allows you to decide on whether you wish to use the services provided. Kumiko includes a opt-in economy system, custom quests, and many more features. Kumiko also includes integration with AniList, Reddit, Twitter, and others.
+Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko provides a wide range of features, including an customizable and local economy, logging, and many more features. Integration with AniList, and others are also included. 
 
 ## Features
 
 - Customizable prefix module
-- Global or guild economy with jobs and marketplaces 
-- Custom logging module
+- Customizable local economy module with jobs, ranks, and more
+- Custom logging module (aka EventsLog)
 - Basic moderation commands
 - Search for memes, posts, anime, manga, and others!
 
 And some ones that are planned:
 
 - Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
-- Event Logging (Pinned for v1)
 - Annoucement releaser with support from GitHub (Pinned for v2)
-- Selector Roles (pinned for v2)
 
+To see the full list of planned features, please see the roadmap [here](https://github.com/No767/Kumiko/discussions/266) (#266)
 ## Prefix
 
 Kumiko uses both a prefixed command and slash commands. The currently supported prefixes are `>` , and `/`.
+
+`>` is the default prefix, but this can be customized to be any custom prefix that you wish to have. For example, if you wanted to, you could set the prefix to be `?` instead. These do not change the global prefix; only on the current server where you have set it up 
 
 ## Inviting the Bot
 
