@@ -3,9 +3,11 @@ import platform
 import time
 
 import discord
+import psutil
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.utils import Embed
+from psutil._common import bytes2human
 
 VERSION = "v0.9.0"
 
@@ -63,6 +65,35 @@ class Meta(commands.Cog):
         embed = Embed()
         embed.description = f"Pong! {round(self.bot.latency * 1000)}ms"
         await ctx.send(embed=embed)
+
+    @commands.is_owner()
+    @commands.hybrid_command(name="sys-metrics", aliases=["sysmetrics"])
+    async def sysMetrics(self, ctx: commands.Context) -> None:
+        """Tells you the current system metrics along with other information"""
+        await ctx.defer()
+        currMem = psutil.virtual_memory()
+        proc = psutil.Process()
+        with proc.oneshot():
+            procMem = bytes2human(proc.memory_info().rss)
+            diskUsage = psutil.disk_usage("/")
+            embed = Embed()
+            embed.title = "System Metrics + Info"
+            embed.description = (
+                f"**CPU:** {psutil.cpu_percent()}% (Proc - {proc.cpu_percent()}%)\n"
+                f"**Mem:** {procMem} ({procMem}/{bytes2human(currMem.total)})\n"
+                f"**Disk (System):** {diskUsage.percent}% ({bytes2human(diskUsage.used)}/{bytes2human(diskUsage.total)})\n"
+                f"**Proc Status:** {proc.status()}\n"
+            )
+            embed.add_field(name="Kernel Version", value=platform.release())
+            embed.add_field(name="Python Compiler", value=platform.python_compiler())
+            embed.add_field(
+                name="Python Version", value=platform.python_version(), inline=True
+            )
+            embed.add_field(
+                name="Discord.py Version", value=discord.__version__, inline=True
+            )
+            embed.add_field(name="Kumiko Build Version", value=VERSION)
+            await ctx.send(embed=embed)
 
 
 async def setup(bot: KumikoCore) -> None:

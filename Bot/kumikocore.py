@@ -39,7 +39,7 @@ class KumikoCore(commands.Bot):
             intents=intents,
             command_prefix=get_prefix,
             help_command=KumikoHelpPaginated(),
-            activity=discord.Activity(type=discord.ActivityType.watching, name="/help"),
+            activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
             *args,
             **kwargs,
         )
