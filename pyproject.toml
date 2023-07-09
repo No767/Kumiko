@@ -30,6 +30,7 @@ pytest-asyncio = "^0.21.0"
 nox = "^2023.4.22"
 nox-poetry = "^1.0.2"
 pytest-cov = "^4.1.0"
+dpytest = "^0.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
@@ -49,7 +50,6 @@ sphinxext-opengraph = "^0.8.2"
 
 
 [tool.poetry.group.tests.dependencies]
-dpytest = "^0.7.0"
 
 [tool.isort]
 profile = 'black'
