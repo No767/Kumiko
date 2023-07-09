@@ -1,3 +1,4 @@
+from .converters import PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -13,6 +14,7 @@ from .prefix import get_prefix, validatePrefix
 from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 
 __all__ = [
+    "PrefixConverter",
     "parseDatetime",
     "encodeDatetime",
     "Embed",

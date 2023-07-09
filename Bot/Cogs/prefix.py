@@ -4,10 +4,9 @@ from discord.utils import utcnow
 from kumikocore import KumikoCore
 from Libs.errors import ValidationError
 from Libs.ui.prefix import DeletePrefixView
-from Libs.utils import ConfirmEmbed, Embed, get_prefix
+from Libs.utils import ConfirmEmbed, Embed, PrefixConverter, get_prefix
 
 
-# TODO - Straight up slap an GIN index on the prefixes column
 class Prefix(commands.Cog):
     """Manages custom prefixes for your server"""
 
@@ -32,7 +31,7 @@ class Prefix(commands.Cog):
         old_prefix="The old prefix to replace", new_prefix="The new prefix to use"
     )
     async def updatePrefixes(
-        self, ctx: commands.Context, old_prefix: str, new_prefix: str
+        self, ctx: commands.Context, old_prefix: str, new_prefix: PrefixConverter
     ) -> None:
         """Updates the prefix for your server"""
         query = """
@@ -60,7 +59,7 @@ class Prefix(commands.Cog):
     @commands.guild_only()
     @prefix.command(name="add")
     @app_commands.describe(prefix="The new prefix to add")
-    async def addPrefixes(self, ctx: commands.Context, prefix: str) -> None:
+    async def addPrefixes(self, ctx: commands.Context, prefix: PrefixConverter) -> None:
         """Adds new prefixes into your server"""
         prefixes = await get_prefix(self.bot, ctx.message)
         # validatePrefix(self.bot.prefixes, prefix) is False
