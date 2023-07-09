@@ -3,7 +3,10 @@ name: "kumiko-prod"
 services:
   postgres:
     container_name: Kumiko-Postgres
-    image: postgres:15 
+    image: kumiko-postgres:prod-latest
+    build:
+      context: ./Docker/pg
+      dockerfile: ./Docker/pg/Dockerfile
     env_file:
       - .env
     volumes:
