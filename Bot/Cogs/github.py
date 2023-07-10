@@ -25,7 +25,7 @@ class Github(commands.Cog):
 
     @property
     def display_emoji(self) -> PartialEmoji:
-        return PartialEmoji.from_str("<:github:744345792172654643>")
+        return PartialEmoji.from_str("<:githubmarkwhite:1127906278509912185>")
 
     @commands.hybrid_group(name="github")
     async def github(self, ctx: commands.Context) -> None:
