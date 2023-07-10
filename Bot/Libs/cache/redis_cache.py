@@ -66,7 +66,7 @@ class KumikoCache:
             await client.expire(name=key, time=ttl)
 
     # The output type comes from here: https://github.com/redis/redis-py/blob/9f503578d1ffed20d63e8023bcd8a7dccd15ecc5/redis/commands/json/_util.py#L3C1-L3C73
-    async def getJSONCache(self, key: str) -> Union[str, None, Dict[str, Any]]:
+    async def getJSONCache(self, key: str) -> Union[None, Dict[str, Any]]:
         """Gets the JSON cache on Redis
 
         Args:
@@ -80,6 +80,16 @@ class KumikoCache:
         if value is None:
             return None
         return value
+
+    async def deleteJSONCache(self, key: str, path: str = "$") -> None:
+        """Deletes the JSON cache at key `key` and under `path`
+
+        Args:
+            key (str): The key to use in Redis
+            path (str): The path to look for. Defaults to "$" (root)
+        """
+        client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        await client.json().delete(key=key, path=path)
 
     async def cacheExists(self, key: str) -> bool:
         """Checks to make sure if the cache exists

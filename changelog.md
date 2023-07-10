@@ -3,6 +3,8 @@
 More reworks of literally everything... This release migrates from Prisma to pure SQL (asyncpg), and fully stabilities the repo to use discord.py instead of Pycord. Nearly all of the planned features are implemented in this release, except the economy module.
 For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://github.com/No767/Kumiko/compare/v0.8.0...v0.9.0)
 
+**Note**: The commands to configure which events are turned on are disabled as of now, since it would require a full rework of the schema and code. This will be implemented in a future release.
+
 ## :boom: Breaking Changes :boom:
 
 - All of the SQL queries have been rewritten to use SQL w/ asyncpg instead of Prisma
@@ -31,6 +33,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Replaced `kumiko.py` with `meta.py` to allow for clearer purpose
 - Updated the return types of `KumikoCache().getJSONCache()`
 - Allow for custom paths to search for `KumikoCache().setJSONCache()`
+- Alow for custom keys and names to be used instead in `@cache` and `@cacheJson` decos
 
 
 ## ✨ Additions
@@ -47,6 +50,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Docs merged into one repo - this repo
 - Added `display_emoji` property to allow for cogs to have emojis when being loaded in the select menus
 - The final version of what an help command should be (taken from RDanny directly as usual)
+- Increased test coverage
 
 ## ➖ Removals
 - Global KumikoCPM variable in favor of having it stored during runtime instead

@@ -1,12 +1,15 @@
 import asyncpg
 import discord
+from Libs.cog_utils.events_log import delete_cache, set_or_update_cache
 from Libs.utils import ErrorEmbed, SuccessActionEmbed
+from redis.asyncio.connection import ConnectionPool
 
 
 class RegisterView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool) -> None:
+    def __init__(self, pool: asyncpg.Pool, redis_pool: ConnectionPool) -> None:
         super().__init__()
         self.pool = pool
+        self.redis_pool = redis_pool
 
     @discord.ui.select(
         cls=discord.ui.ChannelSelect, channel_types=[discord.ChannelType.text]
@@ -33,6 +36,19 @@ class RegisterView(discord.ui.View):
 
             try:
                 await conn.execute(query, guildId, select.values[0].id, True)
+                data = {
+                    "id": guildId,
+                    "logs": True,
+                    "channel_id": select.values[0].id,
+                    "member_events": True,
+                    "mod_events": True,
+                    "eco_events": False,
+                }
+                await set_or_update_cache(
+                    key=f"cache:kumiko:{guildId}:logging_config",
+                    redis_pool=self.redis_pool,
+                    data=data,
+                )
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 await interaction.response.send_message("There are duplicate records")
@@ -55,9 +71,10 @@ class RegisterView(discord.ui.View):
 
 
 class UnregisterView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool) -> None:
+    def __init__(self, pool: asyncpg.Pool, redis_pool: ConnectionPool) -> None:
         super().__init__()
         self.pool = pool
+        self.redis_pool = redis_pool
 
     @discord.ui.button(
         label="Confirm",
@@ -78,12 +95,14 @@ class UnregisterView(discord.ui.View):
         """
         async with self.pool.acquire() as conn:
             guildId = interaction.guild.id  # type: ignore
+            key = f"cache:kumiko:{guildId}:logging_config"
 
             tr = conn.transaction()
             await tr.start()
 
             try:
                 await conn.execute(query, guildId, False)
+                await delete_cache(key=key, redis_pool=self.redis_pool)
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 self.clear_items()

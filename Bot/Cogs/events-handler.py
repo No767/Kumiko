@@ -1,13 +1,11 @@
-from typing import Any, Union
+from typing import Any
 
-import asyncpg
 import discord
 from discord.ext import commands
 from discord.utils import format_dt, utcnow
 from kumikocore import KumikoCore
-from Libs.cache import cacheJson
+from Libs.cog_utils.events_log import get_or_fetch_config
 from Libs.utils import CancelledActionEmbed, Embed, SuccessActionEmbed
-from redis.asyncio.connection import ConnectionPool
 
 
 class EventsHandler(commands.Cog):
@@ -17,21 +15,6 @@ class EventsHandler(commands.Cog):
         self.bot = bot
         self.pool = self.bot.pool
         self.redis_pool = self.bot.redis_pool
-
-    @cacheJson(ttl=3600)
-    async def get_or_fetch_config(
-        self, id: int, redis_pool: ConnectionPool, pool: asyncpg.Pool
-    ) -> Union[dict, None]:
-        query = """
-        SELECT guild.id, guild.logs, logging_config.channel_id, logging_config.member_events
-        FROM guild
-        INNER JOIN logging_config
-        ON guild.id = logging_config.guild_id
-        WHERE guild.id = $1;
-        """
-        async with self.pool.acquire() as conn:
-            res = await conn.fetchrow(query, id)
-            return dict(res)
 
     def ensureEnabled(self, config: Any) -> bool:
         if (config is not None) and (
@@ -65,8 +48,8 @@ class EventsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
         guild = member.guild
-        getConfig = await self.get_or_fetch_config(
-            id=guild.id, redis_pool=self.redis_pool, pool=self.pool
+        getConfig = await get_or_fetch_config(
+            id=member.guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
         if self.ensureEnabled(getConfig):
             channel = guild.get_channel(getConfig["channel_id"])  # type: ignore
@@ -84,7 +67,7 @@ class EventsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
         guild = member.guild
-        getConfig = await self.get_or_fetch_config(
+        getConfig = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
         if self.ensureEnabled(getConfig):
@@ -101,8 +84,8 @@ class EventsHandler(commands.Cog):
                 await channel.send(embed=embed)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, guild, user: discord.User) -> None:
-        getConfig = await self.get_or_fetch_config(
+    async def on_member_ban(self, guild: discord.Guild, user: discord.User) -> None:
+        getConfig = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
         if self.ensureEnabled(getConfig):
@@ -117,7 +100,7 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild: discord.Guild, user: discord.User) -> None:
-        getConfig = await self.get_or_fetch_config(
+        getConfig = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
         if self.ensureEnabled(getConfig):
@@ -132,7 +115,7 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_kick(self, guild: discord.Guild, user: discord.User) -> None:
-        getConfig = await self.get_or_fetch_config(
+        getConfig = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
         if self.ensureEnabled(getConfig):

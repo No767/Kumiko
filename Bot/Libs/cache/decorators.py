@@ -17,9 +17,12 @@ class cache:
         ttl (int, optional): TTL (Time-To-Live). Defaults to 30.
     """
 
-    def __init__(self, key: Optional[str] = None, ttl: int = 30):
+    def __init__(
+        self, key: Optional[str] = None, ttl: int = 30, name: Optional[str] = None
+    ):
         self.key = key
         self.ttl = ttl
+        self.name = name
 
     def __call__(self, func: Callable, *args: Any, **kwargs: Any):
         @wraps(func)
@@ -48,7 +51,7 @@ class cache:
                 prefix="cache",
                 namespace="kumiko",
                 id=id or uuid.uuid4(),
-                command=func.__name__,
+                command=self.name or func.__name__,
             )
 
         if await cache.cacheExists(key=key) is False:
@@ -68,9 +71,15 @@ class cacheJson:
         ttl (int, optional): TTL (Time-To-Live). If None, then the TTL will not be set. Defaults to 30.
     """
 
-    def __init__(self, key: Optional[str] = None, ttl: Union[int, None] = 30):
+    def __init__(
+        self,
+        key: Optional[str] = None,
+        ttl: Union[int, None] = 30,
+        name: Optional[str] = None,
+    ):
         self.key = key
         self.ttl = ttl
+        self.name = name
 
     def __call__(self, func: Callable, *args: Any, **kwargs: Any):
         @wraps(func)
@@ -99,7 +108,7 @@ class cacheJson:
                 prefix="cache",
                 namespace="kumiko",
                 id=id or uuid.uuid4(),
-                command=func.__name__,
+                command=self.name or func.__name__,
             )
 
         if await cache.cacheExists(key=key) is False:
