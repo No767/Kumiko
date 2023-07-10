@@ -3,12 +3,21 @@ import os
 
 import asyncpg
 import discord
-import uvloop
 from aiohttp import ClientSession
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
 from Libs.utils import KumikoLogger
+
+if os.name == "nt":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+else:
+    try:
+        import uvloop
+
+        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    except ImportError:
+        pass
 
 load_dotenv()
 
@@ -38,7 +47,6 @@ async def main() -> None:
 
 def launch() -> None:
     with KumikoLogger():
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
         asyncio.run(main())
         # run(main, backend_options={"use_uvloop": True})
 
