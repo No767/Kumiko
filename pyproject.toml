@@ -29,7 +29,7 @@ psutil = "^5.9.5"
 pytest = "^7.4.0"
 pytest-asyncio = "^0.21.0"
 nox = "^2023.4.22"
-nox-poetry = "^1.0.2"
+nox-poetry = "^1.0.3"
 pytest-cov = "^4.1.0"
 dpytest = "^0.7.0"
 
