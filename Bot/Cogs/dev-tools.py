@@ -7,7 +7,7 @@ from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
 
 
-class DevTools(commands.Cog):
+class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     """Tools for developing Kumiko"""
 
     def __init__(self, bot: KumikoCore):

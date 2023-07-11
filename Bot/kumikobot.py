@@ -24,7 +24,7 @@ else:
 
 load_dotenv()
 
-KUMIKO_TOKEN = os.environ["DEV_BOT_TOKEN"]
+KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
 POSTGRES_URI = os.environ["POSTGRES_URI"]
 REDIS_URI = os.environ["REDIS_URI"]
