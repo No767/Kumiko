@@ -9,8 +9,11 @@ from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
 from Libs.utils import KumikoLogger
 
+# Only used for Windows development
 if os.name == "nt":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    import winloop
+
+    asyncio.set_event_loop_policy(winloop.WinLoopPolicy())
 else:
     try:
         import uvloop
@@ -48,7 +51,6 @@ async def main() -> None:
 def launch() -> None:
     with KumikoLogger():
         asyncio.run(main())
-        # run(main, backend_options={"use_uvloop": True})
 
 
 if __name__ == "__main__":
