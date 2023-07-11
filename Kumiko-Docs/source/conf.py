@@ -13,7 +13,7 @@ author = "No767"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.napoleon", "sphinxext.opengraph"]
+extensions = ["sphinx.ext.napoleon", "sphinxext.opengraph", "sphinx_copybutton"]
 
 
 templates_path = ["_templates"]
