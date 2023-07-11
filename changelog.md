@@ -40,6 +40,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Ensure that the migration runner always runs first
 - Change stop signal from `SIGTERM` to `SIGINT` for Docker
 - Build the Docker image locally for Kumiko's Postgres server
+- Redirect users to the Dev Contributing Guide (located in the docs) within `contributing.md`
 
 
 ## ✨ Additions
@@ -64,6 +65,8 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Old economy packages
 - cog-ext module
 - Prisma along with other unused libs
+- Any old v0.8.x Prisma code
+- Old "Docs"
 
 # ⬆️ Dependabot Updates
 - \[pip](deps-dev)\: Bump pre-commit from 3.2.1 to 3.2.2 (#300) (@dependabot)
