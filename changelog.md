@@ -34,6 +34,11 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Updated the return types of `KumikoCache().getJSONCache()`
 - Allow for custom paths to search for `KumikoCache().setJSONCache()`
 - Alow for custom keys and names to be used instead in `@cache` and `@cacheJson` decos
+- Use WindowsEventLoop for Windows (#375) (@rtk-rnjn)
+- Implement WinLoop event policy for Windows
+- Ensure that the migration runner always runs first
+- Change stop signal from `SIGTERM` to `SIGINT` for Docker
+- Build the Docker image locally for Kumiko's Postgres server
 
 
 ## ✨ Additions
@@ -51,6 +56,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - Added `display_emoji` property to allow for cogs to have emojis when being loaded in the select menus
 - The final version of what an help command should be (taken from RDanny directly as usual)
 - Increased test coverage
+- `sys-metrics` command to obtain system metrics (for Noelle only)
 
 ## ➖ Removals
 - Global KumikoCPM variable in favor of having it stored during runtime instead
@@ -125,3 +131,6 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 - \[pip](deps-dev)\: Bump ruff from 0.0.275 to 0.0.276 (#370) (@dependabot)
 - \[pip](deps-dev)\: Bump ruff from 0.0.276 to 0.0.277 (#371) (@dependabot)
 - \[Actions](deps)\: Bump actions/setup-node from 3.6.0 to 3.7.0 (#372) (@dependabot)
+- \[pip](deps)\: Bump asyncpg from 0.27.0 to 0.28.0 (#373) (@dependabot)
+- \[pip](deps)\: Bump orjson from 3.9.1 to 3.9.2 (#374) (@dependabot)
+- \[pip](deps-dev)\: Bump nox-poetry from 1.0.2 to 1.0.3 (#376) (@dependabot)
