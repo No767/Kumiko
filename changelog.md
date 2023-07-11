@@ -9,6 +9,7 @@ For the full list of changes, please see them here: [`v0.8.x...v0.9.0`](https://
 
 - All of the SQL queries have been rewritten to use SQL w/ asyncpg instead of Prisma
 - A ton of cogs, and commands have been either moved or deleted since v0.8.x. Please consider resyncing your commands with the include dev-tool cog (or by activating jishaku)
+- All `*-bullseye` tags are now deprecated. Kumiko is now built using Debian 12 (Bookworm)
 
 ## ✨ TD;LR
 
