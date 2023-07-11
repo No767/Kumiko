@@ -1,5 +1,4 @@
 import contextlib
-from typing import List, Mapping, Optional
 
 from discord.ext import commands
 from Libs.utils import Embed
@@ -7,7 +6,7 @@ from Libs.utils import Embed
 
 class KumikoHelp(commands.HelpCommand):
     def __init__(self):
-        super().__init__(
+        super().__init__(  # create our class with some aliases and cooldown
             command_attrs={
                 "help": "The help command for the bot",
                 "cooldown": commands.CooldownMapping.from_cooldown(
@@ -17,29 +16,22 @@ class KumikoHelp(commands.HelpCommand):
             }
         )
 
-    async def send(self, **kwargs) -> None:
+    async def send(self, **kwargs):
         """a shortcut to sending to get_destination"""
         await self.get_destination().send(**kwargs)
 
-    async def send_bot_help(
-        self, mapping: Mapping[Optional[commands.Cog], List[commands.Command]]
-    ) -> None:
-        """Generates the help embed when the default help command is called
-
-        Args:
-            mapping (Mapping[Optional[commands.Cog], List[commands.Command]]): Mapping of cogs to commands
-        """
+    async def send_bot_help(self, mapping):
+        """triggers when a `<prefix>help` is called"""
         ctx = self.context
         embed = Embed(title=f"{ctx.me.display_name} Help")
         embed.set_thumbnail(url=ctx.me.display_avatar)
-        embed.description = f"{ctx.me.display_name} is a multipurpose bot built with freedom and choice in mind."
         usable = 0
 
         for (
             cog,
-            commands,
+            cmds,
         ) in mapping.items():  # iterating through our mapping of cog: commands
-            if filtered_commands := await self.filter_commands(commands):
+            if filtered_commands := await self.filter_commands(cmds):
                 # if no commands are usable in this category, we don't want to display it
                 amount_commands = len(filtered_commands)
                 usable += amount_commands
@@ -54,7 +46,7 @@ class KumikoHelp(commands.HelpCommand):
                     name=f"{name} Category [{amount_commands}]", value=description
                 )
 
-        # embed.description = f"{len(ctx.commands)} commands | {usable} usable"
+        # embed.description = f"{len(bot.commands)} commands | {usable} usable"
 
         await self.send(embed=embed)
 
@@ -63,9 +55,7 @@ class KumikoHelp(commands.HelpCommand):
         signature = self.get_command_signature(
             command
         )  # get_command_signature gets the signature of a command in <required> [optional]
-        embed = Embed(
-            title=signature, description=command.short_doc or "No help found..."
-        )
+        embed = Embed(title=signature, description=command.help or "No help found...")
 
         if cog := command.cog:
             embed.add_field(name="Category", value=cog.qualified_name)
@@ -97,18 +87,10 @@ class KumikoHelp(commands.HelpCommand):
             for command in filtered_commands:
                 embed.add_field(
                     name=self.get_command_signature(command),
-                    value=command.short_doc or "No help found...",
+                    value=command.help or "No help found...",
                 )
 
         await self.send(embed=embed)
-        # cmdList = []
-        # if filtered_commands := await self.filter_commands(commands):
-        #     for command in filtered_commands:
-        #         cmdList.append((self.get_command_signature(command), command.help or "No help found..."))
-
-        # source = FieldPageSource(cmdList, per_page=3)
-        # pages = KumikoPages(source, ctx=self.context)
-        # await pages.start_help(channel=self.get_destination())
 
     async def send_group_help(self, group):
         """triggers when a `<prefix>help <group>` is called"""

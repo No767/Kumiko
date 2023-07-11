@@ -1,0 +1,5 @@
+postgresql_databases:
+  - name: kumiko
+postgresql_users:
+  - name: kumiko
+    password: somepass # SET THE PASSWORD HERE!

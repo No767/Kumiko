@@ -1,15 +1,15 @@
 import os
 from typing import Literal, Optional
 
-import aiohttp
 import ciso8601
 import orjson
-from discord import app_commands
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
+from kumikocore import KumikoCore
 from Libs.errors import NoItemsError
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
@@ -19,14 +19,19 @@ TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 
 class Searches(commands.Cog):
-    """Search for anime, manga, gifs, memes, and much more!"""
+    """Search for anime, manga, gifs, memes, and much more"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
+        self.session = self.bot.session
+
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<a:typing:597589448607399949>")
 
     @commands.hybrid_group(name="search")
     async def search(self, ctx: commands.Context) -> None:
-        """Base parent command for searches - See the subcommands for more info"""
+        """Search for anime, manga, gifs, memes, and much more"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
@@ -34,11 +39,10 @@ class Searches(commands.Cog):
     @app_commands.describe(name="The name of the anime to search")
     async def searchAnime(self, ctx: commands.Context, *, name: str) -> None:
         """Searches up animes"""
-        transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
         async with Client(
-            transport=transport,
+            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
             fetch_schema_from_transport=True,
-        ) as session:
+        ) as gql_session:
             query = gql(
                 """
             query ($animeName: String!, $perPage: Int, $isAdult: Boolean!) {
@@ -72,15 +76,15 @@ class Searches(commands.Cog):
                         }
                         synonyms
                         id
-                        
+
                     }
                 }
             }
-        """
+            """
             )
 
             params = {"animeName": name, "perPage": 25, "isAdult": False}
-            data = await session.execute(query, variable_values=params)
+            data = await gql_session.execute(query, variable_values=params)
 
             if len(data["Page"]["media"]) == 0:
                 raise NoItemsError
@@ -126,11 +130,10 @@ class Searches(commands.Cog):
     @app_commands.describe(name="The name of the manga to search")
     async def searchManga(self, ctx: commands.Context, *, name: str):
         """Searches for manga on AniList"""
-        transport = AIOHTTPTransport(url="https://graphql.anilist.co/")
         async with Client(
-            transport=transport,
+            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
             fetch_schema_from_transport=True,
-        ) as session:
+        ) as gql_session:
             query = gql(
                 """
             query ($mangaName: String!, $perPage: Int, $isAdult: Boolean!) {
@@ -163,15 +166,15 @@ class Searches(commands.Cog):
                         }
                         synonyms
                         id
-                        
+
                     }
                 }
             }
-        """
+            """
             )
 
             params = {"mangaName": name, "perPage": 25, "isAdult": False}
-            data = await session.execute(query, variable_values=params)
+            data = await gql_session.execute(query, variable_values=params)
             if len(data["Page"]["media"]) == 0:
                 raise NoItemsError
             else:
@@ -215,28 +218,27 @@ class Searches(commands.Cog):
     @app_commands.describe(search="The search term to use")
     async def searchGifs(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for gifs on Tenor"""
-        async with aiohttp.ClientSession() as session:
-            params = {
-                "q": search,
-                "key": TENOR_API_KEY,
-                "contentfilter": "medium",
-                "limit": 25,
-                "media_filter": "minimal",
-            }
-            async with session.get(
-                "https://tenor.googleapis.com/v2/search", params=params
-            ) as r:
-                data = await r.json(loads=orjson.loads)
-                if len(data["results"]) == 0 or r.status == 404:
-                    raise NoItemsError
-                else:
-                    mainData = [
-                        {"image": item["media_formats"]["gif"]["url"]}
-                        for item in data["results"]
-                    ]
-                    embedSource = EmbedListSource(mainData, per_page=1)
-                    pages = KumikoPages(source=embedSource, ctx=ctx)
-                    await pages.start()
+        params = {
+            "q": search,
+            "key": TENOR_API_KEY,
+            "contentfilter": "medium",
+            "limit": 25,
+            "media_filter": "minimal",
+        }
+        async with self.session.get(
+            "https://tenor.googleapis.com/v2/search", params=params
+        ) as r:
+            data = await r.json(loads=orjson.loads)
+            if len(data["results"]) == 0 or r.status == 404:
+                raise NoItemsError
+            else:
+                mainData = [
+                    {"image": item["media_formats"]["gif"]["url"]}
+                    for item in data["results"]
+                ]
+                embedSource = EmbedListSource(mainData, per_page=1)
+                pages = KumikoPages(source=embedSource, ctx=ctx)
+                await pages.start()
 
     @search.command(name="mc-mods")
     @app_commands.describe(
@@ -251,59 +253,58 @@ class Searches(commands.Cog):
         modloader: Optional[Literal["Forge", "Fabric"]] = "Forge",
     ) -> None:
         """Search for Minecraft mods and plugins on Modrinth"""
-        async with aiohttp.ClientSession() as session:
-            params = {
-                "query": mod_name,
-                "index": "relevance",
-                "limit": 25,
-                "facets": f'[["categories:{str(modloader).lower()}"]]',
-            }
-            async with session.get(
-                "https://api.modrinth.com/v2/search", params=params
-            ) as r:
-                data = await r.json(loads=orjson.loads)
-                if len(data["hits"]) == 0:
-                    raise NoItemsError
-                else:
-                    mainData = [
-                        {
-                            "title": item["title"],
-                            "description": item["description"],
-                            "thumbnail": item["icon_url"],
-                            "fields": [
-                                {"name": "Author", "value": item["author"]},
-                                {"name": "Categories", "value": item["categories"]},
-                                {"name": "Versions", "value": item["versions"]},
-                                {
-                                    "name": "Latest Version",
-                                    "value": item["latest_version"],
-                                },
-                                {
-                                    "name": "Date Created",
-                                    "value": format_dt(
-                                        ciso8601.parse_datetime(item["date_created"])
-                                    ),
-                                },
-                                {
-                                    "name": "Date Modified",
-                                    "value": format_dt(
-                                        ciso8601.parse_datetime(item["date_modified"])
-                                    ),
-                                },
-                                {"name": "Downloads", "value": item["downloads"]},
-                                {"name": "License", "value": item["license"]},
-                                {
-                                    "name": "Modrinth URL",
-                                    "value": f"https://modrinth.com/{item['project_type']}/{item['slug']}",
-                                },
-                            ],
-                        }
-                        for item in data["hits"]
-                    ]
-                    embedSource = EmbedListSource(mainData, per_page=1)
-                    pages = KumikoPages(source=embedSource, ctx=ctx)
-                    await pages.start()
+        params = {
+            "query": mod_name,
+            "index": "relevance",
+            "limit": 25,
+            "facets": f'[["categories:{str(modloader).lower()}"]]',
+        }
+        async with self.session.get(
+            "https://api.modrinth.com/v2/search", params=params
+        ) as r:
+            data = await r.json(loads=orjson.loads)
+            if len(data["hits"]) == 0:
+                raise NoItemsError
+            else:
+                mainData = [
+                    {
+                        "title": item["title"],
+                        "description": item["description"],
+                        "thumbnail": item["icon_url"],
+                        "fields": [
+                            {"name": "Author", "value": item["author"]},
+                            {"name": "Categories", "value": item["categories"]},
+                            {"name": "Versions", "value": item["versions"]},
+                            {
+                                "name": "Latest Version",
+                                "value": item["latest_version"],
+                            },
+                            {
+                                "name": "Date Created",
+                                "value": format_dt(
+                                    ciso8601.parse_datetime(item["date_created"])
+                                ),
+                            },
+                            {
+                                "name": "Date Modified",
+                                "value": format_dt(
+                                    ciso8601.parse_datetime(item["date_modified"])
+                                ),
+                            },
+                            {"name": "Downloads", "value": item["downloads"]},
+                            {"name": "License", "value": item["license"]},
+                            {
+                                "name": "Modrinth URL",
+                                "value": f"https://modrinth.com/{item['project_type']}/{item['slug']}",
+                            },
+                        ],
+                    }
+                    for item in data["hits"]
+                ]
+                embedSource = EmbedListSource(mainData, per_page=1)
+                pages = KumikoPages(source=embedSource, ctx=ctx)
+                await pages.start()
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(Searches(bot))

@@ -9,3 +9,6 @@ dev-setup:
 
 run:
 	poetry run python Bot/kumikobot.py
+
+prod-run:
+	./venv/bin/python3 Bot/kumikobot.py

@@ -39,9 +39,11 @@ class FieldPageSource(menus.ListPageSource):
         per_page: int = 5,
         inline: bool = False,
         clear_description: bool = True,
+        title: str = "",
+        description: str = "",
     ) -> None:
         super().__init__(entries, per_page=per_page)
-        self.embed: Embed = Embed()
+        self.embed: Embed = Embed(title=title, description=description)
         self.clear_description: bool = clear_description
         self.inline: bool = inline
 

@@ -1,16 +1,12 @@
 from .cp_manager import KumikoCPManager
-from .decorators import cached, cachedJson
-from .global_cp import kumikoCP
+from .decorators import cache, cacheJson
 from .key_builder import CommandKeyBuilder
-from .mem_cache import MemoryCache
 from .redis_cache import KumikoCache
 
 __all__ = [
-    "MemoryCache",
     "CommandKeyBuilder",
     "KumikoCache",
-    "cached",
-    "cachedJson",
     "KumikoCPManager",
-    "kumikoCP",
+    "cache",
+    "cacheJson",
 ]

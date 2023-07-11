@@ -1,7 +1,7 @@
 ####################################################################################################
 ## Builder image
 ####################################################################################################
-FROM python:3.11-slim-bullseye AS builder
+FROM python:3.11-slim-bookworm AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
@@ -29,14 +29,14 @@ RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 ####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.11-slim-bullseye
+FROM python:3.11-slim-bookworm
 
 RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
   ca-certificates \
   bash \
-  netcat \
+  netcat-traditional \
   libopus-dev \
   libffi-dev \
   libnacl-dev \
@@ -45,9 +45,10 @@ RUN apt update \
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
 COPY /Bot/kumikocore.py /Kumiko/Bot/
-COPY /schema.prisma /Kumiko/Bot
+COPY /Migrations /Kumiko/Migrations
 COPY /Bot/Cogs /Kumiko/Bot/Cogs
 COPY /Bot/Libs /Kumiko/Bot/Libs/
+COPY /migrations-runner.py /Kumiko/migrations-runner.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
 
@@ -71,7 +72,10 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 
 CMD ["/Kumiko/start.sh"]
 
-STOPSIGNAL SIGTERM
+# We want to use SIGINT instead since that is the same signal used when hitting ctrl+c
+# By default, this is the expected behavior of Kumiko, so we need to keep it that way
+# Will result in a clean exit without any dead conns
+STOPSIGNAL SIGINT
 
 LABEL org.opencontainers.image.title="Kumiko"
 LABEL org.opencontainers.image.description="A multipurpose Discord bot built with freedom and choice in mind"

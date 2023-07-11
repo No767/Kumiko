@@ -2,14 +2,21 @@ from typing import Union
 
 from discord.app_commands.errors import CommandInvokeError
 from discord.ext import commands
-from Libs.errors import HTTPError, KumikoException, NoItemsError, NotFoundError
+from kumikocore import KumikoCore
+from Libs.errors import (
+    HTTPError,
+    KumikoException,
+    NoItemsError,
+    NotFoundError,
+    ValidationError,
+)
 from Libs.utils import Embed, ErrorEmbed
 
 
 class ErrorHandler(commands.Cog):
     """Cog to handle errors"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
     def fullException(self, obj):
@@ -134,6 +141,11 @@ class ErrorHandler(commands.Cog):
                 f"You are missing the following argument(s): {error.param.name}"
             )
             await ctx.send(embed=errorEmbed)
+        elif isinstance(error, ValidationError):
+            errorEmbed = ErrorEmbed()
+            errorEmbed.title = "Validation Error"
+            errorEmbed.description = str(error)
+            await ctx.send(embed=errorEmbed)
         else:
             errorEmbed = ErrorEmbed()
             errorEmbed.add_field(name="Error", value=str(error), inline=False)
@@ -145,5 +157,5 @@ class ErrorHandler(commands.Cog):
             await ctx.send(embed=errorEmbed)
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(ErrorHandler(bot))

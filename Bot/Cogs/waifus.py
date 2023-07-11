@@ -1,21 +1,27 @@
 import random
 
-import aiohttp
 import orjson
+from discord import PartialEmoji
 from discord.ext import commands
+from kumikocore import KumikoCore
 from Libs.utils import Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
 
 class Waifu(commands.Cog):
-    """Commands for getting some waifu pics"""
+    """Gives you random waifu pics"""
 
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
+        self.session = self.bot.session
+
+    @property
+    def display_emoji(self) -> PartialEmoji:
+        return PartialEmoji.from_str("<:UwU:1013221555003719772>")
 
     @commands.hybrid_group(name="waifu")
     async def waifu(self, ctx: commands.Context) -> None:
-        """Base parent command for waifu - See the subcommands for more info"""
+        """Waifu waifu waifus Mai Sakurajima is the best"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
@@ -31,16 +37,15 @@ class Waifu(commands.Cog):
             "raiden-shogun",
             "selfies",
         ]
-        async with aiohttp.ClientSession() as session:
-            params = {
-                "included_tags": random.choice(waifuTagList),
-                "is_nsfw": "false",
-                "excluded_tags": "oppai",
-            }
-            async with session.get("https://api.waifu.im/search/", params=params) as r:
-                data = await r.json(loads=orjson.loads)
-                embed = Embed().set_image(url=data["images"][0]["url"])
-                await ctx.send(embed=embed)
+        params = {
+            "included_tags": random.choice(waifuTagList),
+            "is_nsfw": "false",
+            "excluded_tags": "oppai",
+        }
+        async with self.session.get("https://api.waifu.im/search/", params=params) as r:
+            data = await r.json(loads=orjson.loads)
+            embed = Embed().set_image(url=data["images"][0]["url"])
+            await ctx.send(embed=embed)
 
     @waifu.command(name="many")
     async def randomWaifuMany(self, ctx: commands.Context) -> None:
@@ -54,20 +59,19 @@ class Waifu(commands.Cog):
             "raiden-shogun",
             "selfies",
         ]
-        async with aiohttp.ClientSession() as session:
-            params = {
-                "included_tags": random.choice(waifuTagList),
-                "is_nsfw": "False",
-                "excluded_tags": "oppai",
-                "many": "true",
-            }
-            async with session.get("https://api.waifu.im/search/", params=params) as r:
-                data = await r.json(loads=orjson.loads)
-                mainData = [{"image": item["url"]} for item in data["images"]]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                menu = KumikoPages(source=embedSource, ctx=ctx, compact=False)
-                await menu.start()
+        params = {
+            "included_tags": random.choice(waifuTagList),
+            "is_nsfw": "False",
+            "excluded_tags": "oppai",
+            "many": "true",
+        }
+        async with self.session.get("https://api.waifu.im/search/", params=params) as r:
+            data = await r.json(loads=orjson.loads)
+            mainData = [{"image": item["url"]} for item in data["images"]]
+            embedSource = EmbedListSource(mainData, per_page=1)
+            menu = KumikoPages(source=embedSource, ctx=ctx, compact=False)
+            await menu.start()
 
 
-async def setup(bot: commands.Bot) -> None:
+async def setup(bot: KumikoCore) -> None:
     await bot.add_cog(Waifu(bot))

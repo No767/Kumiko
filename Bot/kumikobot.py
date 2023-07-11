@@ -1,34 +1,60 @@
-import logging
+import asyncio
 import os
 
+import asyncpg
 import discord
-from anyio import run
+from aiohttp import ClientSession
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
+from Libs.cache import KumikoCPManager
+from Libs.utils import KumikoLogger
+
+# Only used for Windows development
+if os.name == "nt":
+    import winloop
+
+    asyncio.set_event_loop_policy(winloop.WinLoopPolicy())
+else:
+    try:
+        import uvloop
+
+        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    except ImportError:
+        pass
 
 load_dotenv()
 
 KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
+POSTGRES_URI = os.environ["POSTGRES_URI"]
+REDIS_URI = os.environ["REDIS_URI"]
+
 intents = discord.Intents.default()
 intents.message_content = True
-
-FORMATTER = logging.Formatter(
-    fmt="%(asctime)s %(levelname)s    %(message)s", datefmt="[%Y-%m-%d %H:%M:%S]"
-)
-discord.utils.setup_logging(formatter=FORMATTER)
-
-logger = logging.getLogger("discord")
-logging.getLogger("gql").setLevel(logging.WARNING)
+intents.members = True
 
 
 async def main() -> None:
-    async with KumikoCore(intents=intents, dev_mode=DEV_MODE) as bot:
-        await bot.start(KUMIKO_TOKEN)
+    async with ClientSession() as session, asyncpg.create_pool(
+        dsn=POSTGRES_URI, command_timeout=60, max_size=20, min_size=20
+    ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
+        async with KumikoCore(
+            intents=intents,
+            session=session,
+            pool=pool,
+            redis_pool=redis_pool,
+            dev_mode=DEV_MODE,
+        ) as bot:
+            await bot.start(KUMIKO_TOKEN)
+
+
+def launch() -> None:
+    with KumikoLogger():
+        asyncio.run(main())
 
 
 if __name__ == "__main__":
     try:
-        run(main, backend_options={"use_uvloop": True})
+        launch()
     except KeyboardInterrupt:
-        logger.info("Shutting down...")
+        pass

@@ -1,5 +1,5 @@
 default_language_version:
-    python: python3.10
+    python: python3.11
 files: '.py'
 exclude: ".env,.yml,.gitignore,.git,.md,.txt"
 default_stages: [push, commit]
@@ -23,7 +23,7 @@ repos:
 #         description: "Format with AutoPEP8"
         
 -   repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.6.0
     hooks:
     -   id: black
         name: Black
@@ -39,7 +39,7 @@ repos:
         stages: [commit]
         
 -   repo: https://github.com/PyCQA/isort
-    rev: 5.10.1
+    rev: 5.12.0
     hooks:
     -   id: isort
         name: ISort

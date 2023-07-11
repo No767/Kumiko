@@ -42,3 +42,23 @@ async def test_key_exists():
     await cache.setBasicCache(key=key, value=DATA)
     res = await cache.cacheExists(key=key)
     assert res is True  # nosec
+
+
+@pytest.mark.asyncio
+async def test_get_json_cache_if_none():
+    key = CommandKeyBuilder(id=123564343, command="ayo_what_mate")
+    connPool = ConnectionPool().from_url("redis://localhost:6379/0")
+    cache = KumikoCache(connection_pool=connPool)
+    res = await cache.getJSONCache(key=key)
+    assert res is None
+
+
+@pytest.mark.asyncio
+async def test_delete_json_cache():
+    key = CommandKeyBuilder(id=123564343453453, command="nicer")
+    connPool = ConnectionPool().from_url("redis://localhost:6379/0")
+    cache = KumikoCache(connection_pool=connPool)
+    await cache.setJSONCache(key=key, value=DATA)
+    await cache.deleteJSONCache(key=key)
+    res = await cache.cacheExists(key=key)
+    assert res is False
