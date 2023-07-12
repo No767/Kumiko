@@ -13,6 +13,7 @@ For the full list of changes, please see them here: [`v0.9.x...v0.10.0`](https:/
 
 
 ## ✨ Additions
+- NSFW module (These can only be used in NSFW channels)
 
 
 ## ➖ Removals
