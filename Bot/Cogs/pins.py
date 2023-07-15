@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-from typing import Annotated, Dict, Optional
+from typing import Dict, Optional
 
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
@@ -14,6 +14,7 @@ from Libs.cog_utils.pins import (
 )
 from Libs.ui.pins import CreatePin, DeletePinView, PinEditModal, PinPages
 from Libs.utils import ConfirmEmbed, Embed, PinName
+from typing_extensions import Annotated
 
 
 class Pins(commands.Cog):

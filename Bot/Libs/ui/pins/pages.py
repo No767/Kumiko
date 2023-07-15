@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import List, TypedDict
 
 import discord
 from discord.ext.commands import Context
@@ -34,6 +34,6 @@ class PinPageEntry:
 
 
 class PinPages(SimplePages):
-    def __init__(self, entries: list[PinEntry], *, ctx: Context, per_page: int = 12):
+    def __init__(self, entries: List[PinEntry], *, ctx: Context, per_page: int = 12):
         converted = [PinPageEntry(entry) for entry in entries]
         super().__init__(converted, per_page=per_page, ctx=ctx)
