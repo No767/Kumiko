@@ -1,19 +1,23 @@
 import asyncio
 import datetime
+from io import BytesIO
 from typing import Dict, Optional
 
-from discord import PartialEmoji, app_commands
+import orjson
+from discord import File, Member, PartialEmoji, User, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.pins import (
     createPin,
     editPin,
     formatOptions,
+    getAllPins,
+    getOwnedPins,
     getPinInfo,
     getPinText,
 )
-from Libs.ui.pins import CreatePin, DeletePinView, PinEditModal, PinPages
-from Libs.utils import ConfirmEmbed, Embed, PinName
+from Libs.ui.pins import CreatePin, DeletePinView, PinEditModal, PinPages, PurgePinView
+from Libs.utils import ConfirmEmbed, Embed, PinName, get_or_fetch_member
 from typing_extensions import Annotated
 
 
@@ -323,6 +327,145 @@ class Pins(commands.Cog):
             await ctx.send("Could not edit the pin. Are you sure you own it?")
         else:
             await ctx.send("Successfully edited pin")
+
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    @pins.command(name="dumps")
+    async def dumps(self, ctx: commands.Context) -> None:
+        """Dumps all tags in your guild into a JSON file"""
+        await ctx.defer()
+        result = await getAllPins(ctx.guild.id, self.pool)  # type: ignore
+        buffer = BytesIO(
+            orjson.dumps([dict(row) for row in result], option=orjson.OPT_INDENT_2)
+        )
+        await ctx.send(
+            content="Finished exporting all pins in your guild!",
+            file=File(fp=buffer, filename="export.json"),
+        )
+
+    @commands.guild_only()
+    @commands.has_permissions(manage_guild=True)
+    @pins.command(name="all")
+    async def all(self, ctx: commands.Context) -> None:
+        """Lists all pins in your guild"""
+        rows = await getAllPins(ctx.guild.id, self.pool)  # type: ignore
+        if rows:
+            pages = PinPages(entries=rows, per_page=20, ctx=ctx)
+            await pages.start()
+        else:
+            await ctx.send("The server does not have any pins")
+
+    @commands.guild_only()
+    @pins.command(name="list")
+    @app_commands.describe(member="The member or yourself to list pins from")
+    async def list(self, ctx: commands.Context, member: User = commands.Author) -> None:
+        """Lists all pins from a member or yourself"""
+        rows = await getOwnedPins(member.id, ctx.guild.id, self.pool)  # type: ignore
+        if len(rows) == 0:
+            await ctx.send("The member does not have any pins")
+            return
+        else:
+            pages = PinPages(entries=rows, per_page=20, ctx=ctx)
+            await pages.start()
+
+    @commands.guild_only()
+    @pins.command(name="purge")
+    async def purge(self, ctx: commands.Context) -> None:
+        """Purges all pins that you own in the server"""
+        view = PurgePinView(self.pool)
+        embed = ConfirmEmbed()
+        embed.description = (
+            "Are you sure you want to delete all pins that you own in the server?"
+        )
+        await ctx.send(embed=embed, view=view)
+
+    @commands.guild_only()
+    @pins.command(name="claim")
+    @app_commands.describe(name="Name of the pin. Aliases are supported")
+    async def claim(
+        self, ctx: commands.Context, *, name: Annotated[PinName, commands.clean_content]
+    ) -> None:
+        """Claims a pin that you do not own. Aliases will be retained"""
+        query = """
+        SELECT pin.id, pin.author_id
+        FROM pin_lookup
+        INNER JOIN pin ON pin.id = pin_lookup.pin_id
+        WHERE pin_lookup.guild_id = $1 AND LOWER(pin.name) = $2;
+        """
+        row = await self.pool.fetchrow(query, ctx.guild.id, name)  # type: ignore
+        if row is None:
+            await ctx.send("Could not find a pin with that name or alias")
+            return
+
+        member = await get_or_fetch_member(ctx.guild, dict(row)["author_id"])  # type: ignore
+
+        if member is not None:
+            await ctx.send("The pin is already owned by someone else")
+            return
+
+        query = """
+        WITH pin_update AS (
+        UPDATE pin_lookup
+        SET owner_id = $3
+        WHERE pin_lookup.guild_id = $1 AND LOWER(pin_lookup.name) = $2
+        RETURNING pin_id
+        )
+        UPDATE pin
+        SET author_id = $3
+        WHERE pin.guild_id = $1 AND id = (SELECT id FROM pin_update);
+        """
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
+
+        await ctx.send("Successfully claimed the pin")
+
+    @commands.guild_only()
+    @pins.command(name="transfer")
+    @app_commands.describe(
+        member="The member to transfer the pin to", pin="The pin's name to transfer"
+    )
+    async def transfer(
+        self, ctx: commands.Context, member: Member, *, pin: Annotated[str, PinName]
+    ) -> None:
+        """Transfers a pin to another member. Once transferred, you can't get it back."""
+        if member.bot:
+            await ctx.send("You can't transfer a pin to a bot")
+            return
+        query = """
+        SELECT pin.id, pin.author_id
+        FROM pin_lookup
+        INNER JOIN pin ON pin.id = pin_lookup.pin_id
+        WHERE pin_lookup.guild_id = $1 AND LOWER(pin.name) = $2;
+        """
+        row = await self.pool.fetchrow(query, ctx.guild.id, pin)  # type: ignore
+        if row is None:
+            await ctx.send("Could not find a pin with that name or alias")
+            return
+
+        # This can be removed later if we want to allow transferring to yourself
+        if dict(row)["author_id"] == ctx.author.id:
+            await ctx.send("You can't transfer the pin back to yourself")
+            return
+
+        query = """
+        UPDATE pin
+        SET author_id = $3
+        WHERE pin.guild_id = $1 AND pin.name = $2;
+        """
+        lookupQuery = """
+        UPDATE pin_lookup
+        SET owner_id = $3
+        WHERE pin_lookup.guild_id = $1 AND pin_lookup.name = $2;
+        """
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                await conn.execute(query, ctx.guild.id, pin.lower(), member.id)  # type: ignore
+                await conn.execute(lookupQuery, ctx.guild.id, pin.lower(), member.id)  # type: ignore
+
+        await ctx.send(
+            f"Successfully transfer the pin `{pin.lower()}` to {member.mention}"
+        )
 
 
 async def setup(bot: KumikoCore) -> None:

@@ -1,4 +1,4 @@
-from .converters import PinName, PrefixConverter
+from .converters import PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -11,11 +11,18 @@ from .embeds import (
 from .greedy_formatter import formatGreedy
 from .kumiko_logger import KumikoLogger
 from .prefix import get_prefix, validatePrefix
-from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
+from .utils import (
+    encodeDatetime,
+    get_or_fetch_member,
+    parseDatetime,
+    parseSubreddit,
+    parseTimeStr,
+)
 
 __all__ = [
     "PrefixConverter",
     "PinName",
+    "PinAllFlags",
     "parseDatetime",
     "encodeDatetime",
     "Embed",
@@ -31,4 +38,5 @@ __all__ = [
     "CancelledActionEmbed",
     "JoinEmbed",
     "LeaveEmbed",
+    "get_or_fetch_member",
 ]

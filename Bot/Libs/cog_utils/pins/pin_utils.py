@@ -99,3 +99,31 @@ async def editPin(
             query, content, name, guild_id, author_id  # type: ignore
         )
         return status
+
+
+async def getAllPins(guild_id: int, pool: asyncpg.Pool):
+    query = """
+    SELECT pin.id, pin.name, pin_lookup.aliases, pin.content, pin.created_at, pin.author_id
+    FROM pin_lookup
+    INNER JOIN pin ON pin.id = pin_lookup.pin_id
+    WHERE pin_lookup.guild_id=$1;
+    """
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(query, guild_id)
+        if rows is None:
+            return []
+        return rows
+
+
+async def getOwnedPins(author_id: int, guild_id: int, pool: asyncpg.Pool):
+    query = """
+    SELECT pin.name, pin.id
+    FROM pin_lookup
+    INNER JOIN pin ON pin.id = pin_lookup.pin_id
+    WHERE pin_lookup.guild_id=$1 AND pin_lookup.owner_id=$2;
+    """
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(query, guild_id, author_id)
+        if rows is None:
+            return []
+        return rows

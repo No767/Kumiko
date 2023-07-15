@@ -34,3 +34,11 @@ class PinName(commands.clean_content):
             raise commands.BadArgument("This tag name starts with a reserved word.")
 
         return converted.strip() if not self.lower else lower
+
+
+class PinAllFlags(commands.FlagConverter):
+    all: bool = commands.flag(
+        default=False,
+        description="Whether to dump all pins in that server",
+        aliases=["a"],
+    )
