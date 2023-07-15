@@ -133,7 +133,13 @@ Systemd (Standalone)
 
 7. Test whether you have everything set up. If you have ``make`` installed, you can run ``make prod-run`` in order to run the bot (the ``Makefile`` is found in the root of the repo). Otherwise, just run ``kumikobot.py``
 
-8. Run and enable the systemd service. 
+8. Reload the system daemon
+
+    .. code-block:: bash
+
+        sudo systemctl daemon-reload
+
+9. Run and enable the systemd service. 
     
     .. code-block:: bash
 
@@ -179,4 +185,3 @@ Docker Compose
     .. code-block:: bash
 
         docker-compose up -d
-

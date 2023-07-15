@@ -7,3 +7,5 @@ These contains any configs for the bot for the end user
     :maxdepth: 2
 
     bot-config
+    eventslog-config
+    prefix-config
