@@ -1,4 +1,4 @@
-from .converters import PrefixConverter
+from .converters import PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -15,6 +15,7 @@ from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
 
 __all__ = [
     "PrefixConverter",
+    "PinName",
     "parseDatetime",
     "encodeDatetime",
     "Embed",

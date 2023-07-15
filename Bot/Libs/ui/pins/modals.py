@@ -1,5 +1,6 @@
 import asyncpg
 import discord
+from Libs.cog_utils.pins import editPin
 
 
 class CreatePin(discord.ui.Modal, title="Create Pin"):
@@ -64,3 +65,39 @@ class CreatePin(discord.ui.Modal, title="Create Pin"):
         await interaction.response.send_message(
             f"An error occurred ({error.__class__.__name__})", ephemeral=True
         )
+
+
+class PinEditModal(discord.ui.Modal, title="Edit Pin"):
+    def __init__(self, pool: asyncpg.Pool, name: str) -> None:
+        super().__init__()
+        self.pool: asyncpg.Pool = pool
+        self.name = name
+        self.content = discord.ui.TextInput(
+            label="Content",
+            style=discord.TextStyle.long,
+            placeholder="Content of the pin",
+            min_length=1,
+            max_length=2000,
+            row=1,
+        )
+        self.add_item(self.content)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        guildId = interaction.guild.id  # type: ignore
+        userId = interaction.user.id
+        res = await editPin(guildId, userId, self.pool, self.name, self.content.value)
+        if res[-1] == "0":
+            await interaction.response.send_message(
+                "Could not edit pin. Are you sure you own it?"
+            )
+            self.stop()
+        else:
+            await interaction.response.send_message("Successfully edited pin")
+
+    async def on_error(
+        self, interaction: discord.Interaction, error: Exception
+    ) -> None:
+        await interaction.response.send_message(
+            f"An error occurred ({error.__class__.__name__})", ephemeral=True
+        )
+        self.stop()
