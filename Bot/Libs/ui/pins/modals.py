@@ -50,7 +50,7 @@ class CreatePin(discord.ui.Modal, title="Create Pin"):
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 await interaction.response.send_message("This pin already exists.")
-            except:
+            except Exception:
                 await tr.rollback()
                 await interaction.response.send_message("Could not create pin.")
             else:
