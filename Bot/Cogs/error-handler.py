@@ -4,6 +4,7 @@ from discord.app_commands.errors import CommandInvokeError
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.errors import (
+    EconomyDisabled,
     HTTPError,
     KumikoException,
     NoItemsError,
@@ -144,6 +145,10 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, ValidationError):
             errorEmbed = ErrorEmbed()
             errorEmbed.title = "Validation Error"
+            errorEmbed.description = str(error)
+            await ctx.send(embed=errorEmbed)
+        elif isinstance(error, EconomyDisabled):
+            errorEmbed = ErrorEmbed(title="Economy Disabled")
             errorEmbed.description = str(error)
             await ctx.send(embed=errorEmbed)
         else:

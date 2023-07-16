@@ -1,5 +1,7 @@
 from typing import Optional
 
+from discord.ext.commands.errors import CommandError
+
 
 class KumikoException(Exception):
     """Base exception class for Kumiko.
@@ -50,3 +52,12 @@ class NotFoundError(HTTPError):
 
     def __init__(self) -> None:
         super().__init__(404, "Resource or endpoint not found")
+
+
+class EconomyDisabled(CommandError):
+    """Raised when the economy system is disabled in a guild"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            message="The economy module is disabled in this server. Please ask your server admin to enable it."
+        )

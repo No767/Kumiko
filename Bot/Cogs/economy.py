@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
+from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.economy import RegisterView
 from Libs.utils import ConfirmEmbed, Embed
+from Libs.utils.pages import EmbedListSource, KumikoPages
 
 
 class Economy(commands.Cog):
@@ -24,6 +26,7 @@ class Economy(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
+    @is_economy_enabled()
     @eco.command(name="balance", aliases=["bal"])
     async def balance(self, ctx: commands.Context) -> None:
         sql = """
@@ -34,7 +37,7 @@ class Economy(commands.Cog):
         user = await self.pool.fetchval(sql, ctx.author.id)
         if user is None:
             await ctx.send(
-                "You have not created an economy account yet! Run `>eco register` to create one."
+                f"You have not created an economy account yet! Run `{ctx.prefix}eco register` to create one."
             )
             return
         embed = Embed()
@@ -47,6 +50,7 @@ class Economy(commands.Cog):
         embed.add_field(name="Balance", value=user["petal"], inline=False)
         await ctx.send(embed=embed)
 
+    @is_economy_enabled()
     @eco.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register for an economy account"""
@@ -55,15 +59,34 @@ class Economy(commands.Cog):
         embed.description = "Do you want to make an account? The account can only be accessed from your current guild"
         await ctx.send(embed=embed, view=view)
 
+    @is_economy_enabled()
     @eco.command(name="inventory", aliases=["inv"])
     async def inventory(self, ctx: commands.Context) -> None:
         """View your inventory"""
         sql = """
-        SELECT eco_item.name, eco_item.fk_user
+        SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
         WHERE eco_item_lookup.owner_id = $1 AND eco_item_lookup.guild_id = $2;
         """
+        rows = await self.pool.fetch(sql, ctx.author.id, ctx.guild.id)  # type: ignore
+        if len(rows) == 0:
+            await ctx.send("No items found")
+            return
+        embedList = [
+            {
+                "title": dict(row)["name"],
+                "description": dict(row)["description"],
+                "fields": [
+                    {"name": "Price", "value": dict(row)["price"], "inline": True},
+                    {"name": "Amount", "value": dict(row)["amount"], "inline": True},
+                ],
+            }
+            for row in rows
+        ]
+        embedSource = EmbedListSource(entries=embedList, per_page=20)
+        pages = KumikoPages(source=embedSource, ctx=ctx)
+        await pages.start()
 
 
 async def setup(bot: KumikoCore) -> None:
