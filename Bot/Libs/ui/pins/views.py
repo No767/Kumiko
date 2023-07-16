@@ -88,7 +88,7 @@ class PurgePinView(discord.ui.View):
                 self.clear_items()
                 if status[-1] == "0":
                     errorEmbed = ErrorEmbed(
-                        description=f"Either you don't own any pins or you have no permission to delete those pins"
+                        description="Either you don't own any pins or you have no permission to delete those pins"
                     )
                     await interaction.response.edit_message(
                         embed=errorEmbed, view=self, delete_after=20.0
