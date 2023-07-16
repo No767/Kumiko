@@ -1,5 +1,12 @@
 from .format_options import formatOptions
-from .pin_utils import createPin, editPin, getAllPins, getPinInfo, getPinText
+from .pin_utils import (
+    createPin,
+    editPin,
+    getAllPins,
+    getOwnedPins,
+    getPinInfo,
+    getPinText,
+)
 
 __all__ = [
     "getPinText",
@@ -8,4 +15,5 @@ __all__ = [
     "createPin",
     "editPin",
     "getAllPins",
+    "getOwnedPins",
 ]
