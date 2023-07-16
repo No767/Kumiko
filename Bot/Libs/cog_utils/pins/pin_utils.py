@@ -1,7 +1,6 @@
 from typing import Dict, List, Union
 
 import asyncpg
-from discord.ext.commands import Context
 
 
 async def getPinText(
@@ -42,20 +41,44 @@ async def getPinText(
 
 
 async def getPinInfo(id: int, pin_name: str, pool: asyncpg.Pool) -> Union[Dict, None]:
+    """Gets the info from an pin
+
+    Args:
+        id (int): Guild ID
+        pin_name (str): The name of the pin
+        pool (asyncpg.Pool): Asyncpg connection pool
+
+    Returns:
+        Union[Dict, None]: The pin info or None if it doesn't exist
+    """
     query = """
     SELECT pin.name, pin.content, pin.created_at, pin.author_id, pin_lookup.aliases
     FROM pin_lookup
     INNER JOIN pin ON pin.id = pin_lookup.pin_id
     WHERE pin_lookup.guild_id=$1 AND LOWER(pin_lookup.name)=$2 OR LOWER(pin_lookup.name) = ANY(aliases);
     """
-    async with pool.acquire() as conn:
-        res = await conn.fetchrow(query, id, pin_name)
-        if res is None:
-            return None
-        return dict(res)
+    res = await pool.fetchrow(query, id, pin_name)
+    if res is None:
+        return None
+    return dict(res)
 
 
-async def createPin(ctx: Context, pool: asyncpg.Pool, name: str, content: str) -> None:
+async def createPin(
+    author_id: int, guild_id: int, pool: asyncpg.Pool, name: str, content: str
+) -> str:
+    """Creates a pin from the given info
+
+    Args:
+        author_id (int): The user's ID
+        guild_id (int): The guild's ID
+        pool (asyncpg.Pool): Asyncpg connection pool
+        name (str): The name of the pin
+        content (str): The contents of the pin
+
+    Returns:
+        str: The status of whether it was successful or not
+    """
+
     query = """WITH pin_insert AS (
             INSERT INTO pin (author_id, guild_id, name, content) 
             VALUES ($1, $2, $3, $4)
@@ -70,20 +93,20 @@ async def createPin(ctx: Context, pool: asyncpg.Pool, name: str, content: str) -
         try:
             await conn.execute(
                 query,
-                ctx.author.id,
-                ctx.guild.id,  # type: ignore
+                author_id,
+                guild_id,
                 name,
                 content,
             )
         except asyncpg.UniqueViolationError:
             await tr.rollback()
-            await ctx.send("The pin (`{name}`) already exists.")
+            return f"The pin (`{name}`) already exists."
         except Exception:
             await tr.rollback()
-            await ctx.send("Could not create pin")
+            return "Could not create pin"
         else:
             await tr.commit()
-            await ctx.send(f"Pin `{name}` successfully created")
+            return f"Pin `{name}` successfully created"
 
 
 async def editPin(
@@ -94,11 +117,10 @@ async def editPin(
     SET content = $1
     WHERE guild_id = $3 AND LOWER(pin.name) = $2 AND author_id = $4;
     """
-    async with pool.acquire() as conn:
-        status = await conn.execute(
-            query, content, name, guild_id, author_id  # type: ignore
-        )
-        return status
+    status = await pool.execute(
+        query, content, name, guild_id, author_id  # type: ignore
+    )
+    return status
 
 
 async def getAllPins(guild_id: int, pool: asyncpg.Pool):

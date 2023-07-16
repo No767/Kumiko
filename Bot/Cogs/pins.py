@@ -70,7 +70,7 @@ class Pins(commands.Cog):
 
     @commands.guild_only()
     @pins.command(name="create")
-    async def createPin(
+    async def create(
         self,
         ctx: commands.Context,
         name: Annotated[str, commands.clean_content],
@@ -83,11 +83,14 @@ class Pins(commands.Cog):
             await ctx.send("The pin content is too long. The max is 2000 characters")
             return
 
-        await createPin(ctx, self.pool, name, content)
+        guildId = ctx.guild.id  # type: ignore
+        authorId = ctx.author.id
+        status = await createPin(authorId, guildId, self.pool, name, content)
+        await ctx.send(status)
 
     @commands.guild_only()
     @pins.command(name="make", aliases=["add"])
-    async def makePin(self, ctx: commands.Context) -> None:
+    async def make(self, ctx: commands.Context) -> None:
         """Interactively creates a tag for you"""
         if ctx.interaction is not None:
             createPinModal = CreatePin(self.pool)
@@ -165,14 +168,15 @@ class Pins(commands.Cog):
             return
 
         try:
-            await createPin(ctx, self.pool, name, clean_content)
+            status = await createPin(ctx.author.id, ctx.guild.id, self.pool, name, clean_content)  # type: ignore
+            await ctx.send(status)
         finally:
             self.remove_in_progress_tag(ctx.guild.id, name)  # type: ignore
 
     @commands.guild_only()
     @pins.command(name="info")
     @app_commands.describe(name="Pin name to search")
-    async def pinInfo(
+    async def info(
         self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Provides info about a pin"""
@@ -193,7 +197,7 @@ class Pins(commands.Cog):
     @commands.guild_only()
     @pins.command(name="delete")
     @app_commands.describe(name="Pin name to delete")
-    async def deletePin(
+    async def delete(
         self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Deletes a pin. You can only delete your own."""
@@ -205,7 +209,7 @@ class Pins(commands.Cog):
     @commands.guild_only()
     @pins.command(name="alias")
     @app_commands.describe(name="Pin name to alias", alias="The new name to alias")
-    async def aliasPin(
+    async def alias(
         self,
         ctx: commands.Context,
         name: Annotated[str, commands.clean_content],
