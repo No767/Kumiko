@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.economy import RegisterView
 from Libs.utils import ConfirmEmbed, Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
@@ -18,7 +17,7 @@ class Economy(commands.Cog):
         self.pool = self.bot.pool
 
     @property
-    def display_property(self) -> discord.PartialEmoji:
+    def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji.from_str("<:stonks:882025515697983528>")
 
     @commands.hybrid_group(name="eco", aliases=["economy"])
@@ -26,7 +25,7 @@ class Economy(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @is_economy_enabled()
+    # @is_economy_enabled()
     @eco.command(name="wallet")
     async def wallet(self, ctx: commands.Context) -> None:
         """View your eco wallet"""
@@ -51,7 +50,7 @@ class Economy(commands.Cog):
         embed.add_field(name="Balance", value=user["petal"], inline=False)
         await ctx.send(embed=embed)
 
-    @is_economy_enabled()
+    # @is_economy_enabled()
     @eco.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register for an economy account"""
@@ -60,7 +59,7 @@ class Economy(commands.Cog):
         embed.description = "Do you want to make an account? The account can only be accessed from your current guild"
         await ctx.send(embed=embed, view=view)
 
-    @is_economy_enabled()
+    # @is_economy_enabled()
     @eco.command(name="inventory", aliases=["inv"])
     async def inventory(self, ctx: commands.Context) -> None:
         """View your inventory"""
