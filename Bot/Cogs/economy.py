@@ -27,8 +27,9 @@ class Economy(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @is_economy_enabled()
-    @eco.command(name="balance", aliases=["bal"])
-    async def balance(self, ctx: commands.Context) -> None:
+    @eco.command(name="wallet")
+    async def wallet(self, ctx: commands.Context) -> None:
+        """View your eco wallet"""
         sql = """
         SELECT rank, petals, created_at
         FROM eco_user

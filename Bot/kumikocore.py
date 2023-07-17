@@ -4,7 +4,7 @@ from pathlib import Path as SyncPath
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from anyio import Path
+from Cogs import EXTENSIONS
 from discord.ext import commands
 from Libs.utils import get_prefix
 from Libs.utils.help import KumikoHelpPaginated
@@ -30,7 +30,7 @@ class KumikoCore(commands.Bot):
         session: ClientSession,
         pool: asyncpg.Pool,
         redis_pool: ConnectionPool,
-        lru_size: int = 50,
+        lru_size: int = 128,
         dev_mode: bool = False,
         *args,
         **kwargs,
@@ -112,10 +112,9 @@ class KumikoCore(commands.Bot):
                 await self.reload_extension(f"Cogs.{reloadFile.name[:-3]}")
 
     async def setup_hook(self) -> None:
-        cogsPath = Path(__file__).parent.joinpath("Cogs")
-        async for cog in cogsPath.rglob("**/*.py"):
-            self.logger.debug(f"Loaded extension: {cog.parent.name}.{cog.name[:-3]}")
-            await self.load_extension(f"{cog.parent.name}.{cog.name[:-3]}")
+        for cog in EXTENSIONS:
+            self.logger.debug(f"Loaded extension: {cog}")
+            await self.load_extension(cog)
 
         self.loop.create_task(ensureOpenPostgresConn(self._pool))
         self.loop.create_task(ensureOpenRedisConn(self._redis_pool))

@@ -104,7 +104,7 @@ class EmbedListSource(menus.ListPageSource):
             "description": "Description of the embed",
             "image": "Image of the embed",
             "thumbnail": "Thumbnail of the embed",
-            [
+            "fields": [
                 {
                     "name": "Name of the embed",
                     "value": "Value of the embed",

@@ -1,4 +1,4 @@
-from .converters import PinAllFlags, PinName, PrefixConverter
+from .converters import JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -39,4 +39,5 @@ __all__ = [
     "JoinEmbed",
     "LeaveEmbed",
     "get_or_fetch_member",
+    "JobName",
 ]
