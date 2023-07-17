@@ -167,7 +167,7 @@ class Jobs(commands.Cog):
             await ctx.send("You took too long. Goodbye.")
             return
 
-        if msg.content == f"abort":
+        if msg.content == "abort":
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
             await ctx.send("Aborting.")
             return
