@@ -66,17 +66,20 @@ class KumikoCache:
             await client.expire(name=key, time=ttl)
 
     # The output type comes from here: https://github.com/redis/redis-py/blob/9f503578d1ffed20d63e8023bcd8a7dccd15ecc5/redis/commands/json/_util.py#L3C1-L3C73
-    async def getJSONCache(self, key: str) -> Union[None, Dict[str, Any]]:
+    async def getJSONCache(
+        self, key: str, path: str = "$"
+    ) -> Union[None, Dict[str, Any]]:
         """Gets the JSON cache on Redis
 
         Args:
             key (str): The key of the key-value pair to get
+            path (str): The path to obtain the value from. Defaults to "$" (aka the root)
 
         Returns:
             Dict[str, Any]: The value of the key-value pair
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        value = await client.json().get(name=key)
+        value = await client.json().get(key, path)
         if value is None:
             return None
         return value

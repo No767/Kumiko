@@ -1,9 +1,37 @@
+import asyncpg
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
+from Libs.cache import KumikoCache
+
+# from Libs.cog_utils.economy import is_economy_enabled
+from Libs.errors import EconomyDisabled
 from Libs.ui.economy import RegisterView
 from Libs.utils import ConfirmEmbed, Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
+
+
+async def predicate(ctx: commands.Context):
+    if ctx.guild is None:
+        raise EconomyDisabled
+    key = f"cache:kumiko:{ctx.guild.id}:eco_status"
+    cache = KumikoCache(connection_pool=ctx.bot.redis_pool)
+    if await cache.cacheExists(key=key):
+        result = await cache.getBasicCache(key=key)
+        parsedRes = bool(int(result))  # type: ignore
+        if parsedRes is False:
+            raise EconomyDisabled
+        return parsedRes
+    else:
+        pool: asyncpg.Pool = ctx.bot.pool
+        res = await pool.fetchval(
+            "SELECT local_economy FROM guild WHERE id = $1;", ctx.guild.id
+        )
+        if res is True:
+            await cache.setBasicCache(key=key, value=str(1), ttl=None)
+            return True
+        await cache.setBasicCache(key=key, value=str(0), ttl=None)
+        raise EconomyDisabled
 
 
 class Economy(commands.Cog):
@@ -15,18 +43,66 @@ class Economy(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.pool = self.bot.pool
+        self.redis_pool = self.bot.redis_pool
 
     @property
     def display_emoji(self) -> discord.PartialEmoji:
-        return discord.PartialEmoji.from_str("<:stonks:882025515697983528>")
+        return discord.PartialEmoji.from_str("<:upward_stonks:739614245997641740>")
 
     @commands.hybrid_group(name="eco", aliases=["economy"])
     async def eco(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
+    # Throw checks on these later
+    @eco.command(name="enable")
+    async def enable(self, ctx: commands.Context) -> None:
+        """Enables the economy module for your server"""
+        key = f"cache:kumiko:{ctx.guild.id}:config"  # type: ignore
+        cache = KumikoCache(connection_pool=self.redis_pool)
+        query = """
+        UPDATE guild
+        SET local_economy = $2
+        WHERE id = $1;
+        """
+        result = await cache.getJSONCache(key=key, path=".local_economy")
+        if result is True:
+            await ctx.send("Economy is already enabled for your server!")
+            return
+        else:
+            await self.pool.execute(query, ctx.guild.id, True)  # type: ignore
+            await cache.setJSONCache(key=key, value={"local_economy": True}, ttl=None)
+            await ctx.send("Enabled economy!")
+            return
+
+    @eco.command(name="disable")
+    async def disable(self, ctx: commands.Context) -> None:
+        """Disables the economy module for your server"""
+        key = f"cache:kumiko:{ctx.guild.id}:config"  # type: ignore
+        cache = KumikoCache(connection_pool=self.redis_pool)
+        query = """
+        UPDATE guild
+        SET local_economy = $2
+        WHERE id = $1;
+        """
+        if await cache.cacheExists(key=key):
+            result = await cache.getJSONCache(key=key, path=".local_economy")
+            if result is True:
+                await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
+                await cache.setJSONCache(
+                    key=key, value={"local_economy": False}, ttl=None
+                )
+                await ctx.send(
+                    "Economy is now disabled for your server. Please enable it first."
+                )
+                return
+            else:
+                await ctx.send("Economy is already disabled for your server!")
+                return
+
     # @is_economy_enabled()
-    @eco.command(name="wallet")
+    @commands.check(predicate)
+    @eco.command(name="wallet", aliases=["bal", "balance"])
     async def wallet(self, ctx: commands.Context) -> None:
         """View your eco wallet"""
         sql = """
@@ -50,7 +126,6 @@ class Economy(commands.Cog):
         embed.add_field(name="Balance", value=user["petal"], inline=False)
         await ctx.send(embed=embed)
 
-    # @is_economy_enabled()
     @eco.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register for an economy account"""
