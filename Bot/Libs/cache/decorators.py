@@ -76,10 +76,12 @@ class cacheJson:
         key: Optional[str] = None,
         ttl: Union[int, None] = 30,
         name: Optional[str] = None,
+        path: str = "$",
     ):
         self.key = key
         self.ttl = ttl
         self.name = name
+        self.path = path
 
     def __call__(self, func: Callable, *args: Any, **kwargs: Any):
         @wraps(func)
@@ -114,4 +116,4 @@ class cacheJson:
         if await cache.cacheExists(key=key) is False:
             await cache.setJSONCache(key=key, value=res, ttl=self.ttl)
             return res
-        return await cache.getJSONCache(key=key)
+        return await cache.getJSONCache(key=key, path=self.path)

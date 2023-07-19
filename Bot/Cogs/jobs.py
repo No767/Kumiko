@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.jobs import createJob, updateJob
+from Libs.cog_utils.jobs import createJob, submitJobApp, updateJob
 from Libs.ui.jobs import (
     CreateJob,
     DeleteJobViaIDView,
@@ -274,13 +274,13 @@ class Jobs(commands.Cog):
     @jobs.command(name="file")
     @app_commands.describe(name="The name of the job to file")
     async def file(
-        self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
+        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Files (publicly lists) a job for general availability. This must be one that you own"""
         query = """
         UPDATE job_lookup
         SET listed = $4
-        WHERE guild_id=$1 AND owner_id=$2 AND LOWER(name)=$3;
+        WHERE guild_id=$1 AND creator_id=$2 AND LOWER(name)=$3;
         """
         status = await self.pool.execute(query, ctx.guild.id, ctx.author.id, name.lower(), True)  # type: ignore
         if status[-1] == 0:
@@ -293,13 +293,13 @@ class Jobs(commands.Cog):
     @jobs.command(name="unfile")
     @app_commands.describe(name="The name of the job to un-file")
     async def unfile(
-        self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
+        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Un-files a job for general availability. This must be one that you own"""
         query = """
         UPDATE job_lookup
         SET listed = $4
-        WHERE guild_id=$1 AND owner_id=$2 AND LOWER(name)=$3;
+        WHERE guild_id=$1 AND creator_id=$2 AND LOWER(name)=$3;
         """
         status = await self.pool.execute(query, ctx.guild.id, ctx.author.id, name.lower(), False)  # type: ignore
         if status[-1] == 0:
@@ -310,6 +310,46 @@ class Jobs(commands.Cog):
             await ctx.send(
                 f"Successfully un-filed job `{name}` for general availability."
             )
+
+    # Probably should make a custom converter for this
+    # TODO: Add a max amount of jobs (configurable) that a user can apply for
+    @jobs.command(name="apply")
+    @app_commands.describe(name="The name of the job to apply")
+    async def apply(
+        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+    ) -> None:
+        """Apply for a job"""
+        rows = await self.pool.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
+        if dict(rows)["creator_id"] == ctx.author.id:
+            await ctx.send("You can't apply for your own job!")
+            return
+
+        if dict(rows)["worker_id"] is not None:
+            await ctx.send("This job is already taken!")
+            return
+        else:
+            status = await submitJobApp(ctx.author.id, ctx.guild.id, name.lower(), False, self.pool)  # type: ignore
+            await ctx.send(status)
+            return
+
+    @jobs.command(name="quit")
+    @app_commands.describe(name="The name of the job to quit")
+    async def quit(
+        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+    ) -> None:
+        """Quit a current job that you have"""
+        rows = await self.pool.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
+        if dict(rows)["creator_id"] == ctx.author.id:
+            await ctx.send("You can't apply for your own job!")
+            return
+
+        if dict(rows)["worker_id"] is None:
+            await ctx.send("This job is available! Apply for it first!")
+            return
+        else:
+            status = await submitJobApp(None, ctx.guild.id, name.lower(), True, self.pool)  # type: ignore
+            await ctx.send(status)
+            return
 
 
 async def setup(bot: KumikoCore) -> None:

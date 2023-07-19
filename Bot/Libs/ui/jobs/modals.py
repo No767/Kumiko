@@ -31,11 +31,11 @@ class CreateJob(discord.ui.Modal, title="Create Job"):
         # Ripped the whole thing from RDanny again...
         query = """
         WITH job_insert AS (
-        INSERT INTO job (name, description, guild_id, owner_id, required_rank, pay_amount)
+        INSERT INTO job (name, description, guild_id, creator_id, required_rank, pay_amount)
         VALUES ($3, $4, $1, $2, $5, $6)
         RETURNING id
         )
-        INSERT into job_lookup (name, guild_id, owner_id, job_id)
+        INSERT into job_lookup (name, guild_id, creator_id, job_id)
         VALUES ($3, $1, $2, (SELECT id FROM job_insert));
         """
         async with self.pool.acquire() as conn:

@@ -21,7 +21,7 @@ class DeleteJobView(discord.ui.View):
         userId = interaction.user.id
         query = """
         DELETE FROM job
-        WHERE guild_id=$1 AND author_id=$2 AND name= $3;
+        WHERE guild_id=$1 AND creator_id=$2 AND name= $3;
         """
         async with self.pool.acquire() as conn:
             status = await conn.execute(query, guildId, userId, self.job_name)
@@ -71,7 +71,7 @@ class DeleteJobViaIDView(discord.ui.View):
         userId = interaction.user.id
         query = """
         DELETE FROM job
-        WHERE guild_id=$1 AND author_id=$2 AND id=$3;
+        WHERE guild_id=$1 AND creator_id=$2 AND id=$3;
         """
         async with self.pool.acquire() as conn:
             status = await conn.execute(query, guildId, userId, self.job_id)
@@ -120,7 +120,7 @@ class PurgeJobsView(discord.ui.View):
         userId = interaction.user.id
         query = """
         DELETE FROM job
-        WHERE guild_id=$1 AND author_id=$2;
+        WHERE guild_id=$1 AND creator_id=$2;
         """
         async with self.pool.acquire() as conn:
             status = await conn.execute(query, guildId, userId)

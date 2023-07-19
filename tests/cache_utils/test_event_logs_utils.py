@@ -23,7 +23,7 @@ async def test_set_or_update_cache(get_data):
     cache = KumikoCache(connPool)
     await set_or_update_cache(key=key, redis_pool=connPool, data=get_data)
     res = await cache.getJSONCache(key=key)
-    assert res == get_data
+    assert res[0] == get_data  # type: ignore
 
 
 @pytest.mark.asyncio
@@ -34,4 +34,4 @@ async def test_cached_set_or_update(get_data):
     res = await cache.setJSONCache(key=key, value=get_data)
     await set_or_update_cache(key=key, redis_pool=connPool, data=get_data)
     res = await cache.getJSONCache(key=key)
-    assert res == get_data and res["channel_id"] == get_data["channel_id"]  # type: ignore
+    assert res[0] == get_data and res[0]["channel_id"] == get_data["channel_id"]  # type: ignore

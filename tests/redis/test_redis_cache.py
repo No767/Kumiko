@@ -30,7 +30,7 @@ async def test_json_cache():
     connPool = ConnectionPool().from_url("redis://localhost:6379/0")
     cache = KumikoCache(connection_pool=connPool)
     await cache.setJSONCache(key=key, value=DICT_DATA)
-    res = await cache.getJSONCache(key=key)
+    res = await cache.getJSONCache(key=key, path=".")
     assert (res == DICT_DATA) and (isinstance(res, dict))  # nosec
 
 
