@@ -105,12 +105,13 @@ Systemd (Standalone)
 
         python3 -m venv ./venv
 
-5. Activate the venv, install the dependencies, and then deactivate it
+5. Activate the venv, install the dependencies, run the migrations, and then deactivate it
 
     .. code-block:: bash
 
         source ./venv/bin/activate \
         && pip install -r Requirements/prod.txt \
+        && python3 migrations-runner.py \
         && deactivate
 
 6. Create an systemd service file. This is an example, and you will need to edit it to point to the correct directory and user.
