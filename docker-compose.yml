@@ -22,7 +22,7 @@ services:
 
   kumiko:
     container_name: Kumiko
-    image: no767/kumiko:edge
+    image: no767/kumiko:latest
     command: sh -c '/Kumiko/wait-for postgres:5432 -- echo "[Wait-for] PostgreSQL is fully up. Waiting for Redis" && /Kumiko/wait-for redis:6379 -- echo "[Wait-for] Both PostgreSQL and Redis are fully ready. Starting up Kumiko" && /Kumiko/start.sh'
     env_file:
       - .env

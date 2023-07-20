@@ -14,6 +14,7 @@ For the full list of changes, please see them here: [`v0.9.0...v0.9.1`](https://
 ## 🛠️ Changes
 
 - Fix `SIGTERM` not working to close the bot properly
+- Use `latest` tag instead of `edge` tag for production `docker-compose.yml` file
 
 
 ## ✨ Additions
