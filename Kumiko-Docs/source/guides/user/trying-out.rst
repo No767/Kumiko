@@ -68,10 +68,12 @@ Systemd (Standalone)
 
 **Before you start, ensure that you have PostgreSQL and Redis correctly configured and is running**
 
-1. Ensure that the PostgreSQL extension ``pg_trgm`` and the RedisJSON module are loaded. Refer to the `Redis docs <https://redis.io/docs/data-types/json/#download-binaries>`_ on how to install and load the JSON module.
+1. Ensure that the database is created and the PostgreSQL extension ``pg_trgm`` and the RedisJSON module are loaded. Refer to the `Redis docs <https://redis.io/docs/data-types/json/#download-binaries>`_ on how to install and load the JSON module.
 
     .. code-block:: sql
-
+        
+        CREATE ROLE kumiko WITH LOGIN PASSWORD 'somepass';
+        CREATE DATABASE kumiko OWNER kumiko;
         CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 2. Clone the repo
