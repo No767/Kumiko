@@ -5,7 +5,13 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.jobs import createJob, submitJobApp, updateJob
+from Libs.cog_utils.jobs import (
+    createJob,
+    formatOptions,
+    getJob,
+    submitJobApp,
+    updateJob,
+)
 from Libs.ui.jobs import (
     CreateJob,
     DeleteJobViaIDView,
@@ -14,7 +20,7 @@ from Libs.ui.jobs import (
     PurgeJobsView,
     UpdateJobModal,
 )
-from Libs.utils import ConfirmEmbed, JobName
+from Libs.utils import ConfirmEmbed, Embed, JobName
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 
@@ -312,23 +318,32 @@ class Jobs(commands.Cog):
             )
 
     # Probably should make a custom converter for this
-    # TODO: Add a max amount of jobs (configurable) that a user can apply for
     @jobs.command(name="apply")
     @app_commands.describe(name="The name of the job to apply")
     async def apply(
         self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Apply for a job"""
-        rows = await self.pool.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
-        if dict(rows)["creator_id"] == ctx.author.id:
-            await ctx.send("You can't apply for your own job!")
-            return
+        query = """
+        SELECT COUNT(*) FROM job WHERE guild_id = $1 AND worker_id = $2;
+        """
+        async with self.pool.acquire() as conn:
+            jobCount = await conn.fetchval(query, ctx.guild.id, ctx.author.id)  # type: ignore
+            rows = await conn.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
+            # customizable?
+            if jobCount > 3:
+                await ctx.send("You can't have more than 3 jobs at a time!")
+                return
 
-        if dict(rows)["worker_id"] is not None:
-            await ctx.send("This job is already taken!")
-            return
-        else:
-            status = await submitJobApp(ctx.author.id, ctx.guild.id, name.lower(), False, self.pool)  # type: ignore
+            if dict(rows)["creator_id"] == ctx.author.id:
+                await ctx.send("You can't apply for your own job!")
+                return
+
+            if dict(rows)["worker_id"] is not None:
+                await ctx.send("This job is already taken!")
+                return
+
+            status = await submitJobApp(ctx.author.id, ctx.guild.id, name.lower(), False, conn)  # type: ignore
             await ctx.send(status)
             return
 
@@ -338,17 +353,57 @@ class Jobs(commands.Cog):
         self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Quit a current job that you have"""
-        rows = await self.pool.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
-        if dict(rows)["creator_id"] == ctx.author.id:
-            await ctx.send("You can't apply for your own job!")
-            return
+        async with self.pool.acquire() as conn:
+            rows = await conn.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
+            if dict(rows)["creator_id"] == ctx.author.id:
+                await ctx.send("You can't apply for your own job!")
+                return
 
-        if dict(rows)["worker_id"] is None:
-            await ctx.send("This job is available! Apply for it first!")
+            if dict(rows)["worker_id"] is None:
+                await ctx.send("This job is available! Apply for it first!")
+                return
+            else:
+                status = await submitJobApp(None, ctx.guild.id, name.lower(), True, conn)  # type: ignore
+                await ctx.send(status)
+                return
+
+    @jobs.command(name="info")
+    @app_commands.describe(name="The name of the job to get")
+    async def info(
+        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+    ) -> None:
+        """Get info about a job"""
+        jobResults = await getJob(ctx.guild.id, name.lower(), self.pool)  # type: ignore
+        if isinstance(jobResults, list):
+            await ctx.send(formatOptions(jobResults) or "No jobs were found")
             return
+        embed = Embed(title=jobResults["name"], description=jobResults["description"])  # type: ignore
+        embed.add_field(name="Required Rank", value=jobResults["required_rank"])  # type: ignore
+        embed.add_field(name="Pay Amount", value=jobResults["pay_amount"])  # type: ignore
+        embed.set_footer(text=f"ID: {jobResults['id']}")  # type: ignore
+        await ctx.send(embed=embed)
+
+    @jobs.command(name="search")
+    @app_commands.describe(query="The name of the job to look for")
+    async def search(
+        self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
+    ) -> None:
+        """Search for jobs that are available. These must be listed in order to show up"""
+        if len(query) < 3:
+            await ctx.send("The query must be at least 3 characters")
+            return
+        sql = """SELECT job.id, job.name, job.description, job.required_rank, job.pay_amount
+                 FROM job_lookup
+                 WHERE guild_id=$1 AND name % $2 AND listed = $3
+                 ORDER BY similarity(name, $2) DESC
+                 LIMIT 100;
+              """
+        rows = await self.pool.fetch(sql, ctx.guild.id, query, True)  # type: ignore
+        if rows:
+            pages = JobPages(entries=rows, ctx=ctx, per_page=10)
+            await pages.start()
         else:
-            status = await submitJobApp(None, ctx.guild.id, name.lower(), True, self.pool)  # type: ignore
-            await ctx.send(status)
+            await ctx.send("No jobs were found")
             return
 
 

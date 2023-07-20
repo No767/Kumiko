@@ -1,6 +1,15 @@
-from typing import Union
+from typing import Dict, List, TypedDict, Union
 
 import asyncpg
+
+
+class JobResults(TypedDict):
+    id: int
+    name: str
+    description: str
+    required_rank: int
+    pay_amount: int
+    listed: bool
 
 
 async def createJob(
@@ -64,7 +73,7 @@ async def submitJobApp(
     guild_id: int,
     name: str,
     listed_status: bool,
-    pool: asyncpg.Pool,
+    connection: asyncpg.Connection,
 ) -> str:
     query = """
     WITH job_update AS (
@@ -77,14 +86,50 @@ async def submitJobApp(
     SET worker_id = $1, listed = $4
     WHERE guild_id = $2 AND job_id = (SELECT id FROM job_update);
     """
+    tr = connection.transaction()
+    await tr.start()
+    try:
+        await connection.execute(query, owner_id, guild_id, name.lower(), listed_status)  # type: ignore
+    except asyncpg.UniqueViolationError:
+        await tr.rollback()
+        return "The job is already taken. Please apply for another one"
+    else:
+        await tr.commit()
+        return f"Successfully {'quit' if listed_status is True else 'applied'} the job!"
+
+
+async def getJob(
+    id: int, job_name: str, pool: asyncpg.Pool
+) -> Union[Dict, List[Dict[str, str]], None]:
+    """Gets a job from the database.
+
+    Args:
+        id (int): Guild ID
+        job_name (str): Job name
+        pool (asyncpg.Pool): Database pool
+
+    Returns:
+        Union[str, None]: The job details or None if it doesn't exist
+    """
+    sqlQuery = """
+    SELECT job.id, job.name, job.description, job.required_rank, job.pay_amount, job_lookup.listed
+    FROM job_lookup
+    INNER JOIN job ON job.id = job_lookup.job_id
+    WHERE job_lookup.guild_id=$1 AND LOWER(job_lookup.name)=$2; 
+    """
     async with pool.acquire() as conn:
-        tr = conn.transaction()
-        await tr.start()
-        try:
-            await conn.execute(query, owner_id, guild_id, name.lower(), listed_status)  # type: ignore
-        except asyncpg.UniqueViolationError:
-            await tr.rollback()
-            return "The job is already taken. Please apply for another one"
-        else:
-            await tr.commit()
-            return f"Successfully {'quit' if listed_status is True else 'applied'} the job!"
+        res = await conn.fetchrow(sqlQuery, id, job_name)
+        if res is None:
+            query = """
+            SELECT     job_lookup.name
+            FROM       job_lookup
+            WHERE      job_lookup.guild_id=$1 AND job_lookup.name % $2
+            ORDER BY   similarity(job_lookup.name, $2) DESC
+            LIMIT 5;
+            """
+            newRes = await conn.fetch(query, id, job_name)
+            if newRes is None or len(newRes) == 0:
+                return None
+
+            return [dict(row) for row in newRes]
+        return dict(res)
