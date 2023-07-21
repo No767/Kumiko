@@ -20,8 +20,8 @@ class PinName(commands.clean_content):
         converted = await super().convert(ctx, argument)
         lower = converted.lower().strip()
 
-        if not lower:
-            raise commands.BadArgument("Missing tag name.")
+        # if not lower:
+        #     raise commands.BadArgument("Missing tag name.")
 
         if len(lower) > 100:
             raise commands.BadArgument("Tag name is a maximum of 100 characters.")
@@ -45,8 +45,8 @@ class JobName(commands.clean_content):
         converted = await super().convert(ctx, argument)
         lower = converted.lower().strip()
 
-        if not lower:
-            raise commands.BadArgument("Missing job name.")
+        # if not lower:
+        #     raise commands.BadArgument("Missing job name.")
 
         if len(lower) > 100:
             raise commands.BadArgument("Job name is a maximum of 100 characters.")

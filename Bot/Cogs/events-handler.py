@@ -28,7 +28,9 @@ class EventsHandler(commands.Cog):
     async def on_guild_join(self, guild: discord.Guild) -> None:
         existsQuery = "SELECT EXISTS(SELECT 1 FROM guild WHERE id = $1);"
         insertQuery = """
-        INSERT INTO guild (id) VALUES ($1);
+        WITH guild_insert AS (
+            INSERT INTO guild (id) VALUES ($1)
+        )
         INSERT INTO logging_config (guild_id) VALUES ($1);
         """
         async with self.pool.acquire() as conn:
@@ -36,14 +38,14 @@ class EventsHandler(commands.Cog):
                 exists = await conn.fetchval(existsQuery, guild.id)
                 if not exists:
                     await conn.execute(insertQuery, guild.id)
-                    self.bot.prefixes[guild.id] = [self.bot.default_prefix]
+                    self.bot.prefixes[guild.id] = None
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("DELETE FROM guild WHERE id = $1", guild.id)
-                self.bot.prefixes[guild.id] = self.bot.default_prefix
+                del self.bot.prefixes[guild.id]
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
