@@ -11,6 +11,7 @@ from .embeds import (
 from .greedy_formatter import formatGreedy
 from .kumiko_logger import KumikoLogger
 from .prefix import get_prefix, validatePrefix
+from .rank_utils import calc_petals, calc_rank
 from .utils import (
     encodeDatetime,
     get_or_fetch_member,
@@ -40,4 +41,6 @@ __all__ = [
     "LeaveEmbed",
     "get_or_fetch_member",
     "JobName",
+    "calc_rank",
+    "calc_petals",
 ]

@@ -7,6 +7,15 @@ from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
 
 
+def is_nat():
+    def pred(ctx):
+        return (
+            ctx.guild is not None and ctx.author.id == 1028431063321686036
+        )  # natalie's account
+
+    return commands.check(pred)
+
+
 class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     """Tools for developing Kumiko"""
 
@@ -19,7 +28,7 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.hybrid_command(name="sync")
     @commands.guild_only()
-    @commands.is_owner()
+    @commands.check_any(commands.is_owner(), is_nat())
     async def sync(
         self,
         ctx: Context,
@@ -65,7 +74,7 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.hybrid_command(name="dispatch")
     @commands.guild_only()
-    @commands.is_owner()
+    @commands.check_any(commands.is_owner(), is_nat())
     @app_commands.describe(event="The event to dispatch")
     async def dispatch_event(self, ctx: commands.Context, event: str) -> None:
         """Dispatches an custom event

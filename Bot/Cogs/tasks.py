@@ -2,6 +2,7 @@ import logging
 
 from discord.ext import commands, tasks
 from kumikocore import KumikoCore
+from Libs.utils import calc_rank
 
 
 class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
@@ -16,7 +17,7 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
     async def cog_unload(self):
         self.update_job_pay.stop()
 
-    @tasks.loop(hours=1)
+    @tasks.loop(hours=1.0)
     async def update_job_pay(self) -> None:
         """The internal task of updating jobs every hour
 
@@ -24,7 +25,8 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
 
         1. Get all of the user's id within the database. It is guaranteed that all users in that table have an "account" already.
         2. Sum the pay amount of all of the jobs that the user is associated with
-        3. Update the data
+        3. Check if the predicted rank is higher than the current rank.
+            a) If it is, update the rank and add the petals. If it isn't, just add the petals
 
         The user of prepared statements make sense here since we are running these cursors through literally every single registered user. Which can get a lot
         """
@@ -41,15 +43,29 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         SET petals = petals + $2
         WHERE id = $1;
         """
+        updateRankAndPetalsQuery = """
+        UPDATE eco_user
+        SET rank = $2, petals = petals + $3
+        WHERE id = $1;
+        """
         async with self.pool.acquire() as conn:
-            smt = await conn.prepare("SELECT id FROM eco_user")
+            smt = await conn.prepare("SELECT id, rank, petals FROM eco_user")
             sumDataSmt = await conn.prepare(sumDataQuery)
             async with conn.transaction():
                 async for record in smt.cursor():
-                    id = dict(record)["id"]
-                    total = await sumDataSmt.fetchval(id)
+                    fetchedRecord = dict(record)
+                    total = await sumDataSmt.fetchval(fetchedRecord["id"])
                     if total is not None:
-                        await conn.execute(updateQuery, id, total)
+                        predictedRank = calc_rank(fetchedRecord["petals"] + total)
+                        if predictedRank > fetchedRecord["rank"]:
+                            await conn.execute(
+                                updateRankAndPetalsQuery,
+                                fetchedRecord["id"],
+                                predictedRank,
+                                total,
+                            )
+                        else:
+                            await conn.execute(updateQuery, fetchedRecord["id"], total)
 
     @update_job_pay.error
     async def on_update_pay_error(self, error) -> None:
