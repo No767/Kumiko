@@ -226,7 +226,8 @@ class KumikoHelpPaginated(commands.HelpCommand):
                     1, 3.0, commands.BucketType.member
                 ),
                 "help": "Shows help about the bot, a command, or a category",
-            }
+            },
+            verify_checks=True,
         )
 
     async def on_help_command_error(

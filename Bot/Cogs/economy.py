@@ -1,37 +1,11 @@
-import asyncpg
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
-
-# from Libs.cog_utils.economy import is_economy_enabled
-from Libs.errors import EconomyDisabled
+from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.economy import RegisterView
 from Libs.utils import ConfirmEmbed, Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
-
-
-async def predicate(ctx: commands.Context):
-    if ctx.guild is None:
-        raise EconomyDisabled
-    key = f"cache:kumiko:{ctx.guild.id}:eco_status"
-    cache = KumikoCache(connection_pool=ctx.bot.redis_pool)
-    if await cache.cacheExists(key=key):
-        result = await cache.getBasicCache(key=key)
-        parsedRes = bool(int(result))  # type: ignore
-        if parsedRes is False:
-            raise EconomyDisabled
-        return parsedRes
-    else:
-        pool: asyncpg.Pool = ctx.bot.pool
-        res = await pool.fetchval(
-            "SELECT local_economy FROM guild WHERE id = $1;", ctx.guild.id
-        )
-        if res is True:
-            await cache.setBasicCache(key=key, value=str(1), ttl=None)
-            return True
-        await cache.setBasicCache(key=key, value=str(0), ttl=None)
-        raise EconomyDisabled
 
 
 class Economy(commands.Cog):
@@ -75,6 +49,7 @@ class Economy(commands.Cog):
             await ctx.send("Enabled economy!")
             return
 
+    @is_economy_enabled()
     @eco.command(name="disable")
     async def disable(self, ctx: commands.Context) -> None:
         """Disables the economy module for your server"""
@@ -100,8 +75,7 @@ class Economy(commands.Cog):
                 await ctx.send("Economy is already disabled for your server!")
                 return
 
-    # @is_economy_enabled()
-    @commands.check(predicate)
+    @is_economy_enabled()
     @eco.command(name="wallet", aliases=["bal", "balance"])
     async def wallet(self, ctx: commands.Context) -> None:
         """View your eco wallet"""
@@ -122,10 +96,12 @@ class Economy(commands.Cog):
             icon_url=ctx.author.display_avatar.url,
         )
         embed.set_footer(text="Created at")
+        embed.timestamp = user["created_at"]
         embed.add_field(name="Rank", value=user["rank"], inline=False)
-        embed.add_field(name="Balance", value=user["petal"], inline=False)
+        embed.add_field(name="Petals", value=user["petals"], inline=False)
         await ctx.send(embed=embed)
 
+    @is_economy_enabled()
     @eco.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register for an economy account"""
@@ -134,7 +110,7 @@ class Economy(commands.Cog):
         embed.description = "Do you want to make an account? The account can only be accessed from your current guild"
         await ctx.send(embed=embed, view=view)
 
-    # @is_economy_enabled()
+    @is_economy_enabled()
     @eco.command(name="inventory", aliases=["inv"])
     async def inventory(self, ctx: commands.Context) -> None:
         """View your inventory"""

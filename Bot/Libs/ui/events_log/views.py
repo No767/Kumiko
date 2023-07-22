@@ -1,6 +1,9 @@
 import asyncpg
 import discord
-from Libs.cog_utils.events_log import delete_cache, set_or_update_cache
+from attrs import asdict
+from Libs.cache import KumikoCache
+from Libs.cog_utils.events_log import disable_logging
+from Libs.config import LoggingGuildConfig
 from Libs.utils import ErrorEmbed, SuccessActionEmbed
 from redis.asyncio.connection import ConnectionPool
 
@@ -31,24 +34,13 @@ class RegisterView(discord.ui.View):
         """
         async with self.pool.acquire() as conn:
             guildId = interaction.guild.id  # type: ignore
+            cache = KumikoCache(connection_pool=self.redis_pool)
+            lgc = LoggingGuildConfig(channel_id=select.values[0].id)
             tr = conn.transaction()
             await tr.start()
 
             try:
                 await conn.execute(query, guildId, select.values[0].id, True)
-                data = {
-                    "id": guildId,
-                    "logs": True,
-                    "channel_id": select.values[0].id,
-                    "member_events": True,
-                    "mod_events": True,
-                    "eco_events": False,
-                }
-                await set_or_update_cache(
-                    key=f"cache:kumiko:{guildId}:logging_config",
-                    redis_pool=self.redis_pool,
-                    data=data,
-                )
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 await interaction.response.send_message("There are duplicate records")
@@ -57,6 +49,11 @@ class RegisterView(discord.ui.View):
                 await interaction.response.send_message("Could not create records.")
             else:
                 await tr.commit()
+                await cache.setJSONCache(
+                    key=f"cache:kumiko:{guildId}:guild_config",
+                    value=asdict(lgc),
+                    path=".logging_config",
+                )
                 await interaction.response.send_message(
                     f"Successfully set the logging channel to {select.values[0].mention}"
                 )
@@ -95,14 +92,12 @@ class UnregisterView(discord.ui.View):
         """
         async with self.pool.acquire() as conn:
             guildId = interaction.guild.id  # type: ignore
-            key = f"cache:kumiko:{guildId}:logging_config"
 
             tr = conn.transaction()
             await tr.start()
 
             try:
                 await conn.execute(query, guildId, False)
-                await delete_cache(key=key, redis_pool=self.redis_pool)
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 self.clear_items()
@@ -121,6 +116,7 @@ class UnregisterView(discord.ui.View):
                 await interaction.response.edit_message(embed=failedEmbed, view=self)
             else:
                 await tr.commit()
+                await disable_logging(guild_id=guildId, redis_pool=self.redis_pool)
                 self.clear_items()
                 successEmbed = SuccessActionEmbed()
                 successEmbed.description = "Disabled and cleared all logging configs"

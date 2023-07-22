@@ -68,7 +68,7 @@ class KumikoCache:
     # The output type comes from here: https://github.com/redis/redis-py/blob/9f503578d1ffed20d63e8023bcd8a7dccd15ecc5/redis/commands/json/_util.py#L3C1-L3C73
     async def getJSONCache(
         self, key: str, path: str = "$"
-    ) -> Union[None, Dict[str, Any]]:
+    ) -> Union[None, Dict[str, Any], Any]:
         """Gets the JSON cache on Redis
 
         Args:
