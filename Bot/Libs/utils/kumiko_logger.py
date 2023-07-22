@@ -1,5 +1,6 @@
 import logging
 import re
+from logging.handlers import RotatingFileHandler
 from types import TracebackType
 from typing import Optional, Type, TypeVar
 
@@ -22,15 +23,27 @@ class RemoveIPCNoise(logging.Filter):
 class KumikoLogger:
     def __init__(self) -> None:
         self.self = self
-        self.log = logging.getLogger("discord")
+        self.log = logging.getLogger()
 
     def __enter__(self) -> None:
+        max_bytes = 32 * 1024 * 1024  # 32 MiB
+        self.log.setLevel(logging.INFO)
         logging.getLogger("discord.ext.ipc.server").addFilter(RemoveIPCNoise())
         logging.getLogger("gql").setLevel(logging.WARNING)
+        logging.getLogger("discord").setLevel(logging.INFO)
+        handler = RotatingFileHandler(
+            filename="kumiko.log",
+            encoding="utf-8",
+            mode="w",
+            maxBytes=max_bytes,
+            backupCount=5,
+        )
         fmt = logging.Formatter(
             fmt="%(asctime)s %(levelname)s    %(message)s",
             datefmt="[%Y-%m-%d %H:%M:%S]",
         )
+        handler.setFormatter(fmt)
+        self.log.addHandler(handler)
         discord.utils.setup_logging(formatter=fmt)
 
     def __exit__(
@@ -39,4 +52,8 @@ class KumikoLogger:
         exc: Optional[BE],
         traceback: Optional[TracebackType],
     ) -> None:
-        self.log.info("Shutting down Kumiko...")
+        handlers = self.log.handlers[:]
+        for hdlr in handlers:
+            hdlr.close()
+            self.log.removeHandler(hdlr)
+        # self.log.info("Shutting down Kumiko...")

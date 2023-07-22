@@ -15,6 +15,7 @@ from .rank_utils import calc_petals, calc_rank
 from .utils import (
     encodeDatetime,
     get_or_fetch_member,
+    is_docker,
     parseDatetime,
     parseSubreddit,
     parseTimeStr,
@@ -43,4 +44,5 @@ __all__ = [
     "JobName",
     "calc_rank",
     "calc_petals",
+    "is_docker",
 ]

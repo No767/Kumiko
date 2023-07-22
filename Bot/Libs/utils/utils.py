@@ -1,3 +1,4 @@
+import os
 import re
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional, Union
@@ -92,3 +93,10 @@ async def get_or_fetch_member(
     if not members:
         return None
     return members[0]
+
+
+def is_docker() -> bool:
+    path = "/proc/self/cgroup"
+    return os.path.exists("/.dockerenv") or (
+        os.path.isfile(path) and any("docker" in line for line in open(path))
+    )
