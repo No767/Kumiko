@@ -32,20 +32,22 @@ class Economy(commands.Cog):
     @eco.command(name="enable")
     async def enable(self, ctx: commands.Context) -> None:
         """Enables the economy module for your server"""
-        key = f"cache:kumiko:{ctx.guild.id}:config"  # type: ignore
+        key = f"cache:kumiko:{ctx.guild.id}:guild_config"  # type: ignore
         cache = KumikoCache(connection_pool=self.redis_pool)
         query = """
         UPDATE guild
         SET local_economy = $2
         WHERE id = $1;
         """
-        result = await cache.getJSONCache(key=key, path=".local_economy")
+        result = await cache.getJSONCache(key=key, path="$.local_economy")
         if result is True:
             await ctx.send("Economy is already enabled for your server!")
             return
         else:
             await self.pool.execute(query, ctx.guild.id, True)  # type: ignore
-            await cache.setJSONCache(key=key, value={"local_economy": True}, ttl=None)
+            await cache.mergeJSONCache(
+                key=key, value=True, path="$.local_economy", ttl=None
+            )
             await ctx.send("Enabled economy!")
             return
 
@@ -64,8 +66,8 @@ class Economy(commands.Cog):
             result = await cache.getJSONCache(key=key, path=".local_economy")
             if result is True:
                 await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
-                await cache.setJSONCache(
-                    key=key, value={"local_economy": False}, ttl=None
+                await cache.mergeJSONCache(
+                    key=key, value=False, path="$.local_economy", ttl=None
                 )
                 await ctx.send(
                     "Economy is now disabled for your server. Please enable it first."
@@ -84,21 +86,22 @@ class Economy(commands.Cog):
         FROM eco_user
         WHERE id = $1;
         """
-        user = await self.pool.fetchval(sql, ctx.author.id)
+        user = await self.pool.fetchrow(sql, ctx.author.id)
         if user is None:
             await ctx.send(
                 f"You have not created an economy account yet! Run `{ctx.prefix}eco register` to create one."
             )
             return
+        dictUser = dict(user)
         embed = Embed()
         embed.set_author(
             name=f"{ctx.author.display_name}'s Balance",
             icon_url=ctx.author.display_avatar.url,
         )
         embed.set_footer(text="Created at")
-        embed.timestamp = user["created_at"]
-        embed.add_field(name="Rank", value=user["rank"], inline=False)
-        embed.add_field(name="Petals", value=user["petals"], inline=False)
+        embed.timestamp = dictUser["created_at"]
+        embed.add_field(name="Rank", value=dictUser["rank"], inline=False)
+        embed.add_field(name="Petals", value=dictUser["petals"], inline=False)
         await ctx.send(embed=embed)
 
     @is_economy_enabled()

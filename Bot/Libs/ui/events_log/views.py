@@ -49,10 +49,10 @@ class RegisterView(discord.ui.View):
                 await interaction.response.send_message("Could not create records.")
             else:
                 await tr.commit()
-                await cache.setJSONCache(
+                await cache.mergeJSONCache(
                     key=f"cache:kumiko:{guildId}:guild_config",
                     value=asdict(lgc),
-                    path=".logging_config",
+                    path="$.logging_config",
                 )
                 await interaction.response.send_message(
                     f"Successfully set the logging channel to {select.values[0].mention}"

@@ -49,12 +49,15 @@ class EventsHandler(commands.Cog):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 exists = await conn.fetchval(existsQuery, guild.id)
-                if not exists:
+                if exists is False:
                     await conn.execute(insertQuery, guild.id)
-                    self.bot.prefixes[guild.id] = None
                     await cache.setJSONCache(
-                        key=key, value=asdict(guildConfig), path=".", ttl=None
+                        key=key,
+                        value=asdict(guildConfig, recurse=True),
+                        path="$",
+                        ttl=None,
                     )
+                    self.bot.prefixes[guild.id] = None
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
@@ -64,7 +67,7 @@ class EventsHandler(commands.Cog):
                 await conn.execute("DELETE FROM guild WHERE id = $1", guild.id)
                 del self.bot.prefixes[guild.id]
                 await cache.deleteJSONCache(
-                    key=f"cache:kumiko:{guild.id}:guild_config", path="."
+                    key=f"cache:kumiko:{guild.id}:guild_config", path="$"
                 )
 
     @commands.Cog.listener()

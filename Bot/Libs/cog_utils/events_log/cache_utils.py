@@ -1,9 +1,7 @@
 from typing import Any, Dict, Union
 
 import asyncpg
-from attrs import asdict
 from Libs.cache import KumikoCache
-from Libs.config import LoggingGuildConfig
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -25,7 +23,7 @@ async def get_or_fetch_config(
     key = f"cache:kumiko:{id}:guild_config"
     cache = KumikoCache(redis_pool)
     if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path=".logging_config")
+        res = await cache.getJSONCache(key=key, path="$.logging_config")
         return res
     else:
         rows = await pool.fetchrow(query, id)
@@ -45,7 +43,7 @@ async def get_or_fetch_log_enabled(
     key = f"cache:kumiko:{id}:guild_config"
     cache = KumikoCache(redis_pool)
     if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path=".logs")
+        res = await cache.getJSONCache(key=key, path="$.logs")
         return res  # type: ignore
     else:
         val = await pool.fetchval(query, id)
@@ -62,7 +60,7 @@ async def set_or_update_cache(
         await cache.setJSONCache(key=key, value=data, ttl=None)
     else:
         await cache.setJSONCache(
-            key=key, value=data["channel_id"], path="$.channel_id", ttl=None
+            key=key, value=data["channel_id"], path=".channel_id", ttl=None
         )
 
 
@@ -75,6 +73,6 @@ async def delete_cache(key: str, redis_pool: ConnectionPool) -> None:
 async def disable_logging(guild_id: int, redis_pool: ConnectionPool) -> None:
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(connection_pool=redis_pool)
-    lgc = LoggingGuildConfig(channel_id=None)
-    await cache.setJSONCache(key=key, value=False, path=".logs")
-    await cache.setJSONCache(key=key, value=asdict(lgc), path=".logging_config")
+    # lgc = LoggingGuildConfig(channel_id=None)
+    await cache.mergeJSONCache(key=key, value=False, path="$.logs")
+    await cache.mergeJSONCache(key=key, value=None, path="$.logging_config")

@@ -18,7 +18,7 @@ async def get_or_fetch_guild_config(
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(connection_pool=redis_pool)
     if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path=".")
+        res = await cache.getJSONCache(key=key, path="$")
         print(res)
         return res
     rows = await pool.fetchrow(sql, guild_id)
@@ -38,5 +38,5 @@ async def get_or_fetch_guild_config(
         local_economy=fetchedRows["local_economy"],
         local_economy_name=fetchedRows["local_economy_name"],
     )
-    await cache.setJSONCache(key=key, value=asdict(guildConfig), path=".", ttl=None)
+    await cache.setJSONCache(key=key, value=asdict(guildConfig), path="$", ttl=None)
     return asdict(guildConfig)
