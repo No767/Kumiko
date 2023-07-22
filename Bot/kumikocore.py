@@ -1,4 +1,5 @@
 import logging
+import signal
 from pathlib import Path as SyncPath
 
 import asyncpg
@@ -112,6 +113,11 @@ class KumikoCore(commands.Bot):
                 await self.reload_extension(f"Cogs.{reloadFile.name[:-3]}")
 
     async def setup_hook(self) -> None:
+        def stop():
+            self.loop.create_task(self.close())
+
+        self.loop.add_signal_handler(signal.SIGTERM, stop)
+        self.loop.add_signal_handler(signal.SIGINT, stop)
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
