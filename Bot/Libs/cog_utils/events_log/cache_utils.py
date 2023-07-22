@@ -1,7 +1,9 @@
 from typing import Any, Dict, Union
 
 import asyncpg
+from attrs import asdict
 from Libs.cache import KumikoCache
+from Libs.config import LoggingGuildConfig
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -73,5 +75,6 @@ async def delete_cache(key: str, redis_pool: ConnectionPool) -> None:
 async def disable_logging(guild_id: int, redis_pool: ConnectionPool) -> None:
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(connection_pool=redis_pool)
+    lgc = LoggingGuildConfig(channel_id=None)
     await cache.setJSONCache(key=key, value=False, path=".logs")
-    await cache.deleteJSONCache(key=key, path=".logging_config")
+    await cache.setJSONCache(key=key, value=asdict(lgc), path=".logging_config")
