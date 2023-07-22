@@ -5,6 +5,7 @@ from .cache_utils import (
     get_or_fetch_log_enabled,
     set_or_update_cache,
 )
+from .flags import EventsFlag
 
 __all__ = [
     "get_or_fetch_config",
@@ -12,4 +13,5 @@ __all__ = [
     "delete_cache",
     "disable_logging",
     "get_or_fetch_log_enabled",
+    "EventsFlag",
 ]

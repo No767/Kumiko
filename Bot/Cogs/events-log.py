@@ -1,7 +1,10 @@
+from attrs import asdict
 from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.config import get_or_fetch_guild_config
+from Libs.cache import KumikoCache
+from Libs.cog_utils.events_log import EventsFlag, get_or_fetch_config
+from Libs.config import LoggingGuildConfig, get_or_fetch_guild_config
 from Libs.ui.events_log import RegisterView, UnregisterView
 from Libs.utils import ConfirmEmbed, Embed
 
@@ -72,32 +75,43 @@ class EventsLog(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    # TODO - Provide an interactive UI to set which one is enabled or not
-    # Also im well aware that this has a ton of issues that need to be ironed out
-    # But i will be fixing them before releasing v0.9.0
-    # I just want to get this merged and done with
-    # an autocomplete is probably needed but im too lazy to figure out how to get it working
-    # @commands.has_guild_permissions(manage_guild=True)
-    # @commands.guild_only()
-    # @logs.command(name="configure")
-    # @app_commands.describe(
-    #     event="The event to enable", status="Whether the event is enabled or disabled"
-    # )
-    # async def logConfig(self, ctx: commands.Context, event: str, status: bool) -> None:
-    #     """Configures which events are enabled"""
-    #     guild_id = ctx.guild.id  # type: ignore
-    #     cache = KumikoCache(connection_pool=self.redis_pool)
-    #     config = await get_or_fetch_config(
-    #         id=guild_id, redis_pool=self.redis_pool, pool=self.pool
-    #     )
-    #     if config is None or isinstance(config, str):
-    #         await ctx.send("The config was not set up. Please enable the logs module")
-    #         return
-    #     if event in config and config[event] is True:
-    #         key = f"cache:kumiko:{guild_id}:logging_config"
-    #         await cache.setJSONCache(key=key, value=status, path=f".{event}")
-    #         await ctx.send("Config updated. The event has been enabled/disabled")
-    #         return
+    @commands.has_guild_permissions(manage_guild=True)
+    @commands.guild_only()
+    @logs.command(name="configure", aliases=["config"])
+    async def logConfig(self, ctx: commands.Context, events: EventsFlag) -> None:
+        """Configures which events are enabled"""
+        query = """
+        UPDATE logging_config
+        SET member_events = $2, mod_events = $3, eco_events = $4
+        WHERE guild_id = $1;
+        """
+        guild_id = ctx.guild.id  # type: ignore
+        key = f"cache:kumiko:{guild_id}:guild_config"
+        cache = KumikoCache(connection_pool=self.redis_pool)
+        getConfig = await get_or_fetch_config(
+            id=guild_id, redis_pool=self.redis_pool, pool=self.pool
+        )
+        if getConfig is None:
+            await ctx.send("The config was not set up. Please enable the logs module")
+            return
+
+        lgc = LoggingGuildConfig(
+            channel_id=getConfig["channel_id"],
+            member_events=events.member,
+            mod_events=events.mod,
+            eco_events=events.eco,
+        )
+        if events.all is True:
+            lgc = LoggingGuildConfig(
+                channel_id=getConfig["channel_id"],
+                member_events=True,
+                mod_events=True,
+                eco_events=True,
+            )
+
+        await self.pool.execute(query, guild_id, events.member, events.mod, events.eco)
+        await cache.setJSONCache(key=key, value=asdict(lgc), path=".logging_config")
+        await ctx.send("Updated successfully!")
 
 
 async def setup(bot: KumikoCore) -> None:
