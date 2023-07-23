@@ -1,10 +1,8 @@
-import os
 import re
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Union
 
 import ciso8601
-import discord
 
 # From https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
 # Answer: https://stackoverflow.com/a/51916936
@@ -81,22 +79,3 @@ def parseTimeStr(time_str: str) -> Union[timedelta, None]:
         if param:
             time_params[name] = int(param)
     return timedelta(**time_params)
-
-
-async def get_or_fetch_member(
-    guild: discord.Guild, member_id: int
-) -> Optional[discord.Member]:
-    member = guild.get_member(member_id)
-    if member is not None:
-        return member
-    members = await guild.query_members(limit=1, user_ids=[member_id], cache=True)
-    if not members:
-        return None
-    return members[0]
-
-
-def is_docker() -> bool:
-    path = "/proc/self/cgroup"
-    return os.path.exists("/.dockerenv") or (
-        os.path.isfile(path) and any("docker" in line for line in open(path))
-    )

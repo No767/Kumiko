@@ -4,6 +4,7 @@ ignore:
   - "Bot/Libs/utils/pages/**"
   - "Bot/Libs/utils/kumiko_logger.py"
   - "Bot/Libs/utils/embeds.py"
+  - "Bot/Libs/utils/member_utils.py"
   - "Bot/Libs/utils/prefix.py" # This contains an coroutine that we can't even test to begin with
   - "Bot/Libs/cog_utils/pins/pin_utils.py" # Contains untestable code.
   - "Bot/Cogs/**" # There are just too much code to test here
