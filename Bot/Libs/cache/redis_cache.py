@@ -104,6 +104,16 @@ class KumikoCache:
         path: str = "$",
         ttl: Union[int, None] = 30,
     ) -> None:
+        """Merges the key and value into a new value
+
+        This is the fix from using setJSONCache all of the time
+
+        Args:
+            key (str): Key to look for
+            value (Union[Dict, Any]): Value to update
+            path (str): The path to update. Defaults to "$"
+            ttl (int): TTL. Usually leave this for perma cache. Defaults to 30 seconds.
+        """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await client.json().merge(name=key, path=path, obj=value)  # type: ignore
         if isinstance(ttl, int):

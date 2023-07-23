@@ -110,7 +110,7 @@ class EventsLog(commands.Cog):
             )
 
         await self.pool.execute(query, guild_id, events.member, events.mod, events.eco)
-        await cache.setJSONCache(key=key, value=asdict(lgc), path=".logging_config")
+        await cache.mergeJSONCache(key=key, value=asdict(lgc), path="$.logging_config")
         await ctx.send("Updated successfully!")
 
 
