@@ -5,7 +5,7 @@ import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import Embed, parseTimeStr
+from Libs.utils import Embed, is_mod, parseTimeStr
 
 
 class Moderation(commands.Cog):
@@ -24,13 +24,13 @@ class Moderation(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
+    @is_mod()
     @mod.command(name="ban")
     @app_commands.describe(
         users="The users to ban",
         delete_days="The number of days to delete messages for",
         reason="The reason for the ban",
     )
-    @commands.has_permissions(ban_members=True)
     async def ban(
         self,
         ctx: commands.Context,
@@ -64,11 +64,11 @@ class Moderation(commands.Cog):
         embed.add_field(name="Reason", value=reason or "No reason provided")
         await ctx.send(embed=embed)
 
+    @is_mod()
     @mod.command(name="unban")
     @app_commands.describe(
         users="The users to unban", reason="The reason for the unban"
     )
-    @commands.has_permissions(ban_members=True)
     async def unban(
         self,
         ctx: commands.Context,
@@ -98,9 +98,9 @@ class Moderation(commands.Cog):
         embed.add_field(name="Reason", value=reason or "No reason provided")
         await ctx.send(embed=embed)
 
+    @is_mod()
     @mod.command(name="kick")
     @app_commands.describe(users="The users to kick", reason="The reason for the kick")
-    @commands.has_permissions(kick_members=True)
     async def kick(
         self,
         ctx: commands.Context,
@@ -127,13 +127,13 @@ class Moderation(commands.Cog):
         embed.add_field(name="Reason", value=reason or "No reason provided")
         await ctx.send(embed=embed)
 
+    @is_mod()
     @mod.command(name="mute")
     @app_commands.describe(
         users="The users to mute",
         duration="The duration to mute the user for. Defaults to 30m",
         reason="The reason for the mute",
     )
-    @commands.has_permissions(moderate_members=True)
     async def mute(
         self,
         ctx: commands.Context,
@@ -172,11 +172,11 @@ class Moderation(commands.Cog):
         embed.add_field(name="Reason", value=reason or "No reason provided")
         await ctx.send(embed=embed)
 
+    @is_mod()
     @mod.command(name="unmute")
     @app_commands.describe(
         users="The users to unmute", reason="The reason for the unmute"
     )
-    @commands.has_permissions(moderate_members=True)
     async def unmute(
         self,
         ctx: commands.Context,

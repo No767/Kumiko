@@ -1,3 +1,4 @@
+from .checks import is_admin, is_manager, is_mod
 from .converters import JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
@@ -38,4 +39,7 @@ __all__ = [
     "JobName",
     "calc_rank",
     "calc_petals",
+    "is_manager",
+    "is_mod",
+    "is_admin",
 ]

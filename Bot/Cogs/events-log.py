@@ -6,7 +6,7 @@ from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import EventsFlag, get_or_fetch_config
 from Libs.config import LoggingGuildConfig, get_or_fetch_guild_config
 from Libs.ui.events_log import RegisterView, UnregisterView
-from Libs.utils import ConfirmEmbed, Embed
+from Libs.utils import ConfirmEmbed, Embed, is_manager
 
 
 class EventsLog(commands.Cog):
@@ -27,7 +27,7 @@ class EventsLog(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @logs.command(name="enable")
     async def enableLogs(self, ctx: commands.Context) -> None:
@@ -38,7 +38,7 @@ class EventsLog(commands.Cog):
         view = RegisterView(pool=self.pool, redis_pool=self.redis_pool)
         await ctx.send(embed=embed, view=view)
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @logs.command(name="disable")
     async def disableLogs(self, ctx: commands.Context) -> None:
@@ -48,7 +48,7 @@ class EventsLog(commands.Cog):
         embed.description = "You are about to disable and unregister the events logging feature on Kumiko. Press Confirm to confirm your action."
         await ctx.send(embed=embed, view=view)
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @logs.command(name="info")
     async def logInfo(self, ctx: commands.Context) -> None:
@@ -75,7 +75,7 @@ class EventsLog(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @logs.command(name="configure", aliases=["config"])
     async def logConfig(self, ctx: commands.Context, events: EventsFlag) -> None:

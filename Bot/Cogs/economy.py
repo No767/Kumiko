@@ -4,7 +4,7 @@ from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
 from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.economy import RegisterView
-from Libs.utils import ConfirmEmbed, Embed
+from Libs.utils import ConfirmEmbed, Embed, is_manager
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
 
@@ -29,6 +29,7 @@ class Economy(commands.Cog):
             await ctx.send_help(ctx.command)
 
     # Throw checks on these later
+    @is_manager()
     @eco.command(name="enable")
     async def enable(self, ctx: commands.Context) -> None:
         """Enables the economy module for your server"""
