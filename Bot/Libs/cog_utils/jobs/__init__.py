@@ -1,4 +1,21 @@
+from .flags import JobOutputFlags
 from .format_options import formatOptions
-from .job_utils import createJob, getJob, submitJobApp, updateJob
+from .job_utils import (
+    createJob,
+    createJobLink,
+    createJobOutputItem,
+    getJob,
+    submitJobApp,
+    updateJob,
+)
 
-__all__ = ["createJob", "updateJob", "submitJobApp", "formatOptions", "getJob"]
+__all__ = [
+    "createJob",
+    "updateJob",
+    "submitJobApp",
+    "formatOptions",
+    "getJob",
+    "JobOutputFlags",
+    "createJobOutputItem",
+    "createJobLink",
+]

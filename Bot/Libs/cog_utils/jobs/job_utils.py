@@ -133,3 +133,49 @@ async def getJob(
 
             return [dict(row) for row in newRes]
         return dict(res)
+
+
+async def createJobLink(
+    worker_id: int, item_id: int, job_id: int, conn: asyncpg.connection.Connection
+):
+    sql = """
+    INSERT INTO job_output (worker_id, item_id, job_id)
+    VALUES ($1, $2, $3);
+    """
+    status = await conn.execute(sql, worker_id, item_id, job_id)
+    return status
+
+
+async def createJobOutputItem(
+    name: str,
+    description: str,
+    price: int,
+    amount: int,
+    guild_id: int,
+    worker_id: int,
+    pool: asyncpg.Pool,
+):
+    # I have committed way too much sins
+    sql = """
+    WITH item_insert AS (
+        INSERT INTO eco_item (guild_id, name, description, price, amount, producer_id)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING id
+    )
+    INSERT INTO eco_item_lookup (name, guild_id, producer_id, item_id)
+    VALUES ($2, $1, $6, (SELECT id FROM item_insert))
+    """
+    async with pool.acquire() as conn:
+        tr = conn.transaction()
+        await tr.start()
+
+        try:
+            status = await conn.execute(
+                sql, guild_id, name, description, price, amount, worker_id
+            )
+        except asyncpg.UniqueViolationError:
+            await tr.rollback()
+            return "This item already exists"
+        else:
+            await tr.commit()
+            return status

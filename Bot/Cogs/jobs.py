@@ -7,7 +7,10 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.economy import is_economy_enabled
 from Libs.cog_utils.jobs import (
+    JobOutputFlags,
     createJob,
+    createJobLink,
+    createJobOutputItem,
     formatOptions,
     getJob,
     submitJobApp,
@@ -15,6 +18,7 @@ from Libs.cog_utils.jobs import (
 )
 from Libs.ui.jobs import (
     CreateJob,
+    CreateJobOutputItemModal,
     DeleteJobViaIDView,
     DeleteJobView,
     JobPages,
@@ -418,6 +422,81 @@ class Jobs(commands.Cog):
         else:
             await ctx.send("No jobs were found")
             return
+
+    @is_economy_enabled()
+    @jobs.command(name="output")
+    @app_commands.describe(name="The name of the item that the job outputs")
+    async def associate_item(
+        self,
+        ctx: commands.Context,
+        name: Annotated[str, commands.clean_content],
+        *,
+        flags: JobOutputFlags,
+    ) -> None:
+        """Associate an item with the job's output. A job can only produce one item."""
+        if ctx.interaction is not None:
+            outputModal = CreateJobOutputItemModal(
+                self.pool, name, flags.price, flags.amount
+            )
+            await ctx.interaction.response.send_modal(outputModal)
+            return
+
+        def check(msg):
+            return msg.author == ctx.author and ctx.channel == msg.channel
+
+        await ctx.send("What's the description for your item going to be?")
+        try:
+            msg = await self.bot.wait_for("message", check=check, timeout=350.0)
+        except asyncio.TimeoutError:
+            self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
+            await ctx.send("You took too long. Goodbye.")
+            return
+
+        if msg.content:
+            clean_content = await commands.clean_content().convert(ctx, msg.content)
+        else:
+            clean_content = msg.content
+
+        if msg.attachments:
+            clean_content = f"{clean_content}\n{msg.attachments[0].url}"
+
+        if len(clean_content) > 2000:
+            await ctx.send("Item description is a maximum of 2000 characters.")
+            return
+
+        query = """
+        SELECT eco_item_lookup.item_id, job_lookup.job_id
+        FROM eco_item_lookup
+        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.worker_id
+        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
+        """
+        status = await createJobOutputItem(
+            name=name,
+            description=clean_content,
+            price=flags.price,
+            amount=flags.amount,
+            guild_id=ctx.guild.id,  # type: ignore
+            worker_id=ctx.author.id,
+            pool=self.pool,
+        )
+        async with self.pool.acquire() as conn:
+            if status[-1] != "0":
+                rows = await conn.fetchrow(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
+                record = dict(rows)
+                jobLinkStatus = await createJobLink(
+                    worker_id=ctx.author.id,
+                    item_id=record["item_id"],
+                    job_id=record["job_id"],
+                    conn=conn,
+                )
+                if jobLinkStatus[-1] != "0":
+                    await ctx.send(
+                        f"Successfully created the output item `{name}` (Price: {flags.price}, Amount: {flags.amount})"
+                    )
+                    return
+            else:
+                await ctx.send("There was an error making it. Please try again")
+                return
 
 
 async def setup(bot: KumikoCore) -> None:

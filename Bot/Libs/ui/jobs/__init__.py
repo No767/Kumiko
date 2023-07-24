@@ -1,4 +1,4 @@
-from .modals import CreateJob, UpdateJobModal
+from .modals import CreateJob, CreateJobOutputItemModal, UpdateJobModal
 from .pages import JobPages
 from .views import DeleteJobViaIDView, DeleteJobView, PurgeJobsView
 
@@ -9,4 +9,5 @@ __all__ = [
     "DeleteJobViaIDView",
     "PurgeJobsView",
     "UpdateJobModal",
+    "CreateJobOutputItemModal",
 ]

@@ -19,7 +19,6 @@ async def get_or_fetch_guild_config(
     cache = KumikoCache(connection_pool=redis_pool)
     if await cache.cacheExists(key=key):
         res = await cache.getJSONCache(key=key, path="$")
-        print(res)
         return res
     rows = await pool.fetchrow(sql, guild_id)
     if rows is None:

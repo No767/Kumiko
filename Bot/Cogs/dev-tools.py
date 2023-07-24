@@ -85,6 +85,16 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot.dispatch(event, ctx.guild, ctx.author)
         await ctx.send("Dispatched event")
 
+    @commands.check_any(commands.is_owner(), is_nat())
+    @commands.command(name="arg-check", usage="<user: discord.Member>")
+    async def arg_check(self, ctx: commands.Context, user: discord.Member):
+        """Testing arg checks
+
+        Args:
+            user (discord.Member): The member to ping lol
+        """
+        await ctx.send(user.name)
+
 
 async def setup(bot: KumikoCore):
     await bot.add_cog(DevTools(bot))

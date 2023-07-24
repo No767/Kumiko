@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.cog_utils.jobs import updateJob
+from Libs.cog_utils.jobs import createJobLink, createJobOutputItem, updateJob
 
 
 class CreateJob(discord.ui.Modal, title="Create Job"):
@@ -95,3 +95,58 @@ class UpdateJobModal(discord.ui.Modal, title="Update Job"):
             f"Successfully updated the job `{self.name}` (RR: {self.required_rank}, Pay: {self.pay})"
         )
         return
+
+
+class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
+    def __init__(self, pool: asyncpg.Pool, name: str, price: int, amount: int) -> None:
+        super().__init__()
+        self.pool = pool
+        self.name = name
+        self.price = price
+        self.amount = amount
+        self.description = discord.ui.TextInput(
+            label="Description",
+            style=discord.TextStyle.long,
+            placeholder="Description of the item",
+            min_length=1,
+            max_length=2000,
+            row=0,
+        )
+        self.add_item(self.description)
+
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        query = """
+        SELECT eco_item_lookup.item_id, job_lookup.job_id
+        FROM eco_item_lookup
+        INNER JOIN job_lookup ON eco_item_lookup.owner_id = job_lookup.worker_id
+        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.owner_id=$3;
+        """
+        status = await createJobOutputItem(
+            name=self.name,
+            description=self.description.value,
+            price=self.price,
+            amount=self.amount,
+            guild_id=interaction.guild.id,  # type: ignore
+            worker_id=interaction.user.id,
+            pool=self.pool,
+        )
+        async with self.pool.acquire() as conn:
+            if status[-1] != "0":
+                rows = await conn.fetchrow(query, interaction.guild.id, self.name, interaction.user.id)  # type: ignore
+                record = dict(rows)
+                jobLinkStatus = await createJobLink(
+                    worker_id=interaction.user.id,
+                    item_id=record["item_id"],
+                    job_id=record["job_id"],
+                    conn=conn,
+                )
+                if jobLinkStatus[-1] != "0":
+                    await interaction.response.send_message(
+                        "Successfully created the output item"
+                    )
+                    return
+            else:
+                await interaction.response.send_message(
+                    "There was an error making it. Please try again"
+                )
+                return

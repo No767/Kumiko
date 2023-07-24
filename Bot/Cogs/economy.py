@@ -52,6 +52,7 @@ class Economy(commands.Cog):
             await ctx.send("Enabled economy!")
             return
 
+    @is_manager()
     @is_economy_enabled()
     @eco.command(name="disable")
     async def disable(self, ctx: commands.Context) -> None:
