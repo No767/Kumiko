@@ -5,16 +5,13 @@ FROM python:3.11-slim-bookworm AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
-RUN apt update \
-  && apt install -y --no-install-recommends \
-  build-essential \
-  ca-certificates \
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
   curl \
   git
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-RUN python -m pip install --upgrade pip setuptools
 RUN curl -sSL https://install.python-poetry.org | python -
 ENV PATH="${PATH}:/root/.local/bin"
 
@@ -23,8 +20,7 @@ WORKDIR /Kumiko
 COPY /pyproject.toml /Kumiko/
 COPY /poetry.lock /Kumiko/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main \
-  && pip wheel --wheel-dir=/Kumiko/wheels -r requirements.txt
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
 
 ####################################################################################################
 ## Final image
@@ -34,12 +30,11 @@ FROM python:3.11-slim-bookworm
 RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
-  ca-certificates \
   bash \
   netcat-traditional \
   libopus-dev \
   libffi-dev \
-  libnacl-dev \
+  libsodium-dev \
   git
 
 WORKDIR /Kumiko
@@ -52,10 +47,7 @@ COPY /migrations-runner.py /Kumiko/migrations-runner.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
 
-COPY --from=builder /Kumiko/wheels /Kumiko/wheels
 COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
-
-RUN pip install --upgrade pip setuptools
 
 RUN adduser --disabled-password --gecos "" kumiko \
   && chown -R kumiko:kumiko /Kumiko \
@@ -66,7 +58,7 @@ USER kumiko
 
 ENV PATH="${PATH}:/home/kumiko/.local/bin"
 
-RUN pip install --user --no-index --find-links=/Kumiko/wheels -r requirements.txt
+RUN pip install --user -r requirements.txt
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
