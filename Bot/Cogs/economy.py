@@ -4,8 +4,8 @@ from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
 from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.economy import RegisterView
+from Libs.ui.marketplace import ItemPages
 from Libs.utils import ConfirmEmbed, Embed, is_manager
-from Libs.utils.pages import EmbedListSource, KumikoPages
 
 
 class Economy(commands.Cog):
@@ -102,8 +102,8 @@ class Economy(commands.Cog):
         )
         embed.set_footer(text="Created at")
         embed.timestamp = dictUser["created_at"]
-        embed.add_field(name="Rank", value=dictUser["rank"], inline=False)
-        embed.add_field(name="Petals", value=dictUser["petals"], inline=False)
+        embed.add_field(name="Rank", value=dictUser["rank"], inline=True)
+        embed.add_field(name="Petals", value=dictUser["petals"], inline=True)
         await ctx.send(embed=embed)
 
     @is_economy_enabled()
@@ -119,29 +119,18 @@ class Economy(commands.Cog):
     @eco.command(name="inventory", aliases=["inv"])
     async def inventory(self, ctx: commands.Context) -> None:
         """View your inventory"""
-        sql = """
-        SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount
+        query = """
+        SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
-        WHERE eco_item_lookup.owner_id = $1 AND eco_item_lookup.guild_id = $2;
+        WHERE eco_item.guild_id = $1 AND eco_item.owner_id = $2;
         """
-        rows = await self.pool.fetch(sql, ctx.author.id, ctx.guild.id)  # type: ignore
+        rows = await self.pool.fetch(query, ctx.guild.id, ctx.author.id)  # type: ignore
         if len(rows) == 0:
-            await ctx.send("No items found")
+            await ctx.send("No items available")
             return
-        embedList = [
-            {
-                "title": dict(row)["name"],
-                "description": dict(row)["description"],
-                "fields": [
-                    {"name": "Price", "value": dict(row)["price"], "inline": True},
-                    {"name": "Amount", "value": dict(row)["amount"], "inline": True},
-                ],
-            }
-            for row in rows
-        ]
-        embedSource = EmbedListSource(entries=embedList, per_page=20)
-        pages = KumikoPages(source=embedSource, ctx=ctx)
+
+        pages = ItemPages(entries=rows, ctx=ctx, per_page=1)
         await pages.start()
 
 

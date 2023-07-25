@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 import asyncpg
 
@@ -17,7 +17,7 @@ async def getItem(
         Union[str, None]: The item details or None if it doesn't exist
     """
     sqlQuery = """
-    SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
+    SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.created_at, eco_item.producer_id
     FROM eco_item_lookup
     INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
     WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2; 
@@ -38,3 +38,40 @@ async def getItem(
 
             return [dict(row) for row in newRes]
         return dict(res)
+
+
+async def isPaymentValid(
+    rows: Dict[str, Any],
+    purchaser_id: int,
+    requested_amount: int,
+    conn: asyncpg.connection.Connection,
+) -> bool:
+    query = """
+    SELECT petals
+    FROM eco_user
+    WHERE id = $1;
+    """
+
+    petals = await conn.fetchval(query, purchaser_id)
+    if petals is None:
+        return False
+
+    totalPrice = rows["price"] * requested_amount
+    stockAmt = rows["amount"]
+    return (petals >= totalPrice) and (requested_amount < stockAmt) and (stockAmt > 0)
+
+
+def formatOptions(rows: Union[List[Dict[str, str]], None]) -> str:
+    """Format the rows to be sent to the user
+
+    Args:
+        rows (Union[List[Dict[str, str]], None]): Rows to format
+
+    Returns:
+        str: _Formatted string
+    """
+    if rows is None or len(rows) == 0:
+        return "Item not found"
+
+    names = "\n".join([row["name"] for row in rows])
+    return f"Item not found. Did you mean:\n{names}"
