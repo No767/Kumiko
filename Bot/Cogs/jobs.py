@@ -7,6 +7,7 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.economy import is_economy_enabled
 from Libs.cog_utils.jobs import (
+    JobListFlags,
     JobOutputFlags,
     createJob,
     createJobLink,
@@ -66,8 +67,7 @@ class Jobs(commands.Cog):
 
     @is_economy_enabled()
     @commands.hybrid_group(name="jobs", fallback="list")
-    @app_commands.describe(compact="Whether to show a compacted page or not")
-    async def jobs(self, ctx: commands.Context, compact: bool = False) -> None:
+    async def jobs(self, ctx: commands.Context, flags: JobListFlags) -> None:
         """Lists all available jobs in your server"""
         sql = """
         SELECT job.id, job.name, job.description, job.required_rank, job.pay_amount
@@ -82,7 +82,7 @@ class Jobs(commands.Cog):
                 "There are no listed jobs in this server! Create one to get started!"
             )
             return
-        if compact:
+        if flags.compact is True:
             pages = JobPages(entries=results, ctx=ctx, per_page=10)
             await pages.start()
         else:
@@ -424,7 +424,7 @@ class Jobs(commands.Cog):
             return
 
     @is_economy_enabled()
-    @jobs.command(name="output")
+    @jobs.command(name="output", usage="<name> price: int amount_per_hour: int")
     @app_commands.describe(name="The name of the item that the job outputs")
     async def associate_item(
         self,

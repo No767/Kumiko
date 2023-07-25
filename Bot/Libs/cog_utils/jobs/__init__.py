@@ -1,4 +1,4 @@
-from .flags import JobOutputFlags
+from .flags import JobListFlags, JobOutputFlags
 from .format_options import formatOptions
 from .job_utils import (
     createJob,
@@ -18,4 +18,5 @@ __all__ = [
     "JobOutputFlags",
     "createJobOutputItem",
     "createJobLink",
+    "JobListFlags",
 ]
