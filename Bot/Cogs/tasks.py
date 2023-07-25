@@ -12,10 +12,49 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot = bot
         self.pool = self.bot.pool
         self.logger = logging.getLogger("discord")
+        self.update_item_stock.start()
         self.update_job_pay.start()
 
     async def cog_unload(self):
+        self.update_item_stock.stop()
         self.update_job_pay.stop()
+
+    @tasks.loop(hours=1.0)
+    async def update_item_stock(self) -> None:
+        """The internal task of just updating the stocked items
+
+        In this version, whether or not the item is bought is not taken into account. In future versions, that will be needed.
+
+        The way it works is this:
+
+        1. Get all of the items from the database (owned and not owned)
+        2. Take the restock amount, and then add it to the current amount
+
+        Prepared statements are used ofc.
+        """
+        # I know this is bad, but this needs to be addressed in a different update
+        # Every single item, including owned ones will get update.
+        # For now, i'll leave for now
+        # TODO - Address the owner-restock issue
+        getItems = """
+        SELECT eco_item.id, eco_item.amount, eco_item.restock_amount
+        FROM eco_item_lookup
+        INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id;
+        """
+        updateStock = """
+        UPDATE eco_item
+        SET amount = amount + $2
+        WHERE id = $1;
+        """
+        async with self.pool.acquire() as conn:
+            smt = await conn.prepare(getItems)
+            async with conn.transaction():
+                async for row in smt.cursor():
+                    if row is not None:
+                        record = dict(row)
+                        await conn.execute(
+                            updateStock, record["id"], record["restock_amount"]
+                        )
 
     @tasks.loop(hours=1.0)
     async def update_job_pay(self) -> None:

@@ -436,7 +436,7 @@ class Jobs(commands.Cog):
         """Associate an item with the job's output. A job can only produce one item."""
         if ctx.interaction is not None:
             outputModal = CreateJobOutputItemModal(
-                self.pool, name, flags.price, flags.amount
+                self.pool, name, flags.price, flags.amount_per_hour
             )
             await ctx.interaction.response.send_modal(outputModal)
             return
@@ -474,7 +474,7 @@ class Jobs(commands.Cog):
             name=name,
             description=clean_content,
             price=flags.price,
-            amount=flags.amount,
+            amount=flags.amount_per_hour,
             guild_id=ctx.guild.id,  # type: ignore
             worker_id=ctx.author.id,
             pool=self.pool,
@@ -482,6 +482,9 @@ class Jobs(commands.Cog):
         async with self.pool.acquire() as conn:
             if status[-1] != "0":
                 rows = await conn.fetchrow(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
+                if rows is None:
+                    await ctx.send("You aren't the producer of the item!")
+                    return
                 record = dict(rows)
                 jobLinkStatus = await createJobLink(
                     worker_id=ctx.author.id,
@@ -491,7 +494,7 @@ class Jobs(commands.Cog):
                 )
                 if jobLinkStatus[-1] != "0":
                     await ctx.send(
-                        f"Successfully created the output item `{name}` (Price: {flags.price}, Amount: {flags.amount})"
+                        f"Successfully created the output item `{name}` (Price: {flags.price}, Amount Per Hour: {flags.amount_per_hour})"
                     )
                     return
             else:

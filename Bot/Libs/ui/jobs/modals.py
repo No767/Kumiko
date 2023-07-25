@@ -118,8 +118,8 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
         query = """
         SELECT eco_item_lookup.item_id, job_lookup.job_id
         FROM eco_item_lookup
-        INNER JOIN job_lookup ON eco_item_lookup.owner_id = job_lookup.worker_id
-        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.owner_id=$3;
+        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.worker_id
+        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
         """
         status = await createJobOutputItem(
             name=self.name,
@@ -132,7 +132,12 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
         )
         async with self.pool.acquire() as conn:
             if status[-1] != "0":
-                rows = await conn.fetchrow(query, interaction.guild.id, self.name, interaction.user.id)  # type: ignore
+                rows = await conn.fetchrow(query, interaction.guild.id, name, interaction.user.id)  # type: ignore
+                if rows is None:
+                    await interaction.response.send_message(
+                        "You aren't the producer of the item!"
+                    )
+                    return
                 record = dict(rows)
                 jobLinkStatus = await createJobLink(
                     worker_id=interaction.user.id,
@@ -142,7 +147,7 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
                 )
                 if jobLinkStatus[-1] != "0":
                     await interaction.response.send_message(
-                        "Successfully created the output item"
+                        f"Successfully created the output item `{self.name}` (Price: {self.price}, Amount Per Hour: {self.amount})"
                     )
                     return
             else:

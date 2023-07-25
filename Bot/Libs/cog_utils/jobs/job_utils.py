@@ -156,14 +156,15 @@ async def createJobOutputItem(
     pool: asyncpg.Pool,
 ):
     # I have committed way too much sins
+    # TODO - Add an upsert in this area
     sql = """
     WITH item_insert AS (
-        INSERT INTO eco_item (guild_id, name, description, price, amount, producer_id)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO eco_item (guild_id, name, description, price, amount, restock_amount, producer_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
     )
     INSERT INTO eco_item_lookup (name, guild_id, producer_id, item_id)
-    VALUES ($2, $1, $6, (SELECT id FROM item_insert))
+    VALUES ($2, $1, $7, (SELECT id FROM item_insert))
     """
     async with pool.acquire() as conn:
         tr = conn.transaction()
@@ -171,7 +172,7 @@ async def createJobOutputItem(
 
         try:
             status = await conn.execute(
-                sql, guild_id, name, description, price, amount, worker_id
+                sql, guild_id, name, description, price, 1, amount, worker_id
             )
         except asyncpg.UniqueViolationError:
             await tr.rollback()
