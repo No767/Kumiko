@@ -68,10 +68,12 @@ Systemd (Standalone)
 
 **Before you start, ensure that you have PostgreSQL and Redis correctly configured and is running**
 
-1. Ensure that the PostgreSQL extension ``pg_trgm`` and the RedisJSON module are loaded. Refer to the `Redis docs <https://redis.io/docs/data-types/json/#download-binaries>`_ on how to install and load the JSON module.
+1. Ensure that the database is created and the PostgreSQL extension ``pg_trgm`` and the RedisJSON module are loaded. Refer to the `Redis docs <https://redis.io/docs/data-types/json/#download-binaries>`_ on how to install and load the JSON module.
 
     .. code-block:: sql
-
+        
+        CREATE ROLE kumiko WITH LOGIN PASSWORD 'somepass';
+        CREATE DATABASE kumiko OWNER kumiko;
         CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
 2. Clone the repo
@@ -103,12 +105,13 @@ Systemd (Standalone)
 
         python3 -m venv ./venv
 
-5. Activate the venv, install the dependencies, and then deactivate it
+5. Activate the venv, install the dependencies, run the migrations, and then deactivate it
 
     .. code-block:: bash
 
         source ./venv/bin/activate \
         && pip install -r Requirements/prod.txt \
+        && python3 migrations-runner.py \
         && deactivate
 
 6. Create an systemd service file. This is an example, and you will need to edit it to point to the correct directory and user.
@@ -133,7 +136,13 @@ Systemd (Standalone)
 
 7. Test whether you have everything set up. If you have ``make`` installed, you can run ``make prod-run`` in order to run the bot (the ``Makefile`` is found in the root of the repo). Otherwise, just run ``kumikobot.py``
 
-8. Run and enable the systemd service. 
+8. Reload the system daemon
+
+    .. code-block:: bash
+
+        sudo systemctl daemon-reload
+
+9. Run and enable the systemd service. 
     
     .. code-block:: bash
 
@@ -179,4 +188,3 @@ Docker Compose
     .. code-block:: bash
 
         docker-compose up -d
-

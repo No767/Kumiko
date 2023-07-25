@@ -7,6 +7,7 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 from Libs.errors import (
+    EconomyDisabled,
     HTTPError,
     ItemNotFoundError,
     KumikoException,
@@ -73,4 +74,14 @@ def test_validation_error():
 
     assert (e.type == ValidationError) and (
         "There is an validation error" in str(e.value)
+    )
+
+
+def test_economy_disabled_error():
+    with pytest.raises(EconomyDisabled) as e:
+        raise EconomyDisabled
+
+    assert (e.type == EconomyDisabled) and (
+        "The economy module is disabled in this server. Please ask your server admin to enable it."
+        in str(e.value)
     )

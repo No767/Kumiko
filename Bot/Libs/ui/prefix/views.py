@@ -1,6 +1,6 @@
 import discord
 from kumikocore import KumikoCore
-from Libs.utils import CancelledActionEmbed, SuccessActionEmbed
+from Libs.utils import CancelledActionEmbed, ErrorEmbed, SuccessActionEmbed
 
 
 class DeletePrefixView(discord.ui.View):
@@ -23,9 +23,11 @@ class DeletePrefixView(discord.ui.View):
         SET prefix = ARRAY_REMOVE(prefix, $1)
         WHERE id=$2;
         """
-        async with self.pool.acquire() as conn:
-            guild_id = interaction.guild.id  # type: ignore # lying again
-            await conn.execute(query, self.prefix, guild_id)
+        guild_id = interaction.guild.id  # type: ignore # lying again
+        # We will only delete it if the prefix is in the list of prefixes
+        # This ensures that the prefix **must** be in the LRU cache
+        if self.prefix in self.bot.prefixes[guild_id]:
+            await self.pool.execute(query, self.prefix, guild_id)
             self.bot.prefixes[guild_id].remove(
                 self.prefix
             )  # This makes the assumption that the guild is already in the LRU cache. This is not the best - Noelle
@@ -34,6 +36,15 @@ class DeletePrefixView(discord.ui.View):
                 description=f"The prefix `{self.prefix}` was successfully removed"
             )
             await interaction.response.edit_message(embed=embed, view=self)
+            return
+        else:
+            self.clear_items()
+            embed = ErrorEmbed(
+                title="Prefix not found",
+                description=f"The prefix `{self.prefix}` was not found",
+            )
+            await interaction.response.edit_message(embed=embed, view=self)
+            return
 
     @discord.ui.button(
         label="Cancel",

@@ -1,4 +1,5 @@
 import re
+import ssl
 from datetime import datetime, timedelta
 from typing import Any, Dict, Union
 
@@ -79,3 +80,10 @@ def parseTimeStr(time_str: str) -> Union[timedelta, None]:
         if param:
             time_params[name] = int(param)
     return timedelta(**time_params)
+
+
+def setup_ssl() -> ssl.SSLContext:
+    sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    sslctx.check_hostname = False
+    sslctx.verify_mode = ssl.CERT_NONE
+    return sslctx

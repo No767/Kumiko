@@ -8,7 +8,7 @@ import discord.ext.test as dpytest
 import pytest
 import pytest_asyncio
 from discord.ext import commands
-from Libs.utils import PrefixConverter
+from Libs.utils import JobName, PinName, PrefixConverter
 
 
 class PrefixCog(commands.Cog):
@@ -20,6 +20,36 @@ class PrefixCog(commands.Cog):
         await ctx.send(f"{prefix}")
 
 
+class PinCog(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.group(name="pins")
+    async def pins(self, ctx, *, name: PinName):
+        await ctx.send(f"{name}")
+
+    @pins.command(name="pins")
+    async def pinCommand(self, ctx):
+        await ctx.send("hey")
+
+    @pins.command(name="pinner")
+    async def pinCommande(self, ctx, *, name: PinName):
+        await ctx.send(f"{name}")
+
+
+class JobCog(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.group(name="jobs")
+    async def jobs(self, ctx, *, name: JobName):
+        await ctx.send(f"{name}")
+
+    @jobs.command(name="jobs")
+    async def jobCommand(self, ctx):
+        await ctx.send("hey")
+
+
 @pytest_asyncio.fixture
 async def bot():
     # Setup
@@ -29,6 +59,8 @@ async def bot():
     b = commands.Bot(command_prefix=">", intents=intents)
     await b._async_setup_hook()  # setup the loop
     await b.add_cog(PrefixCog(b))
+    await b.add_cog(PinCog(b))
+    await b.add_cog(JobCog(b))
 
     dpytest.configure(b)
 
@@ -81,3 +113,51 @@ async def test_invalid_mention_prefix(bot):
             e.type == commands.BadArgument
             and "That is a reserved prefix already in use." in str(e.value)
         )
+
+
+@pytest.mark.asyncio
+async def test_invalid_max_pin_name(bot):
+    finalStr = ""
+    for item, idx in enumerate(range(75)):
+        finalStr += f"{item}{idx}"
+
+    with pytest.raises(commands.BadArgument) as e:
+        await dpytest.message(f">pins {finalStr}")
+    assert (
+        e.type == commands.BadArgument
+        and "Tag name is a maximum of 100 characters." in str(e.value)
+    )
+
+
+@pytest.mark.asyncio
+async def test_same_pin_name(bot):
+    with pytest.raises(commands.BadArgument) as e:
+        await dpytest.message(f">pins pins")
+    assert (
+        e.type == commands.BadArgument
+        and "This tag name starts with a reserved word." in str(e.value)
+    )
+
+
+@pytest.mark.asyncio
+async def test_invalid_max_job_name(bot):
+    finalStr = ""
+    for item, idx in enumerate(range(75)):
+        finalStr += f"{item}{idx}"
+
+    with pytest.raises(commands.BadArgument) as e:
+        await dpytest.message(f">jobs {finalStr}")
+    assert (
+        e.type == commands.BadArgument
+        and "Job name is a maximum of 100 characters." in str(e.value)
+    )
+
+
+@pytest.mark.asyncio
+async def test_same_job_name(bot):
+    with pytest.raises(commands.BadArgument) as e:
+        await dpytest.message(f">jobs jobs")
+    assert (
+        e.type == commands.BadArgument
+        and "This Job name starts with a reserved word." in str(e.value)
+    )

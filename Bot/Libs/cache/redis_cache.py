@@ -66,19 +66,25 @@ class KumikoCache:
             await client.expire(name=key, time=ttl)
 
     # The output type comes from here: https://github.com/redis/redis-py/blob/9f503578d1ffed20d63e8023bcd8a7dccd15ecc5/redis/commands/json/_util.py#L3C1-L3C73
-    async def getJSONCache(self, key: str) -> Union[None, Dict[str, Any]]:
+    async def getJSONCache(
+        self, key: str, path: str = "$", value_only: bool = True
+    ) -> Union[None, Dict[str, Any], Any]:
         """Gets the JSON cache on Redis
 
         Args:
             key (str): The key of the key-value pair to get
+            path (str): The path to obtain the value from. Defaults to "$" (aka the root)
+            value_only (bool): Whether to return the value only. Defaults to True
 
         Returns:
             Dict[str, Any]: The value of the key-value pair
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        value = await client.json().get(name=key)
+        value = await client.json().get(key, path)
         if value is None:
             return None
+        if value_only is True:
+            return value[0] if isinstance(value, list) else value
         return value
 
     async def deleteJSONCache(self, key: str, path: str = "$") -> None:
@@ -90,6 +96,28 @@ class KumikoCache:
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await client.json().delete(key=key, path=path)
+
+    async def mergeJSONCache(
+        self,
+        key: str,
+        value: Union[Dict, Any],
+        path: str = "$",
+        ttl: Union[int, None] = 30,
+    ) -> None:
+        """Merges the key and value into a new value
+
+        This is the fix from using setJSONCache all of the time
+
+        Args:
+            key (str): Key to look for
+            value (Union[Dict, Any]): Value to update
+            path (str): The path to update. Defaults to "$"
+            ttl (int): TTL. Usually leave this for perma cache. Defaults to 30 seconds.
+        """
+        client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        await client.json().merge(name=key, path=path, obj=value)  # type: ignore
+        if isinstance(ttl, int):
+            await client.expire(name=key, time=ttl)
 
     async def cacheExists(self, key: str) -> bool:
         """Checks to make sure if the cache exists

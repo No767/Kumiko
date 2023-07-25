@@ -4,7 +4,7 @@ from discord.utils import utcnow
 from kumikocore import KumikoCore
 from Libs.errors import ValidationError
 from Libs.ui.prefix import DeletePrefixView
-from Libs.utils import ConfirmEmbed, Embed, PrefixConverter, get_prefix
+from Libs.utils import ConfirmEmbed, Embed, PrefixConverter, get_prefix, is_manager
 
 
 class Prefix(commands.Cog):
@@ -24,7 +24,7 @@ class Prefix(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @prefix.command(name="update")
     @app_commands.describe(
@@ -41,21 +41,19 @@ class Prefix(commands.Cog):
         """
         guild_id = ctx.guild.id  # type: ignore
         if old_prefix in self.bot.prefixes[guild_id]:
-            async with self.pool.acquire() as conn:
-                await conn.execute(query, old_prefix, new_prefix, guild_id)
-                prefixes = self.bot.prefixes[guild_id][
-                    :
-                ]  # Shallow copy the list so we can safely perform operations on it
-                idxSearch = [
-                    idx for idx, item in enumerate(prefixes) if item == old_prefix
-                ]
-                prefixes[idxSearch[0]] = new_prefix
-                self.bot.prefixes[guild_id] = prefixes
-                await ctx.send(f"Prefix updated to `{new_prefix}`")
+            await self.pool.execute(query, old_prefix, new_prefix, guild_id)
+            prefixes = self.bot.prefixes[guild_id][
+                :
+            ]  # Shallow copy the list so we can safely perform operations on it
+            for idx, item in enumerate(prefixes):
+                if item == old_prefix:
+                    prefixes[idx] = new_prefix
+            self.bot.prefixes[guild_id] = prefixes
+            await ctx.send(f"Prefix updated to `{new_prefix}`")
         else:
             await ctx.send("The prefix is not in the list of prefixes for your server")
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @prefix.command(name="add")
     @app_commands.describe(prefix="The new prefix to add")
@@ -72,11 +70,14 @@ class Prefix(commands.Cog):
             SET prefix = ARRAY_APPEND(prefix, $1)
             WHERE id=$2;
         """
-        async with self.pool.acquire() as conn:
-            guildId = ctx.guild.id  # type: ignore # These are all done in an guild
-            await conn.execute(query, prefix, guildId)
+        guildId = ctx.guild.id  # type: ignore # These are all done in an guild
+        await self.pool.execute(query, prefix, guildId)
+        # the weird solution but it actually works
+        if isinstance(self.bot.prefixes[guildId], list):
             self.bot.prefixes[guildId].append(prefix)
-            await ctx.send(f"Added prefix: {prefix}")
+        else:
+            self.bot.prefixes[guildId] = [self.bot.default_prefix, prefix]
+        await ctx.send(f"Added prefix: {prefix}")
 
     @commands.guild_only()
     @prefix.command(name="info")
@@ -90,7 +91,7 @@ class Prefix(commands.Cog):
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)  # type: ignore # LIES, LIES, AND LIES!!!
         await ctx.send(embed=embed)
 
-    @commands.has_guild_permissions(manage_guild=True)
+    @is_manager()
     @commands.guild_only()
     @prefix.command(name="delete")
     @app_commands.describe(prefix="The prefix to delete")

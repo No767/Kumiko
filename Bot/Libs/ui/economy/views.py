@@ -1,44 +1,43 @@
+import asyncpg
 import discord
-from Libs.utils import Embed
-from prisma.models import User  # type: ignore
+from Libs.utils import Embed, SuccessActionEmbed
 
 
 class RegisterView(discord.ui.View):
-    def __init__(self) -> None:
+    def __init__(self, pool: asyncpg.Pool) -> None:
         super().__init__()
+        self.pool = pool
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        button.disabled = True
-        doesUserExist = (
-            await User.prisma().count(where={"id": interaction.user.id}, take=1) == 1
-        )
-        if doesUserExist:
-            return await interaction.response.edit_message(
-                embed=Embed(
-                    title="Already Registered",
-                    description="You already have an account!",
-                ),
-                view=self,
+        query = """
+        INSERT INTO eco_user (id)
+        VALUES ($1);
+        """
+        status = await self.pool.execute(query, interaction.user.id)
+        self.clear_items()
+        if status[-1] == "0":
+            errorEmbed = Embed(description="You already have an economy account!")
+            await interaction.response.edit_message(
+                embed=errorEmbed, view=self, delete_after=20.0
             )
-        await User.prisma().create(
-            data={"id": interaction.user.id, "name": interaction.user.name}
-        )
-        await interaction.edit_original_response(
-            embed=Embed(
-                title="Registered", description="You have successfully registered!"
+        else:
+            successEmbed = SuccessActionEmbed()
+            successEmbed.description = "Successfully created an economy account!"
+            await interaction.response.edit_message(
+                embed=successEmbed, view=self, delete_after=20.0
             )
-        )
-        self.stop()
 
-    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.red)
+    @discord.ui.button(
+        label="Cancel",
+        style=discord.ButtonStyle.red,
+        emoji="<:redTick:596576672149667840>",
+    )
     async def cancel(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        button.disabled = True
-        await interaction.response.edit_message(
-            embed=Embed(title="Cancelled"), view=self
-        )
+        await interaction.response.defer()
+        await interaction.delete_original_response()
         self.stop()

@@ -9,7 +9,7 @@ from kumikocore import KumikoCore
 from Libs.utils import Embed
 from psutil._common import bytes2human
 
-VERSION = "v0.9.0"
+VERSION = "v0.10.0"
 
 
 class Meta(commands.Cog):

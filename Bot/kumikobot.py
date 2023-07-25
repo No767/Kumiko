@@ -7,7 +7,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
-from Libs.utils import KumikoLogger
+from Libs.utils import KumikoLogger, setup_ssl
 
 # Only used for Windows development
 if os.name == "nt":
@@ -26,6 +26,7 @@ load_dotenv()
 
 KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
+SSL = os.getenv("SSL") in ("True", "TRUE")
 POSTGRES_URI = os.environ["POSTGRES_URI"]
 REDIS_URI = os.environ["REDIS_URI"]
 
@@ -36,7 +37,11 @@ intents.members = True
 
 async def main() -> None:
     async with ClientSession() as session, asyncpg.create_pool(
-        dsn=POSTGRES_URI, command_timeout=60, max_size=20, min_size=20
+        dsn=POSTGRES_URI,
+        command_timeout=60,
+        max_size=20,
+        min_size=20,
+        ssl=setup_ssl() if SSL is True else None,
     ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
         async with KumikoCore(
             intents=intents,

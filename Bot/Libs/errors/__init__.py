@@ -1,4 +1,5 @@
 from .exceptions import (
+    EconomyDisabled,
     HTTPError,
     ItemNotFoundError,
     KumikoException,
@@ -14,4 +15,5 @@ __all__ = [
     "ValidationError",
     "HTTPError",
     "NotFoundError",
+    "EconomyDisabled",
 ]

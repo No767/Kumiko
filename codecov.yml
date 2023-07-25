@@ -4,4 +4,8 @@ ignore:
   - "Bot/Libs/utils/pages/**"
   - "Bot/Libs/utils/kumiko_logger.py"
   - "Bot/Libs/utils/embeds.py"
+  - "Bot/Libs/utils/member_utils.py" # Untestable code. Even when running dpytest, the coro requires the bot to have the guilds chunked, which is not possible using pytest
   - "Bot/Libs/utils/prefix.py" # This contains an coroutine that we can't even test to begin with
+  - "Bot/Libs/cog_utils/pins/pin_utils.py" # Contains untestable code.
+  - "Bot/Cogs/**" # There are just too much code to test here
+  - "Bot/Libs/utils/checks.py" # Contains untestable code, but may be tested later

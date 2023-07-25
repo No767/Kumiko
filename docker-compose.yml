@@ -16,9 +16,12 @@ services:
 
   redis:
     container_name: Kumiko-Redis
-    image: redis/redis-stack-server:latest
+    image: redis/redis-stack-server:7.2.0-RC3
     ports:
       - 6379:6379
+    volumes:
+      - redis_volume:/data
+    command: redis-stack-server --save 60 1
 
   kumiko:
     container_name: Kumiko
@@ -32,3 +35,4 @@ services:
 
 volumes:
   postgres_volume:
+  redis_volume:
