@@ -132,7 +132,7 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
         )
         async with self.pool.acquire() as conn:
             if status[-1] != "0":
-                rows = await conn.fetchrow(query, interaction.guild.id, name, interaction.user.id)  # type: ignore
+                rows = await conn.fetchrow(query, interaction.guild.id, self.name, interaction.user.id)  # type: ignore
                 if rows is None:
                     await interaction.response.send_message(
                         "You aren't the producer of the item!"
