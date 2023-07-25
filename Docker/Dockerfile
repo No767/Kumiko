@@ -64,9 +64,6 @@ ENTRYPOINT ["/usr/bin/tini", "--"]
 
 CMD ["/Kumiko/start.sh"]
 
-# We want to use SIGINT instead since that is the same signal used when hitting ctrl+c
-# By default, this is the expected behavior of Kumiko, so we need to keep it that way
-# Will result in a clean exit without any dead conns
 STOPSIGNAL SIGTERM
 
 LABEL org.opencontainers.image.title="Kumiko"

@@ -7,6 +7,7 @@ For the full list of changes, please see them here: [`v0.9.2...v0.10.0`](https:/
 ## :boom: Breaking Changes :boom:
 
 - There are none :smile:
+- 
 ## ✨ TD;LR
 
 - Pins module (pretty much works like most tags features)
@@ -18,7 +19,7 @@ For the full list of changes, please see them here: [`v0.9.2...v0.10.0`](https:/
 - Proper server config (both on PostgreSQL and Redis). The config is always cached on Redis first, and if doesn't exist, pulls from the database and reconstructs the cache entirely.
 - Clarify running migrations with the docs
 - Optimized Dockerfile (cut down on image size and removed unneeded things)
-- Update AIOHTTP to v3.8.5 (fixes CVE-2023-37276)
+- Update AIOHTTP to v3.8.5 (fixes [CVE-2023-37276](https://nvd.nist.gov/vuln/detail/CVE-2023-37276)) (Backported from v0.9.2)
 - Implement file based logging support
 - Upgrade Redis-Stack to 7.2.0-RC3
 - Use `JSON.MERGE` instead of `JSON.SET` when replacing items in the JSON document (with Redis)
