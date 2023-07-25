@@ -14,7 +14,13 @@ from .kumiko_logger import KumikoLogger
 from .member_utils import get_or_fetch_member
 from .prefix import get_prefix, validatePrefix
 from .rank_utils import calc_petals, calc_rank
-from .utils import encodeDatetime, parseDatetime, parseSubreddit, parseTimeStr
+from .utils import (
+    encodeDatetime,
+    parseDatetime,
+    parseSubreddit,
+    parseTimeStr,
+    setup_ssl,
+)
 
 __all__ = [
     "PrefixConverter",
@@ -42,4 +48,5 @@ __all__ = [
     "is_manager",
     "is_mod",
     "is_admin",
+    "setup_ssl",
 ]

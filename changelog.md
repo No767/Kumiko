@@ -34,6 +34,7 @@ For the full list of changes, please see them here: [`v0.9.2...v0.10.0`](https:/
 - Implement permission check shortcuts (`is_manager`, `is_admin`, `is_mod`). Taken from RDanny because I have no time.
 - Add tasks to update pay and restock items. Done per hour
 - Add local `eco_user` table 
+- Add SSL support (only up to `requires`, not the full `verify`). This is really needed because of data security
 
 ## ➖ Removals
 - Old "community docs"
