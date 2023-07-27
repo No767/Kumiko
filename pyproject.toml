@@ -48,7 +48,7 @@ ruff = "^0.0.280"
 sphinx = "^7.1.0"
 myst-parser = "^2.0.0"
 sphinx-autobuild = "^2021.3.14"
-furo = "^2023.5.20"
+furo = "^2023.7.26"
 sphinxext-opengraph = "^0.8.2"
 sphinx-copybutton = "^0.5.2"
 
