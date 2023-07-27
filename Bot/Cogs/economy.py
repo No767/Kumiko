@@ -3,7 +3,7 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
 from Libs.cog_utils.economy import is_economy_enabled
-from Libs.ui.economy import RegisterView
+from Libs.ui.economy import LeaderboardPages, RegisterView
 from Libs.ui.marketplace import ItemPages
 from Libs.utils import ConfirmEmbed, Embed, is_manager
 
@@ -131,6 +131,24 @@ class Economy(commands.Cog):
             return
 
         pages = ItemPages(entries=rows, ctx=ctx, per_page=1)
+        await pages.start()
+
+    @is_economy_enabled()
+    @eco.command(name="top", aliases=["baltop"])
+    async def top(self, ctx: commands.Context) -> None:
+        """View the top players in your server"""
+        query = """
+        SELECT id, rank, petals
+        FROM eco_user
+        ORDER BY petals ASC
+        LIMIT 100;
+        """
+        rows = await self.pool.fetch(query)
+        if len(rows) == 0:
+            await ctx.send("No users available")
+            return
+
+        pages = LeaderboardPages(entries=rows, ctx=ctx, per_page=10)
         await pages.start()
 
 
