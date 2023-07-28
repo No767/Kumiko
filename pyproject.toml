@@ -45,7 +45,7 @@ ruff = "^0.0.280"
 
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^7.1.0"
+sphinx = "^7.1.1"
 myst-parser = "^2.0.0"
 sphinx-autobuild = "^2021.3.14"
 furo = "^2023.7.26"
