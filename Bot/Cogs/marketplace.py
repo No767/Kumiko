@@ -31,7 +31,7 @@ class Marketplace(commands.Cog):
         SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
-        WHERE eco_item.guild_id = $1 AND eco_item.owner_id IS NULL;
+        WHERE eco_item.guild_id = $1;
         """
         rows = await self.pool.fetch(query, ctx.guild.id)  # type: ignore
         if len(rows) == 0:
@@ -56,18 +56,24 @@ class Marketplace(commands.Cog):
         SELECT eco_item.id, eco_item.price, eco_item.amount, eco_item.producer_id
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
-        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.owner_id IS NULL;
+        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2;
         """
-        setOwnerQuery = """
+        # If you already bought that item and someone else bought it
+        # then the amount owned will go to you
+        # big bug
+        # honestly a many-to-many relationship might actually be needed here
+        # TODO - Please find some way to fix this
+        purchaseItem = """
         WITH item_update AS (
             UPDATE eco_item
-            SET owner_id = $2, amount = $4
+            SET amount = $4
             WHERE guild_id = $1 AND name = $3
             RETURNING id
         )
-        UPDATE eco_item_lookup
-        SET owner_id = $2
-        WHERE id = (SELECT id FROM item_update);
+        INSERT INTO user_inv (owner_id, guild_id, amount_owned, item_id)
+        VALUES ($2, $1, $5, (SELECT id FROM item_update))
+        ON CONFLICT (item_id) DO UPDATE
+        SET amount_owned = user_inv.amount_owned + excluded.amount_owned;
         """
         updateBalanceQuery = """
         UPDATE eco_user
@@ -95,7 +101,7 @@ class Marketplace(commands.Cog):
             totalPrice = records["price"] * flags.amount
             if await isPaymentValid(records, ctx.author.id, flags.amount, conn) is True:
                 async with conn.transaction():
-                    await conn.execute(setOwnerQuery, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount)  # type: ignore
+                    await conn.execute(purchaseItem, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
                     await conn.execute(
                         updateBalanceQuery,
                         records["producer_id"],

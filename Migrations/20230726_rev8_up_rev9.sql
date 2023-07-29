@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS user_inv (
     id SERIAL PRIMARY KEY,
     owner_id BIGINT,
     guild_id BIGINT,
-    amount_owned INT,
+    amount_owned INT DEFAULT 0,
     item_id INT REFERENCES eco_item (id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 
