@@ -65,6 +65,10 @@ class Prefix(commands.Cog):
             desc = "There was an validation issue. This is because of two reasons:\n- You have more than 10 prefixes for your server\n- Your prefix fails the validation rules"
             raise ValidationError(desc)
 
+        if prefix in self.bot.prefixes[ctx.guild.id]:  # type: ignore
+            await ctx.send("The prefix you want to set already exists")
+            return
+
         query = """
             UPDATE guild
             SET prefix = ARRAY_APPEND(prefix, $1)
