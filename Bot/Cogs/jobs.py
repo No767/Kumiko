@@ -483,6 +483,7 @@ class Jobs(commands.Cog):
             if status[-1] != "0":
                 rows = await conn.fetchrow(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
                 if rows is None:
+                    # this is bugged for some odd reason
                     await ctx.send("You aren't the producer of the item!")
                     return
                 record = dict(rows)
