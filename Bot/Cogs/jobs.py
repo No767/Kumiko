@@ -467,7 +467,7 @@ class Jobs(commands.Cog):
         query = """
         SELECT eco_item_lookup.item_id, job_lookup.job_id
         FROM eco_item_lookup
-        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.worker_id
+        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.creator_id
         WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
         """
         status = await createJobOutputItem(
@@ -483,6 +483,7 @@ class Jobs(commands.Cog):
             if status[-1] != "0":
                 rows = await conn.fetchrow(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
                 if rows is None:
+                    # this is bugged for some odd reason
                     await ctx.send("You aren't the producer of the item!")
                     return
                 record = dict(rows)

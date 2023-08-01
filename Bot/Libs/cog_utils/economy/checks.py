@@ -11,6 +11,8 @@ async def check_economy_enabled(ctx: commands.Context):
     )
     if res is None:
         raise EconomyDisabled
+    elif res["local_economy"] is False:
+        raise EconomyDisabled
     return res["local_economy"]
 
 

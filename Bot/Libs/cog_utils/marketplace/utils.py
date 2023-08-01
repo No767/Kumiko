@@ -75,3 +75,28 @@ def formatOptions(rows: Union[List[Dict[str, str]], None]) -> str:
 
     names = "\n".join([row["name"] for row in rows])
     return f"Item not found. Did you mean:\n{names}"
+
+
+async def createPurchasedItem(
+    guild_id: int,
+    user_id: int,
+    name: str,
+    amount_remaining: int,
+    taken_stock: int,
+    conn: asyncpg.connection.Connection,
+) -> str:
+    query = """
+    WITH item_update AS (
+        UPDATE eco_item
+        SET amount = $4
+        WHERE guild_id = $1 AND name = $3
+        RETURNING id
+    )
+    INSERT INTO user_inv (owner_id, guild_id, amount_owned, item_id)
+    VALUES ($2, $1, $5, (SELECT id FROM item_update))
+    ON CONFLICT (item_id) DO NOTHING;
+    """
+    status = await conn.execute(
+        query, guild_id, user_id, name, amount_remaining, taken_stock
+    )
+    return status
