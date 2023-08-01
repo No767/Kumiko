@@ -467,7 +467,7 @@ class Jobs(commands.Cog):
         query = """
         SELECT eco_item_lookup.item_id, job_lookup.job_id
         FROM eco_item_lookup
-        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.worker_id
+        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.creator_id
         WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
         """
         status = await createJobOutputItem(

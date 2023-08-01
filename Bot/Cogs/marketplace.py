@@ -67,8 +67,7 @@ class Marketplace(commands.Cog):
             RETURNING id
         )
         INSERT INTO user_inv (owner_id, guild_id, amount_owned, item_id)
-        VALUES ($2, $1, $5, (SELECT id FROM item_update))
-        ON CONFLICT (item_id) DO NOTHING;
+        VALUES ($2, $1, $5, (SELECT id FROM item_update));
         """
         fetchCreatedItem = """
         SELECT eco_item.id, user_inv.owner_id
