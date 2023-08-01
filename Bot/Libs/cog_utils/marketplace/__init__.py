@@ -1,3 +1,3 @@
-from .utils import formatOptions, getItem, isPaymentValid
+from .utils import createPurchasedItem, formatOptions, getItem, isPaymentValid
 
-__all__ = ["isPaymentValid", "getItem", "formatOptions"]
+__all__ = ["isPaymentValid", "getItem", "formatOptions", "createPurchasedItem"]

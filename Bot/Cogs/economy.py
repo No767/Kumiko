@@ -121,9 +121,9 @@ class Economy(commands.Cog):
         """View your inventory"""
         query = """
         SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
-        FROM eco_item_lookup
-        INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
-        WHERE eco_item.guild_id = $1 AND eco_item.owner_id = $2;
+        FROM user_inv 
+        INNER JOIN eco_item ON eco_item.id = user_inv.item_id
+        WHERE eco_item.guild_id = $1 AND user_inv.owner_id = $2;
         """
         rows = await self.pool.fetch(query, ctx.guild.id, ctx.author.id)  # type: ignore
         if len(rows) == 0:

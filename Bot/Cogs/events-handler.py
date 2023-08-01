@@ -65,10 +65,11 @@ class EventsHandler(commands.Cog):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("DELETE FROM guild WHERE id = $1", guild.id)
-                del self.bot.prefixes[guild.id]
                 await cache.deleteJSONCache(
                     key=f"cache:kumiko:{guild.id}:guild_config", path="$"
                 )
+                if guild.id in self.bot.prefixes:
+                    del self.bot.prefixes[guild.id]
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:

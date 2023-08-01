@@ -31,7 +31,7 @@ class Marketplace(commands.Cog):
         SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
-        WHERE eco_item.guild_id = $1 AND eco_item.owner_id IS NULL;
+        WHERE eco_item.guild_id = $1;
         """
         rows = await self.pool.fetch(query, ctx.guild.id)  # type: ignore
         if len(rows) == 0:
@@ -52,22 +52,28 @@ class Marketplace(commands.Cog):
         flags: PurchaseFlags,
     ) -> None:
         """Buy an item from the marketplace"""
+        # I have committed several sins
         query = """
         SELECT eco_item.id, eco_item.price, eco_item.amount, eco_item.producer_id
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
-        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.owner_id IS NULL;
+        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2;
         """
-        setOwnerQuery = """
+        purchaseItem = """
         WITH item_update AS (
             UPDATE eco_item
-            SET owner_id = $2, amount = $4
+            SET amount = $4
             WHERE guild_id = $1 AND name = $3
             RETURNING id
         )
-        UPDATE eco_item_lookup
-        SET owner_id = $2
-        WHERE id = (SELECT id FROM item_update);
+        INSERT INTO user_inv (owner_id, guild_id, amount_owned, item_id)
+        VALUES ($2, $1, $5, (SELECT id FROM item_update));
+        """
+        fetchCreatedItem = """
+        SELECT eco_item.id, user_inv.owner_id
+        FROM user_inv
+        INNER JOIN eco_item ON eco_item.id = user_inv.item_id
+        WHERE user_inv.owner_id = $1 AND user_inv.guild_id = $2 AND LOWER(eco_item.name) = $3;
         """
         updateBalanceQuery = """
         UPDATE eco_user
@@ -78,6 +84,10 @@ class Marketplace(commands.Cog):
         UPDATE eco_user
         SET petals = petals - $2
         WHERE id = $1;
+        """
+        createLinkUpdate = """
+        INSERT INTO user_item_relations (item_id, user_id)
+        VALUES ($1, $2);
         """
         async with self.pool.acquire() as conn:
             rows = await conn.fetchrow(query, ctx.guild.id, name.lower())  # type: ignore
@@ -95,13 +105,31 @@ class Marketplace(commands.Cog):
             totalPrice = records["price"] * flags.amount
             if await isPaymentValid(records, ctx.author.id, flags.amount, conn) is True:
                 async with conn.transaction():
-                    await conn.execute(setOwnerQuery, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount)  # type: ignore
                     await conn.execute(
                         updateBalanceQuery,
                         records["producer_id"],
                         totalPrice,
                     )
                     await conn.execute(updatePurchaserQuery, ctx.author.id, totalPrice)
+                    status = await conn.execute(purchaseItem, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
+                    if status[-1] != "0":
+                        createdRows = await conn.fetchrow(fetchCreatedItem, ctx.author.id, ctx.guild.id, name.lower())  # type: ignore
+                        if createdRows is None:
+                            await ctx.send(
+                                "No items fetched. This is a bug in the system"
+                            )
+                            return
+                        createdRecords = dict(createdRows)
+                        await conn.execute(
+                            createLinkUpdate,
+                            createdRecords["id"],
+                            createdRecords["owner_id"],
+                        )
+                    else:
+                        await ctx.send(
+                            "Something went wrong with the purchase. This is usually due to the fact that there are extras. Please try again"
+                        )
+                        return
                 await ctx.send(f"Purchased item `{name}` for `{totalPrice}`")
             else:
                 await ctx.send(

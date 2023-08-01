@@ -35,7 +35,8 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         # I know this is bad, but this needs to be addressed in a different update
         # Every single item, including owned ones will get update.
         # For now, i'll leave for now
-        # TODO - Address the owner-restock issue
+        # By design, we quite literally want to restock every single one
+        # The items now don't have owners
         getItems = """
         SELECT eco_item.id, eco_item.amount, eco_item.restock_amount
         FROM eco_item_lookup
