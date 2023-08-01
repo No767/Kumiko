@@ -9,8 +9,6 @@ from kumikocore import KumikoCore
 from Libs.utils import Embed
 from psutil._common import bytes2human
 
-VERSION = "v0.10.2"
-
 
 class Meta(commands.Cog):
     """Commands to obtain info about Kumiko or others"""
@@ -49,14 +47,16 @@ class Meta(commands.Cog):
         embed.add_field(
             name="Discord.py Version", value=discord.__version__, inline=True
         )
-        embed.add_field(name="Kumiko Build Version", value=VERSION, inline=True)
+        embed.add_field(
+            name="Kumiko Build Version", value=str(self.bot.version), inline=True
+        )
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="version")
     async def version(self, ctx: commands.Context) -> None:
         """Returns the current version of Kumiko"""
         embed = Embed()
-        embed.description = f"Build Version: {VERSION}"
+        embed.description = f"Build Version: {str(self.bot.version)}"
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="ping")
@@ -92,7 +92,7 @@ class Meta(commands.Cog):
             embed.add_field(
                 name="Discord.py Version", value=discord.__version__, inline=True
             )
-            embed.add_field(name="Kumiko Build Version", value=VERSION)
+            embed.add_field(name="Kumiko Build Version", value=str(self.bot.version))
             await ctx.send(embed=embed)
 
 

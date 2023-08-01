@@ -5,13 +5,14 @@ from pathlib import Path as SyncPath
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from Cogs import EXTENSIONS
+from Cogs import EXTENSIONS, VERSION
 from discord.ext import commands
 from Libs.utils import get_prefix
 from Libs.utils.help import KumikoHelpPaginated
 from Libs.utils.postgresql import ensureOpenPostgresConn
 from Libs.utils.redis import ensureOpenRedisConn
 from lru import LRU
+from prometheus_async.aio.web import start_http_server
 from redis.asyncio.connection import ConnectionPool
 
 # Some weird import logic to ensure that watchfiles is there
@@ -82,6 +83,15 @@ class KumikoCore(commands.Bot):
         """
         return self._redis_pool
 
+    @property
+    def version(self) -> str:
+        """The version of Kumiko
+
+        Returns:
+            str: The version of Kumiko
+        """
+        return str(VERSION)
+
     # It is preffered in this case to keep an LRU cache instead of a regular Dict cache
     # For example, if an running instance keeps 100 entries ({guild_id: prefix})
     # then this would take up too much memory.
@@ -122,6 +132,7 @@ class KumikoCore(commands.Bot):
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
+        self.loop.create_task(start_http_server(addr="127.0.0.1", port=8000))
         self.loop.create_task(ensureOpenPostgresConn(self._pool))
         self.loop.create_task(ensureOpenRedisConn(self._redis_pool))
 
