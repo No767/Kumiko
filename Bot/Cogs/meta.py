@@ -1,12 +1,10 @@
-import datetime
 import platform
-import time
 
 import discord
 import psutil
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import Embed
+from Libs.utils import Embed, human_timedelta
 from psutil._common import bytes2human
 
 
@@ -20,17 +18,16 @@ class Meta(commands.Cog):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U00002754")
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        global startTime
-        startTime = time.time()
+    def get_bot_uptime(self, *, brief: bool = False) -> str:
+        return human_timedelta(
+            self.bot.uptime, accuracy=None, brief=brief, suffix=False
+        )
 
     @commands.hybrid_command(name="uptime")
     async def botUptime(self, ctx: commands.Context) -> None:
         """Returns uptime for Kumiko"""
-        uptime = datetime.timedelta(seconds=int(round(time.time() - startTime)))
         embed = Embed()
-        embed.description = f"Kumiko's Uptime: `{uptime.days} Days, {uptime.seconds//3600} Hours, {(uptime.seconds//60)%60} Minutes, {(uptime.seconds%60)} Seconds`"
+        embed.description = f"Kumiko's Uptime: **{self.get_bot_uptime()}**"
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="info")

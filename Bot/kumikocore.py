@@ -142,5 +142,7 @@ class KumikoCore(commands.Bot):
             await self.load_extension("jishaku")
 
     async def on_ready(self):
+        if not hasattr(self, "uptime"):
+            self.uptime = discord.utils.utcnow()
         currUser = None if self.user is None else self.user.name
         self.logger.info(f"{currUser} is fully ready!")

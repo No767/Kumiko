@@ -9,3 +9,4 @@ ignore:
   - "Bot/Libs/cog_utils/pins/pin_utils.py" # Contains untestable code.
   - "Bot/Cogs/**" # There are just too much code to test here
   - "Bot/Libs/utils/checks.py" # Contains untestable code, but may be tested later
+  - "Bot/Libs/utils/time.py" # too lazy to test

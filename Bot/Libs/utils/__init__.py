@@ -14,6 +14,7 @@ from .kumiko_logger import KumikoLogger
 from .member_utils import get_or_fetch_member
 from .prefix import get_prefix, validatePrefix
 from .rank_utils import calc_petals, calc_rank
+from .time import human_timedelta
 from .utils import (
     encodeDatetime,
     is_docker,
@@ -52,4 +53,5 @@ __all__ = [
     "setup_ssl",
     "CheckLegitUser",
     "is_docker",
+    "human_timedelta",
 ]

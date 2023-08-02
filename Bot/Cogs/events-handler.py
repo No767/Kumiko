@@ -10,6 +10,7 @@ from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import get_or_fetch_config, get_or_fetch_log_enabled
 from Libs.config import GuildConfig, LoggingGuildConfig
 from Libs.utils import CancelledActionEmbed, Embed, SuccessActionEmbed
+from prometheus_client import Counter, Gauge
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -20,6 +21,11 @@ class EventsHandler(commands.Cog):
         self.bot = bot
         self.pool = self.bot.pool
         self.redis_pool = self.bot.redis_pool
+        self.command_counter = Counter(
+            "commands_invoked", "All of the commands invoked"
+        )
+        self.command_failures = Counter("commands_failed", "All of the commands failed")
+        self.guild_amount = Gauge("guilds", "The amount of guilds Kumiko is in")
 
     async def ensureAllEnabled(
         self,
@@ -34,6 +40,7 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
+        self.guild_amount.inc()
         existsQuery = "SELECT EXISTS(SELECT 1 FROM guild WHERE id = $1);"
         insertQuery = """
         WITH guild_insert AS (
@@ -61,6 +68,7 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
+        self.guild_amount.dec()
         cache = KumikoCache(connection_pool=self.redis_pool)
         async with self.pool.acquire() as conn:
             async with conn.transaction():
@@ -153,6 +161,14 @@ class EventsHandler(commands.Cog):
                 embed.description = f"{user.mention} {user.global_name}"
                 embed.timestamp = utcnow()
                 await channel.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx: commands.Context) -> None:
+        self.command_counter.inc()
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: commands.Context) -> None:
+        self.command_failures.inc()
 
 
 async def setup(bot: KumikoCore) -> None:
