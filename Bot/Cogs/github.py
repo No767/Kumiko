@@ -7,7 +7,6 @@ from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
-from Libs.errors import NotFoundError
 from Libs.utils import Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
@@ -52,7 +51,8 @@ class Github(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if r.status == 404:
-                raise NotFoundError
+                await ctx.send("The release(s) were not found")
+                return
             else:
                 mainData = [
                     {
@@ -113,7 +113,8 @@ class Github(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if r.status == 404:
-                raise NotFoundError
+                await ctx.send("The repo was not found")
+                return
             else:
                 embed = Embed(title=data["name"], description=data["description"])
                 embed.set_thumbnail(url=data["owner"]["avatar_url"])

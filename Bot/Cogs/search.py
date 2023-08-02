@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
-from Libs.errors import NoItemsError
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
 load_dotenv()
@@ -87,7 +86,8 @@ class Searches(commands.Cog):
             data = await gql_session.execute(query, variable_values=params)
 
             if len(data["Page"]["media"]) == 0:
-                raise NoItemsError
+                await ctx.send("The anime was not found")
+                return
             else:
                 mainData = [
                     {
@@ -176,7 +176,8 @@ class Searches(commands.Cog):
             params = {"mangaName": name, "perPage": 25, "isAdult": False}
             data = await gql_session.execute(query, variable_values=params)
             if len(data["Page"]["media"]) == 0:
-                raise NoItemsError
+                await ctx.send("The manga(s) were not found")
+                return
             else:
                 mainData = [
                     {
@@ -230,7 +231,8 @@ class Searches(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if len(data["results"]) == 0 or r.status == 404:
-                raise NoItemsError
+                await ctx.send("The gifs were not found")
+                return
             else:
                 mainData = [
                     {"image": item["media_formats"]["gif"]["url"]}
@@ -264,7 +266,8 @@ class Searches(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if len(data["hits"]) == 0:
-                raise NoItemsError
+                await ctx.send("The mod(s) were/was not found")
+                return
             else:
                 mainData = [
                     {
