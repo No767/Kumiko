@@ -35,9 +35,7 @@ class Github(commands.Cog):
     # Force defaults to use Kumiko's repo ?
     @github.command(name="release-list")
     @app_commands.describe(owner="The owner of the repo", repo="The repo to search")
-    async def githubReleasesList(
-        self, ctx: commands.Context, owner: str, repo: str
-    ) -> None:
+    async def releases(self, ctx: commands.Context, owner: str, repo: str) -> None:
         """Get up to 25 releases for a repo"""
         headers = {
             "Authorization": f"token {GITHUB_API_KEY}",
@@ -102,7 +100,7 @@ class Github(commands.Cog):
 
     @github.command(name="repo")
     @app_commands.describe(owner="The owner of the repo", repo="The repo to search")
-    async def searchGitHub(self, ctx: commands.Context, owner: str, repo: str) -> None:
+    async def search(self, ctx: commands.Context, owner: str, repo: str) -> None:
         """Searches for one repo on GitHub"""
         headers = {
             "Authorization": f"token {GITHUB_API_KEY}",

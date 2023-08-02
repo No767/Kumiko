@@ -12,7 +12,6 @@ from Libs.utils.help import KumikoHelpPaginated
 from Libs.utils.postgresql import ensureOpenPostgresConn
 from Libs.utils.redis import ensureOpenRedisConn
 from lru import LRU
-from prometheus_async.aio.web import start_http_server
 from redis.asyncio.connection import ConnectionPool
 
 # Some weird import logic to ensure that watchfiles is there
@@ -132,7 +131,6 @@ class KumikoCore(commands.Bot):
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
-        self.loop.create_task(start_http_server(addr="127.0.0.1", port=8000))
         self.loop.create_task(ensureOpenPostgresConn(self._pool))
         self.loop.create_task(ensureOpenRedisConn(self._redis_pool))
 

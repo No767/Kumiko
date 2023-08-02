@@ -41,7 +41,7 @@ class Reddit(commands.Cog):
         search="The search query to use",
         subreddit="Which subreddit to use. Defaults to all.",
     )
-    async def redditSearch(
+    async def search(
         self, ctx: commands.Context, *, search: str, subreddit: Optional[str] = "all"
     ) -> None:
         """Searches for posts on Reddit"""
@@ -81,62 +81,11 @@ class Reddit(commands.Cog):
             pages = KumikoPages(source=embedSource, ctx=ctx)
             await pages.start()
 
-    @reddit.command(name="eggirl")
-    @app_commands.describe(filter="Sort filters. Defaults to New")
-    async def redditEggIRL(
-        self,
-        ctx: commands.Context,
-        filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
-    ) -> None:
-        """Literally just shows you r/egg_irl posts. No comment."""
-        async with asyncpraw.Reddit(
-            client_id=REDDIT_ID,
-            client_secret=REDDIT_SECRET,
-            user_agent="Kumiko (by /u/No767)",
-            requestor_kwargs={"session": self.bot.session},
-        ) as reddit:
-            sub = await reddit.subreddit(parseSubreddit("egg_irl"))
-            subGen = (
-                sub.new(limit=10)
-                if filter == "New"
-                else sub.hot(limit=10)
-                if filter == "Hot"
-                else sub.rising(limit=10)
-            )
-            data = [
-                {
-                    "title": post.title,
-                    "description": post.selftext,
-                    "image": post.url,
-                    "fields": [
-                        {"name": "Author", "value": post.author},
-                        {"name": "Upvotes", "value": post.score},
-                        {"name": "NSFW", "value": post.over_18},
-                        {"name": "Flair", "value": post.link_flair_text},
-                        {"name": "Number of Comments", "value": post.num_comments},
-                        {
-                            "name": "Reddit URL",
-                            "value": f"https://reddit.com{post.permalink}",
-                        },
-                        {
-                            "name": "Created At",
-                            "value": format_dt(
-                                datetime.fromtimestamp(post.created_utc)
-                            ),
-                        },
-                    ],
-                }
-                async for post in subGen
-            ]
-            embedSource = EmbedListSource(data, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
-            await pages.start()
-
     @reddit.command(name="feed")
     @app_commands.describe(
         subreddit="Subreddit to search", filter="Sort filters. Defaults to New"
     )
-    async def redditFeed(
+    async def feed(
         self,
         ctx: commands.Context,
         subreddit: str,
@@ -191,7 +140,7 @@ class Reddit(commands.Cog):
         subreddit="Subreddit to search",
         amount="Amount of memes to return. Defaults to 5",
     )
-    async def searchMemes(
+    async def search_memes(
         self, ctx: commands.Context, subreddit: str, amount: Optional[int] = 5
     ) -> None:
         """Searches for memes on Reddit"""

@@ -36,7 +36,7 @@ class Searches(commands.Cog):
 
     @search.command(name="anime")
     @app_commands.describe(name="The name of the anime to search")
-    async def searchAnime(self, ctx: commands.Context, *, name: str) -> None:
+    async def anime(self, ctx: commands.Context, *, name: str) -> None:
         """Searches up animes"""
         async with Client(
             transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
@@ -128,7 +128,7 @@ class Searches(commands.Cog):
 
     @search.command(name="manga")
     @app_commands.describe(name="The name of the manga to search")
-    async def searchManga(self, ctx: commands.Context, *, name: str):
+    async def manga(self, ctx: commands.Context, *, name: str):
         """Searches for manga on AniList"""
         async with Client(
             transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
@@ -217,7 +217,7 @@ class Searches(commands.Cog):
 
     @search.command(name="gifs")
     @app_commands.describe(search="The search term to use")
-    async def searchGifs(self, ctx: commands.Context, *, search: str) -> None:
+    async def gifs(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for gifs on Tenor"""
         params = {
             "q": search,
@@ -247,7 +247,7 @@ class Searches(commands.Cog):
         mod_name="The name of the mod to search for",
         modloader="Which modloader to use. Defaults to Forge.",
     )
-    async def searchMods(
+    async def mods(
         self,
         ctx: commands.Context,
         *,

@@ -26,7 +26,7 @@ class Waifu(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @waifu.command(name="one")
-    async def randomWaifu(self, ctx: commands.Context) -> None:
+    async def random_waifu(self, ctx: commands.Context) -> None:
         """Returns a random waifu pic"""
         waifuTagList = [
             "uniform",
@@ -48,7 +48,7 @@ class Waifu(commands.Cog):
             await ctx.send(embed=embed)
 
     @waifu.command(name="many")
-    async def randomWaifuMany(self, ctx: commands.Context) -> None:
+    async def many_random_waifus(self, ctx: commands.Context) -> None:
         """Returns up to 30 random waifu pics"""
         waifuTagList = [
             "uniform",
