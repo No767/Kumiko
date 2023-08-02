@@ -1,3 +1,4 @@
+import os
 import re
 import ssl
 from datetime import datetime, timedelta
@@ -87,3 +88,10 @@ def setup_ssl() -> ssl.SSLContext:
     sslctx.check_hostname = False
     sslctx.verify_mode = ssl.CERT_NONE
     return sslctx
+
+
+def is_docker() -> bool:
+    path = "/proc/self/cgroup"
+    return os.path.exists("/.dockerenv") or (
+        os.path.isfile(path) and any("docker" in line for line in open(path))
+    )

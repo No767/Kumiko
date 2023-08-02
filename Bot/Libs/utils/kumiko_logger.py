@@ -6,7 +6,11 @@ from typing import Optional, Type, TypeVar
 
 import discord
 
+from .utils import is_docker
+
 BE = TypeVar("BE", bound=BaseException)
+
+from cysystemd import journal
 
 
 class RemoveIPCNoise(logging.Filter):
@@ -44,6 +48,8 @@ class KumikoLogger:
         )
         handler.setFormatter(fmt)
         self.log.addHandler(handler)
+        if not is_docker():
+            self.log.addHandler(journal.JournaldLogHandler())
         discord.utils.setup_logging(formatter=fmt)
 
     def __exit__(

@@ -16,6 +16,7 @@ from .prefix import get_prefix, validatePrefix
 from .rank_utils import calc_petals, calc_rank
 from .utils import (
     encodeDatetime,
+    is_docker,
     parseDatetime,
     parseSubreddit,
     parseTimeStr,
@@ -50,4 +51,5 @@ __all__ = [
     "is_admin",
     "setup_ssl",
     "CheckLegitUser",
+    "is_docker",
 ]

@@ -946,6 +946,26 @@ files = [
 ]
 
 [[package]]
+name = "cysystemd"
+version = "1.5.4"
+description = "systemd wrapper in Cython"
+optional = false
+python-versions = ">3.6, <4"
+files = [
+    {file = "cysystemd-1.5.4-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:a7fc9b2758100735b199104e2a88cdd67a0e0d01fb12d152f05cd81cbdc72ee5"},
+    {file = "cysystemd-1.5.4-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:47fc80de81fa72a7a292c7997d232c8d06cbef145d317b504fa0569088c0058e"},
+    {file = "cysystemd-1.5.4-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:bd1db82dfa5a6b8020b32547fbd03dd745fca3019e2b66c7c3d8fb2793cc9e77"},
+    {file = "cysystemd-1.5.4-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:e36f2b3766e7e2a6fb682591fe74d298be352ab4384d0b1105cff447d9b07214"},
+    {file = "cysystemd-1.5.4-cp37-cp37m-manylinux_2_28_aarch64.whl", hash = "sha256:5106222b6e5819dd58d6b3ded4240f757c94777cd1bcf0e2c09ac444320acf75"},
+    {file = "cysystemd-1.5.4-cp37-cp37m-manylinux_2_28_x86_64.whl", hash = "sha256:46b8f0ac26f41e7f1e1a40332e0cfbeb1f4db6348e13fb7c40a6c73a7ff551ba"},
+    {file = "cysystemd-1.5.4-cp38-cp38-manylinux_2_28_aarch64.whl", hash = "sha256:192b2617c7ba5941fde72b5714216573e9ecb9d25c94bc37d8a74119e38b86c7"},
+    {file = "cysystemd-1.5.4-cp38-cp38-manylinux_2_28_x86_64.whl", hash = "sha256:1c5809a6046b971be81aa131310386fa57c46a0b4eb1a4f6f4a348fbbda46685"},
+    {file = "cysystemd-1.5.4-cp39-cp39-manylinux_2_28_aarch64.whl", hash = "sha256:453e99dc8f0394a00418b6b27b166831e15a4351ca942e17c5d0f21679f7210e"},
+    {file = "cysystemd-1.5.4-cp39-cp39-manylinux_2_28_x86_64.whl", hash = "sha256:5d5c88574c6d85f58c14c3c5c97b6149d94a2c332eba7bc3df4da7ece72f9fa0"},
+    {file = "cysystemd-1.5.4.tar.gz", hash = "sha256:8c08ff5b4ec2bef8abbca72ea99f1fb180ce7786fbfd72003cca50709ee1c3c3"},
+]
+
+[[package]]
 name = "cython"
 version = "3.0.0"
 description = "The Cython compiler for writing C extensions in the Python language."
@@ -3637,4 +3657,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "fdde0d864a2158b5ba4e9b4a5a864147df96673fb8bc5d15ac1ba824b8fe6f57"
+content-hash = "60817ef60c1f6a1264c92f1fcfee91837283fa8c1b08231314773a9fb71a7c2f"
