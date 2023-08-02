@@ -1,5 +1,5 @@
 from .checks import is_admin, is_manager, is_mod
-from .converters import JobName, PinAllFlags, PinName, PrefixConverter
+from .converters import CheckLegitUser, JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -49,4 +49,5 @@ __all__ = [
     "is_mod",
     "is_admin",
     "setup_ssl",
+    "CheckLegitUser",
 ]

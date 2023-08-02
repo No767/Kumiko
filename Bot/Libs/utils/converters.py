@@ -67,3 +67,24 @@ class PinAllFlags(commands.FlagConverter):
         description="Whether to dump all pins in that server",
         aliases=["a"],
     )
+
+
+class CheckLegitUser(commands.clean_content):
+    def __init__(self, *, lower: bool = False):
+        self.lower: bool = lower
+        super().__init__()
+
+    async def convert(self, ctx: commands.Context, argument: str):
+        converted = await super().convert(ctx, argument)
+        user_id = int(converted)
+
+        if ctx.guild is None:
+            raise commands.BadArgument(
+                "This is being used in a DM. Doesn't work that way"
+            )
+
+        member = ctx.guild.get_member(user_id)
+        if member is None:
+            raise commands.BadArgument("This user doesn't exist in this server")
+
+        return member.id
