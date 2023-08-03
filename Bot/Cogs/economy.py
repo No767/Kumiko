@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
-from Libs.cog_utils.economy import is_economy_enabled
+from Libs.cog_utils.economy import RefundFlags, is_economy_enabled
 from Libs.ui.economy import LeaderboardPages, RegisterView
 from Libs.ui.marketplace import ItemPages
 from Libs.utils import ConfirmEmbed, Embed, is_manager
@@ -150,6 +150,63 @@ class Economy(commands.Cog):
 
         pages = LeaderboardPages(entries=rows, ctx=ctx, per_page=10)
         await pages.start()
+
+    @is_economy_enabled()
+    @eco.command(name="refund", aliases=["return"])
+    async def refund(self, ctx: commands.Context, *, flags: RefundFlags) -> None:
+        """Refunds your item, but you will only get 75% of the original price back"""
+        sql = """
+        SELECT eco_item.name, eco_item.price, user_inv.owner_id, user_inv.amount_owned, user_inv.item_id
+        FROM user_inv
+        INNER JOIN eco_item ON eco_item.id = user_inv.item_id
+        WHERE user_inv.owner_id =  $1 AND user_inv.guild_id = $2 AND eco_item.name = $3;
+        """
+        subtract_owned_items = """
+        UPDATE user_inv
+        SET amount_owned = amount_owned - $1
+        WHERE owner_id = $2 AND guild_id = $3 AND item_id = $4;
+        """
+        add_back_items_to_stock = """
+        UPDATE eco_item
+        SET amount = amount + $1
+        WHERE id = $2;
+        """
+        add_back_price = """
+        UPDATE eco_user
+        SET petals = petals + $1
+        WHERE id = $2;
+        """
+        assert (
+            ctx.guild is not None
+        )  # Apparently this fixes the ctx.guild.id being None thing
+        async with self.pool.acquire() as conn:
+            rows = await conn.fetchrow(
+                sql, ctx.author.id, ctx.guild.id, flags.name.lower()
+            )
+            if rows is None:
+                await ctx.send("You do not own this item!")
+                return
+            records = dict(rows)
+            refund_price = ((records["price"] * flags.amount) / 4) * 3
+            if flags.amount > records["amount_owned"]:
+                # Here we want to basically make sure that if the user requests more, then we don't take more than we need to
+                # TODO: Add that math here
+                await ctx.send("You do not own that many items!")
+                return
+            async with conn.transaction():
+                await conn.execute(
+                    subtract_owned_items,
+                    flags.amount,
+                    ctx.author.id,
+                    ctx.guild.id,
+                    records["item_id"],
+                )
+                await conn.execute(
+                    add_back_items_to_stock, flags.amount, records["item_id"]
+                )
+                await conn.execute(add_back_price, refund_price, ctx.author.id)
+
+            await ctx.send("Successfully refunded your item!")
 
 
 async def setup(bot: KumikoCore) -> None:
