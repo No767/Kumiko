@@ -81,7 +81,7 @@ class KumikoCache:
             Dict[str, Any]: The value of the key-value pair
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        value = await client.json(decoder=orjson.loads).get(key, path)
+        value = await client.json().get(key, path)
         if value is None:
             return None
         if value_only is True:
