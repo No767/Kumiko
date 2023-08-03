@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Union
 
+import orjson
 import redis.asyncio as redis
 from Libs.utils import encodeDatetime
 from redis.asyncio.connection import ConnectionPool
@@ -80,7 +81,7 @@ class KumikoCache:
             Dict[str, Any]: The value of the key-value pair
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        value = await client.json().get(key, path)
+        value = await client.json(decoder=orjson.loads).get(key, path)
         if value is None:
             return None
         if value_only is True:
@@ -115,7 +116,7 @@ class KumikoCache:
             ttl (int): TTL. Usually leave this for perma cache. Defaults to 30 seconds.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json().merge(name=key, path=path, obj=value)  # type: ignore
+        await client.json(decoder=orjson.loads).merge(name=key, path=path, obj=value)  # type: ignore
         if isinstance(ttl, int):
             await client.expire(name=key, time=ttl)
 
