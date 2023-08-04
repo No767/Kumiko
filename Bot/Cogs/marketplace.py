@@ -59,6 +59,7 @@ class Marketplace(commands.Cog):
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
         WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2;
         """
+        # kids we have an issue. Upserts are needed
         purchaseItem = """
         WITH item_update AS (
             UPDATE eco_item

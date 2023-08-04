@@ -2,10 +2,11 @@ from typing import Optional
 
 import asyncpg
 import discord
+from Libs.cog_utils.auctions import create_auction
 from Libs.cog_utils.economy import refund_item
 
 
-class UserInvAHListModal(discord.ui.Modal, title="Send"):
+class UserInvAHListModal(discord.ui.Modal, title="List an item for auction"):
     amount = discord.ui.TextInput(
         label="Amount", placeholder="Enter a number", min_length=1
     )
@@ -20,7 +21,21 @@ class UserInvAHListModal(discord.ui.Modal, title="Send"):
             self.amount.max_length = len(as_str)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        await interaction.response.send_message("nice")
+        if interaction.guild is None:
+            await interaction.response.send_message(
+                "You can't use this feature in DMs", ephemeral=True
+            )
+            return
+        status = await create_auction(
+            guild_id=interaction.guild.id,
+            user_id=interaction.user.id,
+            amount_requested=int(self.amount.value),
+            item_id=self.item_id,
+            item_name=None,
+            pool=self.pool,
+        )
+        await interaction.response.send_message(status, ephemeral=True)
+        return
 
 
 class UserInvRefundModal(discord.ui.Modal, title="Refund an item"):
