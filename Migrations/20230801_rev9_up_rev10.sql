@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS user_item_relations (
     id SERIAL PRIMARY KEY,
     item_id INT,
     user_id BIGINT REFERENCES eco_user (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+    UNIQUE (item_id, user_id),
     FOREIGN KEY (item_id) REFERENCES eco_item (id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 

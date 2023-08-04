@@ -57,7 +57,8 @@ async def create_auction(
     """
     insert_into_bridge = """
     INSERT INTO ah_user_bridge (ah_item_id, user_id)
-    VALUES ($1, $2);
+    VALUES ($1, $2)
+    ON CONFLICT (ah_item_id, user_id) DO NOTHING;
     """
     async with pool.acquire() as conn:
         rows = await conn.fetchrow(
@@ -68,6 +69,7 @@ async def create_auction(
         records = dict(rows)
         listedPrice = records["price"]
         await conn.execute(take_from_base_fee, user_id, 5)
+        # print(await is_auction_valid(records, user_id, amount_requested, conn))
         # if await is_auction_valid(records, user_id, amount_requested, conn):
         async with conn.transaction():
             await conn.execute(

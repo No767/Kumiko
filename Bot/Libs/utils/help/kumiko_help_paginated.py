@@ -139,7 +139,7 @@ class HelpMenu(KumikoPages):
 
         await self.source._prepare_once()
         page = await self.source.get_page(0)
-        kwargs = await self._get_kwargs_from_page(page)
+        kwargs = await self.get_kwargs_from_page(page)
         self._update_labels(0)
         await interaction.response.edit_message(**kwargs, view=self)
 
