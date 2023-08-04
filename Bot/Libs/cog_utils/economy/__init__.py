@@ -1,5 +1,6 @@
 from .checks import check_economy_enabled, is_economy_enabled
 from .flags import ItemFlags, PurchaseFlags, RefundFlags
+from .utils import refund_item
 
 __all__ = [
     "is_economy_enabled",
@@ -7,4 +8,5 @@ __all__ = [
     "ItemFlags",
     "PurchaseFlags",
     "RefundFlags",
+    "refund_item",
 ]

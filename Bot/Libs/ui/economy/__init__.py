@@ -1,4 +1,4 @@
-from .pages import LeaderboardPages
+from .pages import LeaderboardPages, UserInvPages
 from .views import RegisterView
 
-__all__ = ["RegisterView", "LeaderboardPages"]
+__all__ = ["RegisterView", "LeaderboardPages", "UserInvPages"]

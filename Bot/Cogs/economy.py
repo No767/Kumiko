@@ -3,8 +3,7 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
 from Libs.cog_utils.economy import RefundFlags, is_economy_enabled
-from Libs.ui.economy import LeaderboardPages, RegisterView
-from Libs.ui.marketplace import ItemPages
+from Libs.ui.economy import LeaderboardPages, RegisterView, UserInvPages
 from Libs.utils import ConfirmEmbed, Embed, is_manager
 
 
@@ -130,7 +129,7 @@ class Economy(commands.Cog):
             await ctx.send("No items available")
             return
 
-        pages = ItemPages(entries=rows, ctx=ctx, per_page=1)
+        pages = UserInvPages(entries=rows, ctx=ctx, per_page=1, pool=self.pool)
         await pages.start()
 
     @is_economy_enabled()

@@ -1,18 +1,15 @@
 from typing import List
 
-import discord
+import asyncpg
 from discord.ext import commands
-from Libs.utils.pages import KumikoPages, SimplePageSource
 
-from .utils import LeaderboardEntry, LeaderboardPageEntry
-
-
-class BasePages(KumikoPages):
-    def __init__(self, entries, *, ctx: commands.Context, per_page: int = 10):
-        super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx)
-        self.embed = discord.Embed(
-            title="Leaderboard stats", colour=discord.Colour.from_rgb(219, 171, 255)
-        )
+from .base_pages import BasePages, UserInvBasePages
+from .utils import (
+    LeaderboardEntry,
+    LeaderboardPageEntry,
+    UserInvEntry,
+    UserInvPageEntry,
+)
 
 
 class LeaderboardPages(BasePages):
@@ -25,3 +22,16 @@ class LeaderboardPages(BasePages):
     ):
         converted = [LeaderboardPageEntry(entry) for entry in entries]
         super().__init__(converted, per_page=per_page, ctx=ctx)
+
+
+class UserInvPages(UserInvBasePages):
+    def __init__(
+        self,
+        entries: List[UserInvEntry],
+        *,
+        ctx: commands.Context,
+        per_page: int = 1,
+        pool: asyncpg.Pool
+    ):
+        converted = [UserInvPageEntry(entry).to_dict() for entry in entries]
+        super().__init__(converted, per_page=per_page, ctx=ctx, pool=pool)
