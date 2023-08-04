@@ -59,10 +59,16 @@ profile = 'black'
 
 [tool.pyright]
 include = ["Bot/**"]
-exclude = ["**/__pycache__", "**/.mypy_cache", "**/.dmpypy.json", "Bot/Libs/kumiko_*", "Bot/Unloaded-Cogs", "Bot/Cogs-Old"]
-ignore = ["Docker"]
+exclude = [
+    "**/__pycache__", 
+    "**/.mypy_cache", 
+    "**/.dmpypy.json", 
+    "Kumiko-Docs",
+    "Docker"
+]
 reportMissingImports = true
-reportMissingTypeStubs = false
+typeCheckingMode = "basic"
+reportUnnecessaryTypeIgnoreComment = "warning"
 
 [tool.bandit]
 skips = ["B311", "B101"]
