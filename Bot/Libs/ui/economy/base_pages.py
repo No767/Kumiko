@@ -46,7 +46,7 @@ class UserInvBasePages(KumikoPages):
         """lists on AH"""
         page_data = await self.get_embed_from_page(self.current_page)
         item_id = int(page_data["fields"][0]["value"])
-        curr_amount = int(page_data["fields"][-1]["value"])  # type: ignore
+        curr_amount = int(page_data["fields"][-1]["value"])
         await interaction.response.send_modal(
             UserInvAHListModal(curr_amount, item_id, self.pool)
         )
@@ -62,7 +62,7 @@ class UserInvBasePages(KumikoPages):
         """Basically refunds the item"""
         page_data = await self.get_embed_from_page(self.current_page)
         item_id = int(page_data["fields"][0]["value"])
-        curr_amount = int(page_data["fields"][-1]["value"])  # type: ignore
+        curr_amount = int(page_data["fields"][-1]["value"])
         await interaction.response.send_modal(
             UserInvRefundModal(curr_amount, item_id, self.pool)
         )

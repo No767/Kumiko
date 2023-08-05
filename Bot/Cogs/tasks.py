@@ -14,10 +14,12 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         self.logger = logging.getLogger("discord")
         self.update_item_stock.start()
         self.update_job_pay.start()
+        self.clear_auction_house.start()
 
     async def cog_unload(self):
         self.update_item_stock.stop()
         self.update_job_pay.stop()
+        self.clear_auction_house.stop()
 
     @tasks.loop(hours=1.0)
     async def update_item_stock(self) -> None:
@@ -107,9 +109,48 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
                         else:
                             await conn.execute(updateQuery, fetchedRecord["id"], total)
 
+    @tasks.loop(hours=24.0)
+    async def clear_auction_house(self) -> None:
+        """The internal task of clearing the last records from 24 hours ago
+
+        This is created because the auction house will always have the records completely cleared out after 24 hours. This is by design.
+        """
+        select_records = """
+        SELECT id, user_id, guild_id, item_id, amount_listed
+        FROM auction_house
+        WHERE listed_at >= (NOW() AT TIME ZONE 'utc') - INTERVAL '24 HOURS';
+        """
+        give_back_to_user = """
+        INSERT INTO user_inv (owner_id, guild_id, item_id, amount_owned)
+        VALUES ($1, $2, $3, $4)
+        ON CONFLICT (owner_id, item_id) DO UPDATE
+        SET amount_owned = user_inv.amount_owned + $4;
+        """
+        delete_records = """
+        DELETE FROM auction_house
+        WHERE id = $1 AND user_id = $2;
+        """
+        async with self.pool.acquire() as conn:
+            stmt = await conn.prepare(select_records)
+            async with conn.transaction():
+                async for row in stmt.cursor():
+                    record = dict(row)
+                    await conn.execute(
+                        give_back_to_user,
+                        record["user_id"],
+                        record["guild_id"],
+                        record["item_id"],
+                        record["amount_listed"],
+                    )
+                    await conn.execute(delete_records, record["id"], record["user_id"])
+
     @update_job_pay.error
     async def on_update_pay_error(self, error) -> None:
         self.logger.exception(f"Error in update_pay: {error}")
+
+    @clear_auction_house.error
+    async def on_clear_auction_house_error(self, error) -> None:
+        self.logger.exception(f"Error in clear_auction_house: {error}")
 
 
 async def setup(bot: KumikoCore) -> None:

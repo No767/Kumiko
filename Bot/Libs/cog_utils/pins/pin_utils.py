@@ -117,9 +117,7 @@ async def editPin(
     SET content = $1
     WHERE guild_id = $3 AND LOWER(pin.name) = $2 AND author_id = $4;
     """
-    status = await pool.execute(
-        query, content, name, guild_id, author_id  # type: ignore
-    )
+    status = await pool.execute(query, content, name, guild_id, author_id)
     return status
 
 
