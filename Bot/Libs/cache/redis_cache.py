@@ -1,8 +1,7 @@
 from typing import Any, Dict, Optional, Union
 
-import orjson
+import msgspec
 import redis.asyncio as redis
-from Libs.utils import encodeDatetime
 from redis.asyncio.connection import ConnectionPool
 
 from .key_builder import CommandKeyBuilder
@@ -58,10 +57,8 @@ class KumikoCache:
             ttl (Union[int, None], optional): TTL of the key-value pair. If None, then the TTL will not be set. Defaults to 5.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json().set(
-            name=key,
-            path=path,
-            obj=encodeDatetime(value) if isinstance(value, dict) else value,
+        await client.json(encoder=msgspec.json, decoder=msgspec.json).set(
+            name=key, path=path, obj=value
         )
         if isinstance(ttl, int):
             await client.expire(name=key, time=ttl)
@@ -81,7 +78,9 @@ class KumikoCache:
             Dict[str, Any]: The value of the key-value pair
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        value = await client.json().get(key, path)
+        value = await client.json(encoder=msgspec.json, decoder=msgspec.json).get(
+            key, path
+        )
         if value is None:
             return None
         if value_only is True:
@@ -116,7 +115,7 @@ class KumikoCache:
             ttl (int): TTL. Usually leave this for perma cache. Defaults to 30 seconds.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json(decoder=orjson.loads).merge(name=key, path=path, obj=value)  # type: ignore
+        await client.json(encoder=msgspec.json, decoder=msgspec.json).merge(name=key, path=path, obj=value)  # type: ignore
         if isinstance(ttl, int):
             await client.expire(name=key, time=ttl)
 

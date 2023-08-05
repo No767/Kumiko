@@ -12,6 +12,7 @@ from Libs.cache import CommandKeyBuilder, KumikoCache
 
 DATA = "Hello World"
 DICT_DATA = {"message": "Hello World"}
+OTHER_DATA = {"no": "yes"}
 
 
 @pytest.mark.asyncio
@@ -62,3 +63,38 @@ async def test_delete_json_cache():
     await cache.deleteJSONCache(key=key)
     res = await cache.cacheExists(key=key)
     assert res is False
+
+
+@pytest.mark.asyncio
+async def test_merge_json_cache_no_ttl():
+    key = "cache:213423425:cache"
+    cache = KumikoCache(
+        connection_pool=ConnectionPool().from_url("redis://localhost:6379/0")
+    )
+    await cache.mergeJSONCache(key=key, path="$", value=DICT_DATA, ttl=None)
+    res = await cache.getJSONCache(key=key)
+    assert isinstance(res, dict) and res == DICT_DATA
+
+
+@pytest.mark.asyncio
+async def test_merge_json_cache_with_ttl():
+    FULL_DATA = {"message": "Hello World", "testing": "no"}
+    key = "cache:21342342523423424:cache"
+    cache = KumikoCache(
+        connection_pool=ConnectionPool().from_url("redis://localhost:6379/0")
+    )
+    await cache.mergeJSONCache(key=key, path="$", value=DICT_DATA, ttl=60)
+    await cache.mergeJSONCache(key=key, path="$.testing", value="no", ttl=60)
+    res = await cache.getJSONCache(key=key)
+    assert res == FULL_DATA and isinstance(res, dict)
+
+
+@pytest.mark.asyncio
+async def test_get_json_list():
+    key = "cache:2134234252342342423424:cache"
+    cache = KumikoCache(
+        connection_pool=ConnectionPool().from_url("redis://localhost:6379/0")
+    )
+    await cache.setJSONCache(key=key, path="$", value=DATA, ttl=None)
+    res = await cache.getJSONCache(key=key, value_only=False)
+    assert isinstance(res, list)

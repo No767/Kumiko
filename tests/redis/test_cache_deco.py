@@ -22,6 +22,7 @@ async def test_cache_deco():
 
     res = await testFunc(1235, connPool)
     assert isinstance(res, str) or isinstance(res, bytes)
+    # assert res == "Hello World".encode("utf-8") and isinstance(res, bytes)
     # assert (
     #     await testFunc(1235, connPool) == "Hello World".encode("utf-8")
     # ) and isinstance(
