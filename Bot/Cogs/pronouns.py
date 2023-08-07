@@ -1,5 +1,3 @@
-from typing import Annotated
-
 import discord
 import orjson
 from discord import app_commands
@@ -14,6 +12,7 @@ from Libs.ui.pronouns import (
     PronounsWordsEntry,
 )
 from Libs.utils import Embed
+from typing_extensions import Annotated
 from yarl import URL
 
 
