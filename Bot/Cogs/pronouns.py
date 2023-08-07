@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Annotated
 
 import discord
 import orjson
@@ -6,7 +6,13 @@ from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.pronouns import parse_pronouns
-from Libs.ui.pronouns import PPPages
+from Libs.ui.pronouns import (
+    PronounsProfileCircleEntry,
+    PronounsProfileEntry,
+    PronounsProfilePages,
+    PronounsValuesEntry,
+    PronounsWordsEntry,
+)
 from Libs.utils import Embed
 from yarl import URL
 
@@ -57,23 +63,72 @@ class Pronouns(commands.Cog):
             )
             await ctx.send(embed=embed)
 
-    @pronouns.command(name="terms")
+    @pronouns.command(name="profile")
     @app_commands.describe(
-        query="The term to search for. If left blank, this will give all of the terms available"
+        username="The username of the user. These are not Discord usernames, but pronouns.page usernames"
     )
-    async def terms(self, ctx: commands.Context, *, query: Optional[str] = None):
-        """Searches for terms on Pronouns.page"""
-        # TODO - Set up custom language codes and translated versions
-        # We need a drop down menu for all of the other languages
-        url = URL("https://en.pronouns.page/api/terms")
-        if query:
-            url = URL("https://en.pronouns.page/api/terms/search") / query
-        async with self.session.get(url) as r:
+    async def profile(
+        self, ctx: commands.Context, *, username: Annotated[str, commands.clean_content]
+    ) -> None:
+        """Obtains the profile of an Pronouns.page user"""
+        url = URL("https://en.pronouns.page/api/profile/get/") / username
+        params = {"version": 2}
+        async with self.session.get(url, params=params) as r:
             data = await r.json(loads=orjson.loads)
             if len(data) == 0:
                 await ctx.send("The pronouns were not found")
                 return
-            pages = PPPages(data, ctx=ctx)
+            curr_username = data["username"]
+            avatar = data["avatar"]
+            converted = {
+                k: PronounsProfileEntry(
+                    username=curr_username,
+                    avatar=avatar,
+                    locale=k,
+                    names=[
+                        PronounsValuesEntry(
+                            value=name["value"], opinion=name["opinion"]
+                        )
+                        for name in v["names"]
+                    ],
+                    pronouns=[
+                        PronounsValuesEntry(
+                            value=pronoun["value"], opinion=pronoun["opinion"]
+                        )
+                        for pronoun in v["pronouns"]
+                    ],
+                    description=v["description"],
+                    age=v["age"],
+                    links=v["links"],
+                    flags=v["flags"],
+                    words=[
+                        PronounsWordsEntry(
+                            header=words["header"],
+                            values=[
+                                PronounsValuesEntry(
+                                    value=value["value"], opinion=value["opinion"]
+                                )
+                                for value in words["values"]
+                            ],
+                        )
+                        for words in v["words"]
+                    ],
+                    timezone=v["timezone"]["tz"],
+                    circle=[
+                        PronounsProfileCircleEntry(
+                            username=member["username"],
+                            avatar=member["avatar"],
+                            mutual=member["circleMutual"],
+                            relationship=member["relationship"],
+                        )
+                        for member in v["circle"]
+                    ]
+                    if len(v["circle"]) != 0
+                    else None,
+                )
+                for k, v in data["profiles"].items()
+            }
+            pages = PronounsProfilePages(entries=converted, ctx=ctx)
             await pages.start()
 
 
