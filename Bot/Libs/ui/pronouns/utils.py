@@ -26,7 +26,7 @@ def parse_words(words: List[PronounsWordsEntry]) -> str:
         if word.header is not None:
             result += f"\n**{word.header}**\n"
         else:
-            result += f"\n"
+            result += "\n"
         result += ", ".join(
             [
                 f"{determine_bold(value.value, value.opinion)} ({parse_opinion(value.opinion)})"

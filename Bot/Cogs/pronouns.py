@@ -71,6 +71,7 @@ class Pronouns(commands.Cog):
         self, ctx: commands.Context, *, username: Annotated[str, commands.clean_content]
     ) -> None:
         """Obtains the profile of an Pronouns.page user"""
+        await ctx.defer()
         url = URL("https://en.pronouns.page/api/profile/get/") / username
         params = {"version": 2}
         async with self.session.get(url, params=params) as r:
