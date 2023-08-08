@@ -1,3 +1,5 @@
+from typing import Optional
+
 import discord
 import orjson
 from discord import app_commands
@@ -5,9 +7,15 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.pronouns import parse_pronouns
 from Libs.ui.pronouns import (
+    PronounsInclusiveEntry,
+    PronounsInclusivePages,
+    PronounsNounsEntry,
+    PronounsNounsPages,
     PronounsProfileCircleEntry,
     PronounsProfileEntry,
     PronounsProfilePages,
+    PronounsTermsEntry,
+    PronounsTermsPages,
     PronounsValuesEntry,
     PronounsWordsEntry,
 )
@@ -28,7 +36,9 @@ class Pronouns(commands.Cog):
 
     @property
     def display_emoji(self) -> discord.PartialEmoji:
-        return discord.PartialEmoji.from_str("<:BlahajTransHeart:1096897624432443392>")
+        return discord.PartialEmoji.from_str(
+            "<:ProgressPrideheart:1053776316438167632>"
+        )
 
     @commands.hybrid_group(name="pronouns", fallback="get")
     @app_commands.describe(id="The ID of the user")
@@ -130,6 +140,138 @@ class Pronouns(commands.Cog):
             }
             pages = PronounsProfilePages(entries=converted, ctx=ctx)
             await pages.start()
+
+    @pronouns.command(name="terms")
+    @app_commands.describe(query="The term to look for")
+    async def terms(
+        self, ctx: commands.Context, *, query: Optional[str] = None
+    ) -> None:
+        """Looks up terms from Pronouns.page"""
+        url = URL("https://en.pronouns.page/api/terms")
+        if query:
+            url = url / "search" / query
+        async with self.session.get(url) as r:
+            data = await r.json(loads=orjson.loads)
+            if len(data) == 0:
+                await ctx.send("No terms were found")
+                return
+            converted = [
+                PronounsTermsEntry(
+                    term=term["term"],
+                    original=term["original"] if len(term["original"]) > 0 else None,
+                    definition=term["definition"],
+                    locale=term["locale"],
+                    flags=term["flags"],
+                    category=term["category"],
+                )
+                for term in data
+            ]
+            pages = PronounsTermsPages(entries=converted, ctx=ctx)
+            await pages.start()
+
+    @pronouns.command(name="nouns")
+    @app_commands.describe(query="The noun to look for")
+    async def nouns(
+        self, ctx: commands.Context, *, query: Optional[str] = None
+    ) -> None:
+        """Looks up nouns on Pronouns.page"""
+        url = URL("https://en.pronouns.page/api/nouns")
+        if query:
+            url = url / "search" / query
+        async with self.session.get(url) as r:
+            data = await r.json(loads=orjson.loads)
+            if len(data) == 0:
+                await ctx.send("No nouns were found")
+                return
+            converted = [
+                PronounsNounsEntry(
+                    masc=entry["masc"],
+                    fem=entry["fem"],
+                    neutr=entry["neutr"],
+                    masc_plural=entry["mascPl"],
+                    fem_plural=entry["femPl"],
+                    neutr_plural=entry["neutrPl"],
+                )
+                for entry in data
+            ]
+            pages = PronounsNounsPages(entries=converted, ctx=ctx)
+            await pages.start()
+
+    @pronouns.command(name="inclusive")
+    @app_commands.describe(term="The inclusive term to look for")
+    async def inclusive(
+        self, ctx: commands.Context, *, term: Optional[str] = None
+    ) -> None:
+        """Provides inclusive terms for users"""
+        url = URL("https://en.pronouns.page/api/inclusive")
+        if term:
+            url = url / "search" / term
+        async with self.session.get(url) as r:
+            data = await r.json(loads=orjson.loads)
+            if len(data) == 0:
+                await ctx.send("No nouns were found")
+                return
+            converted = [
+                PronounsInclusiveEntry(
+                    instead_of=entry["insteadOf"],
+                    say=entry["say"],
+                    because=entry["because"],
+                    categories=entry["categories"],
+                    clarification=entry["clarification"],
+                )
+                for entry in data
+            ]
+            pages = PronounsInclusivePages(entries=converted, ctx=ctx)
+            await pages.start()
+
+    @pronouns.command(name="lookup")
+    @app_commands.describe(
+        pronouns="The pronouns to look up. These are actual pronouns, such as she/her, and they/them. "
+    )
+    async def lookup(self, ctx: commands.Context, *, pronouns: str) -> None:
+        """Lookup info about the given pronouns
+
+        Pronouns include she/her, they/them and many others. You don't have to use the binary forms (eg they/them), but search them up like 'they' or 'she'
+        """
+        url = URL("https://en.pronouns.page/api/pronouns/")
+        banner_url = URL("https://en.pronouns.page/api/banner/")
+        full_url = url / pronouns
+        full_banner_url = banner_url / f"{pronouns}.png"
+        async with self.session.get(full_url) as r:
+            data = await r.json(loads=orjson.loads)
+            if data is None:
+                await ctx.send("The pronouns requested were not found")
+                return
+            desc = f"{data['description']}\n\n"
+
+            desc += "**Info**\n"
+            desc += (
+                f"Aliases: {data['aliases']}\nPronounceable: {data['pronounceable']}\n"
+            )
+            desc += f"Normative: {data['normative']}\n"
+            if len(data["morphemes"]) != 0:
+                desc += "\n**Morphemes**\n"
+                for k, v in data["morphemes"].items():
+                    desc += f"{k.replace('_', ' ').title()}: {v}\n"
+
+            if len(data["pronunciations"]) != 0:
+                desc += "\n**Pronunciations**\n"
+                for k, v in data["pronunciations"].items():
+                    desc += f"{k.replace('_', ' ').title()}: {v}\n"
+            embed = Embed()
+            embed.title = data["name"]
+            embed.description = desc
+            embed.add_field(name="Examples", value="\n".join(data["examples"]))
+            embed.add_field(
+                name="Forms",
+                value=f"Third Form: {data['thirdForm']}\nSmall Form: {data['smallForm']}",
+            )
+            embed.add_field(
+                name="Plural?",
+                value=f"Plural: {data['plural']}\nHonorific: {data['pluralHonorific']}",
+            )
+            embed.set_image(url=str(full_banner_url))
+            await ctx.send(embed=embed)
 
 
 async def setup(bot: KumikoCore) -> None:

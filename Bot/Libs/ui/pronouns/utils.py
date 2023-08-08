@@ -1,6 +1,6 @@
 from typing import List
 
-from .structs import PronounsWordsEntry
+from .structs import PronounsTermsEntry, PronounsWordsEntry
 
 
 def parse_opinion(opinion: str) -> str:
@@ -35,3 +35,31 @@ def parse_words(words: List[PronounsWordsEntry]) -> str:
         )
         result += "\n"
     return result
+
+
+class PronounsTermsEmbedEntry:
+    __slots__ = ("term", "original", "definition", "locale", "flags", "category")
+
+    def __init__(self, entry: PronounsTermsEntry):
+        self.term = entry.term
+        self.original = entry.original
+        self.definition = entry.definition
+        self.locale = entry.locale
+        self.flags = entry.flags
+        self.category = entry.category
+
+    def to_dict(self):
+        data = {
+            "title": self.term,
+            "description": self.definition,
+            "fields": [
+                {"name": "Original", "value": self.original, "inline": True},
+                {
+                    "name": "Flags",
+                    "value": ", ".join(self.flags).rstrip(","),
+                    "inline": True,
+                },
+                {"name": "Category", "value": self.category, "inline": True},
+            ],
+        }
+        return data

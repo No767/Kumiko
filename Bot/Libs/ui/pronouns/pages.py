@@ -4,6 +4,40 @@ import discord
 from discord.ext.commands import Context
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
+from .embed_entries import (
+    PronounsInclusiveEmbedEntry,
+    PronounsNounsEmbedEntry,
+    PronounsTermsEmbedEntry,
+)
+from .structs import PronounsInclusiveEntry, PronounsNounsEntry, PronounsTermsEntry
+
+
+class PronounsTermsPages(KumikoPages):
+    def __init__(
+        self, entries: List[PronounsTermsEntry], *, ctx: Context, per_page: int = 1
+    ):
+        converted = [PronounsTermsEmbedEntry(entry).to_dict() for entry in entries]
+        super().__init__(EmbedListSource(converted, per_page=per_page), ctx=ctx)
+        self.embed = discord.Embed(colour=discord.Colour.from_rgb(255, 125, 212))
+
+
+class PronounsInclusivePages(KumikoPages):
+    def __init__(
+        self, entries: List[PronounsInclusiveEntry], *, ctx: Context, per_page: int = 1
+    ):
+        converted = [PronounsInclusiveEmbedEntry(entry).to_dict() for entry in entries]
+        super().__init__(EmbedListSource(converted, per_page=per_page), ctx=ctx)
+        self.embed = discord.Embed(colour=discord.Colour.from_rgb(255, 125, 212))
+
+
+class PronounsNounsPages(KumikoPages):
+    def __init__(
+        self, entries: List[PronounsNounsEntry], *, ctx: Context, per_page: int = 1
+    ):
+        converted = [PronounsNounsEmbedEntry(entry).to_dict() for entry in entries]
+        super().__init__(EmbedListSource(converted, per_page=per_page), ctx=ctx)
+        self.embed = discord.Embed(colour=discord.Colour.from_rgb(255, 125, 212))
+
 
 class SimpleItemPages(KumikoPages):
     def __init__(self, entries, *, ctx: Context, per_page: int = 1):

@@ -33,3 +33,29 @@ class PronounsProfileEntry(msgspec.Struct):
     words: List[PronounsWordsEntry]
     timezone: Union[str, None]
     circle: Union[List[PronounsProfileCircleEntry], None]
+
+
+class PronounsTermsEntry(msgspec.Struct):
+    term: str
+    original: Union[str, None]
+    definition: str
+    locale: str
+    flags: str
+    category: str
+
+
+class PronounsInclusiveEntry(msgspec.Struct):
+    instead_of: str
+    say: str
+    because: str
+    categories: str
+    clarification: Union[str, None]
+
+
+class PronounsNounsEntry(msgspec.Struct):
+    masc: str
+    fem: str
+    neutr: str
+    masc_plural: str
+    fem_plural: str
+    neutr_plural: str

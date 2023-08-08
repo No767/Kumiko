@@ -1,8 +1,16 @@
-from .pages import PPPages
+from .pages import (
+    PPPages,
+    PronounsInclusivePages,
+    PronounsNounsPages,
+    PronounsTermsPages,
+)
 from .profile_pages import PronounsProfilePages
 from .structs import (
+    PronounsInclusiveEntry,
+    PronounsNounsEntry,
     PronounsProfileCircleEntry,
     PronounsProfileEntry,
+    PronounsTermsEntry,
     PronounsValuesEntry,
     PronounsWordsEntry,
 )
@@ -14,4 +22,10 @@ __all__ = [
     "PronounsProfileEntry",
     "PronounsWordsEntry",
     "PronounsProfilePages",
+    "PronounsTermsPages",
+    "PronounsTermsEntry",
+    "PronounsInclusivePages",
+    "PronounsNounsPages",
+    "PronounsNounsEntry",
+    "PronounsInclusiveEntry",
 ]
