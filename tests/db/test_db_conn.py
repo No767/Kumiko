@@ -11,7 +11,7 @@ sys.path.append(str(path))
 load_dotenv()
 
 import asyncpg
-from Libs.utils.postgresql import ensureOpenPostgresConn
+from Libs.utils import ensure_postgres_conn
 
 
 @pytest.fixture(scope="session")
@@ -25,5 +25,5 @@ def get_uri():
 @pytest.mark.asyncio
 async def test_open_postgres_conn(get_uri):
     async with asyncpg.create_pool(dsn=get_uri) as pool:
-        res = await ensureOpenPostgresConn(conn_pool=pool)
+        res = await ensure_postgres_conn(pool=pool)
         assert res is True

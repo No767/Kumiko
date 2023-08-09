@@ -1,4 +1,5 @@
 from .checks import is_admin, is_manager, is_mod
+from .connection_checks import ensure_postgres_conn, ensure_redis_conn
 from .converters import CheckLegitUser, JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
@@ -54,4 +55,6 @@ __all__ = [
     "CheckLegitUser",
     "is_docker",
     "human_timedelta",
+    "ensure_postgres_conn",
+    "ensure_redis_conn",
 ]

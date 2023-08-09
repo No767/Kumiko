@@ -7,10 +7,8 @@ import discord
 from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
 from discord.ext import commands
-from Libs.utils import get_prefix
+from Libs.utils import ensure_postgres_conn, ensure_redis_conn, get_prefix
 from Libs.utils.help import KumikoHelpPaginated
-from Libs.utils.postgresql import ensureOpenPostgresConn
-from Libs.utils.redis import ensureOpenRedisConn
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
 
@@ -131,8 +129,8 @@ class KumikoCore(commands.Bot):
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
-        self.loop.create_task(ensureOpenPostgresConn(self._pool))
-        self.loop.create_task(ensureOpenRedisConn(self._redis_pool))
+        self.loop.create_task(ensure_postgres_conn(self._pool))
+        self.loop.create_task(ensure_redis_conn(self._redis_pool))
 
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
