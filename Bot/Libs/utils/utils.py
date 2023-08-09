@@ -2,9 +2,11 @@ import os
 import re
 import ssl
 from datetime import datetime, timedelta
-from typing import Any, Dict, Union
+from typing import Any, Dict, TypeVar, Union
 
 import ciso8601
+
+T = TypeVar("T", str, None)
 
 # From https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
 # Answer: https://stackoverflow.com/a/51916936
@@ -83,10 +85,15 @@ def parseTimeStr(time_str: str) -> Union[timedelta, None]:
     return timedelta(**time_params)
 
 
-def setup_ssl() -> ssl.SSLContext:
-    sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-    sslctx.check_hostname = False
-    sslctx.verify_mode = ssl.CERT_NONE
+def setup_ssl(
+    ca_path: Union[str, None],
+    cert_path: str,
+    key_path: Union[str, None],
+    key_password: Union[str, None],
+) -> ssl.SSLContext:
+    sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=ca_path)
+    sslctx.check_hostname = True
+    sslctx.load_cert_chain(cert_path, key_path, key_password)
     return sslctx
 
 

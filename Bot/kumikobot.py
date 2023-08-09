@@ -27,6 +27,10 @@ load_dotenv()
 KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
 SSL = os.getenv("SSL") in ("True", "TRUE")
+SSL_CA = os.getenv("SSL_CA")
+SSL_CERT = os.environ["SSL_CERT"]
+SSL_KEY = os.getenv("SSL_KEY")
+SSL_KEY_PASSWORD = os.getenv("SSL_KEY_PASSWORD")
 POSTGRES_URI = os.environ["POSTGRES_URI"]
 REDIS_URI = os.environ["REDIS_URI"]
 
@@ -41,7 +45,14 @@ async def main() -> None:
         command_timeout=60,
         max_size=20,
         min_size=20,
-        ssl=setup_ssl() if SSL is True else None,
+        ssl=setup_ssl(
+            ca_path=SSL_CA,
+            cert_path=SSL_CERT,
+            key_path=SSL_KEY,
+            key_password=SSL_KEY_PASSWORD,
+        )
+        if SSL is True
+        else None,
     ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
         async with KumikoCore(
             intents=intents,
