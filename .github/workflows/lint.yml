@@ -65,5 +65,6 @@ jobs:
           poetry run pyright Bot
 
       - name: Run Ruff
+        # the rewrite for using PEP8 standards will come later
         run: |
-          poetry run ruff Bot
+          poetry run ruff Bot --ignore N

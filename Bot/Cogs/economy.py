@@ -93,16 +93,16 @@ class Economy(commands.Cog):
                 f"You have not created an economy account yet! Run `{ctx.prefix}eco register` to create one."
             )
             return
-        dictUser = dict(user)
+        user_record = dict(user)
         embed = Embed()
         embed.set_author(
             name=f"{ctx.author.display_name}'s Balance",
             icon_url=ctx.author.display_avatar.url,
         )
         embed.set_footer(text="Created at")
-        embed.timestamp = dictUser["created_at"]
-        embed.add_field(name="Rank", value=dictUser["rank"], inline=True)
-        embed.add_field(name="Petals", value=dictUser["petals"], inline=True)
+        embed.timestamp = user_record["created_at"]
+        embed.add_field(name="Rank", value=user_record["rank"], inline=True)
+        embed.add_field(name="Petals", value=user_record["petals"], inline=True)
         await ctx.send(embed=embed)
 
     @is_economy_enabled()

@@ -76,7 +76,8 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 skips = ["B311", "B101"]
 
 [tool.ruff]
-ignore = ["E501"]
+ignore = ["E501", "N999"]
+select = ["E", "F", "N"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
