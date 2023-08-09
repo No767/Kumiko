@@ -17,8 +17,8 @@ async def ensure_postgres_conn(pool: asyncpg.Pool) -> Literal[True]:
     """
     logger = logging.getLogger("discord")
     async with pool.acquire() as conn:
-        connStatus = conn.is_closed()
-        if connStatus is False:
+        res = conn.is_closed()
+        if res is False:
             logger.info("PostgreSQL server is up")
         return True
 
@@ -34,7 +34,7 @@ async def ensure_redis_conn(redis_pool: ConnectionPool) -> Literal[True]:
     """
     logger = logging.getLogger("discord")
     r: redis.Redis = redis.Redis(connection_pool=redis_pool)
-    resultPing = await r.ping()
-    if resultPing:
+    res = await r.ping()
+    if res:
         logger.info("Sucessfully connected to the Redis server")
     return True

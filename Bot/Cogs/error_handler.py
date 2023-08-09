@@ -1,4 +1,3 @@
-import sys
 import traceback
 
 from discord.ext import commands
@@ -15,14 +14,18 @@ class ErrorHandler(commands.Cog):
 
     def produce_error_embed(self, error: commands.CommandError):
         embed = ErrorEmbed()
-        error_traceback = "".join(
-            traceback.format_exception_only(error, sys.last_value)
-        )
+        error_traceback = "".join(traceback.format_exception_only(error, error))
         desc = (
             "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n",
             f"**Error**: \n```{error_traceback}```",
         )
         embed.description = "\n".join(desc)
+        return embed
+
+    def create_premade_embed(self, title: str, description: str):
+        embed = ErrorEmbed()
+        embed.title = title
+        embed.description = description
         return embed
 
     @commands.Cog.listener()
@@ -35,59 +38,47 @@ class ErrorHandler(commands.Cog):
             ctx (commands.Context): Commands context
             error (commands.CommandError): The error that is being propagated
         """
-        # if isinstance(error, commands.CommandOnCooldown):
-        #     seconds = int(error.retry_after) % (24 * 3600)
-        #     hours = seconds // 3600
-        #     seconds %= 3600
-        #     minutes = seconds // 60
-        #     seconds %= 60
-        #     await ctx.send(
-        #         embed=Embed(
-        #             description=f"This command is currently on cooldown. Try again in {hours} hour(s), {minutes} minute(s), and {seconds} second(s)."
-        #         )
-        #     )
         if isinstance(error, commands.CommandInvokeError) or isinstance(
             error, commands.HybridCommandError
         ):
             await ctx.send(embed=self.produce_error_embed(error))
         elif isinstance(error, commands.CommandNotFound):
-            errorEmbed = ErrorEmbed()
-            errorEmbed.title = "Command Not Found"
-            errorEmbed.description = (
-                "The command you were looking for could not be found"
+            await ctx.send(
+                embed=self.create_premade_embed(
+                    "Command Not Found",
+                    "The command you were looking for could not be found",
+                )
             )
-            await ctx.send(embed=errorEmbed)
         elif isinstance(error, commands.NotOwner):
-            errorEmbed = ErrorEmbed()
-            errorEmbed.title = "Command requires the owner to run"
-            errorEmbed.description = (
-                "The command can only be ran by the owner of the guild"
+            await ctx.send(
+                embed=self.create_premade_embed(
+                    "Command requires the owner to run",
+                    "The command can only be ran by the owner of the guild",
+                )
             )
-            await ctx.send(embed=errorEmbed)
         elif isinstance(error, commands.MissingPermissions):
-            missingPerms = ", ".join(error.missing_permissions).rstrip(",")
-            errorEmbed = ErrorEmbed()
-            errorEmbed.title = "Missing Permissions"
-            errorEmbed.description = (
-                f"You are missing the following permissions: {missingPerms}"
+            missing_perms = ", ".join(error.missing_permissions).rstrip(",")
+            await ctx.send(
+                embed=self.create_premade_embed(
+                    "Missing Permissions",
+                    f"You are missing the following permissions: {missing_perms}",
+                )
             )
-            await ctx.send(embed=errorEmbed)
         elif isinstance(error, commands.MissingRequiredArgument):
-            errorEmbed = ErrorEmbed()
-            errorEmbed.title = "Missing Required Argument"
-            errorEmbed.description = (
-                f"You are missing the following argument(s): {error.param.name}"
+            await ctx.send(
+                embed=self.create_premade_embed(
+                    "Missing Requireed Argument",
+                    f"You are missing the following argument(s): {error.param.name}",
+                )
             )
-            await ctx.send(embed=errorEmbed)
         elif isinstance(error, ValidationError):
-            errorEmbed = ErrorEmbed()
-            errorEmbed.title = "Validation Error"
-            errorEmbed.description = str(error)
-            await ctx.send(embed=errorEmbed)
+            await ctx.send(
+                embed=self.create_premade_embed("Validation Error", str(error))
+            )
         elif isinstance(error, EconomyDisabled):
-            errorEmbed = ErrorEmbed(title="Economy Disabled")
-            errorEmbed.description = str(error)
-            await ctx.send(embed=errorEmbed)
+            await ctx.send(
+                embed=self.create_premade_embed("Economy Disabled", str(error))
+            )
         else:
             await ctx.send(embed=self.produce_error_embed(error))
 
