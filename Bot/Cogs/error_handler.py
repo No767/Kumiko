@@ -14,9 +14,11 @@ class ErrorHandler(commands.Cog):
 
     def produce_error_embed(self, error: commands.CommandError):
         embed = ErrorEmbed()
-        desc = "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n"
-        desc += f"**Error**: \n```{''.join(traceback.format_exception_only(error))}```"
-        embed.description = desc
+        desc = (
+            "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n",
+            f"**Error**: \n```{''.join(traceback.format_exception_only(error))}```",
+        )
+        embed.description = "\n".join(desc)
         return embed
 
     @commands.Cog.listener()
