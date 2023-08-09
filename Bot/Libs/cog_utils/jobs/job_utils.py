@@ -89,7 +89,7 @@ async def submitJobApp(
     tr = connection.transaction()
     await tr.start()
     try:
-        await connection.execute(query, owner_id, guild_id, name.lower(), listed_status)  # type: ignore
+        await connection.execute(query, owner_id, guild_id, name.lower(), listed_status)
     except asyncpg.UniqueViolationError:
         await tr.rollback()
         return "The job is already taken. Please apply for another one"
