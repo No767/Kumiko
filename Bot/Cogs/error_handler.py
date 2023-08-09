@@ -12,6 +12,13 @@ class ErrorHandler(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
+    def produce_error_embed(self, error: commands.CommandError):
+        embed = ErrorEmbed()
+        desc = "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n"
+        desc += f"**Error**: \n```{''.join(traceback.format_exception_only(error))}```"
+        embed.description = desc
+        return embed
+
     @commands.Cog.listener()
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -36,11 +43,7 @@ class ErrorHandler(commands.Cog):
         if isinstance(error, commands.CommandInvokeError) or isinstance(
             error, commands.HybridCommandError
         ):
-            embed = ErrorEmbed()
-            desc = "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n"
-            desc += f"**Error**: \n```{''.join(traceback.format_exception_only(error))}```"  # type: ignore
-            embed.description = desc
-            await ctx.send(embed=embed)
+            await ctx.send(embed=self.produce_error_embed(error))
         elif isinstance(error, commands.CommandNotFound):
             errorEmbed = ErrorEmbed()
             errorEmbed.title = "Command Not Found"
@@ -80,11 +83,7 @@ class ErrorHandler(commands.Cog):
             errorEmbed.description = str(error)
             await ctx.send(embed=errorEmbed)
         else:
-            embed = ErrorEmbed()
-            desc = "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n"
-            desc += f"**Error**: \n```{''.join(traceback.format_exception_only(error))}```"  # type: ignore
-            embed.description = desc
-            await ctx.send(embed=embed)
+            await ctx.send(embed=self.produce_error_embed(error))
 
 
 async def setup(bot: KumikoCore) -> None:
