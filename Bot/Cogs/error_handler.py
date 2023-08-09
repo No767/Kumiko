@@ -1,3 +1,4 @@
+import sys
 import traceback
 
 from discord.ext import commands
@@ -14,9 +15,12 @@ class ErrorHandler(commands.Cog):
 
     def produce_error_embed(self, error: commands.CommandError):
         embed = ErrorEmbed()
+        error_traceback = "".join(
+            traceback.format_exception_only(error, sys.last_value)
+        )
         desc = (
             "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n",
-            f"**Error**: \n```{''.join(traceback.format_exception_only(error))}```",
+            f"**Error**: \n```{error_traceback}```",
         )
         embed.description = "\n".join(desc)
         return embed

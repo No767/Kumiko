@@ -17,8 +17,6 @@ from Libs.utils import ensure_postgres_conn
 @pytest.fixture(scope="session")
 def get_uri():
     pg_uri = os.getenv("POSTGRES_URI")
-    if pg_uri is None:
-        return "postgresql://postgres:postgres@localhost:5432/test"
     return pg_uri
 
 
