@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.cog_utils.jobs import createJobLink, createJobOutputItem, updateJob
+from Libs.cog_utils.jobs import create_job_link, create_job_output_item, update_job
 
 
 class CreateJob(discord.ui.Modal, title="Create Job"):
@@ -85,7 +85,7 @@ class UpdateJobModal(discord.ui.Modal, title="Update Job"):
         self.add_item(self.description)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        status = await updateJob(interaction.user.id, interaction.guild.id, self.pool, self.name, self.description.value, self.required_rank, self.pay)  # type: ignore
+        status = await update_job(interaction.user.id, interaction.guild.id, self.pool, self.name, self.description.value, self.required_rank, self.pay)  # type: ignore
         if status[-1] == 0:
             await interaction.response.send_message(
                 "You either don't own this job or the job doesn't exist. Try again."
@@ -121,7 +121,7 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
         INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.worker_id
         WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
         """
-        status = await createJobOutputItem(
+        status = await create_job_output_item(
             name=self.name,
             description=self.description.value,
             price=self.price,
@@ -139,13 +139,13 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
                     )
                     return
                 record = dict(rows)
-                jobLinkStatus = await createJobLink(
+                job_link_status = await create_job_link(
                     worker_id=interaction.user.id,
                     item_id=record["item_id"],
                     job_id=record["job_id"],
                     conn=conn,
                 )
-                if jobLinkStatus[-1] != "0":
+                if job_link_status[-1] != "0":
                     await interaction.response.send_message(
                         f"Successfully created the output item `{self.name}` (Price: {self.price}, Amount Per Hour: {self.amount})"
                     )

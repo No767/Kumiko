@@ -17,8 +17,8 @@ class RemoveIPCNoise(logging.Filter):
         self.self = self
 
     def filter(self, record: logging.LogRecord) -> bool:
-        matchRegex = r"(connection\s[open|closed])"
-        if bool(re.search(matchRegex, record.msg)):
+        match_regex = r"(connection\s[open|closed])"
+        if bool(re.search(match_regex, record.msg)):
             return False
         return True
 

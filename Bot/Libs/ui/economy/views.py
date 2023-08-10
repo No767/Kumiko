@@ -19,15 +19,15 @@ class RegisterView(discord.ui.View):
         status = await self.pool.execute(query, interaction.user.id)
         self.clear_items()
         if status[-1] == "0":
-            errorEmbed = Embed(description="You already have an economy account!")
+            error_embed = Embed(description="You already have an economy account!")
             await interaction.response.edit_message(
-                embed=errorEmbed, view=self, delete_after=20.0
+                embed=error_embed, view=self, delete_after=20.0
             )
         else:
-            successEmbed = SuccessActionEmbed()
-            successEmbed.description = "Successfully created an economy account!"
+            success_embed = SuccessActionEmbed()
+            success_embed.description = "Successfully created an economy account!"
             await interaction.response.edit_message(
-                embed=successEmbed, view=self, delete_after=20.0
+                embed=success_embed, view=self, delete_after=20.0
             )
 
     @discord.ui.button(

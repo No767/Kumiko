@@ -18,20 +18,20 @@ def get_data():
 
 @pytest.mark.asyncio
 async def test_set_or_update_cache(get_data):
-    connPool = ConnectionPool()
+    conn_pool = ConnectionPool()
     key = "cache:kumiko:123:config"
-    cache = KumikoCache(connPool)
-    await set_or_update_cache(key=key, redis_pool=connPool, data=get_data)
-    res = await cache.getJSONCache(key=key)
-    assert res == get_data  # type: ignore
+    cache = KumikoCache(conn_pool)
+    await set_or_update_cache(key=key, redis_pool=conn_pool, data=get_data)
+    res = await cache.get_json_cache(key=key)
+    assert res == get_data
 
 
 @pytest.mark.asyncio
 async def test_cached_set_or_update(get_data):
-    connPool = ConnectionPool()
+    conn_pool = ConnectionPool()
     key = "cache:kumiko:1234:config"
-    cache = KumikoCache(connPool)
-    res = await cache.setJSONCache(key=key, value=get_data)
-    await set_or_update_cache(key=key, redis_pool=connPool, data=get_data)
-    res = await cache.getJSONCache(key=key)
+    cache = KumikoCache(conn_pool)
+    res = await cache.set_json_cache(key=key, value=get_data)
+    await set_or_update_cache(key=key, redis_pool=conn_pool, data=get_data)
+    res = await cache.get_json_cache(key=key)
     assert res == get_data and res["channel_id"] == get_data["channel_id"]  # type: ignore

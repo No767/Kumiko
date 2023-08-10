@@ -52,7 +52,7 @@ class Github(commands.Cog):
                 await ctx.send("The release(s) were not found")
                 return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["name"],
                         "description": item["body"],
@@ -94,8 +94,8 @@ class Github(commands.Cog):
                     }
                     for item in data
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @github.command(name="repo")

@@ -1,8 +1,6 @@
-import traceback
-
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.errors import EconomyDisabled, ValidationError
+from Libs.errors import EconomyDisabledError, ValidationError
 from Libs.utils import ErrorEmbed
 
 
@@ -14,7 +12,7 @@ class ErrorHandler(commands.Cog):
 
     def produce_error_embed(self, error: commands.CommandError):
         embed = ErrorEmbed()
-        error_traceback = "".join(traceback.format_exception(error))
+        error_traceback = "traceback"
         desc = (
             "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n",
             f"**Error**: \n```{error_traceback}```",
@@ -75,7 +73,7 @@ class ErrorHandler(commands.Cog):
             await ctx.send(
                 embed=self.create_premade_embed("Validation Error", str(error))
             )
-        elif isinstance(error, EconomyDisabled):
+        elif isinstance(error, EconomyDisabledError):
             await ctx.send(
                 embed=self.create_premade_embed("Economy Disabled", str(error))
             )

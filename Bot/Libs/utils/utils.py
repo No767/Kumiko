@@ -11,7 +11,7 @@ T = TypeVar("T", str, None)
 # From https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
 # Answer: https://stackoverflow.com/a/51916936
 # datetimeParseRegex = re.compile(r'^((?P<days>[\.\d]+?)d)?((?P<hours>[\.\d]+?)h)?((?P<minutes>[\.\d]+?)m)?((?P<seconds>[\.\d]+?)s)?$')
-datetimeParseRegex = re.compile(
+datetime_regex = re.compile(
     r"^((?P<weeks>[\.\d]+?)w)? *"
     r"^((?P<days>[\.\d]+?)d)? *"
     r"((?P<hours>[\.\d]+?)h)? *"
@@ -20,7 +20,7 @@ datetimeParseRegex = re.compile(
 )
 
 
-def parseDatetime(datetime: Union[datetime, str]) -> datetime:
+def parse_datetime(datetime: Union[datetime, str]) -> datetime:
     """Parses a datetime object or a string into a datetime object
 
     Args:
@@ -34,7 +34,7 @@ def parseDatetime(datetime: Union[datetime, str]) -> datetime:
     return datetime
 
 
-def encodeDatetime(dict: Dict[str, Any]) -> Dict[str, Any]:
+def encode_datetime(dict: Dict[str, Any]) -> Dict[str, Any]:
     """Takes a dictionary and encodes all datetime objects into ISO 8601 strings
 
     Args:
@@ -49,7 +49,7 @@ def encodeDatetime(dict: Dict[str, Any]) -> Dict[str, Any]:
     return dict
 
 
-def parseSubreddit(subreddit: Union[str, None]) -> str:
+def parse_subreddit(subreddit: Union[str, None]) -> str:
     """Parses a subreddit name to be used in a reddit url
 
     Args:
@@ -63,7 +63,7 @@ def parseSubreddit(subreddit: Union[str, None]) -> str:
     return re.sub(r"^[r/]{2}", "", subreddit, re.IGNORECASE)
 
 
-def parseTimeStr(time_str: str) -> Union[timedelta, None]:
+def parse_time_str(time_str: str) -> Union[timedelta, None]:
     """Parse a time string e.g. (2h13m) into a timedelta object.
 
     Taken straight from https://stackoverflow.com/a/4628148
@@ -74,7 +74,7 @@ def parseTimeStr(time_str: str) -> Union[timedelta, None]:
     Returns:
         datetime.timedelta: A datetime.timedelta object
     """
-    parts = datetimeParseRegex.match(time_str)
+    parts = datetime_regex.match(time_str)
     if not parts:
         return
     parts = parts.groupdict()

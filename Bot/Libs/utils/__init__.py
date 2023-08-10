@@ -10,19 +10,19 @@ from .embeds import (
     LeaveEmbed,
     SuccessActionEmbed,
 )
-from .greedy_formatter import formatGreedy
+from .greedy_formatter import format_greedy
 from .kumiko_logger import KumikoLogger
 from .member_utils import get_or_fetch_member
 from .message_constants import MessageConstants
-from .prefix import get_prefix, validatePrefix
+from .prefix import get_prefix
 from .rank_utils import calc_petals, calc_rank
 from .time import human_timedelta
 from .utils import (
-    encodeDatetime,
+    encode_datetime,
     is_docker,
-    parseDatetime,
-    parseSubreddit,
-    parseTimeStr,
+    parse_datetime,
+    parse_subreddit,
+    parse_time_str,
     setup_ssl,
 )
 
@@ -30,16 +30,15 @@ __all__ = [
     "PrefixConverter",
     "PinName",
     "PinAllFlags",
-    "parseDatetime",
-    "encodeDatetime",
+    "parse_datetime",
+    "encode_datetime",
     "Embed",
     "ErrorEmbed",
-    "parseSubreddit",
-    "parseTimeStr",
-    "formatGreedy",
+    "parse_subreddit",
+    "parse_time_str",
+    "format_greedy",
     "KumikoLogger",
     "get_prefix",
-    "validatePrefix",
     "ConfirmEmbed",
     "SuccessActionEmbed",
     "CancelledActionEmbed",

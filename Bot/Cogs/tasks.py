@@ -39,24 +39,24 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         # For now, i'll leave for now
         # By design, we quite literally want to restock every single one
         # The items now don't have owners
-        getItems = """
+        get_itms = """
         SELECT eco_item.id, eco_item.amount, eco_item.restock_amount
         FROM eco_item_lookup
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id;
         """
-        updateStock = """
+        update_stock = """
         UPDATE eco_item
         SET amount = amount + $2
         WHERE id = $1;
         """
         async with self.pool.acquire() as conn:
-            smt = await conn.prepare(getItems)
+            smt = await conn.prepare(get_itms)
             async with conn.transaction():
                 async for row in smt.cursor():
                     if row is not None:
                         record = dict(row)
                         await conn.execute(
-                            updateStock, record["id"], record["restock_amount"]
+                            update_stock, record["id"], record["restock_amount"]
                         )
 
     @tasks.loop(hours=1.0)
@@ -73,41 +73,43 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         The user of prepared statements make sense here since we are running these cursors through literally every single registered user. Which can get a lot
         """
         # is this inner join really needed?
-        sumDataQuery = """
+        sum_data_query = """
         SELECT SUM(job.pay_amount) AS total
         FROM job_lookup
         INNER JOIN job ON job.id = job_lookup.job_id
         WHERE job_lookup.worker_id = $1 AND job_lookup.listed = False
         GROUP BY job_lookup.worker_id;
         """
-        updateQuery = """
+        update_query = """
         UPDATE eco_user
         SET petals = petals + $2
         WHERE id = $1;
         """
-        updateRankAndPetalsQuery = """
+        update_rank_and_petals_query = """
         UPDATE eco_user
         SET rank = $2, petals = petals + $3
         WHERE id = $1;
         """
         async with self.pool.acquire() as conn:
             smt = await conn.prepare("SELECT id, rank, petals FROM eco_user")
-            sumDataSmt = await conn.prepare(sumDataQuery)
+            sum_data_smt = await conn.prepare(sum_data_query)
             async with conn.transaction():
                 async for record in smt.cursor():
-                    fetchedRecord = dict(record)
-                    total = await sumDataSmt.fetchval(fetchedRecord["id"])
+                    fetched_record = dict(record)
+                    total = await sum_data_smt.fetchval(fetched_record["id"])
                     if total is not None:
-                        predictedRank = calc_rank(fetchedRecord["petals"] + total)
-                        if predictedRank > fetchedRecord["rank"]:
+                        predicted_rank = calc_rank(fetched_record["petals"] + total)
+                        if predicted_rank > fetched_record["rank"]:
                             await conn.execute(
-                                updateRankAndPetalsQuery,
-                                fetchedRecord["id"],
-                                predictedRank,
+                                update_rank_and_petals_query,
+                                fetched_record["id"],
+                                predicted_rank,
                                 total,
                             )
                         else:
-                            await conn.execute(updateQuery, fetchedRecord["id"], total)
+                            await conn.execute(
+                                update_query, fetched_record["id"], total
+                            )
 
     @tasks.loop(hours=24.0)
     async def clear_auction_house(self) -> None:

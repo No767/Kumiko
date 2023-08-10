@@ -3,7 +3,7 @@ from typing import Dict, List, Union
 import asyncpg
 
 
-async def getPinText(
+async def get_pin_content(
     id: int, pin_name: str, pool: asyncpg.Pool
 ) -> Union[str, List[Dict[str, str]], None]:
     """Gets a tag from the database.
@@ -16,14 +16,14 @@ async def getPinText(
     Returns:
         Union[str, None]: The tag content or None if it doesn't exist
     """
-    sqlQuery = """
+    query = """
     SELECT pin.content
     FROM pin_lookup
     INNER JOIN pin ON pin.id = pin_lookup.pin_id
     WHERE pin_lookup.guild_id=$1 AND LOWER(pin_lookup.name)=$2 OR LOWER($2) = ANY(aliases); 
     """
     async with pool.acquire() as conn:
-        res = await conn.fetchval(sqlQuery, id, pin_name)
+        res = await conn.fetchval(query, id, pin_name)
         if res is None:
             query = """
             SELECT     pin_lookup.name
@@ -32,15 +32,15 @@ async def getPinText(
             ORDER BY   similarity(pin_lookup.name, $2) DESC
             LIMIT 5;
             """
-            newRes = await conn.fetch(query, id, pin_name)
-            if newRes is None or len(newRes) == 0:
+            new_res = await conn.fetch(query, id, pin_name)
+            if new_res is None or len(new_res) == 0:
                 return None
 
-            return [dict(row) for row in newRes]
+            return [dict(row) for row in new_res]
         return res
 
 
-async def getPinInfo(id: int, pin_name: str, pool: asyncpg.Pool) -> Union[Dict, None]:
+async def get_pin_info(id: int, pin_name: str, pool: asyncpg.Pool) -> Union[Dict, None]:
     """Gets the info from an pin
 
     Args:
@@ -63,7 +63,7 @@ async def getPinInfo(id: int, pin_name: str, pool: asyncpg.Pool) -> Union[Dict, 
     return dict(res)
 
 
-async def createPin(
+async def create_pin(
     author_id: int, guild_id: int, pool: asyncpg.Pool, name: str, content: str
 ) -> str:
     """Creates a pin from the given info
@@ -109,7 +109,7 @@ async def createPin(
             return f"Pin `{name}` successfully created"
 
 
-async def editPin(
+async def edit_pin(
     guild_id: int, author_id: int, pool: asyncpg.Pool, name: str, content: str
 ) -> str:
     query = """
@@ -121,7 +121,7 @@ async def editPin(
     return status
 
 
-async def getAllPins(guild_id: int, pool: asyncpg.Pool):
+async def get_all_pins(guild_id: int, pool: asyncpg.Pool):
     query = """
     SELECT pin.id, pin.name, pin_lookup.aliases, pin.content, pin.created_at, pin.author_id
     FROM pin_lookup
@@ -135,7 +135,7 @@ async def getAllPins(guild_id: int, pool: asyncpg.Pool):
         return rows
 
 
-async def getOwnedPins(author_id: int, guild_id: int, pool: asyncpg.Pool):
+async def get_owned_pins(author_id: int, guild_id: int, pool: asyncpg.Pool):
     query = """
     SELECT pin.name, pin.id
     FROM pin_lookup

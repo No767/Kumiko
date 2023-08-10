@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional, Union
 
 from redis.asyncio.connection import ConnectionPool
 
-from .redis_cache import CommandKeyBuilder, KumikoCache
+from .redis_cache import KumikoCache, command_key_builder
 
 
 class cache:
@@ -47,20 +47,20 @@ class cache:
         cache = KumikoCache(connection_pool=redis_pool)
         key = self.key
         if key is None:
-            key = CommandKeyBuilder(
+            key = command_key_builder(
                 prefix="cache",
                 namespace="kumiko",
                 id=id or uuid.uuid4(),
                 command=self.name or func.__name__,
             )
 
-        if await cache.cacheExists(key=key) is False:
-            await cache.setBasicCache(key=key, value=res, ttl=self.ttl)
+        if await cache.cache_exists(key=key) is False:
+            await cache.set_basic_cache(key=key, value=res, ttl=self.ttl)
             return res
-        return await cache.getBasicCache(key=key)
+        return await cache.get_basic_cache(key=key)
 
 
-class cacheJson:
+class cache_json:
     """
     A decorator to cache the result of a function that returns a `dict` to Redis.
 
@@ -106,14 +106,14 @@ class cacheJson:
         cache = KumikoCache(connection_pool=redis_pool)
         key = self.key
         if key is None:
-            key = CommandKeyBuilder(
+            key = command_key_builder(
                 prefix="cache",
                 namespace="kumiko",
                 id=id or uuid.uuid4(),
                 command=self.name or func.__name__,
             )
 
-        if await cache.cacheExists(key=key) is False:
-            await cache.setJSONCache(key=key, value=res, ttl=self.ttl)
+        if await cache.cache_exists(key=key) is False:
+            await cache.set_json_cache(key=key, value=res, ttl=self.ttl)
             return res
-        return await cache.getJSONCache(key=key, path=self.path)
+        return await cache.get_json_cache(key=key, path=self.path)

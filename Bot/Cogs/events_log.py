@@ -30,18 +30,18 @@ class EventsLog(commands.Cog):
     @is_manager()
     @commands.guild_only()
     @logs.command(name="enable")
-    async def enableLogs(self, ctx: commands.Context) -> None:
+    async def enable(self, ctx: commands.Context) -> None:
         """Registers and enables events logging on the server"""
-        registerInfo = "In order to get started, **only** select one of the options within the dropdown menu in order to set it.\nOnce you are done, click the finish button."
+        register_info = "In order to get started, **only** select one of the options within the dropdown menu in order to set it.\nOnce you are done, click the finish button."
         embed = Embed(title="Registration Info")
-        embed.description = registerInfo
+        embed.description = register_info
         view = RegisterView(pool=self.pool, redis_pool=self.redis_pool)
         await ctx.send(embed=embed, view=view)
 
     @is_manager()
     @commands.guild_only()
     @logs.command(name="disable")
-    async def disableLogs(self, ctx: commands.Context) -> None:
+    async def disable(self, ctx: commands.Context) -> None:
         """Disables and unregisters the events logging on the server"""
         view = UnregisterView(pool=self.pool, redis_pool=self.redis_pool)
         embed = ConfirmEmbed()
@@ -51,7 +51,7 @@ class EventsLog(commands.Cog):
     @is_manager()
     @commands.guild_only()
     @logs.command(name="info")
-    async def logInfo(self, ctx: commands.Context) -> None:
+    async def info(self, ctx: commands.Context) -> None:
         """Displays info about the events logging module"""
         guild_id = ctx.guild.id  # type: ignore
         results = await get_or_fetch_guild_config(guild_id, self.pool, self.redis_pool)
@@ -78,7 +78,7 @@ class EventsLog(commands.Cog):
     @is_manager()
     @commands.guild_only()
     @logs.command(name="configure", aliases=["config"])
-    async def logConfig(self, ctx: commands.Context, events: EventsFlag) -> None:
+    async def config(self, ctx: commands.Context, events: EventsFlag) -> None:
         """Configures which events are enabled"""
         query = """
         UPDATE logging_config
@@ -88,29 +88,31 @@ class EventsLog(commands.Cog):
         guild_id = ctx.guild.id  # type: ignore
         key = f"cache:kumiko:{guild_id}:guild_config"
         cache = KumikoCache(connection_pool=self.redis_pool)
-        getConfig = await get_or_fetch_config(
+        get_config = await get_or_fetch_config(
             id=guild_id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if getConfig is None:
+        if get_config is None:
             await ctx.send("The config was not set up. Please enable the logs module")
             return
 
         lgc = LoggingGuildConfig(
-            channel_id=getConfig["channel_id"],
+            channel_id=get_config["channel_id"],
             member_events=events.member,
             mod_events=events.mod,
             eco_events=events.eco,
         )
         if events.all is True:
             lgc = LoggingGuildConfig(
-                channel_id=getConfig["channel_id"],
+                channel_id=get_config["channel_id"],
                 member_events=True,
                 mod_events=True,
                 eco_events=True,
             )
 
         await self.pool.execute(query, guild_id, events.member, events.mod, events.eco)
-        await cache.mergeJSONCache(key=key, value=asdict(lgc), path="$.logging_config")
+        await cache.merge_json_cache(
+            key=key, value=asdict(lgc), path="$.logging_config"
+        )
         await ctx.send("Updated successfully!")
 
 

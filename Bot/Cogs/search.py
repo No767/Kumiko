@@ -89,7 +89,7 @@ class Searches(commands.Cog):
                 await ctx.send("The anime was not found")
                 return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["title"]["romaji"],
                         "description": str(item["description"]).replace("<br>", ""),
@@ -122,8 +122,8 @@ class Searches(commands.Cog):
                     }
                     for item in data["Page"]["media"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @search.command(name="manga")
@@ -179,7 +179,7 @@ class Searches(commands.Cog):
                 await ctx.send("The manga(s) were not found")
                 return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["title"]["romaji"],
                         "description": str(item["description"]).replace("<br>", ""),
@@ -211,8 +211,8 @@ class Searches(commands.Cog):
                     }
                     for item in data["Page"]["media"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @search.command(name="gifs")
@@ -234,12 +234,12 @@ class Searches(commands.Cog):
                 await ctx.send("The gifs were not found")
                 return
             else:
-                mainData = [
+                main_data = [
                     {"image": item["media_formats"]["gif"]["url"]}
                     for item in data["results"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @search.command(name="mc-mods")
@@ -269,7 +269,7 @@ class Searches(commands.Cog):
                 await ctx.send("The mod(s) were/was not found")
                 return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["title"],
                         "description": item["description"],
@@ -304,8 +304,8 @@ class Searches(commands.Cog):
                     }
                     for item in data["hits"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
 

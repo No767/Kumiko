@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.cog_utils.pins import editPin
+from Libs.cog_utils.pins import edit_pin
 
 
 class CreatePin(discord.ui.Modal, title="Create Pin"):
@@ -27,7 +27,7 @@ class CreatePin(discord.ui.Modal, title="Create Pin"):
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
         # Ripped the whole thing from RDanny again...
-        insertQuery = """WITH pin_insert AS (
+        query = """WITH pin_insert AS (
             INSERT INTO pin (author_id, guild_id, name, content) 
             VALUES ($1, $2, $3, $4)
             RETURNING id
@@ -41,7 +41,7 @@ class CreatePin(discord.ui.Modal, title="Create Pin"):
 
             try:
                 await conn.execute(
-                    insertQuery,
+                    query,
                     interaction.user.id,
                     interaction.guild.id,  # type: ignore
                     self.name.value,
@@ -83,9 +83,11 @@ class PinEditModal(discord.ui.Modal, title="Edit Pin"):
         self.add_item(self.content)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        guildId = interaction.guild.id  # type: ignore
-        userId = interaction.user.id
-        res = await editPin(guildId, userId, self.pool, self.name, self.content.value)
+        guild_id = interaction.guild.id  # type: ignore
+        user_id = interaction.user.id
+        res = await edit_pin(
+            guild_id, user_id, self.pool, self.name, self.content.value
+        )
         if res[-1] == "0":
             await interaction.response.send_message(
                 "Could not edit pin. Are you sure you own it?"

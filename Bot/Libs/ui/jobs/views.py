@@ -17,25 +17,25 @@ class DeleteJobView(discord.ui.View):
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        guildId = interaction.guild.id  # type: ignore
-        userId = interaction.user.id
+        guild_id = interaction.guild.id  # type: ignore
+        user_id = interaction.user.id
         query = """
         DELETE FROM job
         WHERE guild_id=$1 AND creator_id=$2 AND name= $3;
         """
         async with self.pool.acquire() as conn:
-            status = await conn.execute(query, guildId, userId, self.job_name)
+            status = await conn.execute(query, guild_id, user_id, self.job_name)
             self.clear_items()
             if status[-1] == "0":
-                errorEmbed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
+                error_embed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
                 await interaction.response.edit_message(
-                    embed=errorEmbed, view=self, delete_after=20.0
+                    embed=error_embed, view=self, delete_after=20.0
                 )
             else:
-                successEmbed = SuccessActionEmbed()
-                successEmbed.description = f"Deleted job `{self.job_name}`"
+                success_embed = SuccessActionEmbed()
+                success_embed.description = f"Deleted job `{self.job_name}`"
                 await interaction.response.edit_message(
-                    embed=successEmbed, view=self, delete_after=20.0
+                    embed=success_embed, view=self, delete_after=20.0
                 )
 
     @discord.ui.button(
@@ -65,25 +65,25 @@ class DeleteJobViaIDView(discord.ui.View):
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        guildId = interaction.guild.id  # type: ignore
-        userId = interaction.user.id
+        guild_id = interaction.guild.id  # type: ignore
+        user_id = interaction.user.id
         query = """
         DELETE FROM job
         WHERE guild_id=$1 AND creator_id=$2 AND id=$3;
         """
         async with self.pool.acquire() as conn:
-            status = await conn.execute(query, guildId, userId, self.job_id)
+            status = await conn.execute(query, guild_id, user_id, self.job_id)
             self.clear_items()
             if status[-1] == "0":
-                errorEmbed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
+                error_embed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
                 await interaction.response.edit_message(
-                    embed=errorEmbed, view=self, delete_after=20.0
+                    embed=error_embed, view=self, delete_after=20.0
                 )
             else:
-                successEmbed = SuccessActionEmbed()
-                successEmbed.description = f"Deleted job via ID (ID: `{self.job_id}`)"
+                success_embed = SuccessActionEmbed()
+                success_embed.description = f"Deleted job via ID (ID: `{self.job_id}`)"
                 await interaction.response.edit_message(
-                    embed=successEmbed, view=self, delete_after=20.0
+                    embed=success_embed, view=self, delete_after=20.0
                 )
 
     @discord.ui.button(
@@ -112,25 +112,25 @@ class PurgeJobsView(discord.ui.View):
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        guildId = interaction.guild.id  # type: ignore
-        userId = interaction.user.id
+        guild_id = interaction.guild.id  # type: ignore
+        user_id = interaction.user.id
         query = """
         DELETE FROM job
         WHERE guild_id=$1 AND creator_id=$2;
         """
         async with self.pool.acquire() as conn:
-            status = await conn.execute(query, guildId, userId)
+            status = await conn.execute(query, guild_id, user_id)
             self.clear_items()
             if status[-1] == "0":
-                errorEmbed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
+                error_embed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
                 await interaction.response.edit_message(
-                    embed=errorEmbed, view=self, delete_after=20.0
+                    embed=error_embed, view=self, delete_after=20.0
                 )
             else:
-                successEmbed = SuccessActionEmbed()
-                successEmbed.description = "Fully purged all jobs that you own."
+                success_embed = SuccessActionEmbed()
+                success_embed.description = "Fully purged all jobs that you own."
                 await interaction.response.edit_message(
-                    embed=successEmbed, view=self, delete_after=20.0
+                    embed=success_embed, view=self, delete_after=20.0
                 )
 
     @discord.ui.button(

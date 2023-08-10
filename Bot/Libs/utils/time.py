@@ -6,7 +6,7 @@ from typing import Optional, Sequence
 from dateutil.relativedelta import relativedelta
 
 
-class plural:
+class Plural:
     def __init__(self, value: int):
         self.value: int = value
 
@@ -86,7 +86,7 @@ def human_timedelta(
             if weeks:
                 elem -= weeks * 7
                 if not brief:
-                    output.append(format(plural(weeks), "week"))
+                    output.append(format(Plural(weeks), "week"))
                 else:
                     output.append(f"{weeks}w")
 
@@ -96,7 +96,7 @@ def human_timedelta(
         if brief:
             output.append(f"{elem}{brief_attr}")
         else:
-            output.append(format(plural(elem), attr))
+            output.append(format(Plural(elem), attr))
 
     if accuracy is not None:
         output = output[:accuracy]

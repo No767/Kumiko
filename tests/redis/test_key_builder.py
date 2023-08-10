@@ -4,13 +4,13 @@ from pathlib import Path
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.cache import CommandKeyBuilder
+from Libs.cache import command_key_builder
 
 
 def test_commmand_key_builder():
     assert (  # nosec
-        isinstance(CommandKeyBuilder(), str)
-        and CommandKeyBuilder(
+        isinstance(command_key_builder(), str)
+        and command_key_builder(
             prefix="cache", namespace="kumiko", id=123, command="test"
         )
         == "cache:kumiko:123:test"

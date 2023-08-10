@@ -9,13 +9,13 @@ from Libs.cog_utils.economy import is_economy_enabled
 from Libs.cog_utils.jobs import (
     JobListFlags,
     JobOutputFlags,
-    createJob,
-    createJobLink,
-    createJobOutputItem,
-    formatOptions,
-    getJob,
-    submitJobApp,
-    updateJob,
+    create_job,
+    create_job_link,
+    create_job_output_item,
+    format_job_options,
+    get_job,
+    submit_job_app,
+    update_job,
 )
 from Libs.ui.jobs import (
     CreateJob,
@@ -86,7 +86,7 @@ class Jobs(commands.Cog):
             pages = JobPages(entries=results, ctx=ctx, per_page=10)
             await pages.start()
         else:
-            dataList = [
+            data_list = [
                 {
                     "title": row["name"],
                     "description": row["description"],
@@ -106,7 +106,7 @@ class Jobs(commands.Cog):
                 }
                 for row in results
             ]
-            pages = KumikoPages(EmbedListSource(dataList, per_page=1), ctx=ctx)
+            pages = KumikoPages(EmbedListSource(data_list, per_page=1), ctx=ctx)
             await pages.start()
 
     @is_economy_enabled()
@@ -120,8 +120,8 @@ class Jobs(commands.Cog):
     ) -> None:
         """Create a job for your server"""
         if ctx.interaction is not None:
-            createPinModal = CreateJob(self.pool, required_rank, pay)
-            await ctx.interaction.response.send_modal(createPinModal)
+            create_job_modal = CreateJob(self.pool, required_rank, pay)
+            await ctx.interaction.response.send_modal(create_job_modal)
             return
 
         await ctx.send("What would you like the job's name to be?")
@@ -195,7 +195,7 @@ class Jobs(commands.Cog):
             return
 
         try:
-            status = await createJob(ctx.author.id, ctx.guild.id, self.pool, name, clean_content, required_rank, pay)  # type: ignore
+            status = await create_job(ctx.author.id, ctx.guild.id, self.pool, name, clean_content, required_rank, pay)  # type: ignore
             await ctx.send(status)
         finally:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
@@ -216,8 +216,8 @@ class Jobs(commands.Cog):
     ) -> None:
         """Updates an owned job with new information"""
         if ctx.interaction is not None:
-            updateJobModal = UpdateJobModal(self.pool, name, required_rank, pay)
-            await ctx.interaction.response.send_modal(updateJobModal)
+            update_job_modal = UpdateJobModal(self.pool, name, required_rank, pay)
+            await ctx.interaction.response.send_modal(update_job_modal)
             return
 
         def check(msg):
@@ -246,7 +246,7 @@ class Jobs(commands.Cog):
             await ctx.send("Job description is a maximum of 2000 characters.")
             return
 
-        status = await updateJob(ctx.author.id, ctx.guild.id, self.pool, name, clean_content, required_rank, pay)  # type: ignore
+        status = await update_job(ctx.author.id, ctx.guild.id, self.pool, name, clean_content, required_rank, pay)  # type: ignore
         if status[-1] == 0:
             await ctx.send(MessageConstants.NO_JOB)
             return
@@ -336,10 +336,10 @@ class Jobs(commands.Cog):
         SELECT COUNT(*) FROM job WHERE guild_id = $1 AND worker_id = $2;
         """
         async with self.pool.acquire() as conn:
-            jobCount = await conn.fetchval(query, ctx.guild.id, ctx.author.id)  # type: ignore
+            job_count = await conn.fetchval(query, ctx.guild.id, ctx.author.id)  # type: ignore
             rows = await conn.fetchrow("SELECT creator_id, worker_id FROM job WHERE guild_id = $1 AND name = $2;", ctx.guild.id, name.lower())  # type: ignore
             # customizable?
-            if jobCount > 3:
+            if job_count > 3:
                 await ctx.send("You can't have more than 3 jobs at a time!")
                 return
 
@@ -351,7 +351,7 @@ class Jobs(commands.Cog):
                 await ctx.send("This job is already taken!")
                 return
 
-            status = await submitJobApp(ctx.author.id, ctx.guild.id, name.lower(), False, conn)  # type: ignore
+            status = await submit_job_app(ctx.author.id, ctx.guild.id, name.lower(), False, conn)  # type: ignore
             await ctx.send(status)
             return
 
@@ -372,7 +372,7 @@ class Jobs(commands.Cog):
                 await ctx.send("This job is available! Apply for it first!")
                 return
             else:
-                status = await submitJobApp(None, ctx.guild.id, name.lower(), True, conn)  # type: ignore
+                status = await submit_job_app(None, ctx.guild.id, name.lower(), True, conn)  # type: ignore
                 await ctx.send(status)
                 return
 
@@ -383,14 +383,14 @@ class Jobs(commands.Cog):
         self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Get info about a job"""
-        jobResults = await getJob(ctx.guild.id, name.lower(), self.pool)  # type: ignore
-        if isinstance(jobResults, list):
-            await ctx.send(formatOptions(jobResults) or "No jobs were found")
+        job_results = await get_job(ctx.guild.id, name.lower(), self.pool)  # type: ignore
+        if isinstance(job_results, list):
+            await ctx.send(format_job_options(job_results) or "No jobs were found")
             return
-        embed = Embed(title=jobResults["name"], description=jobResults["description"])  # type: ignore
-        embed.add_field(name="Required Rank", value=jobResults["required_rank"])  # type: ignore
-        embed.add_field(name="Pay Amount", value=jobResults["pay_amount"])  # type: ignore
-        embed.set_footer(text=f"ID: {jobResults['id']}")  # type: ignore
+        embed = Embed(title=job_results["name"], description=job_results["description"])  # type: ignore
+        embed.add_field(name="Required Rank", value=job_results["required_rank"])  # type: ignore
+        embed.add_field(name="Pay Amount", value=job_results["pay_amount"])  # type: ignore
+        embed.set_footer(text=f"ID: {job_results['id']}")  # type: ignore
         await ctx.send(embed=embed)
 
     @is_economy_enabled()
@@ -429,10 +429,10 @@ class Jobs(commands.Cog):
     ) -> None:
         """Associate an item with the job's output. A job can only produce one item."""
         if ctx.interaction is not None:
-            outputModal = CreateJobOutputItemModal(
+            output_modal = CreateJobOutputItemModal(
                 self.pool, name, flags.price, flags.amount_per_hour
             )
-            await ctx.interaction.response.send_modal(outputModal)
+            await ctx.interaction.response.send_modal(output_modal)
             return
 
         def check(msg):
@@ -464,7 +464,7 @@ class Jobs(commands.Cog):
         INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.creator_id
         WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
         """
-        status = await createJobOutputItem(
+        status = await create_job_output_item(
             name=name,
             description=clean_content,
             price=flags.price,
@@ -481,13 +481,13 @@ class Jobs(commands.Cog):
                     await ctx.send("You aren't the producer of the item!")
                     return
                 record = dict(rows)
-                jobLinkStatus = await createJobLink(
+                job_link_status = await create_job_link(
                     worker_id=ctx.author.id,
                     item_id=record["item_id"],
                     job_id=record["job_id"],
                     conn=conn,
                 )
-                if jobLinkStatus[-1] != "0":
+                if job_link_status[-1] != "0":
                     await ctx.send(
                         f"Successfully created the output item `{name}` (Price: {flags.price}, Amount Per Hour: {flags.amount_per_hour})"
                     )

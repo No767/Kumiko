@@ -71,7 +71,7 @@ async def create_auction(
         if rows is None:
             return "The item that you are trying to list is not in your inventory"
         records = dict(rows)
-        listedPrice = records["price"]
+        listed_price = records["price"]
         await conn.execute(take_from_base_fee, user_id, 5)
         if await is_auction_valid(records, user_id, amount_requested, conn):
             async with conn.transaction():
@@ -81,7 +81,7 @@ async def create_auction(
                     guild_id,
                     records["item_id"],
                     amount_requested,
-                    listedPrice,
+                    listed_price,
                 )
                 if status[-1] != "0":
                     new_ah_item_id = await conn.fetchval(

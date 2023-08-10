@@ -8,7 +8,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.ui.reddit import RedditEntry, RedditMemeEntry, RedditMemePages, RedditPages
-from Libs.utils import parseSubreddit
+from Libs.utils import parse_subreddit
 
 load_dotenv()
 
@@ -49,7 +49,7 @@ class Reddit(commands.Cog):
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         ) as reddit:
-            sub = await reddit.subreddit(parseSubreddit(subreddit))
+            sub = await reddit.subreddit(parse_subreddit(subreddit))
             sub_search = sub.search(search)
             converted = [
                 RedditEntry(
@@ -86,7 +86,7 @@ class Reddit(commands.Cog):
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         ) as reddit:
-            sub = await reddit.subreddit(parseSubreddit(subreddit))
+            sub = await reddit.subreddit(parse_subreddit(subreddit))
             sub_gen = (
                 sub.new(limit=10)
                 if filter == "New"
@@ -122,7 +122,7 @@ class Reddit(commands.Cog):
     ) -> None:
         """Searches for memes on Reddit"""
         async with self.bot.session.get(
-            f"https://meme-api.com/gimme/{parseSubreddit(subreddit)}/{amount}"
+            f"https://meme-api.com/gimme/{parse_subreddit(subreddit)}/{amount}"
         ) as r:
             data = await r.json(loads=orjson.loads)
             converted = [

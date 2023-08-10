@@ -2,7 +2,7 @@ import uuid
 from typing import Optional, Union
 
 
-def CommandKeyBuilder(
+def command_key_builder(
     prefix: Optional[str] = None,
     namespace: Optional[str] = None,
     id: Optional[Union[int, uuid.UUID]] = None,

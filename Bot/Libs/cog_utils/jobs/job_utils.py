@@ -12,7 +12,7 @@ class JobResults(TypedDict):
     listed: bool
 
 
-async def createJob(
+async def create_job(
     author_id: int,
     guild_id: int,
     pool: asyncpg.Pool,
@@ -48,7 +48,7 @@ async def createJob(
             return f"Job {name} successfully created"
 
 
-async def updateJob(
+async def update_job(
     author_id: int,
     guild_id: int,
     pool: asyncpg.Pool,
@@ -68,7 +68,7 @@ async def updateJob(
     return status
 
 
-async def submitJobApp(
+async def submit_job_app(
     owner_id: Union[int, None],
     guild_id: int,
     name: str,
@@ -98,7 +98,7 @@ async def submitJobApp(
         return f"Successfully {'quit' if listed_status is True else 'applied'} the job!"
 
 
-async def getJob(
+async def get_job(
     id: int, job_name: str, pool: asyncpg.Pool
 ) -> Union[Dict, List[Dict[str, str]], None]:
     """Gets a job from the database.
@@ -111,14 +111,14 @@ async def getJob(
     Returns:
         Union[str, None]: The job details or None if it doesn't exist
     """
-    sqlQuery = """
+    query = """
     SELECT job.id, job.name, job.description, job.required_rank, job.pay_amount, job_lookup.listed
     FROM job_lookup
     INNER JOIN job ON job.id = job_lookup.job_id
     WHERE job_lookup.guild_id=$1 AND LOWER(job_lookup.name)=$2; 
     """
     async with pool.acquire() as conn:
-        res = await conn.fetchrow(sqlQuery, id, job_name)
+        res = await conn.fetchrow(query, id, job_name)
         if res is None:
             query = """
             SELECT     job_lookup.name
@@ -127,15 +127,15 @@ async def getJob(
             ORDER BY   similarity(job_lookup.name, $2) DESC
             LIMIT 5;
             """
-            newRes = await conn.fetch(query, id, job_name)
-            if newRes is None or len(newRes) == 0:
+            new_res = await conn.fetch(query, id, job_name)
+            if new_res is None or len(new_res) == 0:
                 return None
 
-            return [dict(row) for row in newRes]
+            return [dict(row) for row in new_res]
         return dict(res)
 
 
-async def createJobLink(
+async def create_job_link(
     worker_id: int, item_id: int, job_id: int, conn: asyncpg.connection.Connection
 ):
     sql = """
@@ -146,7 +146,7 @@ async def createJobLink(
     return status
 
 
-async def createJobOutputItem(
+async def create_job_output_item(
     name: str,
     description: str,
     price: int,

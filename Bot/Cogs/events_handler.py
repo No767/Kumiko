@@ -21,7 +21,7 @@ class EventsHandler(commands.Cog):
         self.pool = self.bot.pool
         self.redis_pool = self.bot.redis_pool
 
-    async def ensureAllEnabled(
+    async def ensure_all_enabled(
         self,
         guild_id: int,
         pool: asyncpg.Pool,
@@ -29,13 +29,13 @@ class EventsHandler(commands.Cog):
         logging_config: Mapping[str, bool],
         event: str,
     ) -> bool:
-        logsEnabled = await get_or_fetch_log_enabled(guild_id, redis_pool, pool)
-        return logsEnabled is True and logging_config[event] is True
+        logs_enabled = await get_or_fetch_log_enabled(guild_id, redis_pool, pool)
+        return logs_enabled is True and logging_config[event] is True
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
-        existsQuery = "SELECT EXISTS(SELECT 1 FROM guild WHERE id = $1);"
-        insertQuery = """
+        exists_query = "SELECT EXISTS(SELECT 1 FROM guild WHERE id = $1);"
+        insert_query = """
         WITH guild_insert AS (
             INSERT INTO guild (id) VALUES ($1)
         )
@@ -43,17 +43,17 @@ class EventsHandler(commands.Cog):
         """
         cache = KumikoCache(connection_pool=self.redis_pool)
         key = f"cache:kumiko:{guild.id}:guild_config"
-        guildConfig = GuildConfig(
+        guild_config = GuildConfig(
             id=guild.id, logging_config=LoggingGuildConfig(channel_id=None)
         )
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                exists = await conn.fetchval(existsQuery, guild.id)
+                exists = await conn.fetchval(exists_query, guild.id)
                 if exists is False:
-                    await conn.execute(insertQuery, guild.id)
-                    await cache.setJSONCache(
+                    await conn.execute(insert_query, guild.id)
+                    await cache.set_json_cache(
                         key=key,
-                        value=asdict(guildConfig, recurse=True),
+                        value=asdict(guild_config, recurse=True),
                         path="$",
                         ttl=None,
                     )
@@ -65,7 +65,7 @@ class EventsHandler(commands.Cog):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 await conn.execute("DELETE FROM guild WHERE id = $1", guild.id)
-                await cache.deleteJSONCache(
+                await cache.delete_json_cache(
                     key=f"cache:kumiko:{guild.id}:guild_config", path="$"
                 )
                 if guild.id in self.bot.prefixes:
@@ -74,11 +74,11 @@ class EventsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:
         guild = member.guild
-        getConfig = await get_or_fetch_config(
+        get_config = await get_or_fetch_config(
             id=member.guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensureAllEnabled(guild.id, self.pool, self.redis_pool, getConfig, "member_events"):  # type: ignore
-            channel = guild.get_channel(getConfig["channel_id"])  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = SuccessActionEmbed()
                 embed.title = "Member Joined"
@@ -93,11 +93,11 @@ class EventsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member) -> None:
         guild = member.guild
-        getConfig = await get_or_fetch_config(
+        get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensureAllEnabled(guild.id, self.pool, self.redis_pool, getConfig, "member_events"):  # type: ignore
-            channel = guild.get_channel(getConfig["channel_id"])  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = CancelledActionEmbed()
                 embed.title = "Member Left"
@@ -111,11 +111,11 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild: discord.Guild, user: discord.User) -> None:
-        getConfig = await get_or_fetch_config(
+        get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensureAllEnabled(guild.id, self.pool, self.redis_pool, getConfig, "member_events"):  # type: ignore
-            channel = guild.get_channel(getConfig["channel_id"])  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = CancelledActionEmbed()
                 embed.title = "Member Banned"
@@ -126,11 +126,11 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild: discord.Guild, user: discord.User) -> None:
-        getConfig = await get_or_fetch_config(
+        get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensureAllEnabled(guild.id, self.pool, self.redis_pool, getConfig, "member_events"):  # type: ignore
-            channel = guild.get_channel(getConfig["channel_id"])  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = Embed(color=discord.Color.from_rgb(255, 143, 143))
                 embed.title = "Member Unbanned"
@@ -141,11 +141,11 @@ class EventsHandler(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_kick(self, guild: discord.Guild, user: discord.User) -> None:
-        getConfig = await get_or_fetch_config(
+        get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensureAllEnabled(guild.id, self.pool, self.redis_pool, getConfig, "member_events"):  # type: ignore
-            channel = guild.get_channel(getConfig["channel_id"])  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = CancelledActionEmbed()
                 embed.title = "Member Kicked"

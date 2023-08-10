@@ -39,7 +39,7 @@ class UserInvPageEntry:
         self.amount: int = entries["amount"]
 
     def to_dict(self) -> Dict[str, Any]:
-        dictData = {
+        data = {
             "title": self.name,
             "description": self.description,
             "fields": [
@@ -48,4 +48,4 @@ class UserInvPageEntry:
                 {"name": "Amount", "value": self.amount, "inline": True},
             ],
         }
-        return dictData
+        return data

@@ -40,13 +40,13 @@ class Economy(commands.Cog):
         SET local_economy = $2
         WHERE id = $1;
         """
-        result = await cache.getJSONCache(key=key, path=self.local_economy_key)
+        result = await cache.get_json_cache(key=key, path=self.local_economy_key)
         if result is True:
             await ctx.send("Economy is already enabled for your server!")
             return
         else:
             await self.pool.execute(query, ctx.guild.id, True)  # type: ignore
-            await cache.mergeJSONCache(
+            await cache.merge_json_cache(
                 key=key, value=True, path=self.local_economy_key, ttl=None
             )
             await ctx.send("Enabled economy!")
@@ -64,11 +64,11 @@ class Economy(commands.Cog):
         SET local_economy = $2
         WHERE id = $1;
         """
-        if await cache.cacheExists(key=key):
-            result = await cache.getJSONCache(key=key, path=".local_economy")
+        if await cache.cache_exists(key=key):
+            result = await cache.get_json_cache(key=key, path=".local_economy")
             if result is True:
                 await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
-                await cache.mergeJSONCache(
+                await cache.merge_json_cache(
                     key=key, value=False, path=self.local_economy_key, ttl=None
                 )
                 await ctx.send(

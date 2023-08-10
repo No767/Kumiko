@@ -88,11 +88,11 @@ async def test_valid_prefix(bot):
 
 @pytest.mark.asyncio
 async def test_invalid_prefix(bot):
-    finalStr = ""
+    final_str = ""
     for _ in range(103):
-        finalStr += "a"
+        final_str += "a"
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">prefix {finalStr}")
+        await dpytest.message(f">prefix {final_str}")
         # assert dpytest.verify().message().content("!")
         assert e.type == commands.BadArgument and "That prefix is too long." in str(
             e.value
@@ -102,10 +102,10 @@ async def test_invalid_prefix(bot):
 @pytest.mark.asyncio
 async def test_invalid_ping_prefix(bot):
     user_id = bot.user.id
-    finalStr = f"<@{user_id}>"
+    final_str = f"<@{user_id}>"
 
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">prefix {finalStr}")
+        await dpytest.message(f">prefix {final_str}")
         assert (
             e.type == commands.BadArgument
             and "That is a reserved prefix already in use." in str(e.value)
@@ -115,10 +115,10 @@ async def test_invalid_ping_prefix(bot):
 @pytest.mark.asyncio
 async def test_invalid_mention_prefix(bot):
     user_id = bot.user.id
-    finalStr = f"<@!{user_id}>"
+    final_str = f"<@!{user_id}>"
 
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">prefix {finalStr}")
+        await dpytest.message(f">prefix {final_str}")
         assert (
             e.type == commands.BadArgument
             and "That is a reserved prefix already in use." in str(e.value)
@@ -133,12 +133,12 @@ async def test_valid_pin_name(bot):
 
 @pytest.mark.asyncio
 async def test_invalid_max_pin_name(bot):
-    finalStr = ""
+    final_str = ""
     for item, idx in enumerate(range(75)):
-        finalStr += f"{item}{idx}"
+        final_str += f"{item}{idx}"
 
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">pins {finalStr}")
+        await dpytest.message(f">pins {final_str}")
     assert (
         e.type == commands.BadArgument
         and "Tag name is a maximum of 100 characters." in str(e.value)
@@ -163,12 +163,12 @@ async def test_valid_job_name(bot):
 
 @pytest.mark.asyncio
 async def test_invalid_max_job_name(bot):
-    finalStr = ""
+    final_str = ""
     for item, idx in enumerate(range(75)):
-        finalStr += f"{item}{idx}"
+        final_str += f"{item}{idx}"
 
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">jobs {finalStr}")
+        await dpytest.message(f">jobs {final_str}")
     assert (
         e.type == commands.BadArgument
         and "Job name is a maximum of 100 characters." in str(e.value)

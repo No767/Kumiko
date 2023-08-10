@@ -22,8 +22,8 @@ async def get_or_fetch_config(
     #     return dict(res)
     key = f"cache:kumiko:{id}:guild_config"
     cache = KumikoCache(redis_pool)
-    if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path="$.logging_config")
+    if await cache.cache_exists(key=key):
+        res = await cache.get_json_cache(key=key, path="$.logging_config")
         return res
     else:
         rows = await pool.fetchrow(query, id)
@@ -42,8 +42,8 @@ async def get_or_fetch_log_enabled(
     """
     key = f"cache:kumiko:{id}:guild_config"
     cache = KumikoCache(redis_pool)
-    if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path="$.logs")
+    if await cache.cache_exists(key=key):
+        res = await cache.get_json_cache(key=key, path="$.logs")
         return res  # type: ignore
     else:
         val = await pool.fetchval(query, id)
@@ -56,23 +56,23 @@ async def set_or_update_cache(
     key: str, redis_pool: ConnectionPool, data: Dict[str, Any]
 ) -> None:
     cache = KumikoCache(connection_pool=redis_pool)
-    if not await cache.cacheExists(key=key):
-        await cache.setJSONCache(key=key, value=data, ttl=None)
+    if not await cache.cache_exists(key=key):
+        await cache.set_json_cache(key=key, value=data, ttl=None)
     else:
-        await cache.setJSONCache(
+        await cache.set_json_cache(
             key=key, value=data["channel_id"], path=".channel_id", ttl=None
         )
 
 
 async def delete_cache(key: str, redis_pool: ConnectionPool) -> None:
     cache = KumikoCache(connection_pool=redis_pool)
-    if await cache.cacheExists(key=key):
-        await cache.deleteJSONCache(key=key)
+    if await cache.cache_exists(key=key):
+        await cache.delete_json_cache(key=key)
 
 
 async def disable_logging(guild_id: int, redis_pool: ConnectionPool) -> None:
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(connection_pool=redis_pool)
     # lgc = LoggingGuildConfig(channel_id=None)
-    await cache.mergeJSONCache(key=key, value=False, path="$.logs")
-    await cache.mergeJSONCache(key=key, value=None, path="$.logging_config")
+    await cache.merge_json_cache(key=key, value=False, path="$.logs")
+    await cache.merge_json_cache(key=key, value=None, path="$.logging_config")

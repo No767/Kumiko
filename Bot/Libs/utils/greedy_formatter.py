@@ -1,7 +1,7 @@
 from typing import List
 
 
-def formatGreedy(list: List[str]) -> str:
+def format_greedy(list: List[str]) -> str:
     """Formats a Greedy list into a human-readable string
 
     For example, if we had a list of ["a", "b", "c"], it would return "a, b, and c".
