@@ -64,7 +64,7 @@ class Auctions(commands.Cog):
     ) -> None:
         """Lists the given item for purchase"""
         if ctx.guild is None:
-            await ctx.send("DMs can't be used here")
+            await ctx.send(MessageConstants.NO_DM)
             return
         status = await create_auction(
             guild_id=ctx.guild.id,
@@ -84,7 +84,7 @@ class Auctions(commands.Cog):
     ) -> None:
         """List the items available for purchase"""
         if ctx.guild is None:
-            await ctx.send("DMs can't be used here")
+            await ctx.send(MessageConstants.NO_DM)
             return
         status = await delete_auction(
             guild_id=ctx.guild.id,
@@ -106,7 +106,7 @@ class Auctions(commands.Cog):
     ) -> None:
         """Updates the listed amount for the given item"""
         if ctx.guild is None:
-            await ctx.send("DMs can't be used here")
+            await ctx.send(MessageConstants.NO_DM)
             return
         status = await add_more_to_auction(
             guild_id=ctx.guild.id,
