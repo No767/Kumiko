@@ -1,3 +1,5 @@
+import traceback
+
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.errors import EconomyDisabledError, ValidationError
@@ -12,7 +14,7 @@ class ErrorHandler(commands.Cog):
 
     def produce_error_embed(self, error: commands.CommandError):
         embed = ErrorEmbed()
-        error_traceback = "traceback"
+        error_traceback = "\n".join(traceback.format_exception_only(type(error), error))
         desc = (
             "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n",
             f"**Error**: \n```{error_traceback}```",
