@@ -1,16 +1,14 @@
 import os
-from datetime import datetime
 from typing import Literal, Optional
 
 import asyncpraw
 import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
-from discord.utils import format_dt
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
+from Libs.ui.reddit import RedditEntry, RedditMemeEntry, RedditMemePages, RedditPages
 from Libs.utils import parseSubreddit
-from Libs.utils.pages import EmbedListSource, KumikoPages
 
 load_dotenv()
 
@@ -52,33 +50,23 @@ class Reddit(commands.Cog):
             requestor_kwargs={"session": self.bot.session},
         ) as reddit:
             sub = await reddit.subreddit(parseSubreddit(subreddit))
-            data = [
-                {
-                    "title": post.title,
-                    "description": post.selftext,
-                    "image": post.url,
-                    "fields": [
-                        {"name": "Author", "value": post.author},
-                        {"name": "Upvotes", "value": post.score},
-                        {"name": "NSFW", "value": post.over_18},
-                        {"name": "Flair", "value": post.link_flair_text},
-                        {"name": "Number of Comments", "value": post.num_comments},
-                        {
-                            "name": "Reddit URL",
-                            "value": f"https://reddit.com{post.permalink}",
-                        },
-                        {
-                            "name": "Created At",
-                            "value": format_dt(
-                                datetime.fromtimestamp(post.created_utc)
-                            ),
-                        },
-                    ],
-                }
-                async for post in sub.search(search)
+            sub_search = sub.search(search)
+            converted = [
+                RedditEntry(
+                    title=post.title,
+                    description=post.selftext,
+                    image_url=post.url,
+                    author=post.author,
+                    upvotes=post.score,
+                    nsfw=post.over_18,
+                    flair=post.link_flair_text,
+                    num_of_comments=post.num_comments,
+                    post_permalink=post.permalink,
+                    created_utc=post.created_utc,
+                )
+                async for post in sub_search
             ]
-            embedSource = EmbedListSource(data, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
+            pages = RedditPages(entries=converted, ctx=ctx)
             await pages.start()
 
     @reddit.command(name="feed")
@@ -99,40 +87,29 @@ class Reddit(commands.Cog):
             requestor_kwargs={"session": self.bot.session},
         ) as reddit:
             sub = await reddit.subreddit(parseSubreddit(subreddit))
-            subGen = (
+            sub_gen = (
                 sub.new(limit=10)
                 if filter == "New"
                 else sub.hot(limit=10)
                 if filter == "Hot"
                 else sub.rising(limit=10)
             )
-            data = [
-                {
-                    "title": post.title,
-                    "description": post.selftext,
-                    "image": post.url,
-                    "fields": [
-                        {"name": "Author", "value": post.author},
-                        {"name": "Upvotes", "value": post.score},
-                        {"name": "NSFW", "value": post.over_18},
-                        {"name": "Flair", "value": post.link_flair_text},
-                        {"name": "Number of Comments", "value": post.num_comments},
-                        {
-                            "name": "Reddit URL",
-                            "value": f"https://reddit.com{post.permalink}",
-                        },
-                        {
-                            "name": "Created At",
-                            "value": format_dt(
-                                datetime.fromtimestamp(post.created_utc)
-                            ),
-                        },
-                    ],
-                }
-                async for post in subGen
+            converted = [
+                RedditEntry(
+                    title=post.title,
+                    description=post.selftext,
+                    image_url=post.url,
+                    author=post.author,
+                    upvotes=post.score,
+                    nsfw=post.over_18,
+                    flair=post.link_flair_text,
+                    num_of_comments=post.num_comments,
+                    post_permalink=post.permalink,
+                    created_utc=post.created_utc,
+                )
+                async for post in sub_gen
             ]
-            embedSource = EmbedListSource(data, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
+            pages = RedditPages(entries=converted, ctx=ctx)
             await pages.start()
 
     @reddit.command(name="memes")
@@ -148,23 +125,20 @@ class Reddit(commands.Cog):
             f"https://meme-api.com/gimme/{parseSubreddit(subreddit)}/{amount}"
         ) as r:
             data = await r.json(loads=orjson.loads)
-            mainData = [
-                {
-                    "title": item["title"],
-                    "image": item["url"],
-                    "fields": [
-                        {"name": "Author", "value": item["author"]},
-                        {"name": "Subreddit", "value": item["subreddit"]},
-                        {"name": "Upvotes", "value": item["ups"]},
-                        {"name": "NSFW", "value": item["nsfw"]},
-                        {"name": "Spoiler", "value": item["spoiler"]},
-                        {"name": "Reddit URL", "value": item["postLink"]},
-                    ],
-                }
+            converted = [
+                RedditMemeEntry(
+                    title=item["title"],
+                    url=item["url"],
+                    author=item["author"],
+                    subreddit=item["subreddit"],
+                    ups=item["ups"],
+                    nsfw=item["nsfw"],
+                    spoiler=item["spoiler"],
+                    reddit_url=item["postLink"],
+                )
                 for item in data["memes"]
             ]
-            embedSource = EmbedListSource(mainData, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
+            pages = RedditMemePages(entries=converted, ctx=ctx)
             await pages.start()
 
 
