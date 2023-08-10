@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import discord
 from discord.ext import commands, menus
+from Libs.utils import MessageConstants
 from Libs.utils.pages import KumikoPages
 
 # class BotCategories(discord.ui.Select):
@@ -292,7 +293,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
         if command.description:
             embed_like.description = f"{command.description}\n\n{command.help}"
         else:
-            embed_like.description = command.help or "No help found..."
+            embed_like.description = command.help or MessageConstants.NO_HELP_FOUND
 
     async def send_command_help(self, command):
         # No pagination necessary for a single command.
@@ -343,7 +344,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
     #     """
     #     filteredCommands = await self.filter_commands(commands)
     #     fieldSource = [
-    #         (self.get_command_signature(command), command.help or "No help found...")
+    #         (self.get_command_signature(command), command.help or MessageConstants.NO_HELP_FOUND)
     #         for command in filteredCommands
     #     ]
     #     sources = FieldPageSource(
@@ -352,7 +353,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
     #         inline=False,
     #         clear_description=False,
     #         title=title or "No",
-    #         description=description or "No help found...",
+    #         description=description or MessageConstants.NO_HELP_FOUND,
     #     )
     #     pages = KumikoPages(source=sources, ctx=self.context)
     #     await pages.start()
@@ -403,7 +404,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
     #     signature = self.get_command_signature(
     #         command
     #     )  # get_command_signature gets the signature of a command in <required> [optional]
-    #     embed = Embed(title=signature, description=command.help or "No help found...")
+    #     embed = Embed(title=signature, description=command.help or MessageConstants.NO_HELP_FOUND)
 
     #     if cog := command.cog:
     #         embed.add_field(name="Category", value=cog.qualified_name)

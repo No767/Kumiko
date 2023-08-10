@@ -26,7 +26,7 @@ from Libs.ui.jobs import (
     PurgeJobsView,
     UpdateJobModal,
 )
-from Libs.utils import ConfirmEmbed, Embed, JobName
+from Libs.utils import ConfirmEmbed, Embed, JobName, MessageConstants
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 
@@ -174,7 +174,7 @@ class Jobs(commands.Cog):
             msg = await self.bot.wait_for("message", check=check, timeout=350.0)
         except asyncio.TimeoutError:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
-            await ctx.send("You took too long. Goodbye.")
+            await ctx.send(MessageConstants.TIMEOUT)
             return
 
         if msg.content == "abort":
@@ -231,7 +231,7 @@ class Jobs(commands.Cog):
             msg = await self.bot.wait_for("message", check=check, timeout=350.0)
         except asyncio.TimeoutError:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
-            await ctx.send("You took too long. Goodbye.")
+            await ctx.send(MessageConstants.TIMEOUT)
             return
 
         if msg.content:
@@ -248,9 +248,7 @@ class Jobs(commands.Cog):
 
         status = await updateJob(ctx.author.id, ctx.guild.id, self.pool, name, clean_content, required_rank, pay)  # type: ignore
         if status[-1] == 0:
-            await ctx.send(
-                "You either don't own this job or the job doesn't exist. Try again."
-            )
+            await ctx.send(MessageConstants.NO_JOB)
             return
         await ctx.send(
             f"Successfully updated the job `{name}` (RR: {required_rank}, Pay: {pay})"
@@ -302,9 +300,7 @@ class Jobs(commands.Cog):
         """
         status = await self.pool.execute(query, ctx.guild.id, ctx.author.id, name.lower(), True)  # type: ignore
         if status[-1] == 0:
-            await ctx.send(
-                "You either don't own this job or the job doesn't exist. Try again."
-            )
+            await ctx.send(MessageConstants.NO_JOB)
         else:
             await ctx.send(f"Successfully filed job `{name}` for general availability.")
 
@@ -322,9 +318,7 @@ class Jobs(commands.Cog):
         """
         status = await self.pool.execute(query, ctx.guild.id, ctx.author.id, name.lower(), False)  # type: ignore
         if status[-1] == 0:
-            await ctx.send(
-                "You either don't own this job or the job doesn't exist. Try again."
-            )
+            await ctx.send(MessageConstants.NO_JOB)
         else:
             await ctx.send(
                 f"Successfully un-filed job `{name}` for general availability."
@@ -449,7 +443,7 @@ class Jobs(commands.Cog):
             msg = await self.bot.wait_for("message", check=check, timeout=350.0)
         except asyncio.TimeoutError:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
-            await ctx.send("You took too long. Goodbye.")
+            await ctx.send(MessageConstants.TIMEOUT)
             return
 
         if msg.content:

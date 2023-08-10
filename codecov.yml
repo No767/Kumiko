@@ -10,3 +10,4 @@ ignore:
   - "Bot/Cogs/**" # There are just too much code to test here
   - "Bot/Libs/utils/checks.py" # Contains untestable code, but may be tested later
   - "Bot/Libs/utils/time.py" # too lazy to test
+  - "Bot/Libs/utils/message_constants.py" # Literally just constants so there is no need to test

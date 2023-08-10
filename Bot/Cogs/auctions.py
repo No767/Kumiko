@@ -13,7 +13,7 @@ from Libs.cog_utils.auctions import (
 )
 from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.auctions import AuctionPages, AuctionSearchPages, OwnedAuctionPages
-from Libs.utils import Embed
+from Libs.utils import Embed, MessageConstants
 from typing_extensions import Annotated
 
 
@@ -41,7 +41,7 @@ class Auctions(commands.Cog):
         WHERE auction_house.guild_id = $1;
         """
         if ctx.guild is None:
-            await ctx.send("You can't use this in DMs")
+            await ctx.send(MessageConstants.NO_DM)
             return
         rows = await self.pool.fetch(sql, ctx.guild.id)
 
@@ -128,7 +128,7 @@ class Auctions(commands.Cog):
         WHERE auction_house.user_id = $1 AND auction_house.guild_id = $2;
         """
         if ctx.guild is None:
-            await ctx.send("You can't use this in DMs")
+            await ctx.send(MessageConstants.NO_DM)
             return
         rows = await self.pool.fetch(sql, ctx.author.id, ctx.guild.id)
 
@@ -150,7 +150,7 @@ class Auctions(commands.Cog):
         LIMIT 100;
         """
         if ctx.guild is None:
-            await ctx.send("You can't use this in DMs")
+            await ctx.send(MessageConstants.NO_DM)
             return
         rows = await self.pool.fetch(sql, ctx.guild.id, query)
 

@@ -17,6 +17,7 @@ class Economy(commands.Cog):
         self.bot = bot
         self.pool = self.bot.pool
         self.redis_pool = self.bot.redis_pool
+        self.local_economy_key = "$.local_economy"
 
     @property
     def display_emoji(self) -> discord.PartialEmoji:
@@ -39,14 +40,14 @@ class Economy(commands.Cog):
         SET local_economy = $2
         WHERE id = $1;
         """
-        result = await cache.getJSONCache(key=key, path="$.local_economy")
+        result = await cache.getJSONCache(key=key, path=self.local_economy_key)
         if result is True:
             await ctx.send("Economy is already enabled for your server!")
             return
         else:
             await self.pool.execute(query, ctx.guild.id, True)  # type: ignore
             await cache.mergeJSONCache(
-                key=key, value=True, path="$.local_economy", ttl=None
+                key=key, value=True, path=self.local_economy_key, ttl=None
             )
             await ctx.send("Enabled economy!")
             return
@@ -68,7 +69,7 @@ class Economy(commands.Cog):
             if result is True:
                 await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
                 await cache.mergeJSONCache(
-                    key=key, value=False, path="$.local_economy", ttl=None
+                    key=key, value=False, path=self.local_economy_key, ttl=None
                 )
                 await ctx.send(
                     "Economy is now disabled for your server. Please enable it first."

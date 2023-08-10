@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.utils import ErrorEmbed, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
 
 
 class DeleteJobView(discord.ui.View):
@@ -27,9 +27,7 @@ class DeleteJobView(discord.ui.View):
             status = await conn.execute(query, guildId, userId, self.job_name)
             self.clear_items()
             if status[-1] == "0":
-                errorEmbed = ErrorEmbed(
-                    description="Either you don't own any jobs or you have no permission to delete those jobs"
-                )
+                errorEmbed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
                 await interaction.response.edit_message(
                     embed=errorEmbed, view=self, delete_after=20.0
                 )
@@ -77,9 +75,7 @@ class DeleteJobViaIDView(discord.ui.View):
             status = await conn.execute(query, guildId, userId, self.job_id)
             self.clear_items()
             if status[-1] == "0":
-                errorEmbed = ErrorEmbed(
-                    description="Either you don't own any jobs or you have no permission to delete those jobs"
-                )
+                errorEmbed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
                 await interaction.response.edit_message(
                     embed=errorEmbed, view=self, delete_after=20.0
                 )
@@ -126,9 +122,7 @@ class PurgeJobsView(discord.ui.View):
             status = await conn.execute(query, guildId, userId)
             self.clear_items()
             if status[-1] == "0":
-                errorEmbed = ErrorEmbed(
-                    description="Either you don't own any jobs or you have no permission to delete those jobs"
-                )
+                errorEmbed = ErrorEmbed(description=MessageConstants.NO_PERM_JOB)
                 await interaction.response.edit_message(
                     embed=errorEmbed, view=self, delete_after=20.0
                 )

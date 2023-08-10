@@ -5,7 +5,7 @@ import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import Embed, is_mod, parseTimeStr
+from Libs.utils import Embed, MessageConstants, is_mod, parseTimeStr
 
 
 class Moderation(commands.Cog):
@@ -61,7 +61,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Issued Ban", description=f"Successfully banned {userBanList}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -95,7 +95,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Issued Unban", description=f"Successfully unbanned {unbanList}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -124,7 +124,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Kicked User(s)", description=f"Successfully kicked {kickList}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -169,7 +169,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Muted User(s)", description=f"Successfully muted {muteList}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -206,7 +206,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Unmuted User(s)", description=f"Successfully unmuted {unmuteList}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
         await ctx.send(embed=embed)
 
 
