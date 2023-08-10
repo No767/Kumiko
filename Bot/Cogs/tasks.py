@@ -12,6 +12,8 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot = bot
         self.pool = self.bot.pool
         self.logger = logging.getLogger("discord")
+
+    async def cog_load(self):
         self.update_item_stock.start()
         self.update_job_pay.start()
         self.clear_auction_house.start()
