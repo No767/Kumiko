@@ -11,7 +11,7 @@ class KumikoCPManager:
     def __init__(self, uri: str, max_size: int = 20) -> None:
         self.uri = uri
         self.max_size = max_size
-        self.connPool = None
+        self.pool = None
 
     async def __aenter__(self) -> ConnectionPool:
         return self.create_pool()
@@ -22,17 +22,17 @@ class KumikoCPManager:
         exc: Optional[BE],
         traceback: Optional[TracebackType],
     ) -> None:
-        if self.connPool is not None:
-            await self.connPool.disconnect()
+        if self.pool is not None:
+            await self.pool.disconnect()
 
     def create_pool(self) -> ConnectionPool:
         complete_uri = URL(self.uri) % {"decode_responses": "True"}
-        self.connPool = ConnectionPool(max_connections=self.max_size).from_url(
+        self.pool = ConnectionPool(max_connections=self.max_size).from_url(
             str(complete_uri)
         )
-        return self.connPool
+        return self.pool
 
     def get_conn_pool(self) -> ConnectionPool:
-        if not self.connPool:
+        if not self.pool:
             return self.create_pool()
-        return self.connPool
+        return self.pool
