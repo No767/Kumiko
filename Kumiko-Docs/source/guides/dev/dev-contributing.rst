@@ -21,13 +21,14 @@ Coding Style
 
 Variables
 ^^^^^^^^^^
-Most of the code written uses ``camelCasing`` for variables, ``PascalCasing`` for classes, and ``snake_casing`` for args. To sum it up:
 
-- ``camelCasing`` for variables
+Kumiko follows PEP8 naming conventions and standards. To sum it up:
+
+- ``snake_casing`` for variables, args, kwargs, and files
 - ``PascalCasing`` for classes
-- ``snake_casing`` for args
 - ``ALL_CAPS`` for constants
-- ``kebab-casing`` for files
+
+Ruff is used to lint and check whether the code meets PEP8 standards or not. In order to learn more about PEP8, see `this <https://realpython.com/python-pep8/>`_ guide.
 
 Formatting
 ^^^^^^^^^^^
@@ -55,7 +56,7 @@ Example Cog:
             self.bot = bot
 
         @commands.hybrid_command(name="hello")
-        async def myCommand(self, ctx: Context):
+        async def my_command(self, ctx: Context):
             """This is an example of a description for a slash command"""
             await ctx.send(f"Hello {ctx.user.name}!")
 
