@@ -41,7 +41,7 @@ class Auctions(commands.Cog):
         WHERE auction_house.guild_id = $1;
         """
         if ctx.guild is None:
-            await ctx.send(MessageConstants.NO_DM)
+            await ctx.send(MessageConstants.NO_DM.value)
             return
         rows = await self.pool.fetch(sql, ctx.guild.id)
 
@@ -64,7 +64,7 @@ class Auctions(commands.Cog):
     ) -> None:
         """Lists the given item for purchase"""
         if ctx.guild is None:
-            await ctx.send(MessageConstants.NO_DM)
+            await ctx.send(MessageConstants.NO_DM.value)
             return
         status = await create_auction(
             guild_id=ctx.guild.id,
@@ -84,7 +84,7 @@ class Auctions(commands.Cog):
     ) -> None:
         """List the items available for purchase"""
         if ctx.guild is None:
-            await ctx.send(MessageConstants.NO_DM)
+            await ctx.send(MessageConstants.NO_DM.value)
             return
         status = await delete_auction(
             guild_id=ctx.guild.id,
@@ -106,7 +106,7 @@ class Auctions(commands.Cog):
     ) -> None:
         """Updates the listed amount for the given item"""
         if ctx.guild is None:
-            await ctx.send(MessageConstants.NO_DM)
+            await ctx.send(MessageConstants.NO_DM.value)
             return
         status = await add_more_to_auction(
             guild_id=ctx.guild.id,
@@ -128,7 +128,7 @@ class Auctions(commands.Cog):
         WHERE auction_house.user_id = $1 AND auction_house.guild_id = $2;
         """
         if ctx.guild is None:
-            await ctx.send(MessageConstants.NO_DM)
+            await ctx.send(MessageConstants.NO_DM.value)
             return
         rows = await self.pool.fetch(sql, ctx.author.id, ctx.guild.id)
 
@@ -150,7 +150,7 @@ class Auctions(commands.Cog):
         LIMIT 100;
         """
         if ctx.guild is None:
-            await ctx.send(MessageConstants.NO_DM)
+            await ctx.send(MessageConstants.NO_DM.value)
             return
         rows = await self.pool.fetch(sql, ctx.guild.id, query)
 

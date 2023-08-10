@@ -59,7 +59,7 @@ class Moderation(commands.Cog):
         for members in users:
             await members.ban(delete_message_seconds=del_seconds, reason=reason)
         embed = Embed(title="Issued Ban", description=f"Successfully banned {ban_list}")
-        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -93,7 +93,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Issued Unban", description=f"Successfully unbanned {unban_list}"
         )
-        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -122,7 +122,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Kicked User(s)", description=f"Successfully kicked {kick_list}"
         )
-        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -165,7 +165,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Muted User(s)", description=f"Successfully muted {mute_list}"
         )
-        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -202,7 +202,7 @@ class Moderation(commands.Cog):
         embed = Embed(
             title="Unmuted User(s)", description=f"Successfully unmuted {unmute_list}"
         )
-        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON)
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
 

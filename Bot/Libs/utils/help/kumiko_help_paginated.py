@@ -281,7 +281,9 @@ class KumikoHelpPaginated(commands.HelpCommand):
         if command.description:
             embed_like.description = f"{command.description}\n\n{command.help}"
         else:
-            embed_like.description = command.help or MessageConstants.NO_HELP_FOUND
+            embed_like.description = (
+                command.help or MessageConstants.NO_HELP_FOUND.value
+            )
 
     async def send_command_help(self, command):
         # No pagination necessary for a single command.

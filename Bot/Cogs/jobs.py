@@ -174,7 +174,7 @@ class Jobs(commands.Cog):
             msg = await self.bot.wait_for("message", check=check, timeout=350.0)
         except asyncio.TimeoutError:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
-            await ctx.send(MessageConstants.TIMEOUT)
+            await ctx.send(MessageConstants.TIMEOUT.value)
             return
 
         if msg.content == "abort":
@@ -231,7 +231,7 @@ class Jobs(commands.Cog):
             msg = await self.bot.wait_for("message", check=check, timeout=350.0)
         except asyncio.TimeoutError:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
-            await ctx.send(MessageConstants.TIMEOUT)
+            await ctx.send(MessageConstants.TIMEOUT.value)
             return
 
         if msg.content:
@@ -248,7 +248,7 @@ class Jobs(commands.Cog):
 
         status = await update_job(ctx.author.id, ctx.guild.id, self.pool, name, clean_content, required_rank, pay)  # type: ignore
         if status[-1] == 0:
-            await ctx.send(MessageConstants.NO_JOB)
+            await ctx.send(MessageConstants.NO_JOB.value)
             return
         await ctx.send(
             f"Successfully updated the job `{name}` (RR: {required_rank}, Pay: {pay})"
@@ -300,7 +300,7 @@ class Jobs(commands.Cog):
         """
         status = await self.pool.execute(query, ctx.guild.id, ctx.author.id, name.lower(), True)  # type: ignore
         if status[-1] == 0:
-            await ctx.send(MessageConstants.NO_JOB)
+            await ctx.send(MessageConstants.NO_JOB.value)
         else:
             await ctx.send(f"Successfully filed job `{name}` for general availability.")
 
@@ -318,7 +318,7 @@ class Jobs(commands.Cog):
         """
         status = await self.pool.execute(query, ctx.guild.id, ctx.author.id, name.lower(), False)  # type: ignore
         if status[-1] == 0:
-            await ctx.send(MessageConstants.NO_JOB)
+            await ctx.send(MessageConstants.NO_JOB.value)
         else:
             await ctx.send(
                 f"Successfully un-filed job `{name}` for general availability."
@@ -443,7 +443,7 @@ class Jobs(commands.Cog):
             msg = await self.bot.wait_for("message", check=check, timeout=350.0)
         except asyncio.TimeoutError:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
-            await ctx.send(MessageConstants.TIMEOUT)
+            await ctx.send(MessageConstants.TIMEOUT.value)
             return
 
         if msg.content:
