@@ -11,7 +11,7 @@ T = TypeVar("T")
 # There is really no used of creating my own system when there is one out there already
 async def check_guild_permissions(
     ctx: commands.Context, perms: dict[str, bool], *, check=all
-):
+) -> bool:
     is_owner = await ctx.bot.is_owner(ctx.author)
     if is_owner:
         return True
