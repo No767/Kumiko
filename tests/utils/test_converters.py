@@ -93,7 +93,6 @@ async def test_invalid_prefix(bot):
         final_str += "a"
     with pytest.raises(commands.BadArgument) as e:
         await dpytest.message(f">prefix {final_str}")
-        # assert dpytest.verify().message().content("!")
         assert e.type == commands.BadArgument and "That prefix is too long." in str(
             e.value
         )
@@ -148,7 +147,7 @@ async def test_invalid_max_pin_name(bot):
 @pytest.mark.asyncio
 async def test_same_pin_name(bot):
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">pins pins")
+        await dpytest.message(">pins pins")
     assert (
         e.type == commands.BadArgument
         and "This tag name starts with a reserved word." in str(e.value)
@@ -178,7 +177,7 @@ async def test_invalid_max_job_name(bot):
 @pytest.mark.asyncio
 async def test_same_job_name(bot):
     with pytest.raises(commands.BadArgument) as e:
-        await dpytest.message(f">jobs jobs")
+        await dpytest.message(">jobs jobs")
     assert (
         e.type == commands.BadArgument
         and "This Job name starts with a reserved word." in str(e.value)

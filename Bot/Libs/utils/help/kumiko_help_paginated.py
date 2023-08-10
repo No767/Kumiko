@@ -154,7 +154,6 @@ class FrontPageSource(menus.PageSource):
         embed = discord.Embed(
             title="Bot Help", colour=discord.Colour.from_rgb(255, 161, 231)
         )
-        # embed.description = "help"
         embed.description = inspect.cleandoc(
             f"""
             Hello! Welcome to the help page.
@@ -171,7 +170,6 @@ class FrontPageSource(menus.PageSource):
             inline=False,
         )
 
-        # created_at = time.format_dt(menu.ctx.bot.user.created_at, 'F')
         if self.index == 0:
             embed.add_field(
                 name="About Kumiko",

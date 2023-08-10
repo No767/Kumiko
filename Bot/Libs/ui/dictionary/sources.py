@@ -62,6 +62,5 @@ class JapaneseDefPageSource(menus.ListPageSource):
             )
             menu.embed.set_footer(text=footer)
 
-        # header_desc = f"**{entries.part_of_speech}** {' • '.join([item['text'] for item in entries.phonetics]).rstrip('*')}\n\n"
         menu.embed.description = "\n".join(definitions)
         return menu.embed
