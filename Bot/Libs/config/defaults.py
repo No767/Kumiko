@@ -1,21 +1,19 @@
 from typing import Union
 
-from attrs import define, field
+import msgspec
 
 
-@define
-class LoggingGuildConfig:
+class LoggingGuildConfig(msgspec.Struct):
     channel_id: Union[int, None]
-    member_events: bool = field(default=True)
-    mod_events: bool = field(default=True)
-    eco_events: bool = field(default=False)
+    member_events: bool = True
+    mod_events: bool = True
+    eco_events: bool = False
 
 
-@define
-class GuildConfig:
+class GuildConfig(msgspec.Struct):
     id: int
     logging_config: Union[LoggingGuildConfig, None]
-    logs: bool = field(default=True)
-    birthday: bool = field(default=False)
-    local_economy: bool = field(default=False)
-    local_economy_name: str = field(default="Server Economy")
+    logs: bool = True
+    birthday: bool = False
+    local_economy: bool = False
+    local_economy_name: str = "Server Economy"

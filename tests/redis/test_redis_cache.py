@@ -94,3 +94,12 @@ async def test_get_json_list():
     await cache.set_json_cache(key=key, path="$", value=DATA, ttl=None)
     res = await cache.get_json_cache(key=key, value_only=False)
     assert isinstance(res, list)
+
+
+@pytest.mark.asyncio
+async def test_delete_basic_cache():
+    key = "cache:99999999999999999999:cache"
+    cache = KumikoCache(connection_pool=ConnectionPool().from_url(REDIS_URI))
+    await cache.set_basic_cache(key=key, value="yo")
+    await cache.delete_basic_cache(key=key)
+    assert await cache.cache_exists(key) is False

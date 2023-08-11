@@ -2,7 +2,6 @@ from typing import Mapping
 
 import asyncpg
 import discord
-from attrs import asdict
 from discord.ext import commands
 from discord.utils import format_dt, utcnow
 from kumikocore import KumikoCore
@@ -53,7 +52,7 @@ class EventsHandler(commands.Cog):
                     await conn.execute(insert_query, guild.id)
                     await cache.set_json_cache(
                         key=key,
-                        value=asdict(guild_config, recurse=True),
+                        value=guild_config,
                         path="$",
                         ttl=None,
                     )

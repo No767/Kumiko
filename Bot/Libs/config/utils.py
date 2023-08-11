@@ -1,5 +1,4 @@
 import asyncpg
-from attrs import asdict
 from Libs.cache import KumikoCache
 from Libs.config import GuildConfig, LoggingGuildConfig
 from redis.asyncio.connection import ConnectionPool
@@ -9,7 +8,7 @@ async def get_or_fetch_guild_config(
     guild_id: int, pool: asyncpg.Pool, redis_pool: ConnectionPool
 ):
     sql = """
-    SELECT guild.id, guild.logs, guild.birthday, guild.local_economy, guild.local_economy_name, logging_config.channel_id, logging_config.member_events, logging_config.mod_events, logging_config.mod_events, logging_config.eco_events
+    SELECT guild.id, logging_config.channel_id, logging_config.member_events, logging_config.mod_events, logging_config.mod_events, logging_config.eco_events, guild.logs, guild.birthday, guild.local_economy, guild.local_economy_name
     FROM guild
     INNER JOIN logging_config
     ON guild.id = logging_config.guild_id
@@ -37,5 +36,5 @@ async def get_or_fetch_guild_config(
         local_economy=fetched_rows["local_economy"],
         local_economy_name=fetched_rows["local_economy_name"],
     )
-    await cache.set_json_cache(key=key, value=asdict(guild_config), path="$", ttl=None)
-    return asdict(guild_config)
+    await cache.set_json_cache(key=key, value=guild_config, path="$", ttl=None)
+    return fetched_rows

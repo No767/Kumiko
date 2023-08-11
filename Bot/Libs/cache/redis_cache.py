@@ -43,20 +43,29 @@ class KumikoCache:
         res = await conn.get(key)
         return res
 
+    async def delete_basic_cache(self, key: str) -> None:
+        """Deletes the command cache from Redis
+
+        Args:
+            key (str): Key to use
+        """
+        conn: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        await conn.delete(key)
+
     async def set_json_cache(
         self,
         key: str,
         value: Union[Dict[str, Any], Any],
         path: str = "$",
-        ttl: Union[int, None] = 5,
+        ttl: Union[int, None] = None,
     ) -> None:
         """Sets the JSON cache on Redis
 
         Args:
             key (str): The key to use for Redis
             value (Union[Dict[str, Any], Any]): The value of the key-pair value
-            path (str): The path to look for or set. Defautls to "$"
-            ttl (Union[int, None], optional): TTL of the key-value pair. If None, then the TTL will not be set. Defaults to 5.
+            path (str): The path to look for or set. Defaults to "$"
+            ttl (Union[int, None], optional): TTL of the key-value pair. If None, then the TTL will not be set. Defaults to None.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await client.json(encoder=msgspec.json, decoder=msgspec.json).set(
@@ -74,7 +83,7 @@ class KumikoCache:
         Args:
             key (str): The key of the key-value pair to get
             path (str): The path to obtain the value from. Defaults to "$" (aka the root)
-            value_only (bool): Whether to return the value only. Defaults to True
+            value_only (bool): Whether to return the value only. This is really only useful when using root paths. Defaults to True
 
         Returns:
             Dict[str, Any]: The value of the key-value pair
@@ -104,7 +113,7 @@ class KumikoCache:
         key: str,
         value: Union[Dict, Any],
         path: str = "$",
-        ttl: Union[int, None] = 30,
+        ttl: Union[int, None] = None,
     ) -> None:
         """Merges the key and value into a new value
 
@@ -114,7 +123,7 @@ class KumikoCache:
             key (str): Key to look for
             value (Union[Dict, Any]): Value to update
             path (str): The path to update. Defaults to "$"
-            ttl (int): TTL. Usually leave this for perma cache. Defaults to 30 seconds.
+            ttl (int): TTL. Usually leave this for perma cache. Defaults to None.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
         await client.json(encoder=msgspec.json, decoder=msgspec.json).merge(name=key, path=path, obj=value)  # type: ignore

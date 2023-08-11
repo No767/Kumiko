@@ -57,27 +57,20 @@ class Economy(commands.Cog):
     @eco.command(name="disable")
     async def disable(self, ctx: commands.Context) -> None:
         """Disables the economy module for your server"""
-        key = f"cache:kumiko:{ctx.guild.id}:config"  # type: ignore
+        key = f"cache:kumiko:{ctx.guild.id}:guild_config"  # type: ignore
         cache = KumikoCache(connection_pool=self.redis_pool)
         query = """
         UPDATE guild
         SET local_economy = $2
         WHERE id = $1;
         """
-        if await cache.cache_exists(key=key):
-            result = await cache.get_json_cache(key=key, path=".local_economy")
-            if result is True:
-                await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
-                await cache.merge_json_cache(
-                    key=key, value=False, path=self.local_economy_key, ttl=None
-                )
-                await ctx.send(
-                    "Economy is now disabled for your server. Please enable it first."
-                )
-                return
-            else:
-                await ctx.send("Economy is already disabled for your server!")
-                return
+        await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
+        await cache.merge_json_cache(
+            key=key, value=False, path=".local_economy", ttl=None
+        )
+        await ctx.send(
+            "Economy is now disabled for your server. Please enable it first."
+        )
 
     @is_economy_enabled()
     @eco.command(name="wallet", aliases=["bal", "balance"])

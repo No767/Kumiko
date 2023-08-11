@@ -1,6 +1,5 @@
 import asyncpg
 import discord
-from attrs import asdict
 from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import disable_logging
 from Libs.config import LoggingGuildConfig
@@ -51,11 +50,17 @@ class RegisterView(discord.ui.View):
                 await tr.commit()
                 await cache.merge_json_cache(
                     key=f"cache:kumiko:{guild_id}:guild_config",
-                    value=asdict(lgc),
-                    path="$.logging_config",
+                    value=lgc,
+                    path=".logging_config",
+                )
+                await cache.set_basic_cache(
+                    key=f"cache:kumiko:{guild_id}:logging_channel_id",
+                    value=str(select.values[0].id),
+                    ttl=3600,
                 )
                 await interaction.response.send_message(
-                    f"Successfully set the logging channel to {select.values[0].mention}"
+                    f"Successfully set the logging channel to {select.values[0].mention}",
+                    ephemeral=True,
                 )
 
     @discord.ui.button(label="Finish", style=discord.ButtonStyle.green)
