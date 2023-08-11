@@ -12,20 +12,10 @@ on:
 
 jobs:
   Build-GHCR:
-    name: Build-GHCR (${{ matrix.platform }})
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
 
       - name: Prepare Docker Meta
         id: meta
@@ -62,41 +52,30 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-debian-ghcr-${{ matrix.platform }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-debian-ghcr-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-debian-ghcr-${{ matrix.platform }}-
+            ${{ runner.os }}-buildx-debian-ghcr-
       - name: Build and push
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
-          platforms: ${{ matrix.platform }}
           file: ./Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian-ghcr-${{ matrix.platform }}
+          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian-ghcr
 
       - name: Move Cache
         run: |
           rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-debian-ghcr-${{ matrix.platform }} /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new-debian-ghcr /tmp/.buildx-cache
 
           
   Build-Hub:
-    name: Build-Hub (${{ matrix.platform }})
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
 
       - name: Prepare Docker Meta
         id: meta
@@ -132,22 +111,21 @@ jobs:
         uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-debian-hub-${{ matrix.platform }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-debian-hub-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-debian-hub-${{ matrix.platform }}-
+            ${{ runner.os }}-buildx-debian-hub-
 
       - name: Build and push
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
-          platforms: ${{ matrix.platform }}
           file: ./Docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian-hub-${{ matrix.platform }}
+          cache-to: type=local,dest=/tmp/.buildx-cache-new-debian-hub
 
       - name: Move Cache
         run: |
           rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new-debian-hub-${{ matrix.platform }} /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new-debian-hub /tmp/.buildx-cache

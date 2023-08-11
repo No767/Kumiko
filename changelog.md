@@ -30,7 +30,6 @@ For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https:
 - Use grouped unique keys to enforce M-M relations
 - Update docs to reflect PEP8 standards
 - Improved traceback formatting for backwards compatibility
-- Build Docker images for both amd64 and arm64
 
 ## ✨ Additions
 
