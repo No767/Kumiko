@@ -41,16 +41,12 @@ class Pronouns(commands.Cog):
         )
 
     @commands.hybrid_group(name="pronouns", fallback="get")
-    @app_commands.describe(id="The ID of the user")
-    async def pronouns(self, ctx: commands.Context, id: str) -> None:
+    @app_commands.describe(member="The member to lookup")
+    async def pronouns(self, ctx: commands.Context, member: discord.Member) -> None:
         """Obtains the pronouns of a Discord user from PronounDB
 
         This is not directly from Discord but a third party extension
         """
-        member = self.bot.get_user(int(id))
-        if member is None:
-            await ctx.send("Could not find member")
-            return
         params = {"platform": "discord", "ids": member.id}
         async with self.session.get(
             "https://pronoundb.org/api/v2/lookup", params=params
@@ -85,8 +81,8 @@ class Pronouns(commands.Cog):
         params = {"version": 2}
         async with self.session.get(url, params=params) as r:
             data = await r.json(loads=orjson.loads)
-            if len(data) == 0:
-                await ctx.send("The pronouns were not found")
+            if len(data["profiles"]) == 0:
+                await ctx.send("The profile was not found")
                 return
             curr_username = data["username"]
             avatar = data["avatar"]
@@ -179,6 +175,11 @@ class Pronouns(commands.Cog):
         if query:
             url = url / "search" / query
         async with self.session.get(url) as r:
+            # If people start using this for pronouns, then a generator shows up
+            # so that's in case this happens
+            if r.content_type == "text/html":
+                await ctx.send("Uhhhhhhhhhhhh what mate")
+                return
             data = await r.json(loads=orjson.loads)
             if len(data) == 0:
                 await ctx.send("No nouns were found")

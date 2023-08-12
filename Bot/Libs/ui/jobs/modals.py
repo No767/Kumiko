@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.cog_utils.jobs import create_job_link, create_job_output_item, update_job
+from Libs.cog_utils.jobs import create_job_output_item, update_job
 
 
 class CreateJob(discord.ui.Modal, title="Create Job"):
@@ -130,28 +130,38 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
             worker_id=interaction.user.id,
             pool=self.pool,
         )
-        async with self.pool.acquire() as conn:
-            if status[-1] != "0":
-                rows = await conn.fetchrow(query, interaction.guild.id, self.name, interaction.user.id)  # type: ignore
-                if rows is None:
-                    await interaction.response.send_message(
-                        "You aren't the producer of the item!"
-                    )
-                    return
-                record = dict(rows)
-                job_link_status = await create_job_link(
-                    worker_id=interaction.user.id,
-                    item_id=record["item_id"],
-                    job_id=record["job_id"],
-                    conn=conn,
-                )
-                if job_link_status[-1] != "0":
-                    await interaction.response.send_message(
-                        f"Successfully created the output item `{self.name}` (Price: {self.price}, Amount Per Hour: {self.amount})"
-                    )
-                    return
-            else:
-                await interaction.response.send_message(
-                    "There was an error making it. Please try again"
-                )
-                return
+        if status[-1] != "0":
+            await interaction.response.send_message(
+                f"Successfully created the output item `{self.name}` (Price: {self.price}, Amount Per Hour: {self.amount})"
+            )
+            return
+        else:
+            await interaction.response.send_message(
+                "There was an error making it. Please try again"
+            )
+            return
+        # async with self.pool.acquire() as conn:
+        #     if status[-1] != "0":
+        #         rows = await conn.fetchrow(query, interaction.guild.id, self.name, interaction.user.id)  # type: ignore
+        #         if rows is None:
+        #             await interaction.response.send_message(
+        #                 "You aren't the producer of the item!"
+        #             )
+        #             return
+        #         record = dict(rows)
+        #         job_link_status = await create_job_link(
+        #             worker_id=interaction.user.id,
+        #             item_id=record["item_id"],
+        #             job_id=record["job_id"],
+        #             conn=conn,
+        #         )
+        #         if job_link_status[-1] != "0":
+        #             await interaction.response.send_message(
+        #                 f"Successfully created the output item `{self.name}` (Price: {self.price}, Amount Per Hour: {self.amount})"
+        #             )
+        #             return
+        #     else:
+        #         await interaction.response.send_message(
+        #             "There was an error making it. Please try again"
+        #         )
+        #         return

@@ -83,7 +83,7 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         Args:
             ctx (commands.Context): _description_
         """
-        self.bot.dispatch(event, ctx.guild)
+        self.bot.dispatch(event, ctx.guild, ctx.author)
         await ctx.send("Dispatched event")
 
     @commands.check_any(commands.is_owner(), is_nat())

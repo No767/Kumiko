@@ -10,7 +10,6 @@ from Libs.cog_utils.jobs import (
     JobListFlags,
     JobOutputFlags,
     create_job,
-    create_job_link,
     create_job_output_item,
     format_job_options,
     get_job,
@@ -458,12 +457,12 @@ class Jobs(commands.Cog):
             await ctx.send("Item description is a maximum of 2000 characters.")
             return
 
-        query = """
-        SELECT eco_item_lookup.item_id, job_lookup.job_id
-        FROM eco_item_lookup
-        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.creator_id
-        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
-        """
+        # query = """
+        # SELECT eco_item_lookup.item_id, job_lookup.job_id
+        # FROM eco_item_lookup
+        # INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.creator_id
+        # WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
+        # """
         status = await create_job_output_item(
             name=name,
             description=clean_content,
@@ -473,28 +472,32 @@ class Jobs(commands.Cog):
             worker_id=ctx.author.id,
             pool=self.pool,
         )
-        async with self.pool.acquire() as conn:
-            if status[-1] != "0":
-                rows = await conn.fetchrow(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
-                if rows is None:
-                    # this is bugged for some odd reason
-                    await ctx.send("You aren't the producer of the item!")
-                    return
-                record = dict(rows)
-                job_link_status = await create_job_link(
-                    worker_id=ctx.author.id,
-                    item_id=record["item_id"],
-                    job_id=record["job_id"],
-                    conn=conn,
-                )
-                if job_link_status[-1] != "0":
-                    await ctx.send(
-                        f"Successfully created the output item `{name}` (Price: {flags.price}, Amount Per Hour: {flags.amount_per_hour})"
-                    )
-                    return
-            else:
-                await ctx.send("There was an error making it. Please try again")
-                return
+        # async with self.pool.acquire() as conn:
+        if status[-1] != "0":
+            await ctx.send(
+                f"Successfully created the output item `{name}` (Price: {flags.price}, Amount Per Hour: {flags.amount_per_hour})"
+            )
+            return
+            # rows = await conn.fetchrow(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
+            # if rows is None:
+            #     # this is bugged for some odd reason
+            #     await ctx.send("You aren't the producer of the item!")
+            #     return
+            # record = dict(rows)
+            # job_link_status = await create_job_link(
+            #     worker_id=ctx.author.id,
+            #     item_id=record["item_id"],
+            #     job_id=record["job_id"],
+            #     conn=conn,
+            # )
+            # if job_link_status[-1] != "0":
+            #     await ctx.send(
+            #         f"Successfully created the output item `{name}` (Price: {flags.price}, Amount Per Hour: {flags.amount_per_hour})"
+            #     )
+            #     return
+        else:
+            await ctx.send("There was an error making it. Please try again")
+            return
 
 
 async def setup(bot: KumikoCore) -> None:

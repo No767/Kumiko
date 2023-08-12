@@ -27,8 +27,8 @@ class Dictionary(commands.Cog):
         url = URL("https://api.dictionaryapi.dev/api/v2/entries/en") / query
         async with self.session.get(url) as r:
             data = await r.json(loads=orjson.loads)
-            if len(data) == 0:
-                await ctx.send("No results found.")
+            if "message" in data:
+                await ctx.send("No results found")
                 return
             pages = DictPages(data, ctx=ctx)
             await pages.start()
