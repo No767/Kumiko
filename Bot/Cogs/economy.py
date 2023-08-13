@@ -113,7 +113,7 @@ class Economy(commands.Cog):
     async def inventory(self, ctx: commands.Context) -> None:
         """View your inventory"""
         query = """
-        SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
+        SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, user_inv.amount_owned, eco_item.producer_id
         FROM user_inv 
         INNER JOIN eco_item ON eco_item.id = user_inv.item_id
         WHERE eco_item.guild_id = $1 AND user_inv.owner_id = $2;
@@ -166,7 +166,7 @@ class Economy(commands.Cog):
         """
         add_back_price = """
         UPDATE eco_user
-        SET petals = petals + $1
+        SET petals = petals - $1
         WHERE id = $2;
         """
         assert (

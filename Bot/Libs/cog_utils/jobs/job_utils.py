@@ -156,7 +156,6 @@ async def create_job_output_item(
     pool: asyncpg.Pool,
 ):
     # I have committed way too much sins
-    # TODO - Add an upsert in this area
     sql = """
     WITH item_insert AS (
         INSERT INTO eco_item (guild_id, name, description, price, amount, restock_amount, producer_id)
@@ -164,7 +163,7 @@ async def create_job_output_item(
         RETURNING id
     )
     INSERT INTO eco_item_lookup (name, guild_id, producer_id, item_id)
-    VALUES ($2, $1, $7, (SELECT id FROM item_insert))
+    VALUES ($2, $1, $7, (SELECT id FROM item_insert));
     """
     async with pool.acquire() as conn:
         tr = conn.transaction()

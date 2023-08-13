@@ -23,6 +23,89 @@ async def is_auction_valid(
     return (petals >= 5) and (requested_amount <= amount_owned)
 
 
+async def have_enough_funds(
+    rows: Dict[str, Any], user_id: int, amount: int, conn: asyncpg.connection.Connection
+) -> bool:
+    query = """
+    SELECT petals
+    FROM eco_user
+    WHERE id = $1;
+    """
+
+    petals = await conn.fetchval(query, user_id)  # type: ignore # We have to suppress this since asyncpg is not typed
+    if petals is None:
+        return False
+
+    amount_listed = rows["amount_listed"]
+    total_price = rows["listed_price"] * amount
+    return (petals >= total_price) and (amount <= amount_listed)
+
+
+async def purchase_auction(
+    guild_id: int,
+    user_id: int,
+    name: Optional[str],
+    item_id: Optional[int],
+    amount: int,
+    pool: asyncpg.Pool,
+) -> str:
+    find_item_and_info = """
+    SELECT eco_item.id, eco_item.name, auction_house.user_id, auction_house.amount_listed, auction_house.listed_price
+    FROM auction_house
+    INNER JOIN eco_item ON eco_item.id = auction_house.item_id
+    WHERE auction_house.guild_id = $1 AND item_id = $2 OR eco_item.name = $3;
+    """
+    update_item_stock = """
+    UPDATE auction_house
+    SET amount_listed = $4
+    WHERE guild_id = $1 AND user_id = $2 AND item_id = $3;
+    """
+    send_back_to_inv = """
+    WITH item_remove AS (
+        DELETE FROM auction_house
+        WHERE amount_listed <= 0 AND guild_id = $1 AND user_id = $2 AND item_id = $3
+        )
+    INSERT INTO user_inv (owner_id, guild_id, amount_owned, item_id)
+    VALUES ($2, $1, $4, $3)
+    ON CONFLICT (owner_id, item_id) DO UPDATE 
+    SET amount_owned = user_inv.amount_owned + $4;
+    """
+    update_balance_query = """
+    UPDATE eco_user
+    SET petals = petals + $2
+    WHERE id = $1;
+    """
+    update_purchaser_query = """
+    UPDATE eco_user
+    SET petals = petals - $2
+    WHERE id = $1;
+    """
+    async with pool.acquire() as conn:
+        item_rows = await conn.fetchrow(
+            find_item_and_info, guild_id, item_id, name or None
+        )
+        if item_rows is None:
+            return "The item that you are trying to buy doesn't exist"
+        records = dict(item_rows)
+        total_price = records["listed_price"] * amount
+        current_stock = records["amount_listed"] - amount
+        if records["user_id"] == user_id:
+            return "You can't buy your own listed item. Once it is listed, you can only update or delete it."
+        if await have_enough_funds(records, user_id, amount, conn):
+            async with conn.transaction():
+                await conn.execute(
+                    update_item_stock, guild_id, user_id, records["id"], current_stock
+                )
+                await conn.execute(
+                    send_back_to_inv, guild_id, user_id, records["id"], amount
+                )
+                await conn.execute(update_balance_query, user_id, total_price)
+                await conn.execute(update_purchaser_query, user_id, total_price)
+                return f"Successfully bought `{records['name']}` for `{total_price}` petal(s)"
+        else:
+            return "You either have requested too much or you don't have the funds to make the purchase"
+
+
 async def create_auction(
     guild_id: int,
     user_id: int,
@@ -54,16 +137,6 @@ async def create_auction(
     ON CONFLICT (item_id, user_id) DO UPDATE
     SET amount_listed = auction_house.amount_listed + $4;
     """
-    get_new_item_listed = """
-    SELECT id 
-    FROM auction_house
-    WHERE user_id = $1 AND guild_id = $2 AND item_id = $3;
-    """
-    insert_into_bridge = """
-    INSERT INTO ah_user_bridge (ah_item_id, user_id)
-    VALUES ($1, $2)
-    ON CONFLICT (ah_item_id, user_id) DO NOTHING;
-    """
     async with pool.acquire() as conn:
         rows = await conn.fetchrow(
             get_item_from_inv, user_id, guild_id, item_name, item_id
@@ -84,14 +157,9 @@ async def create_auction(
                     listed_price,
                 )
                 if status[-1] != "0":
-                    new_ah_item_id = await conn.fetchval(
-                        get_new_item_listed, user_id, guild_id, records["item_id"]
-                    )
-                    if new_ah_item_id is None:
-                        return "The item is not listed somehow. This is usually due a bug in the system. Contact the dev for more info"
-                    await conn.execute(insert_into_bridge, new_ah_item_id, user_id)
                     return "Successfully listed your item into the auction house"
-                return "Successfully updated your listing"
+                else:
+                    return "Successfully updated your listing"
         else:
             return "You either do not have enough petals (5 is required to list) or you own less than what you are requesting to list"
 

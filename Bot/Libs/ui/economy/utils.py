@@ -12,7 +12,7 @@ class UserInvEntry(TypedDict):
     name: str
     description: str
     price: int
-    amount: int
+    amount_owned: int
     producer_id: int
 
 
@@ -29,14 +29,14 @@ class LeaderboardPageEntry:
 
 
 class UserInvPageEntry:
-    __slots__ = ("id", "name", "description", "price", "amount")
+    __slots__ = ("id", "name", "description", "price", "amount_owned")
 
     def __init__(self, entries: UserInvEntry):
         self.id: int = entries["id"]
         self.name: str = entries["name"]
         self.description: str = entries["description"]
         self.price: int = entries["price"]
-        self.amount: int = entries["amount"]
+        self.amount_owned: int = entries["amount_owned"]
 
     def to_dict(self) -> Dict[str, Any]:
         data = {
@@ -45,7 +45,7 @@ class UserInvPageEntry:
             "fields": [
                 {"name": "ID", "value": self.id, "inline": True},
                 {"name": "Price", "value": self.price, "inline": True},
-                {"name": "Amount", "value": self.amount, "inline": True},
+                {"name": "Amount", "value": self.amount_owned, "inline": True},
             ],
         }
         return data

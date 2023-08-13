@@ -115,12 +115,6 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
         self.add_item(self.description)
 
     async def on_submit(self, interaction: discord.Interaction) -> None:
-        query = """
-        SELECT eco_item_lookup.item_id, job_lookup.job_id
-        FROM eco_item_lookup
-        INNER JOIN job_lookup ON eco_item_lookup.producer_id = job_lookup.worker_id
-        WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2 AND eco_item_lookup.producer_id=$3;
-        """
         status = await create_job_output_item(
             name=self.name,
             description=self.description.value,
@@ -140,28 +134,3 @@ class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
                 "There was an error making it. Please try again"
             )
             return
-        # async with self.pool.acquire() as conn:
-        #     if status[-1] != "0":
-        #         rows = await conn.fetchrow(query, interaction.guild.id, self.name, interaction.user.id)  # type: ignore
-        #         if rows is None:
-        #             await interaction.response.send_message(
-        #                 "You aren't the producer of the item!"
-        #             )
-        #             return
-        #         record = dict(rows)
-        #         job_link_status = await create_job_link(
-        #             worker_id=interaction.user.id,
-        #             item_id=record["item_id"],
-        #             job_id=record["job_id"],
-        #             conn=conn,
-        #         )
-        #         if job_link_status[-1] != "0":
-        #             await interaction.response.send_message(
-        #                 f"Successfully created the output item `{self.name}` (Price: {self.price}, Amount Per Hour: {self.amount})"
-        #             )
-        #             return
-        #     else:
-        #         await interaction.response.send_message(
-        #             "There was an error making it. Please try again"
-        #         )
-        #         return

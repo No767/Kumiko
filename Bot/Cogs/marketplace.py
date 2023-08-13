@@ -72,12 +72,6 @@ class Marketplace(commands.Cog):
         ON CONFLICT (owner_id, item_id) DO UPDATE 
         SET amount_owned = user_inv.amount_owned + $5;
         """
-        fetch_created_item = """
-        SELECT eco_item.id, user_inv.owner_id
-        FROM user_inv
-        INNER JOIN eco_item ON eco_item.id = user_inv.item_id
-        WHERE user_inv.owner_id = $1 AND user_inv.guild_id = $2 AND LOWER(eco_item.name) = $3;
-        """
         update_balance_query = """
         UPDATE eco_user
         SET petals = petals + $2
@@ -87,10 +81,6 @@ class Marketplace(commands.Cog):
         UPDATE eco_user
         SET petals = petals - $2
         WHERE id = $1;
-        """
-        create_link_update = """
-        INSERT INTO user_item_relations (item_id, user_id)
-        VALUES ($1, $2);
         """
         async with self.pool.acquire() as conn:
             rows = await conn.fetchrow(query, ctx.guild.id, name.lower())  # type: ignore
@@ -119,25 +109,7 @@ class Marketplace(commands.Cog):
                     await conn.execute(
                         update_purchaser_query, ctx.author.id, total_price
                     )
-                    status = await conn.execute(purchase_item, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
-                    if status[-1] != "0":
-                        created_rows = await conn.fetchrow(fetch_created_item, ctx.author.id, ctx.guild.id, name.lower())  # type: ignore
-                        if created_rows is None:
-                            await ctx.send(
-                                "No items fetched. This is a bug in the system"
-                            )
-                            return
-                        created_records = dict(created_rows)
-                        await conn.execute(
-                            create_link_update,
-                            created_records["id"],
-                            created_records["owner_id"],
-                        )
-                    else:
-                        await ctx.send(
-                            "Something went wrong with the purchase. This is usually due to the fact that there are extras. Please try again"
-                        )
-                        return
+                    await conn.execute(purchase_item, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
                 await ctx.send(f"Purchased item `{name}` for `{total_price}`")
             else:
                 await ctx.send(

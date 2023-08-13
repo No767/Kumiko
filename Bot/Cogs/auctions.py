@@ -5,11 +5,13 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.auctions import (
     ListingFlag,
+    PurchasingFlag,
     add_more_to_auction,
     create_auction,
     delete_auction,
     format_options,
     obtain_item_info,
+    purchase_auction,
 )
 from Libs.cog_utils.economy import is_economy_enabled
 from Libs.ui.auctions import AuctionPages, AuctionSearchPages, OwnedAuctionPages
@@ -189,6 +191,31 @@ class Auctions(commands.Cog):
         embed.set_footer(text="Listed at")
         embed.timestamp = item_info["listed_at"].replace(tzinfo=datetime.timezone.utc)
         await ctx.send(embed=embed)
+
+    @is_economy_enabled()
+    @auctions.command(name="buy", aliases=["purchase"], usage="name amount: int")
+    @app_commands.describe(name="The name of the item to purchase")
+    async def buy(
+        self,
+        ctx: commands.Context,
+        name: Annotated[str, commands.clean_content],
+        *,
+        flags: PurchasingFlag,
+    ) -> None:
+        """Make an purchase from the auction house"""
+        if ctx.guild is None:
+            await ctx.send(MessageConstants.NO_DM.value)
+            return
+
+        status = await purchase_auction(
+            guild_id=ctx.guild.id,
+            user_id=ctx.author.id,
+            name=name,
+            item_id=None,
+            amount=flags.amount,
+            pool=self.pool,
+        )
+        await ctx.send(status)
 
 
 async def setup(bot: KumikoCore) -> None:

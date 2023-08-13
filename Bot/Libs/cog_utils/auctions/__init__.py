@@ -3,8 +3,9 @@ from .crud_utils import (
     create_auction,
     delete_auction,
     obtain_item_info,
+    purchase_auction,
 )
-from .flags import ListingFlag
+from .flags import ListingFlag, PurchasingFlag
 from .format_utils import format_options
 
 __all__ = [
@@ -14,4 +15,6 @@ __all__ = [
     "add_more_to_auction",
     "format_options",
     "obtain_item_info",
+    "purchase_auction",
+    "PurchasingFlag",
 ]
