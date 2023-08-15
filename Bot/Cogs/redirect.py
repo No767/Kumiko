@@ -1,7 +1,8 @@
+import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.redirects import is_thread
+from Libs.cog_utils.redirects import can_close_threads, is_thread, mark_as_resolved
 
 
 class Redirect(commands.Cog):
@@ -13,6 +14,15 @@ class Redirect(commands.Cog):
     @property
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji(name="\U0001f500")
+
+    @commands.Cog.listener()
+    async def on_thread_create(self, thread: discord.Thread) -> None:
+        # this logic is the same as RoboDanny
+        message = thread.get_partial_message(thread.id)
+        try:
+            await message.pin()
+        except discord.HTTPException:
+            pass
 
     @commands.has_permissions(create_public_threads=True)
     @commands.hybrid_command(name="redirect")
@@ -38,12 +48,25 @@ class Redirect(commands.Cog):
         )
 
     @is_thread()
-    @commands.hybrid_command(name="completed")
-    async def completed(self, ctx: commands.Context) -> None:
+    @commands.hybrid_command(name="resolved", aliases=["completed", "solved"])
+    async def resolved(self, ctx: commands.Context) -> None:
         """Marks a thread as completed"""
         channel = ctx.channel
-        await channel.edit(archived=True, locked=True)  # type: ignore
-        await ctx.send("Marked as completed")
+        if not isinstance(channel, discord.Thread):
+            raise RuntimeError("This only works in threads")
+
+        if can_close_threads(ctx) and ctx.invoked_with in [
+            "resolved",
+            "completed",
+            "solved",
+        ]:
+            await ctx.message.add_reaction(
+                discord.PartialEmoji.from_str("<:greenTick:596576670815879169>")
+            )
+            await mark_as_resolved(channel, ctx.author)
+            return
+        # await channel.edit(archived=True, locked=True)
+        # await ctx.send("Marked as completed")
 
 
 async def setup(bot: KumikoCore) -> None:

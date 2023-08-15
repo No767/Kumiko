@@ -1,15 +1,4 @@
-import discord
-from discord.ext import commands
+from .checks import is_thread
+from .utils import can_close_threads, mark_as_resolved
 
-
-def check_if_thread(ctx: commands.Context):
-    return isinstance(ctx.channel, discord.Thread) and not isinstance(
-        ctx.channel, discord.ForumChannel
-    )
-
-
-def is_thread():
-    def pred(ctx: commands.Context):
-        return check_if_thread(ctx)
-
-    return commands.check(pred)
+__all__ = ["is_thread", "can_close_threads", "mark_as_resolved"]

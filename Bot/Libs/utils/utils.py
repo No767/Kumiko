@@ -2,7 +2,7 @@ import os
 import re
 import ssl
 from datetime import datetime, timedelta
-from typing import Any, Dict, TypeVar, Union
+from typing import Any, Dict, Optional, TypeVar, Union
 
 import ciso8601
 
@@ -102,3 +102,15 @@ def is_docker() -> bool:
     return os.path.exists("/.dockerenv") or (
         os.path.isfile(path) and any("docker" in line for line in open(path))
     )
+
+
+def tick(opt: Optional[bool], label: Optional[str] = None) -> str:
+    lookup = {
+        True: "<:greenTick:330090705336664065>",
+        False: "<:redTick:330090723011592193>",
+        None: "<:greyTick:563231201280917524>",
+    }
+    emoji = lookup.get(opt, "<:redTick:330090723011592193>")
+    if label is not None:
+        return f"{emoji}: {label}"
+    return emoji
