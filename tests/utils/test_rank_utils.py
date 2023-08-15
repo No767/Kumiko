@@ -8,10 +8,10 @@ from Libs.utils import calc_petals, calc_rank
 
 
 def test_calc_rank():
-    predictedRank = calc_rank(100)
-    assert predictedRank == 1
+    predicted_rank = calc_rank(100)
+    assert predicted_rank == 1
 
 
 def test_calc_petals():
-    predictedPetals = calc_petals(1)
-    assert predictedPetals == 579
+    predicted_petals = calc_petals(1)
+    assert predicted_petals == 579

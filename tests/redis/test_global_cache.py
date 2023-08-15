@@ -18,19 +18,19 @@ async def test_cpm():
 
 
 def test_creation_cp():
-    kumikoCP = KumikoCPManager(uri=REDIS_URI)
-    connPool = kumikoCP.createPool()
-    assert isinstance(connPool, ConnectionPool)
+    kumiko_cp = KumikoCPManager(uri=REDIS_URI)
+    pool = kumiko_cp.create_pool()
+    assert isinstance(pool, ConnectionPool)
 
 
 def test_get_cp():
-    kumikoCP = KumikoCPManager(uri=REDIS_URI)
-    connPool = kumikoCP.getConnPool()
-    assert isinstance(connPool, ConnectionPool)
+    kumiko_cp = KumikoCPManager(uri=REDIS_URI)
+    pool = kumiko_cp.get_conn_pool()
+    assert isinstance(pool, ConnectionPool)
 
 
 def test_created_cp():
-    kumikoCP = KumikoCPManager(uri=REDIS_URI)
-    kumikoCP.createPool()
-    newConnPool = kumikoCP.getConnPool()
-    assert isinstance(newConnPool, ConnectionPool)
+    kumiko_cp = KumikoCPManager(uri=REDIS_URI)
+    kumiko_cp.create_pool()
+    new_pool = kumiko_cp.get_conn_pool()
+    assert isinstance(new_pool, ConnectionPool)

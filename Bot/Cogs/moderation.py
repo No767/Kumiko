@@ -5,7 +5,7 @@ import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import Embed, is_mod, parseTimeStr
+from Libs.utils import Embed, MessageConstants, is_mod, parse_time_str
 
 
 class Moderation(commands.Cog):
@@ -48,20 +48,18 @@ class Moderation(commands.Cog):
         `>mod ban @user1 7 spam`
         Bans user1 and deletes their messages from the last 7 days with the reason "spam"
         """
-        userBanList = (
+        ban_list = (
             ", ".join([user.mention for user in users]).rstrip(",")
             if len(users) > 1
             else users[0].mention
         )
-        deleteSeconds = (
+        del_seconds = (
             delete_days * 86400 if delete_days is not None and delete_days <= 7 else 7
         )
         for members in users:
-            await members.ban(delete_message_seconds=deleteSeconds, reason=reason)
-        embed = Embed(
-            title="Issued Ban", description=f"Successfully banned {userBanList}"
-        )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+            await members.ban(delete_message_seconds=del_seconds, reason=reason)
+        embed = Embed(title="Issued Ban", description=f"Successfully banned {ban_list}")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -85,7 +83,7 @@ class Moderation(commands.Cog):
         `>mod unban @user1 issue resolved`
         Unbans user1 with the reason "issue resolved"
         """
-        unbanList = (
+        unban_list = (
             ", ".join([user.mention for user in users]).rstrip(",")
             if len(users) > 1
             else users[0].mention
@@ -93,9 +91,9 @@ class Moderation(commands.Cog):
         for members in users:
             await ctx.guild.unban(user=members, reason=reason)  # type: ignore
         embed = Embed(
-            title="Issued Unban", description=f"Successfully unbanned {unbanList}"
+            title="Issued Unban", description=f"Successfully unbanned {unban_list}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -114,7 +112,7 @@ class Moderation(commands.Cog):
         `>mod kick @user1`
         Kicks user1
         """
-        kickList = (
+        kick_list = (
             ", ".join([user.mention for user in users]).rstrip(",")
             if len(users) > 1
             else users[0].mention
@@ -122,9 +120,9 @@ class Moderation(commands.Cog):
         for members in users:
             await members.kick(reason=reason)
         embed = Embed(
-            title="Kicked User(s)", description=f"Successfully kicked {kickList}"
+            title="Kicked User(s)", description=f"Successfully kicked {kick_list}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -154,22 +152,20 @@ class Moderation(commands.Cog):
         `>mod mute @user @user2 4h`
         Mutes both users for 4 hours
         """
-        muteList = (
+        mute_list = (
             ", ".join([user.mention for user in users]).rstrip(",")
             if len(users) > 1
             else users[0].mention
         )
-        parsedTime = parseTimeStr(duration if duration is not None else "30m")
-        if parsedTime is not None and parsedTime > timedelta(days=28):
-            parsedTime = parseTimeStr("28d")
-        else:
-            parsedTime = parseTimeStr("28d")
+        parsed_time = parse_time_str(duration if duration is not None else "30m")
+        if parsed_time is not None and parsed_time > timedelta(days=28):
+            parsed_time = parse_time_str("28d")
         for members in users:
-            await members.timeout(parsedTime, reason=reason)
+            await members.timeout(parsed_time, reason=reason)
         embed = Embed(
-            title="Muted User(s)", description=f"Successfully muted {muteList}"
+            title="Muted User(s)", description=f"Successfully muted {mute_list}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
     @is_mod()
@@ -196,7 +192,7 @@ class Moderation(commands.Cog):
         `>mod unmute @user "timeout expired"`
         Unmutes the user with the reason "timeout expired"
         """
-        unmuteList = (
+        unmute_list = (
             ", ".join([user.mention for user in users]).rstrip(",")
             if len(users) > 1
             else users[0].mention
@@ -204,9 +200,9 @@ class Moderation(commands.Cog):
         for members in users:
             await members.timeout(None, reason=reason)
         embed = Embed(
-            title="Unmuted User(s)", description=f"Successfully unmuted {unmuteList}"
+            title="Unmuted User(s)", description=f"Successfully unmuted {unmute_list}"
         )
-        embed.add_field(name="Reason", value=reason or "No reason provided")
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
         await ctx.send(embed=embed)
 
 

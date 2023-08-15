@@ -28,28 +28,28 @@ class DeletePinView(discord.ui.View):
                 status = await conn.execute(query, self.name)
             except asyncpg.UniqueViolationError:
                 self.clear_items()
-                uniqueViolationEmbed = ErrorEmbed(
+                unique_violation_embed = ErrorEmbed(
                     description="There are duplicate records"
                 )
                 await interaction.response.edit_message(
-                    embed=uniqueViolationEmbed, view=self
+                    embed=unique_violation_embed, view=self
                 )
             else:
                 self.clear_items()
                 if status[-1] == "0":
-                    errorEmbed = ErrorEmbed(
+                    error_embed = ErrorEmbed(
                         description=f"A pin with the name of `{self.name}` does not exist."
                     )
                     await interaction.response.edit_message(
-                        embed=errorEmbed, view=self, delete_after=20.0
+                        embed=error_embed, view=self, delete_after=20.0
                     )
                 else:
-                    successEmbed = SuccessActionEmbed()
-                    successEmbed.description = (
+                    success_embed = SuccessActionEmbed()
+                    success_embed.description = (
                         f"Deleted the following pin: `{self.name}`"
                     )
                     await interaction.response.edit_message(
-                        embed=successEmbed, view=self, delete_after=20.0
+                        embed=success_embed, view=self, delete_after=20.0
                     )
 
     @discord.ui.button(
@@ -87,19 +87,19 @@ class PurgePinView(discord.ui.View):
                 status = await conn.execute(query, interaction.guild.id, interaction.user.id)  # type: ignore
                 self.clear_items()
                 if status[-1] == "0":
-                    errorEmbed = ErrorEmbed(
+                    error_embed = ErrorEmbed(
                         description="Either you don't own any pins or you have no permission to delete those pins"
                     )
                     await interaction.response.edit_message(
-                        embed=errorEmbed, view=self, delete_after=20.0
+                        embed=error_embed, view=self, delete_after=20.0
                     )
                 else:
-                    successEmbed = SuccessActionEmbed()
-                    successEmbed.description = (
+                    success_embed = SuccessActionEmbed()
+                    success_embed.description = (
                         f"Fully purged all pins belonging to {interaction.user.mention}"
                     )
                     await interaction.response.edit_message(
-                        embed=successEmbed, view=self, delete_after=20.0
+                        embed=success_embed, view=self, delete_after=20.0
                     )
 
     @discord.ui.button(

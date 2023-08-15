@@ -40,7 +40,7 @@ class ItemPageEntry:
         return embed
 
     def to_dict(self) -> Dict[str, Any]:
-        dictData = {
+        data = {
             "title": self.name,
             "description": self.description,
             "fields": [
@@ -49,7 +49,7 @@ class ItemPageEntry:
                 {"name": "Amount", "value": self.amount, "inline": True},
             ],
         }
-        return dictData
+        return data
 
 
 class ItemPages(SimpleItemPages):

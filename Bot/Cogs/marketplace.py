@@ -3,7 +3,7 @@ from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.economy import PurchaseFlags, is_economy_enabled
-from Libs.cog_utils.marketplace import formatOptions, getItem, isPaymentValid
+from Libs.cog_utils.marketplace import format_item_options, get_item, is_payment_valid
 from Libs.ui.marketplace import ItemPages, SimpleSearchItemPages
 from Libs.utils import Embed, get_or_fetch_member
 from typing_extensions import Annotated
@@ -59,7 +59,8 @@ class Marketplace(commands.Cog):
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
         WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2;
         """
-        purchaseItem = """
+        # kids we have an issue. Upserts are needed
+        purchase_item = """
         WITH item_update AS (
             UPDATE eco_item
             SET amount = $4
@@ -67,27 +68,19 @@ class Marketplace(commands.Cog):
             RETURNING id
         )
         INSERT INTO user_inv (owner_id, guild_id, amount_owned, item_id)
-        VALUES ($2, $1, $5, (SELECT id FROM item_update));
+        VALUES ($2, $1, $5, (SELECT id FROM item_update))
+        ON CONFLICT (owner_id, item_id) DO UPDATE 
+        SET amount_owned = user_inv.amount_owned + $5;
         """
-        fetchCreatedItem = """
-        SELECT eco_item.id, user_inv.owner_id
-        FROM user_inv
-        INNER JOIN eco_item ON eco_item.id = user_inv.item_id
-        WHERE user_inv.owner_id = $1 AND user_inv.guild_id = $2 AND LOWER(eco_item.name) = $3;
-        """
-        updateBalanceQuery = """
+        update_balance_query = """
         UPDATE eco_user
         SET petals = petals + $2
         WHERE id = $1;
         """
-        updatePurchaserQuery = """
+        update_purchaser_query = """
         UPDATE eco_user
         SET petals = petals - $2
         WHERE id = $1;
-        """
-        createLinkUpdate = """
-        INSERT INTO user_item_relations (item_id, user_id)
-        VALUES ($1, $2);
         """
         async with self.pool.acquire() as conn:
             rows = await conn.fetchrow(query, ctx.guild.id, name.lower())  # type: ignore
@@ -102,35 +95,22 @@ class Marketplace(commands.Cog):
                     "You can't buy your own goods! Buy something else instead"
                 )
                 return
-            totalPrice = records["price"] * flags.amount
-            if await isPaymentValid(records, ctx.author.id, flags.amount, conn) is True:
+            total_price = records["price"] * flags.amount
+            if (
+                await is_payment_valid(records, ctx.author.id, flags.amount, conn)
+                is True
+            ):
                 async with conn.transaction():
                     await conn.execute(
-                        updateBalanceQuery,
+                        update_balance_query,
                         records["producer_id"],
-                        totalPrice,
+                        total_price,
                     )
-                    await conn.execute(updatePurchaserQuery, ctx.author.id, totalPrice)
-                    status = await conn.execute(purchaseItem, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
-                    if status[-1] != "0":
-                        createdRows = await conn.fetchrow(fetchCreatedItem, ctx.author.id, ctx.guild.id, name.lower())  # type: ignore
-                        if createdRows is None:
-                            await ctx.send(
-                                "No items fetched. This is a bug in the system"
-                            )
-                            return
-                        createdRecords = dict(createdRows)
-                        await conn.execute(
-                            createLinkUpdate,
-                            createdRecords["id"],
-                            createdRecords["owner_id"],
-                        )
-                    else:
-                        await ctx.send(
-                            "Something went wrong with the purchase. This is usually due to the fact that there are extras. Please try again"
-                        )
-                        return
-                await ctx.send(f"Purchased item `{name}` for `{totalPrice}`")
+                    await conn.execute(
+                        update_purchaser_query, ctx.author.id, total_price
+                    )
+                    await conn.execute(purchase_item, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
+                await ctx.send(f"Purchased item `{name}` for `{total_price}`")
             else:
                 await ctx.send(
                     "The payment is invalid. This is due to the following:\n"
@@ -147,9 +127,9 @@ class Marketplace(commands.Cog):
         self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Provides info about an item listed on the marketplace"""
-        item = await getItem(ctx.guild.id, name, self.bot.pool)  # type: ignore
+        item = await get_item(ctx.guild.id, name, self.bot.pool)  # type: ignore
         if isinstance(item, list):
-            await ctx.send(formatOptions(item) or ".")
+            await ctx.send(format_item_options(item) or ".")
             return
 
         member = await get_or_fetch_member(ctx.guild, item["producer_id"])  # type: ignore

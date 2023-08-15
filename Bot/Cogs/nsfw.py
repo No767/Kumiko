@@ -26,14 +26,14 @@ class NSFW(commands.Cog):
     @commands.hybrid_group(name="r34", fallback="get")
     async def r34(self, ctx: commands.Context, *, tag: Optional[str]) -> None:
         """Obtain R34 images"""
-        cleanedTag = (
+        cleaned_tag = (
             f"{tag} -ai_generated* -stable_diffusion" if tag is not None else "all"
         )
         params = {
             "page": "dapi",
             "s": "post",
             "q": "index",
-            "tags": cleanedTag,
+            "tags": cleaned_tag,
             "json": 1,
             "limit": 100,
         }
@@ -41,9 +41,9 @@ class NSFW(commands.Cog):
             "https://api.rule34.xxx/index.php", params=params
         ) as r:
             data = await r.json(loads=orjson.loads)
-            formatData = [{"image": item["sample_url"]} for item in data]
-            embedSource = EmbedListSource(formatData, per_page=1)
-            pages = KumikoPages(source=embedSource, ctx=ctx)
+            format_data = [{"image": item["sample_url"]} for item in data]
+            embed_source = EmbedListSource(format_data, per_page=1)
+            pages = KumikoPages(source=embed_source, ctx=ctx)
             await pages.start()
 
     @commands.is_nsfw()
@@ -64,11 +64,11 @@ class NSFW(commands.Cog):
             "https://api.rule34.xxx/index.php", params=params
         ) as r:
             data = await r.json(loads=orjson.loads)
-            randomPick = random.choice(data)
+            random_pick = random.choice(data)
             embed = Embed()
-            view = R34DownloadView(link=randomPick["file_url"])
-            embed.set_footer(text=f"Source: {randomPick['source'] or None}")
-            embed.set_image(url=randomPick["sample_url"])
+            view = R34DownloadView(link=random_pick["file_url"])
+            embed.set_footer(text=f"Source: {random_pick['source'] or None}")
+            embed.set_image(url=random_pick["sample_url"])
             await ctx.send(embed=embed, view=view)
 
 

@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
-from Libs.errors import NoItemsError
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
 load_dotenv()
@@ -37,7 +36,7 @@ class Searches(commands.Cog):
 
     @search.command(name="anime")
     @app_commands.describe(name="The name of the anime to search")
-    async def searchAnime(self, ctx: commands.Context, *, name: str) -> None:
+    async def anime(self, ctx: commands.Context, *, name: str) -> None:
         """Searches up animes"""
         async with Client(
             transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
@@ -87,9 +86,10 @@ class Searches(commands.Cog):
             data = await gql_session.execute(query, variable_values=params)
 
             if len(data["Page"]["media"]) == 0:
-                raise NoItemsError
+                await ctx.send("The anime was not found")
+                return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["title"]["romaji"],
                         "description": str(item["description"]).replace("<br>", ""),
@@ -122,13 +122,13 @@ class Searches(commands.Cog):
                     }
                     for item in data["Page"]["media"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @search.command(name="manga")
     @app_commands.describe(name="The name of the manga to search")
-    async def searchManga(self, ctx: commands.Context, *, name: str):
+    async def manga(self, ctx: commands.Context, *, name: str):
         """Searches for manga on AniList"""
         async with Client(
             transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
@@ -176,9 +176,10 @@ class Searches(commands.Cog):
             params = {"mangaName": name, "perPage": 25, "isAdult": False}
             data = await gql_session.execute(query, variable_values=params)
             if len(data["Page"]["media"]) == 0:
-                raise NoItemsError
+                await ctx.send("The manga(s) were not found")
+                return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["title"]["romaji"],
                         "description": str(item["description"]).replace("<br>", ""),
@@ -210,13 +211,13 @@ class Searches(commands.Cog):
                     }
                     for item in data["Page"]["media"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @search.command(name="gifs")
     @app_commands.describe(search="The search term to use")
-    async def searchGifs(self, ctx: commands.Context, *, search: str) -> None:
+    async def gifs(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for gifs on Tenor"""
         params = {
             "q": search,
@@ -230,14 +231,15 @@ class Searches(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if len(data["results"]) == 0 or r.status == 404:
-                raise NoItemsError
+                await ctx.send("The gifs were not found")
+                return
             else:
-                mainData = [
+                main_data = [
                     {"image": item["media_formats"]["gif"]["url"]}
                     for item in data["results"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @search.command(name="mc-mods")
@@ -245,7 +247,7 @@ class Searches(commands.Cog):
         mod_name="The name of the mod to search for",
         modloader="Which modloader to use. Defaults to Forge.",
     )
-    async def searchMods(
+    async def mods(
         self,
         ctx: commands.Context,
         *,
@@ -264,9 +266,10 @@ class Searches(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if len(data["hits"]) == 0:
-                raise NoItemsError
+                await ctx.send("The mod(s) were/was not found")
+                return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["title"],
                         "description": item["description"],
@@ -301,8 +304,8 @@ class Searches(commands.Cog):
                     }
                     for item in data["hits"]
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
 

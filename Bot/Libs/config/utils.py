@@ -1,5 +1,4 @@
 import asyncpg
-from attrs import asdict
 from Libs.cache import KumikoCache
 from Libs.config import GuildConfig, LoggingGuildConfig
 from redis.asyncio.connection import ConnectionPool
@@ -9,7 +8,7 @@ async def get_or_fetch_guild_config(
     guild_id: int, pool: asyncpg.Pool, redis_pool: ConnectionPool
 ):
     sql = """
-    SELECT guild.id, guild.logs, guild.birthday, guild.local_economy, guild.local_economy_name, logging_config.channel_id, logging_config.member_events, logging_config.mod_events, logging_config.mod_events, logging_config.eco_events
+    SELECT guild.id, logging_config.channel_id, logging_config.member_events, logging_config.mod_events, logging_config.mod_events, logging_config.eco_events, guild.logs, guild.birthday, guild.local_economy, guild.local_economy_name
     FROM guild
     INNER JOIN logging_config
     ON guild.id = logging_config.guild_id
@@ -17,25 +16,25 @@ async def get_or_fetch_guild_config(
     """
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(connection_pool=redis_pool)
-    if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path="$")
+    if await cache.cache_exists(key=key):
+        res = await cache.get_json_cache(key=key, path="$")
         return res
     rows = await pool.fetchrow(sql, guild_id)
     if rows is None:
         return None
-    fetchedRows = dict(rows)
-    guildConfig = GuildConfig(
-        id=fetchedRows["id"],
+    fetched_rows = dict(rows)
+    guild_config = GuildConfig(
+        id=fetched_rows["id"],
         logging_config=LoggingGuildConfig(
-            channel_id=fetchedRows["channel_id"],
-            member_events=fetchedRows["member_events"],
-            mod_events=fetchedRows["mod_events"],
-            eco_events=fetchedRows["eco_events"],
+            channel_id=fetched_rows["channel_id"],
+            member_events=fetched_rows["member_events"],
+            mod_events=fetched_rows["mod_events"],
+            eco_events=fetched_rows["eco_events"],
         ),
-        logs=fetchedRows["logs"],
-        birthday=fetchedRows["birthday"],
-        local_economy=fetchedRows["local_economy"],
-        local_economy_name=fetchedRows["local_economy_name"],
+        logs=fetched_rows["logs"],
+        birthday=fetched_rows["birthday"],
+        local_economy=fetched_rows["local_economy"],
+        local_economy_name=fetched_rows["local_economy_name"],
     )
-    await cache.setJSONCache(key=key, value=asdict(guildConfig), path="$", ttl=None)
-    return asdict(guildConfig)
+    await cache.set_json_cache(key=key, value=guild_config, path="$", ttl=None)
+    return fetched_rows

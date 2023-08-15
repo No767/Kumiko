@@ -1,6 +1,7 @@
 from typing import Literal, Optional
 
 import discord
+from Cogs import EXTENSIONS
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
@@ -86,14 +87,22 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.send("Dispatched event")
 
     @commands.check_any(commands.is_owner(), is_nat())
-    @commands.command(name="arg-check", usage="<user: discord.Member>")
+    @commands.hybrid_command(name="arg-check", usage="<user: discord.Member>")
     async def arg_check(self, ctx: commands.Context, user: discord.Member):
         """Testing arg checks
 
         Args:
             user (discord.Member): The member to ping lol
         """
-        await ctx.send(user.name)
+        raise RuntimeError("Testing moments")
+        # await ctx.send(user.name)
+
+    @commands.command(name="reload-all")
+    async def upgrade(self, ctx: commands.Context) -> None:
+        """Reloads all cogs. This is used for upgrading"""
+        for cog in EXTENSIONS:
+            await self.bot.reload_extension(cog)
+        await ctx.send("Reloaded all cogs")
 
 
 async def setup(bot: KumikoCore):

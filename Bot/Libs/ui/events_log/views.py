@@ -1,6 +1,5 @@
 import asyncpg
 import discord
-from attrs import asdict
 from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import disable_logging
 from Libs.config import LoggingGuildConfig
@@ -33,14 +32,14 @@ class RegisterView(discord.ui.View):
         UPDATE SET channel_id = excluded.channel_id;
         """
         async with self.pool.acquire() as conn:
-            guildId = interaction.guild.id  # type: ignore
+            guild_id = interaction.guild.id  # type: ignore
             cache = KumikoCache(connection_pool=self.redis_pool)
             lgc = LoggingGuildConfig(channel_id=select.values[0].id)
             tr = conn.transaction()
             await tr.start()
 
             try:
-                await conn.execute(query, guildId, select.values[0].id, True)
+                await conn.execute(query, guild_id, select.values[0].id, True)
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 await interaction.response.send_message("There are duplicate records")
@@ -49,13 +48,19 @@ class RegisterView(discord.ui.View):
                 await interaction.response.send_message("Could not create records.")
             else:
                 await tr.commit()
-                await cache.mergeJSONCache(
-                    key=f"cache:kumiko:{guildId}:guild_config",
-                    value=asdict(lgc),
-                    path="$.logging_config",
+                await cache.merge_json_cache(
+                    key=f"cache:kumiko:{guild_id}:guild_config",
+                    value=lgc,
+                    path=".logging_config",
+                )
+                await cache.set_basic_cache(
+                    key=f"cache:kumiko:{guild_id}:logging_channel_id",
+                    value=str(select.values[0].id),
+                    ttl=3600,
                 )
                 await interaction.response.send_message(
-                    f"Successfully set the logging channel to {select.values[0].mention}"
+                    f"Successfully set the logging channel to {select.values[0].mention}",
+                    ephemeral=True,
                 )
 
     @discord.ui.button(label="Finish", style=discord.ButtonStyle.green)
@@ -91,37 +96,37 @@ class UnregisterView(discord.ui.View):
         DELETE FROM logging_config WHERE guild_id = (SELECT id FROM guild_update);
         """
         async with self.pool.acquire() as conn:
-            guildId = interaction.guild.id  # type: ignore
+            guild_id = interaction.guild.id  # type: ignore
 
             tr = conn.transaction()
             await tr.start()
 
             try:
-                await conn.execute(query, guildId, False)
+                await conn.execute(query, guild_id, False)
             except asyncpg.UniqueViolationError:
                 await tr.rollback()
                 self.clear_items()
-                uniqueViolationEmbed = ErrorEmbed(
+                unique_violation_embed = ErrorEmbed(
                     description="There are duplicate records"
                 )
                 await interaction.response.edit_message(
-                    embed=uniqueViolationEmbed, view=self
+                    embed=unique_violation_embed, view=self
                 )
             except Exception:
                 await tr.rollback()
                 self.clear_items()
-                failedEmbed = ErrorEmbed(
+                failed_embed = ErrorEmbed(
                     description="Could not update or delete records"
                 )
-                await interaction.response.edit_message(embed=failedEmbed, view=self)
+                await interaction.response.edit_message(embed=failed_embed, view=self)
             else:
                 await tr.commit()
-                await disable_logging(guild_id=guildId, redis_pool=self.redis_pool)
+                await disable_logging(guild_id=guild_id, redis_pool=self.redis_pool)
                 self.clear_items()
-                successEmbed = SuccessActionEmbed()
-                successEmbed.description = "Disabled and cleared all logging configs"
+                success_embed = SuccessActionEmbed()
+                success_embed.description = "Disabled and cleared all logging configs"
 
-                await interaction.response.edit_message(embed=successEmbed, view=self)
+                await interaction.response.edit_message(embed=success_embed, view=self)
 
     @discord.ui.button(
         label="Cancel",

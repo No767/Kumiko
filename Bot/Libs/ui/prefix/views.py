@@ -1,6 +1,6 @@
 import discord
 from kumikocore import KumikoCore
-from Libs.utils import CancelledActionEmbed, ErrorEmbed, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, SuccessActionEmbed
 
 
 class DeletePrefixView(discord.ui.View):
@@ -55,5 +55,6 @@ class DeletePrefixView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         self.clear_items()
-        embed = CancelledActionEmbed()
-        await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.response.defer()
+        await interaction.delete_original_response()
+        self.stop()

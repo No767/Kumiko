@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 import asyncpg
 
 
-async def getItem(
+async def get_item(
     id: int, item_name: str, pool: asyncpg.Pool
 ) -> Union[Dict, List[Dict[str, str]], None]:
     """Gets a item from the database.
@@ -16,14 +16,14 @@ async def getItem(
     Returns:
         Union[str, None]: The item details or None if it doesn't exist
     """
-    sqlQuery = """
+    query = """
     SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.created_at, eco_item.producer_id
     FROM eco_item_lookup
     INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
     WHERE eco_item_lookup.guild_id=$1 AND LOWER(eco_item_lookup.name)=$2; 
     """
     async with pool.acquire() as conn:
-        res = await conn.fetchrow(sqlQuery, id, item_name)
+        res = await conn.fetchrow(query, id, item_name)
         if res is None:
             query = """
             SELECT     eco_item_lookup.name
@@ -32,15 +32,15 @@ async def getItem(
             ORDER BY   similarity(eco_item_lookup.name, $2) DESC
             LIMIT 5;
             """
-            newRes = await conn.fetch(query, id, item_name)
-            if newRes is None or len(newRes) == 0:
+            new_res = await conn.fetch(query, id, item_name)
+            if new_res is None or len(new_res) == 0:
                 return None
 
-            return [dict(row) for row in newRes]
+            return [dict(row) for row in new_res]
         return dict(res)
 
 
-async def isPaymentValid(
+async def is_payment_valid(
     rows: Dict[str, Any],
     purchaser_id: int,
     requested_amount: int,
@@ -52,16 +52,18 @@ async def isPaymentValid(
     WHERE id = $1;
     """
 
-    petals = await conn.fetchval(query, purchaser_id)
+    petals = await conn.fetchval(query, purchaser_id)  # type: ignore # We have to suppress this since asyncpg is not typed
     if petals is None:
         return False
 
-    totalPrice = rows["price"] * requested_amount
-    stockAmt = rows["amount"]
-    return (petals >= totalPrice) and (requested_amount < stockAmt) and (stockAmt > 0)
+    total_price = rows["price"] * requested_amount
+    stock_amt = rows["amount"]
+    return (
+        (petals >= total_price) and (requested_amount < stock_amt) and (stock_amt > 0)
+    )
 
 
-def formatOptions(rows: Union[List[Dict[str, str]], None]) -> str:
+def format_item_options(rows: Union[List[Dict[str, str]], None]) -> str:
     """Format the rows to be sent to the user
 
     Args:
@@ -77,7 +79,7 @@ def formatOptions(rows: Union[List[Dict[str, str]], None]) -> str:
     return f"Item not found. Did you mean:\n{names}"
 
 
-async def createPurchasedItem(
+async def create_purchase_item(
     guild_id: int,
     user_id: int,
     name: str,

@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS user_inv (
     guild_id BIGINT,
     amount_owned INT DEFAULT 0,
     item_id INT,
+    UNIQUE (owner_id, item_id),
     FOREIGN KEY (item_id) REFERENCES eco_item (id) ON DELETE CASCADE ON UPDATE NO ACTION
 );
 

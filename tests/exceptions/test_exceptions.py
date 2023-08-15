@@ -7,20 +7,21 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 from Libs.errors import (
-    EconomyDisabled,
+    EconomyDisabledError,
     HTTPError,
     ItemNotFoundError,
-    KumikoException,
+    KumikoExceptionError,
     NoItemsError,
     NotFoundError,
+    RedirectsDisabledError,
     ValidationError,
 )
 
 
 def test_kumiko_exception():
-    with pytest.raises(KumikoException) as e:
-        raise KumikoException
-    assert e.type == KumikoException
+    with pytest.raises(KumikoExceptionError) as e:
+        raise KumikoExceptionError
+    assert e.type == KumikoExceptionError
 
 
 def test_item_not_found_error():
@@ -78,10 +79,20 @@ def test_validation_error():
 
 
 def test_economy_disabled_error():
-    with pytest.raises(EconomyDisabled) as e:
-        raise EconomyDisabled
+    with pytest.raises(EconomyDisabledError) as e:
+        raise EconomyDisabledError
 
-    assert (e.type == EconomyDisabled) and (
+    assert (e.type == EconomyDisabledError) and (
         "The economy module is disabled in this server. Please ask your server admin to enable it."
+        in str(e.value)
+    )
+
+
+def test_redirects_disabled_error():
+    with pytest.raises(RedirectsDisabledError) as e:
+        raise RedirectsDisabledError
+
+    assert (e.type == RedirectsDisabledError) and (
+        "The redirects module is disabled in this server. Please ask your server admin to enable it."
         in str(e.value)
     )

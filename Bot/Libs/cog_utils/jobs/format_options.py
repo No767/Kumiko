@@ -1,7 +1,7 @@
 from typing import Dict, List, Union
 
 
-def formatOptions(rows: Union[List[Dict[str, str]], None]) -> str:
+def format_job_options(rows: Union[List[Dict[str, str]], None]) -> str:
     """Format the rows to be sent to the user
 
     Args:

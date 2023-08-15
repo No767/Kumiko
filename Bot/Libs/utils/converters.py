@@ -20,16 +20,13 @@ class PinName(commands.clean_content):
         converted = await super().convert(ctx, argument)
         lower = converted.lower().strip()
 
-        # if not lower:
-        #     raise commands.BadArgument("Missing tag name.")
-
         if len(lower) > 100:
             raise commands.BadArgument("Tag name is a maximum of 100 characters.")
 
         first_word, _, _ = lower.partition(" ")
 
         # get tag command.
-        root: commands.GroupMixin = ctx.bot.get_command("pins")  # type: ignore
+        root: commands.GroupMixin = ctx.bot.get_command("pins")
         if first_word in root.all_commands:
             raise commands.BadArgument("This tag name starts with a reserved word.")
 
@@ -45,16 +42,12 @@ class JobName(commands.clean_content):
         converted = await super().convert(ctx, argument)
         lower = converted.lower().strip()
 
-        # if not lower:
-        #     raise commands.BadArgument("Missing job name.")
-
         if len(lower) > 100:
             raise commands.BadArgument("Job name is a maximum of 100 characters.")
 
         first_word, _, _ = lower.partition(" ")
 
-        # get tag command.
-        root: commands.GroupMixin = ctx.bot.get_command("jobs")  # type: ignore
+        root: commands.GroupMixin = ctx.bot.get_command("jobs")
         if first_word in root.all_commands:
             raise commands.BadArgument("This Job name starts with a reserved word.")
 
@@ -67,3 +60,24 @@ class PinAllFlags(commands.FlagConverter):
         description="Whether to dump all pins in that server",
         aliases=["a"],
     )
+
+
+class CheckLegitUser(commands.clean_content):
+    def __init__(self, *, lower: bool = False):
+        self.lower: bool = lower
+        super().__init__()
+
+    async def convert(self, ctx: commands.Context, argument: str):
+        converted = await super().convert(ctx, argument)
+        user_id = int(converted)
+
+        if ctx.guild is None:
+            raise commands.BadArgument(
+                "This is being used in a DM. Doesn't work that way"
+            )
+
+        member = ctx.guild.get_member(user_id)
+        if member is None:
+            raise commands.BadArgument("This user doesn't exist in this server")
+
+        return member.id

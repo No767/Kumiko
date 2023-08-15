@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import traceback
 from typing import Any, Dict, Optional
 
 import discord
@@ -50,7 +49,7 @@ class KumikoPages(discord.ui.View):
                 self.add_item(self.numbered_page)
             self.add_item(self.stop_pages)
 
-    async def _get_kwargs_from_page(self, page: int) -> Dict[str, Any]:
+    async def get_kwargs_from_page(self, page: int) -> Dict[str, Any]:
         value = await discord.utils.maybe_coroutine(self.source.format_page, self, page)
         if isinstance(value, dict):
             return value
@@ -66,7 +65,7 @@ class KumikoPages(discord.ui.View):
     ) -> None:
         page = await self.source.get_page(page_number)
         self.current_page = page_number
-        kwargs = await self._get_kwargs_from_page(page)
+        kwargs = await self.get_kwargs_from_page(page)
         self._update_labels(page_number)
         if kwargs:
             if interaction.response.is_done():
@@ -146,31 +145,31 @@ class KumikoPages(discord.ui.View):
                 "An unknown error occurred, sorry", ephemeral=True
             )
 
-        try:
-            exc = "".join(
-                traceback.format_exception(
-                    type(error), error, error.__traceback__, chain=False
-                )
-            )
-            embed = discord.Embed(
-                title=f"{self.source.__class__.__name__} Error",
-                description=f"```py\n{exc}\n```",
-                timestamp=interaction.created_at,
-                colour=0xCC3366,
-            )
-            embed.add_field(
-                name="User", value=f"{interaction.user} ({interaction.user.id})"
-            )
-            embed.add_field(
-                name="Guild", value=f"{interaction.guild} ({interaction.guild_id})"
-            )
-            embed.add_field(
-                name="Channel",
-                value=f"{interaction.channel} ({interaction.channel_id})",
-            )
-            await self.ctx.bot.stats_webhook.send(embed=embed)
-        except discord.HTTPException:
-            pass
+        # try:
+        #     exc = "".join(
+        #         traceback.format_exception(
+        #             type(error), error, error.__traceback__, chain=False
+        #         )
+        #     )
+        #     embed = discord.Embed(
+        #         title=f"{self.source.__class__.__name__} Error",
+        #         description=f"```py\n{exc}\n```",
+        #         timestamp=interaction.created_at,
+        #         colour=0xCC3366,
+        #     )
+        #     embed.add_field(
+        #         name="User", value=f"{interaction.user} ({interaction.user.id})"
+        #     )
+        #     embed.add_field(
+        #         name="Guild", value=f"{interaction.guild} ({interaction.guild_id})"
+        #     )
+        #     embed.add_field(
+        #         name="Channel",
+        #         value=f"{interaction.channel} ({interaction.channel_id})",
+        #     )
+        #     await self.ctx.bot.stats_webhook.send(embed=embed) # Probably will integrate this later
+        # except discord.HTTPException:
+        #     pass
 
     async def start(
         self, *, content: Optional[str] = None, ephemeral: bool = False
@@ -184,7 +183,7 @@ class KumikoPages(discord.ui.View):
 
         await self.source._prepare_once()
         page = await self.source.get_page(0)
-        kwargs = await self._get_kwargs_from_page(page)
+        kwargs = await self.get_kwargs_from_page(page)
         if content:
             kwargs.setdefault("content", content)
 

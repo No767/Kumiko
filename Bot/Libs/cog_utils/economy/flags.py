@@ -14,3 +14,13 @@ class PurchaseFlags(commands.FlagConverter):
     amount: int = commands.flag(
         aliases=["a"], default=1, description="The amount of items to purchase"
     )
+
+
+class RefundFlags(commands.FlagConverter):
+    name: str = commands.flag(
+        aliases=["n"],
+        description="The name of the item to refund. You must currently own it.",
+    )
+    amount: int = commands.flag(
+        aliases=["a"], default=1, description="The amount of items to refund"
+    )

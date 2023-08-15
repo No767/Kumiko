@@ -1,5 +1,6 @@
 from .checks import is_admin, is_manager, is_mod
-from .converters import JobName, PinAllFlags, PinName, PrefixConverter
+from .connection_checks import ensure_postgres_conn, ensure_redis_conn
+from .converters import CheckLegitUser, JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -9,16 +10,19 @@ from .embeds import (
     LeaveEmbed,
     SuccessActionEmbed,
 )
-from .greedy_formatter import formatGreedy
+from .greedy_formatter import format_greedy
 from .kumiko_logger import KumikoLogger
 from .member_utils import get_or_fetch_member
-from .prefix import get_prefix, validatePrefix
+from .message_constants import MessageConstants
+from .prefix import get_prefix
 from .rank_utils import calc_petals, calc_rank
+from .time import human_timedelta
 from .utils import (
-    encodeDatetime,
-    parseDatetime,
-    parseSubreddit,
-    parseTimeStr,
+    encode_datetime,
+    is_docker,
+    parse_datetime,
+    parse_subreddit,
+    parse_time_str,
     setup_ssl,
 )
 
@@ -26,16 +30,15 @@ __all__ = [
     "PrefixConverter",
     "PinName",
     "PinAllFlags",
-    "parseDatetime",
-    "encodeDatetime",
+    "parse_datetime",
+    "encode_datetime",
     "Embed",
     "ErrorEmbed",
-    "parseSubreddit",
-    "parseTimeStr",
-    "formatGreedy",
+    "parse_subreddit",
+    "parse_time_str",
+    "format_greedy",
     "KumikoLogger",
     "get_prefix",
-    "validatePrefix",
     "ConfirmEmbed",
     "SuccessActionEmbed",
     "CancelledActionEmbed",
@@ -49,4 +52,10 @@ __all__ = [
     "is_mod",
     "is_admin",
     "setup_ssl",
+    "CheckLegitUser",
+    "is_docker",
+    "human_timedelta",
+    "ensure_postgres_conn",
+    "ensure_redis_conn",
+    "MessageConstants",
 ]

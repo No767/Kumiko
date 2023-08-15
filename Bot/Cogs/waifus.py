@@ -26,9 +26,9 @@ class Waifu(commands.Cog):
             await ctx.send_help(ctx.command)
 
     @waifu.command(name="one")
-    async def randomWaifu(self, ctx: commands.Context) -> None:
+    async def random_waifu(self, ctx: commands.Context) -> None:
         """Returns a random waifu pic"""
-        waifuTagList = [
+        waifu_list = [
             "uniform",
             "maid",
             "waifu",
@@ -38,7 +38,7 @@ class Waifu(commands.Cog):
             "selfies",
         ]
         params = {
-            "included_tags": random.choice(waifuTagList),
+            "included_tags": random.choice(waifu_list),
             "is_nsfw": "false",
             "excluded_tags": "oppai",
         }
@@ -48,9 +48,9 @@ class Waifu(commands.Cog):
             await ctx.send(embed=embed)
 
     @waifu.command(name="many")
-    async def randomWaifuMany(self, ctx: commands.Context) -> None:
+    async def many_random_waifus(self, ctx: commands.Context) -> None:
         """Returns up to 30 random waifu pics"""
-        waifuTagList = [
+        waifu_list = [
             "uniform",
             "maid",
             "waifu",
@@ -60,16 +60,16 @@ class Waifu(commands.Cog):
             "selfies",
         ]
         params = {
-            "included_tags": random.choice(waifuTagList),
+            "included_tags": random.choice(waifu_list),
             "is_nsfw": "False",
             "excluded_tags": "oppai",
             "many": "true",
         }
         async with self.session.get("https://api.waifu.im/search/", params=params) as r:
             data = await r.json(loads=orjson.loads)
-            mainData = [{"image": item["url"]} for item in data["images"]]
-            embedSource = EmbedListSource(mainData, per_page=1)
-            menu = KumikoPages(source=embedSource, ctx=ctx, compact=False)
+            converted_data = [{"image": item["url"]} for item in data["images"]]
+            embed_source = EmbedListSource(converted_data, per_page=1)
+            menu = KumikoPages(source=embed_source, ctx=ctx, compact=False)
             await menu.start()
 
 

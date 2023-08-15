@@ -3,29 +3,29 @@ from typing import Optional
 from discord.ext.commands.errors import CommandError
 
 
-class KumikoException(Exception):
+class KumikoExceptionError(Exception):
     """Base exception class for Kumiko.
 
     Any exceptions can be ideally caught in this class, but is not recommended.
     """
 
 
-class NoItemsError(KumikoException):
+class NoItemsError(KumikoExceptionError):
     """Raised when no items are found in a list.
 
     This is used when the JSON response from an API contains no items.
     """
 
 
-class ItemNotFoundError(KumikoException):
+class ItemNotFoundError(KumikoExceptionError):
     """Generally used if any item of the economy system is not found"""
 
 
-class ValidationError(KumikoException):
+class ValidationError(KumikoExceptionError):
     """Raised when a validation of any function fails"""
 
 
-class HTTPError(KumikoException):
+class HTTPError(KumikoExceptionError):
     """Raised when an HTTP request fails.
 
     This is used when the HTTP request to an API fails.
@@ -54,10 +54,19 @@ class NotFoundError(HTTPError):
         super().__init__(404, "Resource or endpoint not found")
 
 
-class EconomyDisabled(CommandError):
+class EconomyDisabledError(CommandError):
     """Raised when the economy system is disabled in a guild"""
 
     def __init__(self) -> None:
         super().__init__(
             message="The economy module is disabled in this server. Please ask your server admin to enable it."
+        )
+
+
+class RedirectsDisabledError(CommandError):
+    """Raised when the redirects system is disabled in a guild"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            message="The redirects module is disabled in this server. Please ask your server admin to enable it."
         )

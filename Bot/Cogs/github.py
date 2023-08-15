@@ -7,7 +7,6 @@ from discord.ext import commands
 from discord.utils import format_dt
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
-from Libs.errors import NotFoundError
 from Libs.utils import Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
@@ -36,9 +35,7 @@ class Github(commands.Cog):
     # Force defaults to use Kumiko's repo ?
     @github.command(name="release-list")
     @app_commands.describe(owner="The owner of the repo", repo="The repo to search")
-    async def githubReleasesList(
-        self, ctx: commands.Context, owner: str, repo: str
-    ) -> None:
+    async def releases(self, ctx: commands.Context, owner: str, repo: str) -> None:
         """Get up to 25 releases for a repo"""
         headers = {
             "Authorization": f"token {GITHUB_API_KEY}",
@@ -52,9 +49,10 @@ class Github(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if r.status == 404:
-                raise NotFoundError
+                await ctx.send("The release(s) were not found")
+                return
             else:
-                mainData = [
+                main_data = [
                     {
                         "title": item["name"],
                         "description": item["body"],
@@ -96,13 +94,13 @@ class Github(commands.Cog):
                     }
                     for item in data
                 ]
-                embedSource = EmbedListSource(mainData, per_page=1)
-                pages = KumikoPages(source=embedSource, ctx=ctx)
+                embed_source = EmbedListSource(main_data, per_page=1)
+                pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
     @github.command(name="repo")
     @app_commands.describe(owner="The owner of the repo", repo="The repo to search")
-    async def searchGitHub(self, ctx: commands.Context, owner: str, repo: str) -> None:
+    async def search(self, ctx: commands.Context, owner: str, repo: str) -> None:
         """Searches for one repo on GitHub"""
         headers = {
             "Authorization": f"token {GITHUB_API_KEY}",
@@ -113,7 +111,8 @@ class Github(commands.Cog):
         ) as r:
             data = await r.json(loads=orjson.loads)
             if r.status == 404:
-                raise NotFoundError
+                await ctx.send("The repo was not found")
+                return
             else:
                 embed = Embed(title=data["name"], description=data["description"])
                 embed.set_thumbnail(url=data["owner"]["avatar_url"])

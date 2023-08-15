@@ -17,13 +17,10 @@ async def get_or_fetch_config(
     ON guild.id = logging_config.guild_id
     WHERE guild.id = $1;
     """
-    # async with pool.acquire() as conn:
-    #     res = await conn.fetchrow(query, id)
-    #     return dict(res)
     key = f"cache:kumiko:{id}:guild_config"
     cache = KumikoCache(redis_pool)
-    if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path="$.logging_config")
+    if await cache.cache_exists(key=key):
+        res = await cache.get_json_cache(key=key, path=".logging_config")
         return res
     else:
         rows = await pool.fetchrow(query, id)
@@ -42,8 +39,8 @@ async def get_or_fetch_log_enabled(
     """
     key = f"cache:kumiko:{id}:guild_config"
     cache = KumikoCache(redis_pool)
-    if await cache.cacheExists(key=key):
-        res = await cache.getJSONCache(key=key, path="$.logs")
+    if await cache.cache_exists(key=key):
+        res = await cache.get_json_cache(key=key, path=".logs", value_only=False)
         return res  # type: ignore
     else:
         val = await pool.fetchval(query, id)
@@ -52,27 +49,44 @@ async def get_or_fetch_log_enabled(
         return val
 
 
+async def get_or_fetch_channel_id(
+    guild_id: int, pool: asyncpg.Pool, redis_pool: ConnectionPool
+) -> Union[str, None]:
+    query = """
+    SELECT logging_config.channel_id
+    FROM logging_config
+    WHERE guild_id = $1;
+    """
+    key = f"cache:kumiko:{guild_id}:logging_channel_id"
+    cache = KumikoCache(redis_pool)
+    if await cache.cache_exists(key=key):
+        res = await cache.get_basic_cache(key=key)
+        return res
+    else:
+        val = await pool.fetchval(query, guild_id)
+        if val is None:
+            return None
+        await cache.set_basic_cache(key=key, value=val, ttl=3600)
+        return val
+
+
 async def set_or_update_cache(
     key: str, redis_pool: ConnectionPool, data: Dict[str, Any]
 ) -> None:
     cache = KumikoCache(connection_pool=redis_pool)
-    if not await cache.cacheExists(key=key):
-        await cache.setJSONCache(key=key, value=data, ttl=None)
+    if not await cache.cache_exists(key=key):
+        await cache.set_json_cache(key=key, value=data, ttl=None)
     else:
-        await cache.setJSONCache(
+        await cache.set_json_cache(
             key=key, value=data["channel_id"], path=".channel_id", ttl=None
         )
-
-
-async def delete_cache(key: str, redis_pool: ConnectionPool) -> None:
-    cache = KumikoCache(connection_pool=redis_pool)
-    if await cache.cacheExists(key=key):
-        await cache.deleteJSONCache(key=key)
 
 
 async def disable_logging(guild_id: int, redis_pool: ConnectionPool) -> None:
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(connection_pool=redis_pool)
-    # lgc = LoggingGuildConfig(channel_id=None)
-    await cache.mergeJSONCache(key=key, value=False, path="$.logs")
-    await cache.mergeJSONCache(key=key, value=None, path="$.logging_config")
+    await cache.delete_basic_cache(key=f"cache:kumiko:{guild_id}:logging_channel_id")
+    await cache.merge_json_cache(key=key, value=False, path=".logs", ttl=None)
+    await cache.merge_json_cache(
+        key=key, value=None, path=".logging_config.channel_id", ttl=None
+    )

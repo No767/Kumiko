@@ -1,14 +1,17 @@
+import os
 import re
 import ssl
 from datetime import datetime, timedelta
-from typing import Any, Dict, Union
+from typing import Any, Dict, Optional, TypeVar, Union
 
 import ciso8601
+
+T = TypeVar("T", str, None)
 
 # From https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
 # Answer: https://stackoverflow.com/a/51916936
 # datetimeParseRegex = re.compile(r'^((?P<days>[\.\d]+?)d)?((?P<hours>[\.\d]+?)h)?((?P<minutes>[\.\d]+?)m)?((?P<seconds>[\.\d]+?)s)?$')
-datetimeParseRegex = re.compile(
+datetime_regex = re.compile(
     r"^((?P<weeks>[\.\d]+?)w)? *"
     r"^((?P<days>[\.\d]+?)d)? *"
     r"((?P<hours>[\.\d]+?)h)? *"
@@ -17,7 +20,7 @@ datetimeParseRegex = re.compile(
 )
 
 
-def parseDatetime(datetime: Union[datetime, str]) -> datetime:
+def parse_datetime(datetime: Union[datetime, str]) -> datetime:
     """Parses a datetime object or a string into a datetime object
 
     Args:
@@ -31,7 +34,7 @@ def parseDatetime(datetime: Union[datetime, str]) -> datetime:
     return datetime
 
 
-def encodeDatetime(dict: Dict[str, Any]) -> Dict[str, Any]:
+def encode_datetime(dict: Dict[str, Any]) -> Dict[str, Any]:
     """Takes a dictionary and encodes all datetime objects into ISO 8601 strings
 
     Args:
@@ -46,7 +49,7 @@ def encodeDatetime(dict: Dict[str, Any]) -> Dict[str, Any]:
     return dict
 
 
-def parseSubreddit(subreddit: Union[str, None]) -> str:
+def parse_subreddit(subreddit: Union[str, None]) -> str:
     """Parses a subreddit name to be used in a reddit url
 
     Args:
@@ -60,7 +63,7 @@ def parseSubreddit(subreddit: Union[str, None]) -> str:
     return re.sub(r"^[r/]{2}", "", subreddit, re.IGNORECASE)
 
 
-def parseTimeStr(time_str: str) -> Union[timedelta, None]:
+def parse_time_str(time_str: str) -> Union[timedelta, None]:
     """Parse a time string e.g. (2h13m) into a timedelta object.
 
     Taken straight from https://stackoverflow.com/a/4628148
@@ -71,7 +74,7 @@ def parseTimeStr(time_str: str) -> Union[timedelta, None]:
     Returns:
         datetime.timedelta: A datetime.timedelta object
     """
-    parts = datetimeParseRegex.match(time_str)
+    parts = datetime_regex.match(time_str)
     if not parts:
         return
     parts = parts.groupdict()
@@ -82,8 +85,32 @@ def parseTimeStr(time_str: str) -> Union[timedelta, None]:
     return timedelta(**time_params)
 
 
-def setup_ssl() -> ssl.SSLContext:
-    sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-    sslctx.check_hostname = False
-    sslctx.verify_mode = ssl.CERT_NONE
+def setup_ssl(
+    ca_path: Union[str, None],
+    cert_path: str,
+    key_path: Union[str, None],
+    key_password: Union[str, None],
+) -> ssl.SSLContext:
+    sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=ca_path)
+    sslctx.check_hostname = True
+    sslctx.load_cert_chain(cert_path, key_path, key_password)
     return sslctx
+
+
+def is_docker() -> bool:
+    path = "/proc/self/cgroup"
+    return os.path.exists("/.dockerenv") or (
+        os.path.isfile(path) and any("docker" in line for line in open(path))
+    )
+
+
+def tick(opt: Optional[bool], label: Optional[str] = None) -> str:
+    lookup = {
+        True: "<:greenTick:330090705336664065>",
+        False: "<:redTick:330090723011592193>",
+        None: "<:greyTick:563231201280917524>",
+    }
+    emoji = lookup.get(opt, "<:redTick:330090723011592193>")
+    if label is not None:
+        return f"{emoji}: {label}"
+    return emoji

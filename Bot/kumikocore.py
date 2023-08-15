@@ -5,12 +5,10 @@ from pathlib import Path as SyncPath
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from Cogs import EXTENSIONS
+from Cogs import EXTENSIONS, VERSION
 from discord.ext import commands
-from Libs.utils import get_prefix
+from Libs.utils import ensure_postgres_conn, ensure_redis_conn, get_prefix
 from Libs.utils.help import KumikoHelpPaginated
-from Libs.utils.postgresql import ensureOpenPostgresConn
-from Libs.utils.redis import ensureOpenRedisConn
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
 
@@ -82,6 +80,15 @@ class KumikoCore(commands.Bot):
         """
         return self._redis_pool
 
+    @property
+    def version(self) -> str:
+        """The version of Kumiko
+
+        Returns:
+            str: The version of Kumiko
+        """
+        return str(VERSION)
+
     # It is preffered in this case to keep an LRU cache instead of a regular Dict cache
     # For example, if an running instance keeps 100 entries ({guild_id: prefix})
     # then this would take up too much memory.
@@ -103,14 +110,14 @@ class KumikoCore(commands.Bot):
         """
         return self._prefixes
 
-    async def fsWatcher(self) -> None:
-        cogsPath = SyncPath(__file__).parent.joinpath("Cogs")
-        async for changes in awatch(cogsPath):
-            changesList = list(changes)[0]
-            if changesList[0].modified == 2:
-                reloadFile = SyncPath(changesList[1])
-                self.logger.info(f"Reloading extension: {reloadFile.name[:-3]}")
-                await self.reload_extension(f"Cogs.{reloadFile.name[:-3]}")
+    async def fs_watcher(self) -> None:
+        cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
+        async for changes in awatch(cogs_path):
+            changes_list = list(changes)[0]
+            if changes_list[0].modified == 2:
+                reload_file = SyncPath(changes_list[1])
+                self.logger.info(f"Reloading extension: {reload_file.name[:-3]}")
+                await self.reload_extension(f"Cogs.{reload_file.name[:-3]}")
 
     async def setup_hook(self) -> None:
         def stop():
@@ -122,14 +129,16 @@ class KumikoCore(commands.Bot):
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
-        self.loop.create_task(ensureOpenPostgresConn(self._pool))
-        self.loop.create_task(ensureOpenRedisConn(self._redis_pool))
+        self.loop.create_task(ensure_postgres_conn(self._pool))
+        self.loop.create_task(ensure_redis_conn(self._redis_pool))
 
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
-            self.loop.create_task(self.fsWatcher())
+            self.loop.create_task(self.fs_watcher())
             await self.load_extension("jishaku")
 
     async def on_ready(self):
-        currUser = None if self.user is None else self.user.name
-        self.logger.info(f"{currUser} is fully ready!")
+        if not hasattr(self, "uptime"):
+            self.uptime = discord.utils.utcnow()
+        curr_user = None if self.user is None else self.user.name
+        self.logger.info(f"{curr_user} is fully ready!")

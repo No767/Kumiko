@@ -30,7 +30,7 @@ class Prefix(commands.Cog):
     @app_commands.describe(
         old_prefix="The old prefix to replace", new_prefix="The new prefix to use"
     )
-    async def updatePrefixes(
+    async def update(
         self, ctx: commands.Context, old_prefix: str, new_prefix: PrefixConverter
     ) -> None:
         """Updates the prefix for your server"""
@@ -57,7 +57,7 @@ class Prefix(commands.Cog):
     @commands.guild_only()
     @prefix.command(name="add")
     @app_commands.describe(prefix="The new prefix to add")
-    async def addPrefixes(self, ctx: commands.Context, prefix: PrefixConverter) -> None:
+    async def add(self, ctx: commands.Context, prefix: PrefixConverter) -> None:
         """Adds new prefixes into your server"""
         prefixes = await get_prefix(self.bot, ctx.message)
         # validatePrefix(self.bot.prefixes, prefix) is False
@@ -74,23 +74,23 @@ class Prefix(commands.Cog):
             SET prefix = ARRAY_APPEND(prefix, $1)
             WHERE id=$2;
         """
-        guildId = ctx.guild.id  # type: ignore # These are all done in an guild
-        await self.pool.execute(query, prefix, guildId)
+        guild_id = ctx.guild.id  # type: ignore # These are all done in an guild
+        await self.pool.execute(query, prefix, guild_id)
         # the weird solution but it actually works
-        if isinstance(self.bot.prefixes[guildId], list):
-            self.bot.prefixes[guildId].append(prefix)
+        if isinstance(self.bot.prefixes[guild_id], list):
+            self.bot.prefixes[guild_id].append(prefix)
         else:
-            self.bot.prefixes[guildId] = [self.bot.default_prefix, prefix]
+            self.bot.prefixes[guild_id] = [self.bot.default_prefix, prefix]
         await ctx.send(f"Added prefix: {prefix}")
 
     @commands.guild_only()
     @prefix.command(name="info")
-    async def infoPrefixes(self, ctx: commands.Context) -> None:
+    async def info(self, ctx: commands.Context) -> None:
         """Displays infos about the current prefix set on your server"""
         prefixes = await get_prefix(self.bot, ctx.message)
-        cleanedPrefixes = ", ".join([f"`{item}`" for item in prefixes]).rstrip(",")
+        cleaned_prefixes = ", ".join([f"`{item}`" for item in prefixes]).rstrip(",")
         embed = Embed()
-        embed.description = f"**Current prefixes**\n{cleanedPrefixes}"
+        embed.description = f"**Current prefixes**\n{cleaned_prefixes}"
         embed.timestamp = utcnow()
         embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)  # type: ignore # LIES, LIES, AND LIES!!!
         await ctx.send(embed=embed)
@@ -99,7 +99,7 @@ class Prefix(commands.Cog):
     @commands.guild_only()
     @prefix.command(name="delete")
     @app_commands.describe(prefix="The prefix to delete")
-    async def deletePrefixes(self, ctx: commands.Context, prefix: str) -> None:
+    async def delete(self, ctx: commands.Context, prefix: str) -> None:
         """Deletes a prefix from your server"""
         view = DeletePrefixView(bot=self.bot, prefix=prefix)
         embed = ConfirmEmbed()

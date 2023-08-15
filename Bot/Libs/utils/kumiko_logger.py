@@ -5,6 +5,9 @@ from types import TracebackType
 from typing import Optional, Type, TypeVar
 
 import discord
+from cysystemd import journal
+
+from .utils import is_docker
 
 BE = TypeVar("BE", bound=BaseException)
 
@@ -14,8 +17,8 @@ class RemoveIPCNoise(logging.Filter):
         self.self = self
 
     def filter(self, record: logging.LogRecord) -> bool:
-        matchRegex = r"(connection\s[open|closed])"
-        if bool(re.search(matchRegex, record.msg)):
+        match_regex = r"(connection\s[open|closed])"
+        if bool(re.search(match_regex, record.msg)):
             return False
         return True
 
@@ -44,6 +47,8 @@ class KumikoLogger:
         )
         handler.setFormatter(fmt)
         self.log.addHandler(handler)
+        if not is_docker():
+            self.log.addHandler(journal.JournaldLogHandler())
         discord.utils.setup_logging(formatter=fmt)
 
     def __exit__(

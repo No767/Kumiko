@@ -4,7 +4,7 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Greedy
 from kumikocore import KumikoCore
-from Libs.utils import Embed, formatGreedy
+from Libs.utils import Embed, format_greedy
 
 
 class Actions(commands.Cog):
@@ -25,7 +25,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/hug") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} hugs {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} hugs {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)
@@ -37,7 +37,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/pat") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} pats {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} pats {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)
@@ -49,7 +49,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/kiss") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} kisses {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} kisses {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)
@@ -61,7 +61,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/cuddle") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} cuddles {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} cuddles {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)
@@ -73,7 +73,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/slap") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} slaps {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} slaps {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)
@@ -87,7 +87,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/tickle") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} tickles {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} tickles {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)
@@ -99,7 +99,7 @@ class Actions(commands.Cog):
         async with self.session.get("https://nekos.life/api/v2/img/poke") as r:
             data = await r.json(loads=orjson.loads)
             embed = Embed(
-                title=f"{ctx.author.name} pokes {formatGreedy([items.name for items in user])}!"
+                title=f"{ctx.author.name} pokes {format_greedy([items.name for items in user])}!"
             )
             embed.set_image(url=data["url"])
             await ctx.send(embed=embed)

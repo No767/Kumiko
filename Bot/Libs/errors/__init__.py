@@ -1,19 +1,21 @@
 from .exceptions import (
-    EconomyDisabled,
+    EconomyDisabledError,
     HTTPError,
     ItemNotFoundError,
-    KumikoException,
+    KumikoExceptionError,
     NoItemsError,
     NotFoundError,
+    RedirectsDisabledError,
     ValidationError,
 )
 
 __all__ = [
-    "KumikoException",
+    "KumikoExceptionError",
     "NoItemsError",
     "ItemNotFoundError",
     "ValidationError",
     "HTTPError",
     "NotFoundError",
-    "EconomyDisabled",
+    "EconomyDisabledError",
+    "RedirectsDisabledError",
 ]

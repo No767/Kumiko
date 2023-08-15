@@ -6,7 +6,7 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 import pytest
-from Libs.utils import encodeDatetime, parseDatetime, parseTimeStr
+from Libs.utils import encode_datetime, parse_datetime, parse_time_str
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -15,28 +15,28 @@ def load_dict():
 
 
 def test_parse_date_obj():
-    currDate = datetime.now(tz=timezone.utc)
-    res = parseDatetime(datetime=currDate)
+    date = datetime.now(tz=timezone.utc)
+    res = parse_datetime(datetime=date)
     assert isinstance(res, datetime)  # nosec
 
 
 def test_parse_date_str():
-    currDate = datetime.now(tz=timezone.utc).isoformat()
-    res = parseDatetime(datetime=currDate)
+    date = datetime.now(tz=timezone.utc).isoformat()
+    res = parse_datetime(datetime=date)
     assert isinstance(res, datetime)  # nosec
 
 
 def test_encode_datetime(load_dict):
-    assert isinstance(encodeDatetime(load_dict)["created_at"], str)  # nosec
+    assert isinstance(encode_datetime(load_dict)["created_at"], str)  # nosec
 
 
 def test_parse_time_str():
-    assert isinstance(parseTimeStr("2h"), timedelta)
+    assert isinstance(parse_time_str("2h"), timedelta)
 
 
 def test_parse_time_str_empty():
-    assert isinstance(parseTimeStr(""), timedelta)  # this should not work...
+    assert isinstance(parse_time_str(""), timedelta)  # this should not work...
 
 
 def test_parse_time_str_invalid():
-    assert parseTimeStr("what mate") is None
+    assert parse_time_str("what mate") is None
