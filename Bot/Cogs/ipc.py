@@ -27,9 +27,10 @@ class IPCServer(commands.Cog):
         await self.ipc.stop()
 
     @Server.route()
-    async def get_user_data(self, data: ClientPayload) -> Dict:
-        user = self.bot.get_user(data.user_id)
-        return user.to_minimal_user_json()  # type: ignore
+    async def health_check(self, data: ClientPayload) -> Dict:
+        bot_status = self.bot.is_closed()
+        status = "down" if bot_status is True else "ok"
+        return {"status": status}
 
 
 async def setup(bot: KumikoCore):

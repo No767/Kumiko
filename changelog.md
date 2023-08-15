@@ -53,6 +53,7 @@ For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https:
 - Implement the Redirects module (allows you to redirect overlapping conversations into threads)
 - Implement the `resolved` command to mark a thread as resolved. Also works on fourms
 - Add `FUNDING.yml` (because I am a broke college student and I need money)
+- Simple healthcheck ipc endpoint
 
 
 ## ➖ Removals
