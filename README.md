@@ -40,9 +40,9 @@ Kumiko uses both a prefixed command and slash commands. The currently supported 
 
 ## Inviting the Bot
 
-Currently under beta stages. Not ready for release yet. Currently Kumiko is under v0, which means it's beta-level software as of now, and thus should not be used in production. Kumiko is subject to breaking changes within this version. Kumiko will be ready to be invited once it reaches to v1, which is production-ready software.
+Currently Kumiko is nearly ready for release. Although Kumiko is still under v0, which means that there could be chances of major breaking changes, the latest releases are stable and production ready. Kumiko will be soon production ready and expect an invite for Kumiko fairly soon. 
 
-> Beta production versions of Kumiko may soon be releasing for public testing... Keep an eye out for that!
+> Staging versions of Kumiko may soon be releasing for public testing... Keep an eye out for that!
 
 ## Support 
 
