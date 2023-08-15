@@ -24,6 +24,7 @@ class Redirects(commands.Cog):
         self.bot = bot
         self.pool = self.bot.pool
         self.redis_pool = self.bot.redis_pool
+        self.redirects_path = ".redirects"
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -45,27 +46,27 @@ class Redirects(commands.Cog):
     async def redirect(self, ctx: commands.Context, *, thread_name: str) -> None:
         """Redirects a conversation into a separate thread"""
         # Requires Permissions.create_public_threads
-        if not (ctx.channel, discord.TextChannel):
+        if (ctx.channel, discord.TextChannel):
+            created_thread = await ctx.message.create_thread(
+                name=thread_name, reason=f"Conversation redirected by {ctx.author.name}"
+            )
+            if ctx.message.reference is not None:
+                reference_author = (
+                    ctx.message.reference.cached_message.author.mention
+                    if ctx.message.reference.cached_message is not None
+                    else "you"
+                )
+                await ctx.send(
+                    f"Hey, {ctx.author.mention} has requested that {reference_author} redirect this conversation to {created_thread.jump_url} instead."
+                )
+            else:
+                await ctx.send(
+                    f"{ctx.author.global_name} has requested that the conversation be moved to {created_thread.jump_url} instead."
+                )
+        else:
             await ctx.send(
                 "You need to be in a text channel in order for this to work",
                 ephemeral=True,
-            )
-            return
-        created_thread = await ctx.message.create_thread(
-            name=thread_name, reason=f"Conversation redirected by {ctx.author.name}"
-        )
-        if ctx.message.reference is not None:
-            reference_author = (
-                ctx.message.reference.cached_message.author.mention
-                if ctx.message.reference.cached_message is not None
-                else "you"
-            )
-            await ctx.send(
-                f"Hey, {ctx.author.mention} has requested that {reference_author} redirect this conversation to {created_thread.jump_url} instead."
-            )
-        else:
-            await ctx.send(
-                f"{ctx.author.global_name} has requested that the conversation be moved to {created_thread.jump_url} instead."
             )
 
     @is_manager()
@@ -81,7 +82,7 @@ class Redirects(commands.Cog):
         WHERE id = $1;
         """
         results = await cache.get_json_cache(
-            key=key, path=".redirects", value_only=False
+            key=key, path="self.redirects_path", value_only=False
         )
         if results is True:
             await ctx.send("Redirects are already enabled")
@@ -89,7 +90,7 @@ class Redirects(commands.Cog):
         else:
             await self.pool.execute(query, ctx.guild.id, True)
             await cache.merge_json_cache(
-                key=key, value=True, path=".redirects", ttl=None
+                key=key, value=True, path="self.redirects_path", ttl=None
             )
             await ctx.send("Redirects are now enabled")
             return
@@ -108,7 +109,9 @@ class Redirects(commands.Cog):
         WHERE id = $1;
         """
         await self.pool.execute(query, ctx.guild.id, False)
-        await cache.merge_json_cache(key=key, value=False, path=".redirects", ttl=None)
+        await cache.merge_json_cache(
+            key=key, value=False, path="self.redirects_path", ttl=None
+        )
         await ctx.send(
             "Redirects is now disabled for your server. Please enable it first."
         )
