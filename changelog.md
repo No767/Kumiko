@@ -4,6 +4,8 @@ The final feature release before bugfixing and staging tests begin. This release
 
 For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https://github.com/No767/Kumiko/compare/v0.10.2...v0.11.0)
 
+> As a side note, I (Noelle) will not be working on Kumiko as actively as before due to college and work so releases will not be as frequent as before.
+
 ## :boom: Breaking Changes :boom:
 
 - There are none :smile:
@@ -11,6 +13,7 @@ For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https:
 ## ✨ TD;LR
 
 - Implement the Auction House module (#390)
+- Implement the Redirects module
 - Kumiko is fully up to PEP8 standards
 
 ## 🛠️ Changes
@@ -33,6 +36,8 @@ For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https:
 - Use `msgspec.Struct` instead of `attrs` for faster serializations
 - Improve Redis caching
 - Improve event logs by using better redis caching and structs instead
+- Provide more fixes to the jobs module
+
 
 ## ✨ Additions
 
@@ -43,12 +48,17 @@ For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https:
 - Systemd journal handler
 - Leaderboard command
 - Implement dictionary module (supports both English and Japanese)
+- Implement a purchase command for the Auctions module
+- More test coverage
+- Implement the Redirects module (allows you to redirect overlapping conversations into threads)
+- Implement the `resolved` command to mark a thread as resolved. Also works on fourms
 
 
 ## ➖ Removals
 
 - Old help command
 - Dead code / commented out code
+- Unused tables and indexes (the m-m tables got dropped)
 
 
 # ⬆️ Dependabot Updates
@@ -67,3 +77,5 @@ For the full list of changes, please see them here: [`v0.10.2...v0.11.0`](https:
 - \[pip](deps-dev)\: Bump pyright from 1.1.320 to 1.1.321 (#409) (@dependabot)
 - \[pip](deps)\: Bump msgspec from 0.17.0 to 0.18.0 (#410) (@dependabot)
 - \[pip](deps)\: Bump discord-py from 2.3.1 to 2.3.2 (#411) (@dependabot)
+- \[pip](deps-dev)\: Bump pyright from 1.1.321 to 1.1.322 (#414) (@dependabot)
+- \[Actions](deps)\: Bump actions/setup-node from 3.7.0 to 3.8.0 (#415) (@dependabot)

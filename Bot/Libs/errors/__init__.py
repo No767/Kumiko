@@ -5,6 +5,7 @@ from .exceptions import (
     KumikoExceptionError,
     NoItemsError,
     NotFoundError,
+    RedirectsDisabledError,
     ValidationError,
 )
 
@@ -16,4 +17,5 @@ __all__ = [
     "HTTPError",
     "NotFoundError",
     "EconomyDisabledError",
+    "RedirectsDisabledError",
 ]

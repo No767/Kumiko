@@ -61,3 +61,12 @@ class EconomyDisabledError(CommandError):
         super().__init__(
             message="The economy module is disabled in this server. Please ask your server admin to enable it."
         )
+
+
+class RedirectsDisabledError(CommandError):
+    """Raised when the redirects system is disabled in a guild"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            message="The redirects module is disabled in this server. Please ask your server admin to enable it."
+        )

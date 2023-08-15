@@ -2,7 +2,7 @@ import traceback
 
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.errors import EconomyDisabledError, ValidationError
+from Libs.errors import EconomyDisabledError, RedirectsDisabledError, ValidationError
 from Libs.utils import ErrorEmbed
 
 
@@ -78,6 +78,10 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, EconomyDisabledError):
             await ctx.send(
                 embed=self.create_premade_embed("Economy Disabled", str(error))
+            )
+        elif isinstance(error, RedirectsDisabledError):
+            await ctx.send(
+                embed=self.create_premade_embed("Redirects Disabled", str(error))
             )
         else:
             await ctx.send(embed=self.produce_error_embed(error))
