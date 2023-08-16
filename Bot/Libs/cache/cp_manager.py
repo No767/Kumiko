@@ -26,7 +26,7 @@ class KumikoCPManager:
             await self.pool.disconnect()
 
     def create_pool(self) -> ConnectionPool:
-        complete_uri = URL(self.uri) % {"decode_responses": "True"}
+        complete_uri = URL(self.uri) % {"decode_responses": "True", "protocol": 3}
         self.pool = ConnectionPool(max_connections=self.max_size).from_url(
             str(complete_uri)
         )

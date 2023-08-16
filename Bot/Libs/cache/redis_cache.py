@@ -68,7 +68,7 @@ class KumikoCache:
             ttl (Union[int, None], optional): TTL of the key-value pair. If None, then the TTL will not be set. Defaults to None.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json(encoder=msgspec.json, decoder=msgspec.json).set(
+        await client.json(encoder=msgspec.json, decoder=msgspec.json).set(  # type: ignore # Assigning it the msgspec json encoders do work.
             name=key, path=path, obj=value
         )
         if isinstance(ttl, int):
@@ -89,7 +89,8 @@ class KumikoCache:
             Dict[str, Any]: The value of the key-value pair
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        value = await client.json(encoder=msgspec.json, decoder=msgspec.json).get(
+        # Then again we know this works and redis-py 5.0 just broke things
+        value = await client.json(encoder=msgspec.json, decoder=msgspec.json).get(  # type: ignore
             key, path
         )
         if value is None:
@@ -106,7 +107,9 @@ class KumikoCache:
             path (str): The path to look for. Defaults to "$" (root)
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
-        await client.json().delete(key=key, path=path)
+        # With the upgrade to 5.0, they made it where the return value is an int
+        # this basically breaks things
+        await client.json().delete(key=key, path=path)  # type: ignore
 
     async def merge_json_cache(
         self,
@@ -126,6 +129,7 @@ class KumikoCache:
             ttl (int): TTL. Usually leave this for perma cache. Defaults to None.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.connection_pool)
+        # Then again we know this works and redis-py 5.0 just broke things
         await client.json(encoder=msgspec.json, decoder=msgspec.json).merge(name=key, path=path, obj=value)  # type: ignore
         if isinstance(ttl, int):
             await client.expire(name=key, time=ttl)
