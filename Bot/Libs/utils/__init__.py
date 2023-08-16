@@ -1,5 +1,6 @@
 from .checks import is_admin, is_manager, is_mod
 from .connection_checks import ensure_postgres_conn, ensure_redis_conn
+from .context import KContext
 from .converters import CheckLegitUser, JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
@@ -58,4 +59,5 @@ __all__ = [
     "ensure_postgres_conn",
     "ensure_redis_conn",
     "MessageConstants",
+    "KContext",
 ]
