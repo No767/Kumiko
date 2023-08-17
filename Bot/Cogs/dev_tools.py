@@ -6,7 +6,6 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
-from Libs.utils import KContext
 
 
 def is_nat():
@@ -89,15 +88,15 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.check_any(commands.is_owner(), is_nat())
     @commands.hybrid_command(name="arg-check", usage="<user: discord.Member>")
-    async def arg_check(self, ctx: KContext, user: discord.Member):
+    async def arg_check(self, ctx: commands.Context, user: discord.Member):
         """Testing arg checks
 
         Args:
             user (discord.Member): The member to ping lol
         """
         # print(ctx.pool)
-        val = await ctx.prompt("test")
-        print(val)
+        # val = await ctx.prompt("test")
+        # print(val)
         await ctx.send("help")
         # raise RuntimeError("Testing moments")
         # await ctx.send(user.name)

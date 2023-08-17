@@ -1,14 +1,13 @@
 import logging
 import signal
 from pathlib import Path as SyncPath
-from typing import Union
 
 import asyncpg
 import discord
 from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
 from discord.ext import commands
-from Libs.utils import KContext, ensure_postgres_conn, ensure_redis_conn, get_prefix
+from Libs.utils import ensure_postgres_conn, ensure_redis_conn, get_prefix
 from Libs.utils.help import KumikoHelpPaginated
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
@@ -121,10 +120,11 @@ class KumikoCore(commands.Bot):
                 await self.reload_extension(f"Cogs.{reload_file.name[:-3]}")
 
     # Need to override context for custom ones
-    async def get_context(
-        self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KContext
-    ) -> KContext:
-        return await super().get_context(origin, cls=cls)
+    # for now, we can just use the default commands.Context
+    # async def get_context(
+    #     self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KContext
+    # ) -> KContext:
+    #     return await super().get_context(origin, cls=cls)
 
     async def setup_hook(self) -> None:
         def stop():
