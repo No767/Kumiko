@@ -10,8 +10,6 @@ from Libs.ui.pride_profiles import (
     PrideProfileSearchPages,
     PrideProfileStatsPages,
 )
-
-# from Libs.utils import KContext
 from Libs.utils import ConfirmEmbed, Embed
 
 
@@ -96,9 +94,6 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
     @app_commands.describe(name="The preferred name to search")
     async def search(self, ctx: commands.Context, name: str) -> None:
         """Searches for a profile using the given name"""
-        if len(name) < 3:
-            await ctx.send("The name must be at least 3 characters long")
-            return
 
         query = """
         SELECT id, name, pronouns
