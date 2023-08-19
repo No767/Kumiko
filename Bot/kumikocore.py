@@ -29,7 +29,7 @@ class KumikoCore(commands.Bot):
         session: ClientSession,
         pool: asyncpg.Pool,
         redis_pool: ConnectionPool,
-        lru_size: int = 128,
+        lru_size: int = 256,
         dev_mode: bool = False,
         *args,
         **kwargs,

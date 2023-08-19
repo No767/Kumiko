@@ -43,8 +43,8 @@ async def main() -> None:
     async with ClientSession() as session, asyncpg.create_pool(
         dsn=POSTGRES_URI,
         command_timeout=60,
-        max_size=20,
-        min_size=20,
+        max_size=25,
+        min_size=25,
         ssl=setup_ssl(
             ca_path=SSL_CA,
             cert_path=SSL_CERT,
