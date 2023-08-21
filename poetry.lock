@@ -3606,13 +3606,16 @@ test = ["pytest (>=6.0.0)", "setuptools (>=65)"]
 
 [[package]]
 name = "winloop"
-version = "0.0.6"
+version = "0.0.8"
 description = "An Alternative library for uvloop compatability with windows"
 optional = false
 python-versions = "*"
 files = [
-    {file = "winloop-0.0.6-cp39-cp39-win_amd64.whl", hash = "sha256:d5fa5d9ac5e56d428f556691e902bb65e14bacf79433ca18a09e6e0721f1941a"},
-    {file = "winloop-0.0.6.tar.gz", hash = "sha256:5708ac397ed5a14db574f96115f693077e049968075a1e7d8ee4db52b468d8c3"},
+    {file = "winloop-0.0.8-cp310-cp310-win_amd64.whl", hash = "sha256:d97113df44348c888c088e9bcfecd15fd91fb26920d3cb3fd11f7f40ab7a1a0c"},
+    {file = "winloop-0.0.8-cp311-cp311-win_amd64.whl", hash = "sha256:8e19220860e8cfb6820516bfbc58d4217068dd0d656f029ea776247faaff386f"},
+    {file = "winloop-0.0.8-cp312-cp312-win_amd64.whl", hash = "sha256:3b54c2b5989e1aca0dfed63843188467604837749fc570dbed97dd1e925d41b7"},
+    {file = "winloop-0.0.8-cp39-cp39-win_amd64.whl", hash = "sha256:ab1880c0d6069056a6e5b5bed45b50ae8a990fa414d9e1e95c2f7f7a5e41f625"},
+    {file = "winloop-0.0.8.tar.gz", hash = "sha256:a0691676bef309a838840eddabef41b1bffffce05c8962a65892e727b2704c4a"},
 ]
 
 [package.dependencies]
@@ -3723,4 +3726,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "95e15ea446db80a5b2499c164ce03f68c6f0fdcccffaaaeea11855098722aaf4"
+content-hash = "b71bdedebff95e3982422e5c36d11289f21b2074c01158babbf6c7244347d5bd"
