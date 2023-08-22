@@ -46,6 +46,24 @@ class Redirects(commands.Cog):
     async def redirect(self, ctx: commands.Context, *, thread_name: str) -> None:
         """Redirects a conversation into a separate thread"""
         # Requires Permissions.create_public_threads
+        await ctx.defer()
+        if ctx.interaction is not None and isinstance(ctx.channel, discord.TextChannel):
+            msg = None
+            try:
+                resp = await ctx.interaction.original_response()
+                ref = resp.to_reference()
+                msg = ref.cached_message if ref.cached_message is not None else None
+            except discord.HTTPException:
+                pass
+            created_thread = await ctx.channel.create_thread(
+                name=thread_name,
+                message=msg,
+                reason=f"Conversation redirected by {ctx.author.name}",
+            )
+            await ctx.send(
+                f"{ctx.author.global_name} has requested that the conversation be moved to {created_thread.jump_url} instead."
+            )
+            return
         created_thread = await ctx.message.create_thread(
             name=thread_name, reason=f"Conversation redirected by {ctx.author.name}"
         )
