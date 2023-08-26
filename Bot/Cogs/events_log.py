@@ -21,6 +21,10 @@ class EventsLog(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji(name="\U0001f4f0")
 
+    @property
+    def configurable(self) -> bool:
+        return True
+
     @commands.hybrid_group(name="logs")
     async def logs(self, ctx: commands.Context) -> None:
         """Logs events and actions on your server"""

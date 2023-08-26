@@ -39,6 +39,10 @@ class Redirects(commands.Cog):
         except discord.HTTPException:
             pass
 
+    @property
+    def configurable(self) -> bool:
+        return True
+
     @is_redirects_enabled()
     @commands.cooldown(1, 30, commands.BucketType.channel)
     @commands.hybrid_group(name="redirect", fallback="conversation")

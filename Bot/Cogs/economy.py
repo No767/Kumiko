@@ -23,6 +23,10 @@ class Economy(commands.Cog):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji.from_str("<:upward_stonks:739614245997641740>")
 
+    @property
+    def configurable(self) -> bool:
+        return True
+
     @commands.hybrid_group(name="eco", aliases=["economy"])
     async def eco(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
