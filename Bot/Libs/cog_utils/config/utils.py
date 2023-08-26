@@ -44,6 +44,13 @@ async def configure_settings(
         WHERE id = $1;
         """
         json_path = ".redirects"
+    elif value in "Pins":
+        query = """
+        UPDATE guild
+        SET pins = $2
+        WHERE id = $1;
+        """
+        json_path = ".pins"
 
     await pool.execute(query, guild_id, status)
     await cache.merge_json_cache(key=key, value=status, path=json_path)
@@ -67,6 +74,7 @@ async def check_already_set(
         "Economy": ".local_economy",
         "Redirects": ".redirects",
         "EventsLog": ".logs",
+        "Pins": ".pins",
     }
     key = f"cache:kumiko:{guild_id}:guild_config"
     cache = KumikoCache(redis_pool)

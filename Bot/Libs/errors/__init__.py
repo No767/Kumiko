@@ -5,6 +5,7 @@ from .exceptions import (
     KumikoExceptionError,
     NoItemsError,
     NotFoundError,
+    PinsDisabledError,
     RedirectsDisabledError,
     ValidationError,
 )
@@ -18,4 +19,5 @@ __all__ = [
     "NotFoundError",
     "EconomyDisabledError",
     "RedirectsDisabledError",
+    "PinsDisabledError",
 ]

@@ -70,3 +70,12 @@ class RedirectsDisabledError(CommandError):
         super().__init__(
             message="The redirects module is disabled in this server. Please ask your server admin to enable it."
         )
+
+
+class PinsDisabledError(CommandError):
+    """Raised when the pins system is disabled in a guild"""
+
+    def __init__(self) -> None:
+        super().__init__(
+            message="The pins module is disabled in this server. Please ask your server admin to enable it."
+        )

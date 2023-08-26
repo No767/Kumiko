@@ -17,4 +17,5 @@ class GuildConfig(msgspec.Struct):
     birthday: bool = False
     local_economy: bool = False
     redirects: bool = True
+    pins: bool = True
     local_economy_name: str = "Server Economy"

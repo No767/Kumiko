@@ -1,6 +1,8 @@
 from typing import Dict, List, Union
 
 import asyncpg
+from Libs.cache import KumikoCache
+from redis.asyncio.connection import ConnectionPool
 
 
 async def get_pin_content(
@@ -147,3 +149,23 @@ async def get_owned_pins(author_id: int, guild_id: int, pool: asyncpg.Pool):
         if rows is None:
             return []
         return rows
+
+
+async def get_or_fetch_enabled_status(
+    guild_id: int, pool: asyncpg.Pool, redis_pool: ConnectionPool
+) -> Union[bool, None]:
+    query = """
+    SELECT pins
+    FROM guild
+    WHERE id = $1;
+    """
+    key = f"cache:kumiko:{guild_id}:guild_config"
+    cache = KumikoCache(redis_pool)
+    if await cache.cache_exists(key=key):
+        return await cache.get_json_cache(key=key, path=".pins", value_only=False)  # type: ignore
+    else:
+        status = await pool.fetchval(query, guild_id)
+        if status is None:
+            return None
+        await cache.merge_json_cache(key=key, value=status, path=".pins")
+        return status

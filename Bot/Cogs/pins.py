@@ -15,6 +15,7 @@ from Libs.cog_utils.pins import (
     get_owned_pins,
     get_pin_content,
     get_pin_info,
+    is_pins_enabled,
 )
 from Libs.ui.pins import CreatePin, DeletePinView, PinEditModal, PinPages, PurgePinView
 from Libs.utils import ConfirmEmbed, Embed, PinName, get_or_fetch_member
@@ -55,6 +56,11 @@ class Pins(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji(name="\U0001f4cc")
 
+    @property
+    def configurable(self) -> bool:
+        return True
+
+    @is_pins_enabled()
     @commands.guild_only()
     @commands.hybrid_group(name="pins", fallback="get")
     @app_commands.describe(name="Pin to get")
@@ -68,6 +74,7 @@ class Pins(commands.Cog):
             return
         await ctx.send(pin_text or ".")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="create")
     async def create(
@@ -88,6 +95,7 @@ class Pins(commands.Cog):
         status = await create_pin(author_id, guild_id, self.pool, name, content)
         await ctx.send(status)
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="make", aliases=["add"])
     async def make(self, ctx: commands.Context) -> None:
@@ -173,6 +181,7 @@ class Pins(commands.Cog):
         finally:
             self.remove_in_progress_tag(ctx.guild.id, name)  # type: ignore
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="info")
     @app_commands.describe(name="Pin name to search")
@@ -194,6 +203,7 @@ class Pins(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="delete")
     @app_commands.describe(name="Pin name to delete")
@@ -206,6 +216,7 @@ class Pins(commands.Cog):
         embed.description = f"Do you want to delete the pin: {name}?"
         await ctx.send(embed=embed, view=view)
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="alias")
     @app_commands.describe(name="Pin name to alias", alias="The new name to alias")
@@ -235,6 +246,7 @@ class Pins(commands.Cog):
             else:
                 await ctx.send(f"Successfully aliased `{name}` to `{alias}`")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="unalias")
     @app_commands.describe(name="Pin name to unalias", alias="The alias to remove")
@@ -261,6 +273,7 @@ class Pins(commands.Cog):
             else:
                 await ctx.send(f"Successfully removed alias `{alias}` from `{name}`")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="search")
     @app_commands.describe(name="Pin name to search")
@@ -292,6 +305,7 @@ class Pins(commands.Cog):
         else:
             await ctx.send("No pins found")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="edit")
     @app_commands.describe(
@@ -332,6 +346,7 @@ class Pins(commands.Cog):
         else:
             await ctx.send("Successfully edited pin")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     @pins.command(name="dumps")
@@ -347,6 +362,7 @@ class Pins(commands.Cog):
             file=File(fp=buffer, filename="export.json"),
         )
 
+    @is_pins_enabled()
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     @pins.command(name="all")
@@ -359,6 +375,7 @@ class Pins(commands.Cog):
         else:
             await ctx.send("The server does not have any pins")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="list")
     @app_commands.describe(member="The member or yourself to list pins from")
@@ -372,6 +389,7 @@ class Pins(commands.Cog):
             pages = PinPages(entries=rows, per_page=20, ctx=ctx)
             await pages.start()
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="purge")
     async def purge(self, ctx: commands.Context) -> None:
@@ -383,6 +401,7 @@ class Pins(commands.Cog):
         )
         await ctx.send(embed=embed, view=view)
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="claim")
     @app_commands.describe(name="Name of the pin. Aliases are supported")
@@ -424,6 +443,7 @@ class Pins(commands.Cog):
 
         await ctx.send("Successfully claimed the pin")
 
+    @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="transfer")
     @app_commands.describe(

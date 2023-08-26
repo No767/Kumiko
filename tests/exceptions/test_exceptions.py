@@ -13,6 +13,7 @@ from Libs.errors import (
     KumikoExceptionError,
     NoItemsError,
     NotFoundError,
+    PinsDisabledError,
     RedirectsDisabledError,
     ValidationError,
 )
@@ -94,5 +95,15 @@ def test_redirects_disabled_error():
 
     assert (e.type == RedirectsDisabledError) and (
         "The redirects module is disabled in this server. Please ask your server admin to enable it."
+        in str(e.value)
+    )
+
+
+def test_pins_disabled_error():
+    with pytest.raises(PinsDisabledError) as e:
+        raise PinsDisabledError
+
+    assert (e.type == PinsDisabledError) and (
+        "The pins module is disabled in this server. Please ask your server admin to enable it."
         in str(e.value)
     )

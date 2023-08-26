@@ -8,7 +8,7 @@ async def get_or_fetch_guild_config(
     guild_id: int, pool: asyncpg.Pool, redis_pool: ConnectionPool
 ):
     sql = """
-    SELECT guild.id, logging_config.channel_id, logging_config.member_events, logging_config.mod_events, logging_config.mod_events, logging_config.eco_events, guild.logs, guild.birthday, guild.local_economy, guild.local_economy_name
+    SELECT guild.id, logging_config.channel_id, logging_config.member_events, logging_config.mod_events, logging_config.mod_events, logging_config.eco_events, guild.logs, guild.birthday, guild.pins, guild.redirects, guild.local_economy, guild.local_economy_name
     FROM guild
     INNER JOIN logging_config
     ON guild.id = logging_config.guild_id
@@ -33,6 +33,8 @@ async def get_or_fetch_guild_config(
         ),
         logs=fetched_rows["logs"],
         birthday=fetched_rows["birthday"],
+        pins=fetched_rows["pins"],
+        redirects=fetched_rows["redirects"],
         local_economy=fetched_rows["local_economy"],
         local_economy_name=fetched_rows["local_economy_name"],
     )

@@ -1,3 +1,4 @@
+from .checks import is_pins_enabled
 from .format_options import format_options
 from .pin_utils import (
     create_pin,
@@ -16,4 +17,5 @@ __all__ = [
     "edit_pin",
     "get_all_pins",
     "get_owned_pins",
+    "is_pins_enabled",
 ]
