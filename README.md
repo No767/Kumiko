@@ -24,6 +24,9 @@ Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumi
 - Customizable local economy module with jobs, ranks, and more
 - Custom logging module (aka EventsLog)
 - Basic moderation commands
+- Redirects module (If you have overlapping conversations in your channels, this is for you!)
+- Global pride profiles in order to show your pride
+- Pin text so others can retrieve it
 - Search for memes, posts, anime, manga, and others!
 
 And some ones that are planned:
@@ -47,6 +50,8 @@ Currently Kumiko is nearly ready for release. Although Kumiko is still under v0,
 ## Support 
 
 If you would like to support me with projects like this, please consider starring this project and other ones! Bots like Kumiko, Akari, and Rin take a lot of time to make, so please consider supporting me if you can.
+
+Maintaining and working on Kumiko as a solo developer is extremely back breaking work, with college and work on top of it. If you can, please support me on [KoFi](https://ko-fi.com/no767). The money will go towards to hosting Kumiko and all other server-related costs.
 
 ## Getting Started
 
