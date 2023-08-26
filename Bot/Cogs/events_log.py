@@ -1,9 +1,7 @@
 from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cache import KumikoCache
-from Libs.cog_utils.events_log import EventsFlag, get_or_fetch_channel_id
-from Libs.config import LoggingGuildConfig, get_or_fetch_guild_config
+from Libs.config import get_or_fetch_guild_config
 from Libs.ui.events_log import RegisterView, UnregisterView
 from Libs.utils import ConfirmEmbed, Embed, is_manager
 
@@ -78,67 +76,6 @@ class EventsLog(commands.Cog):
             value=f"Enabled?: **{results['logging_config']['eco_events']}**",
         )
         await ctx.send(embed=embed)
-
-    @is_manager()
-    @commands.guild_only()
-    @logs.command(name="configure", aliases=["config"], usage="all: bool")
-    async def config(
-        self, ctx: commands.Context, name: str, status: bool, *, events: EventsFlag
-    ) -> None:
-        """Configures which events are enabled. Using the all flag enabled all events."""
-        if name not in self.events_name_list:
-            await ctx.send(
-                "The name of the event was not found. The possible events are:\nmember_events\nmod_events\neco_events"
-            )
-            return
-        query = """
-        UPDATE logging_config
-        SET member_events = $2, mod_events = $3, eco_events = $4
-        WHERE guild_id = $1;
-        """
-        guild_id = ctx.guild.id  # type: ignore
-        key = f"cache:kumiko:{guild_id}:guild_config"
-        cache = KumikoCache(connection_pool=self.redis_pool)
-        get_channel_id = await get_or_fetch_channel_id(
-            guild_id=guild_id, pool=self.pool, redis_pool=self.redis_pool
-        )
-        if get_channel_id is None:
-            await ctx.send("The config was not set up. Please enable the logs module")
-            return
-
-        statuses = {
-            "member_events": status if name in "member_events" else False,
-            "mod_events": status if name in "mod_events" else False,
-            "eco_events": status if name in "eco_events" else False,
-        }
-
-        lgc = LoggingGuildConfig(
-            channel_id=int(get_channel_id),
-            member_events=statuses["member_events"],
-            mod_events=statuses["mod_events"],
-            eco_events=statuses["eco_events"],
-        )
-        if events.all is True:
-            lgc = LoggingGuildConfig(
-                channel_id=int(get_channel_id),
-                member_events=True,
-                mod_events=True,
-                eco_events=True,
-            )
-            await self.pool.execute(query, guild_id, True, True, True)
-        else:
-            await self.pool.execute(
-                query,
-                guild_id,
-                statuses["member_events"],
-                statuses["mod_events"],
-                statuses["eco_events"],
-            )
-
-        await cache.merge_json_cache(
-            key=key, value=lgc, path=".logging_config", ttl=None
-        )
-        await ctx.send("Updated successfully!")
 
 
 async def setup(bot: KumikoCore) -> None:
