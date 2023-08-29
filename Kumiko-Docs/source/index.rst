@@ -27,6 +27,10 @@ Kumiko
 .. figure:: /_static/kumiko-resized-round.svg
    :align: right
 
+.. image:: https://img.shields.io/discord/1145897416160194590?logo=discord&logoColor=white&label=Discord&color=%235865F2&link=https%3A%2F%2Fdiscord.gg%2Fns3e74frqn
+   :alt: Discord
+    Website_: https://discord.gg/ns3e74frqn
+
 .. image:: https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver
    :alt: GitHub release (latest SemVer)
 
@@ -70,7 +74,7 @@ Resources and Links
 - `Docker Hub <https://hub.docker.com/r/no767/kumiko>`_
 - `GHCR <https://github.com/No767/Kumiko/pkgs/container/kumiko>`_
 - `GitHub <https://github.com/No767/Kumiko>`_
-- Discord Server
+- `Discord Server <https://discord.gg/ns3e74frqn>`_
 
 Project Links
 ^^^^^^^^^^^^^
