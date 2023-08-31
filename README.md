@@ -19,6 +19,11 @@ A multipurpose Discord bot built with freedom and choice in mind
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko provides a wide range of features, including an customizable and local economy, logging, and many more features. Integration with AniList, and others are also included. 
 
+> [!IMPORTANT]  
+> I do not authorize running unauthorized instances of Kumiko in production. The only authorized use of running these builds are for feedback and for catching and/or fixing bugs. The code provided is for educational use and for others to provide suggestions and feedback only.
+
+
+
 ## Features
 
 - Customizable prefix module
