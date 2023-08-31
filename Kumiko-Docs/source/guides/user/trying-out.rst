@@ -1,6 +1,11 @@
 Trying out Kumiko
 ==================
 
+.. warning:: 
+
+    **I'd prefer if you do not run actual versions of Kumiko in production. These instructions are only for those who want to try out a local version of Kumiko in order to catch and fix bugs**
+
+
 Kumiko can be tried out by running the Docker image. For the official versions of Kumiko, please invite the bot into your guild instead. For those who want to try out the latest breaking features, using Docker is recommended.
 
 Prerequisites
@@ -8,7 +13,7 @@ Prerequisites
 
 1. Make sure you have set up your bot token. Refer to :doc:`bot-setup` for the full guide.
 2. Make sure you have these installed:
-    - `Docker <https://www.docker.com/>`_
+    - `Docker <https://www.docker.com/>`_ (if you are doing standalone, you don't need this installed)
     - curl or wget
     - Git
 

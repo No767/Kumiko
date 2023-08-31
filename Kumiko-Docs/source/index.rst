@@ -29,15 +29,18 @@ Kumiko
 
 .. image:: https://img.shields.io/discord/1145897416160194590?logo=discord&logoColor=white&label=Discord&color=%235865F2&link=https%3A%2F%2Fdiscord.gg%2Fns3e74frqn
    :alt: Discord
-    Website_: https://discord.gg/ns3e74frqn
+   :target: https://discord.gg/ns3e74frqn
 
 .. image:: https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver
    :alt: GitHub release (latest SemVer)
+   :target: https://github.com/No767/Kumiko/releases/
 
 .. image:: https://img.shields.io/github/license/No767/Kumiko?label=License&logo=github
    :alt: GitHub
+   :target: https://github.com/No767/Kumiko/blob/dev/LICENSE
 
 .. image:: https://img.shields.io/badge/Kumiko-Oumae-white
+   :target: https://hibike-euphonium.fandom.com/wiki/Kumiko_Oumae
 
 Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumiko takes a unique approach to what a multipurpose bot is defined as. 
 

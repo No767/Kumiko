@@ -11,11 +11,11 @@ Local Setup
         git clone https://github.com/[username]/Kumiko.git && cd Kumiko
     
 
-    Or if you have the `gh` cli tool installed:
+    Or if you have the ``gh`` cli tool installed:
 
     .. code-block:: bash
 
-        gh repo clone [username]/Kumiko
+        gh repo clone [username]/Kumiko && cd Kumiko
     
 
 2. Install all of the dependencies (including dev dependencies)
@@ -24,14 +24,20 @@ Local Setup
 
         poetry install --with=dev,test,docs
 
-3. Copy the ENV files into the correct places
+3. Set up the pre-commit hooks
+
+    .. code-block:: bash
+
+        poetry run pre-commit install
+
+4. Copy the ENV files into the correct places
 
     .. code-block:: bash
 
         cp Envs/dev.env Bot/.env \
         cp Envs/docker.env .env
 
-4. Edit the ``.env`` file placed in the root of the repo and in the ``Bot`` folder to include any credentials needed for the bot to run
+5. Edit the ``.env`` file placed in the root of the repo and in the ``Bot`` folder to include any credentials needed for the bot to run
     
     .. code-block:: bash
         
@@ -41,20 +47,20 @@ Local Setup
         POSTGRES_URI=postgres://user:somepass@localhost:5432/somedb
         
 
-5. Start the Docker Compose stack
+6. Start the Docker Compose stack
 
     .. code-block:: bash
 
         sudo docker compose -f docker-compose-dev.yml up -d
     
 
-6. Enable the PostgreSQL extension ``pg_trgm``
+7. Enable the PostgreSQL extension ``pg_trgm``
 
     .. code-block:: sql
 
         CREATE EXTENSION pg_trgm;
 
-7. Run the database migrations
+8. Run the database migrations
 
     .. code-block:: bash
 
@@ -89,3 +95,7 @@ Environment Variables
 ---------------------
 
 Kumiko v0.7+ includes an development mode feature, which will set up jishaku and a custom FS watcher. The FS (File System) watcher is just like HMR (Hot Module Replacements). Once you press Ctrl+s in your cog, it will automatically reload it so the code executed is changed. Later on, there may be more development features that will be included. Make sure you first install the dev dependencies first! And in order to enable it, set an environment variable called ``DEV_MODE`` to ``True``.
+
+.. caution:: 
+
+    The FSWatcher automatically reloads extensions on each save. This is meant for development, so **if you deploy a production build, please make sure you disable this feature!**

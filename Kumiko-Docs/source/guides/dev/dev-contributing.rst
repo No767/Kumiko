@@ -22,18 +22,25 @@ Coding Style
 Variables
 ^^^^^^^^^^
 
-Kumiko follows PEP8 naming conventions and standards. To sum it up:
+.. note::
 
-- ``snake_casing`` for variables, args, kwargs, and files
-- ``PascalCasing`` for classes
-- ``ALL_CAPS`` for constants
+    If these standards are not met, more than likely the PR will not get merged and be rejected.
+
+Kumiko follows PEP8 naming conventions and standards. There is no question about it. The only exception is with the naming of some of the project directories, which is kept that way in order not to break the project.
 
 Ruff is used to lint and check whether the code meets PEP8 standards or not. In order to learn more about PEP8, see `this <https://realpython.com/python-pep8/>`_ guide.
+
+Static Typing (aka Type Hinting)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For the most part, Kumiko's codebase is fully typed. Pyright in this case is used to check whether the code is typed and meets standards or not. If you are using VS Code, then you can enable this on VSC by clicking on the ``{}`` icon in your status bar.
+
+The only exception to this is where circular imports can occur. And this most commonly happens with the ``KumikoCore`` class (due to how the project is structured). If you find that you have circular imports with that class, please make sure to leave a comment above the line that it happens.
 
 Formatting
 ^^^^^^^^^^^
 
-Kumiko uses pre-commit hooks to format all of the code. Make sure run ``git add --all`` before committing to add all of the files. More than likely you'll need to commit twice due to the formatting that pre-commit does afterwards.
+Kumiko uses pre-commit hooks to format all of the code. The formatters used are Black, AutoFlake, and isort. Make sure run ``git add --all`` before committing to add all of the files. More than likely you'll need to commit twice due to the formatting that pre-commit does afterwards.
 
 Docstrings
 ^^^^^^^^^^^
@@ -63,6 +70,15 @@ Example Cog:
     async def setup(bot: Bot):
         await bot.add_cog(MyCog(bot))
 
+Python Version Support
+----------------------
+
+Kumiko's codebase is written to keep compatibility for Python versions 3.8 - 3.11. Generally speaking, a Python version is supported until it's EOL (when the security support ends).
+
+When a new version of Python releases, support for that version cannot be added **until the next patch version of that release** or until all packages and codebase internally support that new release. This means support for Python 3.12 for example, will not be included until Python 3.12.1 releases.
+
+When writing code for this project, you must keep in mind to ensure that your code is compatible for versions 3.8 - 3.11. If said code is not compatible, then it will not be merged.
+
 GitHub Contributing Guidelines
 -----------------------------------
 
@@ -80,6 +96,17 @@ Git Commit Styleguides
 - If updating any other files that aren't project files or not important (stuff like README.md, contributing.md, etc), add the [skip ci] label in the front
 - With each new commit, the message should be more or less describing the changes. Please don't write useless commit messages...
 - If releasing tags, have it in this style. ``Release: v[version number]``, ``Update: v[version number]``, and ``Fix: v[version number]``. Release is a major release. This means it bumps from 1.0.0 to 2.0.0. Minor means it bumps up the version from 1.4 to 1.5 for example. And fix just applies a patch, which would be 1.4.1 to 1.4.2.
+
+Source Control Branching Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. image:: /_static/gitflow.svg
+   :align: center
+   :width: 800
+
+The source control branching model used in this project is the standard `Gitflow <https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow>`_ workflow. An example of what the Gitflow model looks like can be seen on the example above. In this case, the stable branch that has production code is the ``master`` branch, and only I (Noelle) will make PRs to that branch for production releases. The ``dev`` branch serves to host unstable or in-development code, where the code may be subject to breakage.
+
+If you want to contribute to this project, then you will need to fork the ``dev`` branch, and add your contributions there. Once you feel like your code is ready to be merged, you can make a PR to the current dev branch and I will review the code in order to give feedback and to judge if the code meets standards or not. If the code meets the standards and is approved by me, then either within 24 hours or less, I will merge the code into the dev branch, and thus your code has now become a part of the project and future releases.
 
 Releasing Tags
 ^^^^^^^^^^^^^^^

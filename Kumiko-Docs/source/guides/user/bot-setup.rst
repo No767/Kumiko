@@ -33,4 +33,4 @@ This guide provides the steps for setting up a testing bot. This testing bot sho
 
     .. code-block:: bash
     
-        DEV_BOT_TOKEN=YOUR_TOKEN_HERE
+        TOKEN=YOUR_TOKEN_HERE
