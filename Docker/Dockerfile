@@ -1,26 +1,26 @@
 # ####################################################################################################
 # ## Builder image
 # ####################################################################################################
-# FROM python:3.11-slim-bookworm AS builder
-#
-# ENV DEBIAN_FRONTEND=noninteractive 
-#
-# RUN apt-get update \
-#   && apt-get install -y --no-install-recommends \
-#   curl \
-#   git
-#
-# ENV PYTHONDONTWRITEBYTECODE=1
-# ENV PYTHONUNBUFFERED=1
-# RUN curl -sSL https://install.python-poetry.org | python -
-# ENV PATH="${PATH}:/root/.local/bin"
-#
-# WORKDIR /Kumiko
-#
-# COPY /pyproject.toml /Kumiko/
-# COPY /poetry.lock /Kumiko/
-#
-# RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
+FROM python:3.11-slim-bookworm AS builder
+
+ENV DEBIAN_FRONTEND=noninteractive 
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  curl \
+  git
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+RUN curl -sSL https://install.python-poetry.org | python -
+ENV PATH="${PATH}:/root/.local/bin"
+
+WORKDIR /Kumiko
+
+COPY /pyproject.toml /Kumiko/
+COPY /poetry.lock /Kumiko/
+
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
 
 ####################################################################################################
 ## Final image
@@ -31,7 +31,6 @@ RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
   bash \
-  curl \
   netcat-traditional \
   libopus-dev \
   libffi-dev \
@@ -60,7 +59,7 @@ COPY /migrations-runner.py /Kumiko/migrations-runner.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
 
-# COPY /Kumiko/requirements.txt /Kumiko/requirements.txt
+COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
 
 RUN adduser --disabled-password --gecos "" kumiko \
   && chown -R kumiko:kumiko /Kumiko \
