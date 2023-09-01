@@ -44,7 +44,7 @@ pyinstrument = "^4.5.1"
 pyright = "^1.1.325"
 watchfiles = "^0.20.0"
 jishaku = "^2.5.1"
-ruff = "^0.0.286"
+ruff = "^0.0.287"
 
 
 [tool.poetry.group.docs.dependencies]
