@@ -47,7 +47,6 @@ class Reddit(commands.Cog):
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
             user_agent="Kumiko (by /u/No767)",
-            requestor_kwargs={"session": self.bot.session},
         ) as reddit:
             sub = await reddit.subreddit(parse_subreddit(subreddit))
             sub_search = sub.search(search)
@@ -84,7 +83,6 @@ class Reddit(commands.Cog):
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
             user_agent="Kumiko (by /u/No767)",
-            requestor_kwargs={"session": self.bot.session},
         ) as reddit:
             sub = await reddit.subreddit(parse_subreddit(subreddit))
             sub_gen = (
