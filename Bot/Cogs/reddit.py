@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.ui.reddit import RedditEntry, RedditMemeEntry, RedditMemePages, RedditPages
 from Libs.utils import parse_subreddit
+from yarl import URL
 
 load_dotenv()
 
@@ -43,30 +44,32 @@ class Reddit(commands.Cog):
         self, ctx: commands.Context, *, search: str, subreddit: Optional[str] = "all"
     ) -> None:
         """Searches for posts on Reddit"""
-        async with asyncpraw.Reddit(
+        await ctx.defer()
+        reddit = asyncpraw.Reddit(
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
             user_agent="Kumiko (by /u/No767)",
-        ) as reddit:
-            sub = await reddit.subreddit(parse_subreddit(subreddit))
-            sub_search = sub.search(search)
-            converted = [
-                RedditEntry(
-                    title=post.title,
-                    description=post.selftext,
-                    image_url=post.url,
-                    author=post.author,
-                    upvotes=post.score,
-                    nsfw=post.over_18,
-                    flair=post.link_flair_text,
-                    num_of_comments=post.num_comments,
-                    post_permalink=post.permalink,
-                    created_utc=post.created_utc,
-                )
-                async for post in sub_search
-            ]
-            pages = RedditPages(entries=converted, ctx=ctx)
-            await pages.start()
+            requestor_kwargs={"session": self.bot.session},
+        )
+        sub = await reddit.subreddit(parse_subreddit(subreddit))
+        sub_search = sub.search(search)
+        converted = [
+            RedditEntry(
+                title=post.title,
+                description=post.selftext,
+                image_url=post.url,
+                author=post.author,
+                upvotes=post.score,
+                nsfw=post.over_18,
+                flair=post.link_flair_text,
+                num_of_comments=post.num_comments,
+                post_permalink=post.permalink,
+                created_utc=post.created_utc,
+            )
+            async for post in sub_search
+        ]
+        pages = RedditPages(entries=converted, ctx=ctx)
+        await pages.start()
 
     @reddit.command(name="feed")
     @app_commands.describe(
@@ -79,36 +82,38 @@ class Reddit(commands.Cog):
         filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
     ) -> None:
         """Gets a feed of posts from a subreddit"""
-        async with asyncpraw.Reddit(
+        await ctx.defer()
+        reddit = asyncpraw.Reddit(
             client_id=REDDIT_ID,
             client_secret=REDDIT_SECRET,
             user_agent="Kumiko (by /u/No767)",
-        ) as reddit:
-            sub = await reddit.subreddit(parse_subreddit(subreddit))
-            sub_gen = (
-                sub.new(limit=10)
-                if filter == "New"
-                else sub.hot(limit=10)
-                if filter == "Hot"
-                else sub.rising(limit=10)
+            requestor_kwargs={"session": self.bot.session},
+        )
+        sub = await reddit.subreddit(parse_subreddit(subreddit))
+        sub_gen = (
+            sub.new(limit=10)
+            if filter == "New"
+            else sub.hot(limit=10)
+            if filter == "Hot"
+            else sub.rising(limit=10)
+        )
+        converted = [
+            RedditEntry(
+                title=post.title,
+                description=post.selftext,
+                image_url=post.url,
+                author=post.author,
+                upvotes=post.score,
+                nsfw=post.over_18,
+                flair=post.link_flair_text,
+                num_of_comments=post.num_comments,
+                post_permalink=post.permalink,
+                created_utc=post.created_utc,
             )
-            converted = [
-                RedditEntry(
-                    title=post.title,
-                    description=post.selftext,
-                    image_url=post.url,
-                    author=post.author,
-                    upvotes=post.score,
-                    nsfw=post.over_18,
-                    flair=post.link_flair_text,
-                    num_of_comments=post.num_comments,
-                    post_permalink=post.permalink,
-                    created_utc=post.created_utc,
-                )
-                async for post in sub_gen
-            ]
-            pages = RedditPages(entries=converted, ctx=ctx)
-            await pages.start()
+            async for post in sub_gen
+        ]
+        pages = RedditPages(entries=converted, ctx=ctx)
+        await pages.start()
 
     @reddit.command(name="memes")
     @app_commands.describe(
@@ -119,9 +124,10 @@ class Reddit(commands.Cog):
         self, ctx: commands.Context, subreddit: str, amount: Optional[int] = 5
     ) -> None:
         """Searches for memes on Reddit"""
-        async with self.bot.session.get(
-            f"https://meme-api.com/gimme/{parse_subreddit(subreddit)}/{amount}"
-        ) as r:
+        url = (
+            URL("https://meme-api.com/gimme") / parse_subreddit(subreddit) / str(amount)
+        )
+        async with self.bot.session.get(url) as r:
             data = await r.json(loads=orjson.loads)
             converted = [
                 RedditMemeEntry(

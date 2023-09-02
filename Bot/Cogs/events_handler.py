@@ -61,14 +61,12 @@ class EventsHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
         cache = KumikoCache(connection_pool=self.redis_pool)
-        async with self.pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute("DELETE FROM guild WHERE id = $1", guild.id)
-                await cache.delete_json_cache(
-                    key=f"cache:kumiko:{guild.id}:guild_config", path="$"
-                )
-                if guild.id in self.bot.prefixes:
-                    del self.bot.prefixes[guild.id]
+        await self.pool.execute("DELETE FROM guild WHERE id = $1", guild.id)
+        await cache.delete_json_cache(
+            key=f"cache:kumiko:{guild.id}:guild_config", path="$"
+        )
+        if guild.id in self.bot.prefixes:
+            del self.bot.prefixes[guild.id]
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member) -> None:

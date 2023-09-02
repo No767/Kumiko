@@ -22,11 +22,52 @@ class Waifu(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji.from_str("<:UwU:1013221555003719772>")
 
-    @commands.hybrid_group(name="waifu")
+    @commands.hybrid_group(name="waifu", fallback="one")
     async def waifu(self, ctx: commands.Context) -> None:
-        """Waifu waifu waifus Mai Sakurajima is the best"""
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help(ctx.command)
+        """Gives you a waifu"""
+        waifu_list = [
+            "uniform",
+            "maid",
+            "waifu",
+            "marin-kitagawa",
+            "mori-calliope",
+            "raiden-shogun",
+            "selfies",
+        ]
+        params = {
+            "included_tags": random.choice(waifu_list),
+            "is_nsfw": "false",
+            "excluded_tags": "oppai",
+        }
+        async with self.session.get("https://api.waifu.im/search/", params=params) as r:
+            data = await r.json(loads=orjson.loads)
+            embed = Embed().set_image(url=data["images"][0]["url"])
+            await ctx.send(embed=embed)
+
+    @waifu.command(name="many")
+    async def many_random_waifus(self, ctx: commands.Context) -> None:
+        """Returns up to 30 random waifu pics"""
+        waifu_list = [
+            "uniform",
+            "maid",
+            "waifu",
+            "marin-kitagawa",
+            "mori-calliope",
+            "raiden-shogun",
+            "selfies",
+        ]
+        params = {
+            "included_tags": random.choice(waifu_list),
+            "is_nsfw": "False",
+            "excluded_tags": "oppai",
+            "many": "true",
+        }
+        async with self.session.get("https://api.waifu.im/search/", params=params) as r:
+            data = await r.json(loads=orjson.loads)
+            converted_data = [{"image": item["url"]} for item in data["images"]]
+            embed_source = EmbedListSource(converted_data, per_page=1)
+            menu = KumikoPages(source=embed_source, ctx=ctx, compact=False)
+            await menu.start()
 
     @commands.hybrid_group(name="nekos", fallback="random")
     @app_commands.describe(count="How much neko images do you want?")
@@ -74,53 +115,6 @@ class Waifu(commands.Cog):
             ]
             pages = NekoImagesPages(converted, ctx=ctx)
             await pages.start()
-
-    @waifu.command(name="one")
-    async def random_waifu(self, ctx: commands.Context) -> None:
-        """Returns a random waifu pic"""
-        waifu_list = [
-            "uniform",
-            "maid",
-            "waifu",
-            "marin-kitagawa",
-            "mori-calliope",
-            "raiden-shogun",
-            "selfies",
-        ]
-        params = {
-            "included_tags": random.choice(waifu_list),
-            "is_nsfw": "false",
-            "excluded_tags": "oppai",
-        }
-        async with self.session.get("https://api.waifu.im/search/", params=params) as r:
-            data = await r.json(loads=orjson.loads)
-            embed = Embed().set_image(url=data["images"][0]["url"])
-            await ctx.send(embed=embed)
-
-    @waifu.command(name="many")
-    async def many_random_waifus(self, ctx: commands.Context) -> None:
-        """Returns up to 30 random waifu pics"""
-        waifu_list = [
-            "uniform",
-            "maid",
-            "waifu",
-            "marin-kitagawa",
-            "mori-calliope",
-            "raiden-shogun",
-            "selfies",
-        ]
-        params = {
-            "included_tags": random.choice(waifu_list),
-            "is_nsfw": "False",
-            "excluded_tags": "oppai",
-            "many": "true",
-        }
-        async with self.session.get("https://api.waifu.im/search/", params=params) as r:
-            data = await r.json(loads=orjson.loads)
-            converted_data = [{"image": item["url"]} for item in data["images"]]
-            embed_source = EmbedListSource(converted_data, per_page=1)
-            menu = KumikoPages(source=embed_source, ctx=ctx, compact=False)
-            await menu.start()
 
 
 async def setup(bot: KumikoCore) -> None:

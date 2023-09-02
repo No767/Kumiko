@@ -73,7 +73,7 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
 
         await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
 
-    @commands.hybrid_command(name="dispatch")
+    @commands.command(name="dispatch", aliases=["dispatch-event"], hidden=True)
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), is_nat())
     @app_commands.describe(event="The event to dispatch")
@@ -86,22 +86,9 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         self.bot.dispatch(event, ctx.guild)
         await ctx.send("Dispatched event")
 
+    @commands.guild_only()
     @commands.check_any(commands.is_owner(), is_nat())
-    @commands.hybrid_command(name="arg-check", usage="<user: discord.Member>")
-    async def arg_check(self, ctx: commands.Context, user: discord.Member):
-        """Testing arg checks
-
-        Args:
-            user (discord.Member): The member to ping lol
-        """
-        # print(ctx.pool)
-        # val = await ctx.prompt("test")
-        # print(val)
-        await ctx.send("help")
-        # raise RuntimeError("Testing moments")
-        # await ctx.send(user.name)
-
-    @commands.command(name="reload-all")
+    @commands.command(name="reload-all", hidden=True)
     async def upgrade(self, ctx: commands.Context) -> None:
         """Reloads all cogs. This is used for upgrading"""
         for cog in EXTENSIONS:
