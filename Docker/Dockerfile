@@ -1,6 +1,6 @@
-# ####################################################################################################
-# ## Builder image
-# ####################################################################################################
+####################################################################################################
+## Builder image
+####################################################################################################
 FROM python:3.11-slim-bookworm AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive 
@@ -36,18 +36,6 @@ RUN apt update \
   libffi-dev \
   libsodium-dev \
   git
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-RUN curl -sSL https://install.python-poetry.org | python -
-ENV PATH="${PATH}:/root/.local/bin"
-
-WORKDIR /Kumiko
-
-COPY /pyproject.toml /Kumiko/
-COPY /poetry.lock /Kumiko/
-
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
 
 WORKDIR /Kumiko
 COPY /Bot/kumikobot.py /Kumiko/Bot/
