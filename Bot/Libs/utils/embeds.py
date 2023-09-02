@@ -38,7 +38,7 @@ class ErrorEmbed(discord.Embed):
         kwargs.setdefault("title", "Oh no, an error has occurred!")
         kwargs.setdefault(
             "description",
-            "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!",
+            "Uh oh! It seems like the command ran into an issue! For support, please visit [Kumiko's Support Server](https://discord.gg/ns3e74frqn) to get help!",
         )
         super().__init__(**kwargs)
 

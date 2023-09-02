@@ -21,7 +21,7 @@ class ErrorHandler(commands.Cog):
         embed = ErrorEmbed()
         error_traceback = "\n".join(traceback.format_exception_only(type(error), error))
         desc = (
-            "Uh oh! It seems like the command ran into an issue! For support, please visit Kumiko's Support Server to get help!\n\n",
+            "Uh oh! It seems like the command ran into an issue! For support, please visit [Kumiko's Support Server](https://discord.gg/ns3e74frqn) to get help!\n\n",
             f"**Error**: \n```{error_traceback}```",
         )
         embed.description = "\n".join(desc)

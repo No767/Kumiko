@@ -135,7 +135,7 @@ class Redirects(commands.Cog):
     @is_thread()
     @is_redirects_enabled()
     @commands.cooldown(1, 20, commands.BucketType.channel)
-    @commands.hybrid_command(name="resolved", aliases=["completed", "solved"])
+    @commands.hybrid_command(name="resolved", aliases=["completed"])
     async def resolved(self, ctx: commands.Context) -> None:
         """Marks a thread as completed"""
         channel = ctx.channel
@@ -145,7 +145,6 @@ class Redirects(commands.Cog):
         if can_close_threads(ctx) and ctx.invoked_with in [
             "resolved",
             "completed",
-            "solved",
         ]:
             # Permissions.add_reaction and Permissions.read_message_history is required
             await ctx.message.add_reaction(discord.PartialEmoji(name="\U00002705"))
