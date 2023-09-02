@@ -1,11 +1,14 @@
 import random
+from typing import Optional
 
 import orjson
-from discord import PartialEmoji
+from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
+from Libs.ui.waifus import NekoImagesPages, NekosImages
 from Libs.utils import Embed
 from Libs.utils.pages import EmbedListSource, KumikoPages
+from yarl import URL
 
 
 class Waifu(commands.Cog):
@@ -24,6 +27,53 @@ class Waifu(commands.Cog):
         """Waifu waifu waifus Mai Sakurajima is the best"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
+
+    @commands.hybrid_group(name="nekos", fallback="random")
+    @app_commands.describe(count="How much neko images do you want?")
+    async def neko(
+        self,
+        ctx: commands.Context,
+        count: Optional[app_commands.Range[int, 1, 100]] = 1,
+    ) -> None:
+        """Random images of anime waifu cats"""
+        if count is not None and (count > 100 or count < 1):
+            await ctx.send("The min is 1, and the max is 100!")
+            return
+        url = URL("https://nekos.moe/api/v1/random/image")
+        params = {"count": count, "nsfw": 0}
+        headers = {"User-Agent": "Kumiko (https://github.com/No767/Kumiko, v0)"}
+        async with self.session.get(url, params=params, headers=headers) as r:
+            data = await r.json(loads=orjson.loads)
+            converted = [
+                NekosImages(
+                    id=item["id"], tags=item["tags"], created_at=item["createdAt"]
+                )
+                for item in data["images"]
+            ]
+            pages = NekoImagesPages(converted, ctx=ctx)
+            await pages.start()
+
+    @neko.command(name="lookup")
+    @app_commands.describe(tags="A comma separated list of tags (Eg catgirl, maid)")
+    async def lookup(self, ctx: commands.Context, *, tags: str) -> None:
+        """Looks up for some nekos"""
+        tag_list = tags.split(",")
+        url = URL("https://nekos.moe/api/v1/images/search")
+        params = {"nsfw": 0, "sort": "newest", "limit": 50, "tags": tag_list}
+        headers = {"User-Agent": "Kumiko (https://github.com/No767/Kumiko, v0)"}
+        async with self.session.post(url, data=params, headers=headers) as r:
+            data = await r.json(loads=orjson.loads)
+            if len(data) == 0 or "images" not in data:
+                await ctx.send("No results found!")
+                return
+            converted = [
+                NekosImages(
+                    id=item["id"], tags=item["tags"], created_at=item["createdAt"]
+                )
+                for item in data["images"]
+            ]
+            pages = NekoImagesPages(converted, ctx=ctx)
+            await pages.start()
 
     @waifu.command(name="one")
     async def random_waifu(self, ctx: commands.Context) -> None:
