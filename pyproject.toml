@@ -9,7 +9,7 @@ license = "Apache-2.0"
 python = ">=3.8,<4.0"
 python-dotenv = "^1.0.0"
 aiodns = "^3.0.0"
-Brotli = "^1.0.9"
+Brotli = "^1.1.0"
 orjson = "^3.9.5"
 asyncpraw = "^7.7.1"
 uvloop = {markers = "sys_platform != \"win32\"", version = "^0.17.0"}
