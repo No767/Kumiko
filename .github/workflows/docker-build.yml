@@ -56,7 +56,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-debian-ghcr-
       - name: Build and push
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v4.2.1
         with:
           context: .
           file: ./Docker/Dockerfile
@@ -116,7 +116,7 @@ jobs:
             ${{ runner.os }}-buildx-debian-hub-
 
       - name: Build and push
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v4.2.1
         with:
           context: .
           file: ./Docker/Dockerfile
