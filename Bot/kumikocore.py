@@ -156,4 +156,4 @@ class KumikoCore(commands.Bot):
         self.logger.info(f"{curr_user} is fully ready!")
 
     async def on_ipc_ready(self):
-        self.logger.info("IPC Server started")
+        self.logger.info("IPC Server started on %s:%s", self.ipc.host, self.ipc.port)
