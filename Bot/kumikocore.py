@@ -6,7 +6,7 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
-from discord.ext import commands
+from discord.ext import commands, ipcx
 from Libs.utils import ensure_postgres_conn, ensure_redis_conn, get_prefix
 from Libs.utils.help import KumikoHelpPaginated
 from lru import LRU
@@ -29,6 +29,7 @@ class KumikoCore(commands.Bot):
         session: ClientSession,
         pool: asyncpg.Pool,
         redis_pool: ConnectionPool,
+        ipc_secret_key: str,
         lru_size: int = 256,
         dev_mode: bool = False,
         *args,
@@ -45,10 +46,12 @@ class KumikoCore(commands.Bot):
         self.dev_mode = dev_mode
         self.lru_size = lru_size
         self._session = session
+        self._ipc_secret_key = ipc_secret_key
         self._pool = pool
         self._redis_pool = redis_pool
         self._prefixes: LRU = LRU(self.lru_size)
         self.default_prefix = ">"
+        self.ipc = ipcx.Server(self, secret_key=self._ipc_secret_key)
         self.logger: logging.Logger = logging.getLogger("kumikobot")
 
     @property
@@ -136,6 +139,8 @@ class KumikoCore(commands.Bot):
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
+        await self.ipc.start()
+
         self.loop.create_task(ensure_postgres_conn(self._pool))
         self.loop.create_task(ensure_redis_conn(self._redis_pool))
 
@@ -149,3 +154,6 @@ class KumikoCore(commands.Bot):
             self.uptime = discord.utils.utcnow()
         curr_user = None if self.user is None else self.user.name
         self.logger.info(f"{curr_user} is fully ready!")
+
+    async def on_ipc_ready(self):
+        self.logger.info("IPC Server started")

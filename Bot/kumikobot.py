@@ -26,6 +26,7 @@ load_dotenv()
 
 KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
+IPC_SECRET_KEY = os.environ["IPC_SECRET_KEY"]
 SSL = os.getenv("SSL") in ("True", "TRUE")
 SSL_CA = os.getenv("SSL_CA")
 SSL_CERT = os.environ["SSL_CERT"]
@@ -59,6 +60,7 @@ async def main() -> None:
             session=session,
             pool=pool,
             redis_pool=redis_pool,
+            ipc_secret_key=IPC_SECRET_KEY,
             dev_mode=DEV_MODE,
         ) as bot:
             await bot.start(KUMIKO_TOKEN)
