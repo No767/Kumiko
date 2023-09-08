@@ -1,13 +1,5 @@
-import os
-
 from discord.ext import commands, ipcx
-from dotenv import load_dotenv
 from kumikocore import KumikoCore
-
-load_dotenv()
-
-IPC_SECRET_KEY = os.getenv("IPC_SECRET_KEY")
-IPC_HOST = os.environ["IPC_HOST"]
 
 
 class IPCRoutes(commands.Cog):
