@@ -17,8 +17,6 @@ gql = { extras = ["aiohttp"], version = "^3.4.1" }
 better-ipc = "^2.0.3"
 redis = {extras = ["hiredis"], version = "^5.0.0"}
 ciso8601 = "^2.3.0"
-faust-cchardet = "^2.1.19"
-discord-py = {extras = ["voice"], version = "^2.3.2"}
 discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"}
 asyncpg = "^0.28.0"
 asyncpg-trek = "^0.3.1"
@@ -29,6 +27,9 @@ cysystemd = "^1.5.4"
 python-dateutil = "^2.8.2"
 msgspec = "^0.18.2"
 langcodes = {extras = ["data"], version = "^3.3.0"}
+discord-py = {extras = ["speed"], version = "^2.3.2"}
+pynacl = "^1.5.0"
+discord-ext-ipcx = "^0.1.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.1"
