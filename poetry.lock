@@ -1051,13 +1051,13 @@ files = [
 
 [[package]]
 name = "discord-ext-ipcx"
-version = "0.1.0"
+version = "0.1.1"
 description = "Maintained and updated version of discord-ext-ipc for discord.py"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "discord_ext_ipcx-0.1.0-py3-none-any.whl", hash = "sha256:4c585546903c2640134f75c7f7fc9c24d10cf43f2b9b9ed7e2cb43f8d34cdcf0"},
-    {file = "discord_ext_ipcx-0.1.0.tar.gz", hash = "sha256:693bbc42caba88083991ae831662318f58b8abcf084abef7f2b2d329047b5afd"},
+    {file = "discord_ext_ipcx-0.1.1-py3-none-any.whl", hash = "sha256:f82d3ea1a1296b71c329ab2c42f4d0781d9a042a7fb38e34da6be20d8dee9598"},
+    {file = "discord_ext_ipcx-0.1.1.tar.gz", hash = "sha256:37a28729cb3acd105b695257ce31940c616556cce2957de02f020b0d7d7378fc"},
 ]
 
 [package.dependencies]
@@ -3632,4 +3632,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "462950edc71d4a2acf7ff6ed7a85738d3b70b20c2937c8f2dda7c97b26668bd7"
+content-hash = "f55e3a7f401dcd3dbb62c994dffbd69d95c486cf5f95fcedf11c18ebc038b902"
