@@ -59,7 +59,7 @@ class KumikoCore(commands.Bot):
         self.ipc = ipcx.Server(
             self, host=self._ipc_host, secret_key=self._ipc_secret_key
         )
-        self.logger: logging.Logger = logging.getLogger("kumikobot")
+        self.logger: logging.Logger = logging.getLogger()
 
     @property
     def config(self) -> Dict[str, Optional[str]]:
@@ -174,4 +174,11 @@ class KumikoCore(commands.Bot):
         self.logger.info(f"{curr_user} is fully ready!")
 
     async def on_ipc_ready(self):
-        self.logger.info("IPC Server started on %s:%s", self.ipc.host, self.ipc.port)
+        self.logger.info(
+            "Standard IPC Server started on %s:%s", self.ipc.host, self.ipc.port
+        )
+        self.logger.info(
+            "Multicast IPC server started on %s:%s",
+            self.ipc.host,
+            self.ipc.multicast_port,
+        )

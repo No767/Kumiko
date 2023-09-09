@@ -1,5 +1,4 @@
 import logging
-import re
 from logging.handlers import RotatingFileHandler
 from types import TracebackType
 from typing import Optional, Type, TypeVar
@@ -12,17 +11,6 @@ from .utils import is_docker
 BE = TypeVar("BE", bound=BaseException)
 
 
-class RemoveIPCNoise(logging.Filter):
-    def __init__(self) -> None:
-        self.self = self
-
-    def filter(self, record: logging.LogRecord) -> bool:
-        match_regex = r"(connection\s[open|closed])"
-        if bool(re.search(match_regex, record.msg)):
-            return False
-        return True
-
-
 class KumikoLogger:
     def __init__(self) -> None:
         self.self = self
@@ -31,7 +19,6 @@ class KumikoLogger:
     def __enter__(self) -> None:
         max_bytes = 32 * 1024 * 1024  # 32 MiB
         self.log.setLevel(logging.INFO)
-        logging.getLogger("discord.ext.ipc.server").addFilter(RemoveIPCNoise())
         logging.getLogger("gql").setLevel(logging.WARNING)
         logging.getLogger("discord").setLevel(logging.INFO)
         handler = RotatingFileHandler(
@@ -57,8 +44,8 @@ class KumikoLogger:
         exc: Optional[BE],
         traceback: Optional[TracebackType],
     ) -> None:
+        self.log.info("Shutting down Kumiko...")
         handlers = self.log.handlers[:]
         for hdlr in handlers:
             hdlr.close()
             self.log.removeHandler(hdlr)
-        # self.log.info("Shutting down Kumiko...")
