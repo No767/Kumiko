@@ -18,3 +18,9 @@ def parse_optional_datetimes(dt: Union[datetime.datetime, None]) -> str:
     if dt is None:
         return "N/A"
     return format_dt(parse_datetime(dt))
+
+
+def truncate_excess_string(string: str) -> str:
+    if len(string) > 4096:
+        return string[:4093] + "..."
+    return string

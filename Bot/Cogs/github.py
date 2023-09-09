@@ -1,27 +1,25 @@
-import os
-
 import ciso8601
 import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
-from discord.utils import format_dt
-from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.ui.github import (
     GitHubCommentReactions,
+    GitHubCommit,
+    GitHubCommitPages,
     GitHubIssue,
     GitHubIssueComment,
     GitHubIssueLabel,
     GithubIssuesPages,
+    GitHubLicense,
+    GitHubParentCommit,
+    GitHubReleaseAsset,
+    GitHubRepo,
+    GithubRepoPages,
+    GitHubRepoReleases,
     GitHubUser,
 )
-from Libs.utils import Embed
-from Libs.utils.pages import EmbedListSource, KumikoPages
 from yarl import URL
-
-load_dotenv()
-
-GITHUB_API_KEY = os.environ["GITHUB_API_KEY"]
 
 
 class Github(commands.Cog):
@@ -31,6 +29,7 @@ class Github(commands.Cog):
         self.bot = bot
         self.session = self.bot.session
         self.gh_key = self.bot.config["GITHUB_API_KEY"]
+        self.base_url = URL("https://api.github.com/repos/")
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -54,13 +53,12 @@ class Github(commands.Cog):
         """Obtains detailed information about the given issue"""
 
         headers = {
-            "Authorization": f"Bearer: {GITHUB_API_KEY}",
+            "Authorization": f"Bearer: {self.gh_key}",
             "accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         }
-        base_url = URL("https://api.github.com/repos/") / owner / repo / "issues"
-        issues_url = base_url / str(issue)
-        comments_url = base_url / str(issue) / "comments"
+        issues_url = self.base_url / str(issue)
+        comments_url = self.base_url / str(issue) / "comments"
         async with self.session.get(
             issues_url, headers=headers
         ) as issues_res, self.session.get(comments_url) as comments_res:
@@ -132,115 +130,138 @@ class Github(commands.Cog):
             )
             await pages.start()
 
-    # Force defaults to use Kumiko's repo ?
-    @github.command(name="release-list")
-    @app_commands.describe(owner="The owner of the repo", repo="The repo to search")
-    async def releases(self, ctx: commands.Context, owner: str, repo: str) -> None:
-        """Get up to 25 releases for a repo"""
-        headers = {
-            "Authorization": f"token {GITHUB_API_KEY}",
-            "accept": "application/vnd.github+json",
-        }
-        params = {"per_page": 25}
-        async with self.session.get(
-            f"https://api.github.com/repos/{owner}/{repo}/releases",
-            headers=headers,
-            params=params,
-        ) as r:
-            data = await r.json(loads=orjson.loads)
-            if r.status == 404:
-                await ctx.send("The release(s) were not found")
-                return
-            else:
-                main_data = [
-                    {
-                        "title": item["name"],
-                        "description": item["body"],
-                        "thumbnail": item["author"]["avatar_url"],
-                        "fields": [
-                            {"name": "Author", "value": item["author"]["login"]},
-                            {"name": "URL", "value": item["html_url"]},
-                            {
-                                "name": "Created At",
-                                "value": format_dt(
-                                    ciso8601.parse_datetime(item["created_at"])
-                                ),
-                            },
-                            {
-                                "name": "Published At",
-                                "value": format_dt(
-                                    ciso8601.parse_datetime(item["published_at"])
-                                ),
-                            },
-                            {"name": "Tarball URL", "value": item["tarball_url"]},
-                            {"name": "Zip URL", "value": item["zipball_url"]},
-                            {
-                                "name": "Download URL",
-                                "value": [
-                                    subItems["browser_download_url"]
-                                    for subItems in item["assets"]
-                                ],
-                            },
-                            {
-                                "name": "Download Count",
-                                "value": str(
-                                    [
-                                        subItems["download_count"]
-                                        for subItems in item["assets"]
-                                    ]
-                                ).replace("'", ""),
-                            },
-                        ],
-                    }
-                    for item in data
-                ]
-                embed_source = EmbedListSource(main_data, per_page=1)
-                pages = KumikoPages(source=embed_source, ctx=ctx)
-                await pages.start()
-
     @github.command(name="repo")
-    @app_commands.describe(owner="The owner of the repo", repo="The repo to search")
-    async def search(self, ctx: commands.Context, owner: str, repo: str) -> None:
-        """Searches for one repo on GitHub"""
+    @app_commands.describe(
+        owner="The owner of the repo (eg. No767)", repo="The repo name (eg. Kumiko)"
+    )
+    async def repo(self, ctx: commands.Context, owner: str, repo: str) -> None:
+        """Provides detailed information about the given repo"""
         headers = {
-            "Authorization": f"token {GITHUB_API_KEY}",
-            "accept": "application/vnd.github.v3+json",
+            "Authorization": f"Bearer: {self.gh_key}",
+            "accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
         }
+        repo_url = self.base_url / owner / repo
+        releases_url = self.base_url / owner / repo / "releases"
         async with self.session.get(
-            f"https://api.github.com/repos/{owner}/{repo}", headers=headers
-        ) as r:
-            data = await r.json(loads=orjson.loads)
-            if r.status == 404:
-                await ctx.send("The repo was not found")
+            repo_url, headers=headers
+        ) as repo_res, self.session.get(releases_url, headers=headers) as releases_res:
+            repo_data = await repo_res.json(loads=orjson.loads)
+            releases_data = await releases_res.json(loads=orjson.loads)
+
+            if repo_res.status == 404 or releases_res.status == 404:
+                await ctx.send("Could not find either the release or the repo itself")
                 return
-            else:
-                embed = Embed(title=data["name"], description=data["description"])
-                embed.set_thumbnail(url=data["owner"]["avatar_url"])
-                embed.add_field(name="Fork?", value=data["fork"])
-                embed.add_field(name="Private", value=data["private"])
-                embed.add_field(name="Stars", value=data["stargazers_count"])
-                embed.add_field(
-                    name="Language",
-                    value=data["language"] if data["language"] is not None else "None",
+
+            repo_entry = GitHubRepo(
+                name=repo_data["name"],
+                full_name=repo_data["full_name"],
+                private=repo_data["private"],
+                owner=GitHubUser(
+                    name=repo_data["owner"]["login"],
+                    avatar_url=repo_data["owner"]["avatar_url"],
+                    url=repo_data["owner"]["html_url"],
+                ),
+                url=repo_data["html_url"],
+                description=repo_data["description"],
+                fork=repo_data["fork"],
+                created_at=ciso8601.parse_datetime(repo_data["created_at"]),
+                updated_at=ciso8601.parse_datetime(repo_data["updated_at"]),
+                pushed_at=ciso8601.parse_datetime(repo_data["pushed_at"]),
+                homepage=repo_data["homepage"],
+                git_url=repo_data["git_url"],
+                ssh_url=repo_data["ssh_url"],
+                clone_url=repo_data["clone_url"],
+                star_count=repo_data["stargazers_count"],
+                watchers=repo_data["watchers"],
+                language=repo_data["language"],
+                forks=repo_data["forks"],
+                archived=repo_data["archived"],
+                open_issues=repo_data["open_issues_count"],
+                license=GitHubLicense(
+                    name=repo_data["license"]["name"] or "None",
+                    spdx_id=repo_data["license"]["spdx_id"] or "None",
+                ),
+                topics=repo_data["topics"],
+            )
+
+            releases_entries = [
+                GitHubRepoReleases(
+                    url=release["html_url"],
+                    author=GitHubUser(
+                        name=release["author"]["login"],
+                        avatar_url=release["author"]["avatar_url"],
+                        url=release["author"]["html_url"],
+                    ),
+                    tag_name=release["tag_name"],
+                    name=release["name"],
+                    prerelease=release["prerelease"],
+                    assets=[
+                        GitHubReleaseAsset(
+                            name=asset["name"],
+                            label=asset["label"],
+                            state=asset["state"],
+                            size=asset["size"],
+                            download_count=asset["download_count"],
+                            created_at=ciso8601.parse_datetime(asset["created_at"]),
+                            updated_at=ciso8601.parse_datetime(asset["updated_at"]),
+                            download_url=asset["browser_download_url"],
+                        )
+                        for asset in release["assets"]
+                    ],
+                    created_at=ciso8601.parse_datetime(release["created_at"]),
+                    published_at=ciso8601.parse_datetime(release["published_at"]),
+                    tarball_url=release["tarball_url"],
+                    zipball_url=release["zipball_url"],
+                    body=release["body"],
                 )
-                embed.add_field(name="URL", value=data["html_url"])
-                embed.add_field(
-                    name="Homepage",
-                    value=data["homepage"] if data["homepage"] is not None else "None",
+                for release in releases_data
+            ]
+
+            pages = GithubRepoPages(repo_entry, releases_entries, ctx=ctx)
+            await pages.start()
+
+    @github.command(name="commits")
+    @app_commands.describe(
+        owner="The owner of the repo (eg. No767)", repo="The repo name (eg. Kumiko)"
+    )
+    async def commits(self, ctx: commands.Context, owner: str, repo: str) -> None:
+        """Get all of the latest commits from a given repo"""
+        headers = {
+            "Authorization": f"Bearer: {self.gh_key}",
+            "accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        params = {"per_page": 75}
+        url = self.base_url / owner / repo / "commits"
+        async with self.session.get(url, headers=headers, params=params) as r:
+            data = await r.json(loads=orjson.loads)
+
+            if r.status == 404:
+                await ctx.send("Could not find the repo itself")
+                return
+
+            converted = [
+                GitHubCommit(
+                    author=GitHubUser(
+                        name=commit["author"]["login"],
+                        avatar_url=commit["author"]["avatar_url"],
+                        url=commit["author"]["html_url"],
+                    ),
+                    commit_date=ciso8601.parse_datetime(
+                        commit["commit"]["author"]["date"]
+                    ),
+                    message=commit["commit"]["message"],
+                    url=commit["html_url"],
+                    parents=[
+                        GitHubParentCommit(sha=parent["sha"], url=parent["html_url"])
+                        for parent in commit["parents"]
+                    ],
                 )
-                embed.add_field(
-                    name="Created At",
-                    value=format_dt(ciso8601.parse_datetime(data["created_at"])),
-                )
-                embed.add_field(
-                    name="Updated At",
-                    value=format_dt(ciso8601.parse_datetime(data["updated_at"])),
-                )
-                embed.add_field(
-                    name="Pushed At",
-                    value=format_dt(ciso8601.parse_datetime(data["pushed_at"])),
-                )
-                await ctx.send(embed=embed)
+                for commit in data
+            ]
+            pages = GitHubCommitPages(entries=converted, ctx=ctx)
+            await pages.start()
 
 
 async def setup(bot: KumikoCore) -> None:
