@@ -1,6 +1,7 @@
 import logging
 import signal
 from pathlib import Path as SyncPath
+from typing import Dict, Optional
 
 import asyncpg
 import discord
@@ -26,6 +27,7 @@ class KumikoCore(commands.Bot):
     def __init__(
         self,
         intents: discord.Intents,
+        config: Dict[str, Optional[str]],
         session: ClientSession,
         pool: asyncpg.Pool,
         redis_pool: ConnectionPool,
@@ -45,6 +47,7 @@ class KumikoCore(commands.Bot):
         )
         self.dev_mode = dev_mode
         self.lru_size = lru_size
+        self._config = config
         self._session = session
         self._ipc_secret_key = ipc_secret_key
         self._pool = pool
@@ -53,6 +56,17 @@ class KumikoCore(commands.Bot):
         self.default_prefix = ">"
         self.ipc = ipcx.Server(self, secret_key=self._ipc_secret_key)
         self.logger: logging.Logger = logging.getLogger("kumikobot")
+
+    @property
+    def config(self) -> Dict[str, Optional[str]]:
+        """Global configuration dictionary read from .env files
+
+        This is used to access API keys, and many others from the bot.
+
+        Returns:
+            Dict[str, Optional[str]]: A dictionary of configuration values
+        """
+        return self._config
 
     @property
     def session(self) -> ClientSession:

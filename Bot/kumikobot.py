@@ -1,5 +1,6 @@
 import asyncio
 import os
+from pathlib import Path
 
 import asyncpg
 import discord
@@ -7,7 +8,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
-from Libs.utils import KumikoLogger, setup_ssl
+from Libs.utils import KumikoLogger, read_env, setup_ssl
 
 # Only used for Windows development
 if os.name == "nt":
@@ -23,6 +24,8 @@ else:
         pass
 
 load_dotenv()
+
+ENV_PATH = Path(__file__).parent / ".env"
 
 KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
@@ -57,6 +60,7 @@ async def main() -> None:
     ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
         async with KumikoCore(
             intents=intents,
+            config=read_env(ENV_PATH),
             session=session,
             pool=pool,
             redis_pool=redis_pool,

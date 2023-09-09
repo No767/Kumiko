@@ -10,3 +10,5 @@ class MessageConstants(Enum):
         "Either you don't own any jobs or you have no permission to delete those jobs"
     )
     NO_HELP_FOUND = "No help found..."
+    NO_COMMENTS = "This issue has no comments"
+    NO_ASSIGNEES = "This issue has no assignees"

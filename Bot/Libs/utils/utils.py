@@ -2,9 +2,11 @@ import os
 import re
 import ssl
 from datetime import datetime, timedelta
+from pathlib import Path
 from typing import Any, Dict, Optional, TypeVar, Union
 
 import ciso8601
+from dotenv import dotenv_values
 
 T = TypeVar("T", str, None)
 
@@ -114,3 +116,9 @@ def tick(opt: Optional[bool], label: Optional[str] = None) -> str:
     if label is not None:
         return f"{emoji}: {label}"
     return emoji
+
+
+def read_env(path: Path, read_from_file: bool = True) -> Dict[str, Optional[str]]:
+    if is_docker() or read_from_file is False:
+        return {**os.environ}
+    return {**dotenv_values(path)}
