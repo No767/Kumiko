@@ -1,21 +1,13 @@
-import os
 from typing import Literal, Optional
 
 import asyncpraw
 import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
-from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.ui.reddit import RedditEntry, RedditMemeEntry, RedditMemePages, RedditPages
 from Libs.utils import parse_subreddit
 from yarl import URL
-
-load_dotenv()
-
-
-REDDIT_ID = os.environ["REDDIT_ID"]
-REDDIT_SECRET = os.environ["REDDIT_SECRET"]
 
 
 class Reddit(commands.Cog):
@@ -24,6 +16,8 @@ class Reddit(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
+        self._REDDIT_ID = self.bot.config["REDDIT_ID"]
+        self._REDDIT_SECRET = self.bot.config["REDDIT_SECRET"]
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -46,8 +40,8 @@ class Reddit(commands.Cog):
         """Searches for posts on Reddit"""
         await ctx.defer()
         reddit = asyncpraw.Reddit(
-            client_id=REDDIT_ID,
-            client_secret=REDDIT_SECRET,
+            client_id=self._REDDIT_ID,
+            client_secret=self._REDDIT_SECRET,
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         )
@@ -84,8 +78,8 @@ class Reddit(commands.Cog):
         """Gets a feed of posts from a subreddit"""
         await ctx.defer()
         reddit = asyncpraw.Reddit(
-            client_id=REDDIT_ID,
-            client_secret=REDDIT_SECRET,
+            client_id=self._REDDIT_ID,
+            client_secret=self._REDDIT_SECRET,
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         )

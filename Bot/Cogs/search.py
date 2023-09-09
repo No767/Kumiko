@@ -1,4 +1,3 @@
-import os
 from typing import Literal, Optional
 
 import ciso8601
@@ -6,15 +5,10 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from discord.utils import format_dt
-from dotenv import load_dotenv
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
 from Libs.utils.pages import EmbedListSource, KumikoPages
-
-load_dotenv()
-
-TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 
 class Searches(commands.Cog):
@@ -23,6 +17,7 @@ class Searches(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
+        self._TENOR_KEY = self.bot.config["TENOR_API_KEY"]
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -221,7 +216,7 @@ class Searches(commands.Cog):
         """Searches for gifs on Tenor"""
         params = {
             "q": search,
-            "key": TENOR_API_KEY,
+            "key": self._TENOR_KEY,
             "contentfilter": "medium",
             "limit": 25,
             "media_filter": "minimal",

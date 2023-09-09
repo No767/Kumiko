@@ -32,6 +32,7 @@ class KumikoCore(commands.Bot):
         pool: asyncpg.Pool,
         redis_pool: ConnectionPool,
         ipc_secret_key: str,
+        ipc_host: str,
         lru_size: int = 256,
         dev_mode: bool = False,
         *args,
@@ -50,11 +51,14 @@ class KumikoCore(commands.Bot):
         self._config = config
         self._session = session
         self._ipc_secret_key = ipc_secret_key
+        self._ipc_host = ipc_host
         self._pool = pool
         self._redis_pool = redis_pool
         self._prefixes: LRU = LRU(self.lru_size)
         self.default_prefix = ">"
-        self.ipc = ipcx.Server(self, secret_key=self._ipc_secret_key)
+        self.ipc = ipcx.Server(
+            self, host=self._ipc_host, secret_key=self._ipc_secret_key
+        )
         self.logger: logging.Logger = logging.getLogger("kumikobot")
 
     @property

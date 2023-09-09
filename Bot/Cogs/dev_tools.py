@@ -7,6 +7,9 @@ from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
 
+TESTING_GUILD_ID = discord.Object(id=970159505390325842)
+HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
+
 
 def is_nat():
     def pred(ctx):
@@ -27,8 +30,9 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f6e0")
 
-    @commands.hybrid_command(name="sync")
+    @commands.hybrid_command(name="sync", hidden=True)
     @commands.guild_only()
+    @app_commands.guilds(TESTING_GUILD_ID, HANGOUT_GUILD_ID)
     @commands.check_any(commands.is_owner(), is_nat())
     async def sync(
         self,
@@ -76,18 +80,16 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.command(name="dispatch", aliases=["dispatch-event"], hidden=True)
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), is_nat())
+    @app_commands.guilds(TESTING_GUILD_ID)
     @app_commands.describe(event="The event to dispatch")
     async def dispatch_event(self, ctx: commands.Context, event: str) -> None:
-        """Dispatches an custom event
-
-        Args:
-            ctx (commands.Context): _description_
-        """
+        """Dispatches an custom event"""
         self.bot.dispatch(event, ctx.guild)
         await ctx.send("Dispatched event")
 
     @commands.guild_only()
     @commands.check_any(commands.is_owner(), is_nat())
+    @app_commands.guilds(TESTING_GUILD_ID, HANGOUT_GUILD_ID)
     @commands.command(name="reload-all", hidden=True)
     async def upgrade(self, ctx: commands.Context) -> None:
         """Reloads all cogs. This is used for upgrading"""

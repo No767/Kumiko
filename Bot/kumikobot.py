@@ -30,13 +30,17 @@ ENV_PATH = Path(__file__).parent / ".env"
 KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
 DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
 IPC_SECRET_KEY = os.environ["IPC_SECRET_KEY"]
+IPC_HOST = os.environ["IPC_HOST"]
+POSTGRES_URI = os.environ["POSTGRES_URI"]
+REDIS_URI = os.environ["REDIS_URI"]
+
+# SSL configs
 SSL = os.getenv("SSL") in ("True", "TRUE")
 SSL_CA = os.getenv("SSL_CA")
 SSL_CERT = os.environ["SSL_CERT"]
 SSL_KEY = os.getenv("SSL_KEY")
 SSL_KEY_PASSWORD = os.getenv("SSL_KEY_PASSWORD")
-POSTGRES_URI = os.environ["POSTGRES_URI"]
-REDIS_URI = os.environ["REDIS_URI"]
+
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -65,6 +69,7 @@ async def main() -> None:
             pool=pool,
             redis_pool=redis_pool,
             ipc_secret_key=IPC_SECRET_KEY,
+            ipc_host=IPC_HOST,
             dev_mode=DEV_MODE,
         ) as bot:
             await bot.start(KUMIKO_TOKEN)
