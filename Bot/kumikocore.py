@@ -33,7 +33,7 @@ class KumikoCore(commands.Bot):
         redis_pool: ConnectionPool,
         ipc_secret_key: str,
         ipc_host: str,
-        lru_size: int = 256,
+        lru_size: int = 1024,
         dev_mode: bool = False,
         *args,
         **kwargs,
@@ -110,12 +110,12 @@ class KumikoCore(commands.Bot):
         """
         return str(VERSION)
 
-    # It is preffered in this case to keep an LRU cache instead of a regular Dict cache
-    # For example, if an running instance keeps 100 entries ({guild_id: prefix})
+    # It is preferred in this case to keep an LRU cache instead of a regular Dict cache
+    # For example, if an running instance keeps 100 entries ({guild_id: [prefix]})
     # then this would take up too much memory.
     #
-    # By instead using an LRU cache, if we reach the max, then we evict the prefix from the guild that hasn't used it in a while
-    # The limit for the LRU cache is set to 100
+    # By instead using an LRU cache, if we reach the max, then we evict the prefix from the guild that has been used the least recently
+    # The limit for the LRU cache is set to 1024
     #
     # The primary goal of Kumiko is to keep the footprint of the RAM usage as low as possible
     # We don't need to have the bot consuming 250-300MB of RAM like when Prisma was used.
