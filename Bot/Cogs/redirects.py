@@ -25,6 +25,11 @@ class Redirects(commands.Cog):
         self.pool = self.bot.pool
         self.redis_pool = self.bot.redis_pool
         self.redirects_path = ".redirects"
+        self.redirects_ctx_menu = app_commands.ContextMenu(
+            name="Redirect Conversation",
+            callback=self.redirects_callback,
+        )
+        self.bot.tree.add_command(self.redirects_ctx_menu)
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -33,6 +38,7 @@ class Redirects(commands.Cog):
     @commands.Cog.listener()
     async def on_thread_create(self, thread: discord.Thread) -> None:
         # this logic is the same as RoboDanny
+        # Requires Permissions.manage_messages
         message = thread.get_partial_message(thread.id)
         try:
             await message.pin()
@@ -44,49 +50,67 @@ class Redirects(commands.Cog):
         return True
 
     @is_redirects_enabled()
-    @commands.cooldown(1, 30, commands.BucketType.channel)
-    @commands.hybrid_group(name="redirect", fallback="conversation")
-    @app_commands.describe(thread_name="The name of the thread to create")
+    @app_commands.checks.cooldown(1, 30, key=lambda i: (i.guild_id, i.user.id))
+    async def redirects_callback(
+        self, interaction: discord.Interaction, message: discord.Message
+    ) -> None:
+        """Redirects a conversation into a separate thread"""
+        channel = interaction.channel
+
+        if isinstance(channel, discord.TextChannel):
+            created_thread = await channel.create_thread(
+                name=f"{interaction.user.display_name} and {message.author.display_name}'s conversation from #{channel.name}",
+                message=message,
+                reason=f"Conversation redirected by {interaction.user.display_name}",
+            )
+
+            await interaction.response.send_message(
+                f"Hey, {interaction.user.mention} has requested that {message.author.mention} redirect this conversation to {created_thread.jump_url} instead."
+            )
+            return
+
+        await interaction.response.send_message(
+            "This needs to be sent from a text channel", ephemeral=True
+        )
+
+    @is_redirects_enabled()
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    @commands.command(name="redirect")
     async def redirect(self, ctx: commands.Context, *, thread_name: str) -> None:
         """Redirects a conversation into a separate thread"""
         # Requires Permissions.create_public_threads
-        await ctx.defer()
-        if ctx.interaction is not None and isinstance(ctx.channel, discord.TextChannel):
-            msg = None
-            try:
-                resp = await ctx.interaction.original_response()
-                ref = resp.to_reference()
-                msg = ref.cached_message if ref.cached_message is not None else None
-            except discord.HTTPException:
-                pass
-            created_thread = await ctx.channel.create_thread(
-                name=thread_name,
-                message=msg,
-                reason=f"Conversation redirected by {ctx.author.name}",
-            )
+        msg = ctx.message.reference
+
+        if msg is None:
             await ctx.send(
-                f"{ctx.author.global_name} has requested that the conversation be moved to {created_thread.jump_url} instead."
+                "You need to reply to a user's message in order to use this."
             )
             return
-        created_thread = await ctx.message.create_thread(
-            name=thread_name, reason=f"Conversation redirected by {ctx.author.name}"
-        )
-        if ctx.message.reference is not None:
-            reference_author = (
-                ctx.message.reference.cached_message.author.mention
-                if ctx.message.reference.cached_message is not None
-                else "you"
-            )
-            await ctx.send(
-                f"Hey, {ctx.author.mention} has requested that {reference_author} redirect this conversation to {created_thread.jump_url} instead."
-            )
+
+        if isinstance(ctx.channel, discord.TextChannel):
+            if msg and msg.cached_message is not None:
+                reference_author = msg.cached_message.author.mention
+                created_thread = await ctx.channel.create_thread(
+                    name=thread_name,
+                    message=msg.cached_message,
+                    reason=f"Conversation redirected by {ctx.author.name}",
+                )
+                await ctx.send(
+                    f"Hey, {ctx.author.mention} has requested that {reference_author} redirect this conversation to {created_thread.jump_url} instead."
+                )
         else:
             await ctx.send(
-                f"{ctx.author.global_name} has requested that the conversation be moved to {created_thread.jump_url} instead."
+                "You can't use this on other types of channels. Only text channels are able to redirect messages."
             )
 
+    @commands.hybrid_group(name="redirects")
+    async def redirects(self, ctx: commands.Context) -> None:
+        """Module to handle redirecting replied conversations into threads"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
     @is_manager()
-    @redirect.command(name="enable")
+    @redirects.command(name="enable")
     async def enable(self, ctx: commands.Context):
         """Enables the redirect module"""
         assert ctx.guild is not None
@@ -113,7 +137,7 @@ class Redirects(commands.Cog):
 
     @is_manager()
     @is_redirects_enabled()
-    @redirect.command(name="disable")
+    @redirects.command(name="disable")
     async def disable(self, ctx: commands.Context):
         """Disables the redirects module"""
         assert ctx.guild is not None
