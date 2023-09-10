@@ -8,9 +8,11 @@ from asyncpg_trek import Direction, execute, plan
 from asyncpg_trek.asyncpg import AsyncpgBackend
 from dotenv import load_dotenv
 
-load_dotenv()
-
 MIGRATIONS_DIR = Path(__file__).parent / "Migrations"
+ENV_PATH = Path(__file__).parent / "Bot" / ".env"
+
+load_dotenv(dotenv_path=ENV_PATH)
+
 
 POSTGRES_URI = os.environ["POSTGRES_URI"]
 TARGET_REVISION = os.environ["TARGET_REVISION"]
