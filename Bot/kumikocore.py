@@ -7,8 +7,16 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
+from discord.app_commands import CommandTree
 from discord.ext import commands, ipcx
-from Libs.utils import ensure_postgres_conn, ensure_redis_conn, get_prefix
+from Libs.utils import (
+    check_blacklist,
+    ensure_postgres_conn,
+    ensure_redis_conn,
+    get_or_fetch_blacklist,
+    get_prefix,
+    load_blacklist,
+)
 from Libs.utils.help import KumikoHelpPaginated
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
@@ -19,6 +27,29 @@ try:
     from watchfiles import awatch
 except ImportError:
     _fsw = False
+
+
+class KumikoCommandTree(CommandTree):
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        bot: KumikoCore = interaction.client  # type: ignore # Pretty much returns the subclass anyways. I checked - Noelle
+        if (
+            bot.owner_id == interaction.user.id
+            or bot.application_id == interaction.user.id
+        ):
+            return True
+
+        blacklisted_status = await get_or_fetch_blacklist(
+            bot, interaction.user.id, bot.pool
+        )
+        if blacklisted_status is True:
+            # Get RickRolled lol
+            # While implementing this, I was listening to Rick Astley
+            await interaction.response.send_message(
+                f"My fellow user, {interaction.user.mention}, you just got the L. You are blacklisted from using this bot. Take an \U0001f1f1, \U0001f1f1oser. [Here's how to appeal the blacklist.](https://www.youtube.com/watch?v=dQw4w9WgXcQ)",
+                suppress_embeds=True,
+            )
+            return False
+        return True
 
 
 class KumikoCore(commands.Bot):
@@ -43,11 +74,13 @@ class KumikoCore(commands.Bot):
             command_prefix=get_prefix,
             help_command=KumikoHelpPaginated(),
             activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
+            tree_cls=KumikoCommandTree,
             *args,
             **kwargs,
         )
         self.dev_mode = dev_mode
         self.lru_size = lru_size
+        self._blacklist_cache: Dict[int, bool] = {}
         self._config = config
         self._session = session
         self._ipc_secret_key = ipc_secret_key
@@ -60,6 +93,17 @@ class KumikoCore(commands.Bot):
             self, host=self._ipc_host, secret_key=self._ipc_secret_key
         )
         self.logger: logging.Logger = logging.getLogger()
+
+    @property
+    def blacklist_cache(self) -> Dict[int, bool]:
+        """Global blacklist cache
+
+        The main blacklist is stored on PostgreSQL, and is always a 1:1 mapping of the cache. R. Danny loads it from a JSON file, but I call that json as a db.
+
+        Returns:
+            Dict[int, bool]: Cached version of all globally blacklisted users.
+        """
+        return self._blacklist_cache
 
     @property
     def config(self) -> Dict[str, Optional[str]]:
@@ -131,6 +175,15 @@ class KumikoCore(commands.Bot):
         """
         return self._prefixes
 
+    def add_to_blacklist_cache(self, id: int) -> None:
+        self._blacklist_cache[id] = True
+
+    def update_blacklist_cache(self, id: int, status: bool) -> None:
+        self._blacklist_cache.update({id: status})
+
+    def remove_from_blacklist_cache(self, id: int) -> None:
+        self._blacklist_cache.pop(id)
+
     async def fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
         async for changes in awatch(cogs_path):
@@ -153,6 +206,12 @@ class KumikoCore(commands.Bot):
 
         self.loop.add_signal_handler(signal.SIGTERM, stop)
         self.loop.add_signal_handler(signal.SIGINT, stop)
+
+        # The blacklist checks
+        self.add_check(check_blacklist)
+        self._blacklist_cache = await load_blacklist(self.pool)
+        self.logger.info("Blacklist cache loaded")
+
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)

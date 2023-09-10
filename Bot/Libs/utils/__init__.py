@@ -1,3 +1,4 @@
+from .blacklist import check_blacklist, get_or_fetch_blacklist, load_blacklist
 from .checks import is_admin, is_manager, is_mod
 from .connection_checks import ensure_postgres_conn, ensure_redis_conn
 from .context import KContext
@@ -62,4 +63,7 @@ __all__ = [
     "MessageConstants",
     "KContext",
     "read_env",
+    "check_blacklist",
+    "load_blacklist",
+    "get_or_fetch_blacklist",
 ]

@@ -47,6 +47,10 @@ class ErrorHandler(commands.Cog):
             error, commands.HybridCommandError
         ):
             await ctx.send(embed=self.produce_error_embed(error))
+        elif isinstance(
+            error, commands.CheckFailure
+        ) and "global check functions" in str(error):
+            return
         elif isinstance(error, commands.CommandNotFound):
             await ctx.send(
                 embed=self.create_premade_embed(
