@@ -8,7 +8,7 @@ services:
       context: ./Docker/pg
       dockerfile: Dockerfile
     env_file:
-      - .env
+      - Bot/.env
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     ports:
@@ -28,10 +28,13 @@ services:
     image: no767/kumiko:latest
     command: sh -c '/Kumiko/wait-for postgres:5432 -- echo "[Wait-for] PostgreSQL is fully up. Waiting for Redis" && /Kumiko/wait-for redis:6379 -- echo "[Wait-for] Both PostgreSQL and Redis are fully ready. Starting up Kumiko" && /Kumiko/start.sh'
     env_file:
-      - .env
+      - Bot/.env
     depends_on:
       - postgres
       - redis
+    ports:
+      - 8765:8765
+      - 20000:20000
 
 volumes:
   postgres_volume:
