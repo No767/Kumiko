@@ -1,4 +1,4 @@
-from typing import Mapping
+from typing import Mapping, Union
 
 import asyncpg
 import discord
@@ -30,6 +30,29 @@ class EventsHandler(commands.Cog):
     ) -> bool:
         logs_enabled = await get_or_fetch_log_enabled(guild_id, redis_pool, pool)
         return logs_enabled is True and logging_config[event] is True
+
+    def produce_embeds(
+        self,
+        member: Union[discord.Member, discord.User],
+        type: str,
+        type_msg: str,
+        display_age: bool = True,
+    ) -> discord.Embed:
+        embed = SuccessActionEmbed(title=type_msg)
+
+        if type == "leave":
+            embed = CancelledActionEmbed(title=type_msg)
+        elif type == "unban":
+            embed = Embed(color=discord.Color.from_rgb(255, 143, 143))
+
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.description = f"{member.mention} {member.global_name}"
+        embed.timestamp = utcnow()
+        embed.set_footer(text="Happened At")
+        if display_age:
+            embed.add_field(name="Account Age", value=format_dt(member.created_at, "R"))
+            embed.add_field(name="Joined At", value=format_dt(member.joined_at or utcnow()))  # type: ignore
+        return embed
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
@@ -77,13 +100,10 @@ class EventsHandler(commands.Cog):
         if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
-                embed = SuccessActionEmbed()
-                embed.title = "Member Joined"
-                embed.set_thumbnail(url=member.display_avatar.url)
-                embed.description = f"{member.mention} {member.global_name}"
-                embed.timestamp = utcnow()
-                embed.add_field(
-                    name="Account Age", value=format_dt(member.created_at, "R")
+                embed = self.produce_embeds(
+                    member=member,
+                    type="join",
+                    type_msg="Member Joined",
                 )
                 await channel.send(embed=embed)
 
@@ -96,13 +116,10 @@ class EventsHandler(commands.Cog):
         if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
-                embed = CancelledActionEmbed()
-                embed.title = "Member Left"
-                embed.set_thumbnail(url=member.display_avatar.url)
-                embed.description = f"{member.mention} {member.global_name}"
-                embed.timestamp = utcnow()
-                embed.add_field(
-                    name="Account Age", value=format_dt(member.created_at, "R")
+                embed = self.produce_embeds(
+                    member=member,
+                    type="leave",
+                    type_msg="Member Left",
                 )
                 await channel.send(embed=embed)
 
@@ -114,11 +131,11 @@ class EventsHandler(commands.Cog):
         if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
-                embed = CancelledActionEmbed()
-                embed.title = "Member Banned"
-                embed.set_thumbnail(url=user.display_avatar.url)
-                embed.description = f"{user.mention} {user.global_name}"
-                embed.timestamp = utcnow()
+                embed = self.produce_embeds(
+                    member=user,
+                    type="leave",
+                    type_msg="Member Banned",
+                )
                 await channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -129,11 +146,11 @@ class EventsHandler(commands.Cog):
         if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
-                embed = Embed(color=discord.Color.from_rgb(255, 143, 143))
-                embed.title = "Member Unbanned"
-                embed.set_thumbnail(url=user.display_avatar.url)
-                embed.description = f"{user.mention} {user.global_name}"
-                embed.timestamp = utcnow()
+                embed = self.produce_embeds(
+                    member=user,
+                    type="unban",
+                    type_msg="Member Unbanned",
+                )
                 await channel.send(embed=embed)
 
     @commands.Cog.listener()
@@ -144,11 +161,11 @@ class EventsHandler(commands.Cog):
         if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
-                embed = CancelledActionEmbed()
-                embed.title = "Member Kicked"
-                embed.set_thumbnail(url=user.display_avatar.url)
-                embed.description = f"{user.mention} {user.global_name}"
-                embed.timestamp = utcnow()
+                embed = self.produce_embeds(
+                    member=user,
+                    type="leave",
+                    type_msg="Member Kicked",
+                )
                 await channel.send(embed=embed)
 
 
