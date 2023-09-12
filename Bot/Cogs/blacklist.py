@@ -20,8 +20,8 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.guild_only()
     @commands.is_owner()
-    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @commands.hybrid_group(name="blacklist", fallback="view", hidden=True)
+    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     async def blacklist(self, ctx: commands.Context) -> None:
         """Blacklist management module - No subcommands means viewing the blacklist"""
         cache = self.bot.blacklist_cache
@@ -35,8 +35,8 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.guild_only()
     @commands.is_owner()
-    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @blacklist.command(name="add", hidden=True)
+    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @app_commands.describe(id=ID_DESC)
     async def add(self, ctx: commands.Context, id: str) -> None:
         """Blacklists the given user or guild ID"""
@@ -56,8 +56,8 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.guild_only()
     @commands.is_owner()
-    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @blacklist.command(name="delete", hidden=True)
+    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @app_commands.describe(id=ID_DESC)
     async def delete(self, ctx: commands.Context, id: str) -> None:
         """Un-blacklists the given user or guild ID"""
@@ -79,8 +79,8 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.guild_only()
     @commands.is_owner()
-    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @blacklist.command(name="update", hidden=True)
+    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
     @app_commands.describe(id=ID_DESC, status="Status of the blacklist")
     async def update(self, ctx: commands.Context, id: str, status: bool) -> None:
         """Updates the blacklist entry for the given user or guild ID"""

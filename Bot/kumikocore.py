@@ -218,8 +218,8 @@ class KumikoCore(commands.Bot):
 
         await self.ipc.start()
 
-        self.loop.create_task(ensure_postgres_conn(self._pool))
-        self.loop.create_task(ensure_redis_conn(self._redis_pool))
+        await ensure_postgres_conn(self._pool)
+        await ensure_redis_conn(self._redis_pool)
 
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
