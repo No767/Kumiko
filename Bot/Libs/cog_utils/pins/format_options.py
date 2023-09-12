@@ -8,10 +8,10 @@ def format_options(rows: Union[List[Dict[str, str]], None]) -> str:
         rows (Union[List[Dict[str, str]], None]): Rows to format
 
     Returns:
-        str: _Formatted string
+        str: Formatted string
     """
     if rows is None or len(rows) == 0:
-        return "Tag not found"
+        return "Pin not found"
 
     names = "\n".join([row["name"] for row in rows])
-    return f"Tag not found. Did you mean:\n{names}"
+    return f"Pin not found. Did you mean:\n{names}"

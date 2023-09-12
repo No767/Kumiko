@@ -6,7 +6,7 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 import pytest
-from Libs.utils import encode_datetime, parse_datetime, parse_time_str
+from Libs.utils import parse_datetime, parse_time_str
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -24,10 +24,6 @@ def test_parse_date_str():
     date = datetime.now(tz=timezone.utc).isoformat()
     res = parse_datetime(datetime=date)
     assert isinstance(res, datetime)  # nosec
-
-
-def test_encode_datetime(load_dict):
-    assert isinstance(encode_datetime(load_dict)["created_at"], str)  # nosec
 
 
 def test_parse_time_str():

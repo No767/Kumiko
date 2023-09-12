@@ -15,7 +15,7 @@ async def is_auction_valid(
     WHERE id = $1;
     """
 
-    petals = await conn.fetchval(query, user_id)  # type: ignore # We have to suppress this since asyncpg is not typed
+    petals = await conn.fetchval(query, user_id)
     if petals is None:
         return False
 
@@ -32,7 +32,7 @@ async def have_enough_funds(
     WHERE id = $1;
     """
 
-    petals = await conn.fetchval(query, user_id)  # type: ignore # We have to suppress this since asyncpg is not typed
+    petals = await conn.fetchval(query, user_id)
     if petals is None:
         return False
 

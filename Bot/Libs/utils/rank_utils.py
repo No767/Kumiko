@@ -3,7 +3,7 @@
 # Calculating Rank from Petals: 0.12 * ∛petals
 # Calculating Petals from Rank: (rank / 0.12) ^ 3
 #
-# These may be subject to change. We'll see
+# These may be subject to change. We'll see later if they change.
 
 
 def calc_rank(petals: int) -> int:

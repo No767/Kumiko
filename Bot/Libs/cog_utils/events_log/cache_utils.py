@@ -5,8 +5,6 @@ from Libs.cache import KumikoCache
 from redis.asyncio.connection import ConnectionPool
 
 
-# idk how to test this one
-# Someone remind Noelle to test this once she figures out how to
 async def get_or_fetch_config(
     id: int, redis_pool: ConnectionPool, pool: asyncpg.Pool
 ) -> Union[Dict[str, Union[int, bool]], None]:

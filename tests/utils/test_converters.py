@@ -50,15 +50,6 @@ class JobCog(commands.Cog):
         await ctx.send("hey")
 
 
-class CheckLegitUserCog(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @commands.group(name="check-user")
-    async def check_user(self, ctx, *, user: str):
-        await ctx.send(f"{user}")
-
-
 @pytest_asyncio.fixture
 async def bot():
     # Setup
@@ -70,7 +61,6 @@ async def bot():
     await b.add_cog(PrefixCog(b))
     await b.add_cog(PinCog(b))
     await b.add_cog(JobCog(b))
-    await b.add_cog(CheckLegitUserCog(b))
 
     dpytest.configure(b)
 
@@ -182,9 +172,3 @@ async def test_same_job_name(bot):
         e.type == commands.BadArgument
         and "This Job name starts with a reserved word." in str(e.value)
     )
-
-
-@pytest.mark.asyncio
-async def test_valid_check_user(bot):
-    await dpytest.message(">check-user 454357482102587393")
-    assert dpytest.verify().message().content("454357482102587393")

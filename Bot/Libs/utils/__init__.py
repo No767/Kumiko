@@ -2,7 +2,7 @@ from .blacklist import check_blacklist, get_or_fetch_blacklist, load_blacklist
 from .checks import is_admin, is_manager, is_mod
 from .connection_checks import ensure_postgres_conn, ensure_redis_conn
 from .context import KContext
-from .converters import CheckLegitUser, JobName, PinAllFlags, PinName, PrefixConverter
+from .converters import JobName, PinAllFlags, PinName, PrefixConverter
 from .embeds import (
     CancelledActionEmbed,
     ConfirmEmbed,
@@ -20,7 +20,6 @@ from .prefix import get_prefix
 from .rank_utils import calc_petals, calc_rank
 from .time import human_timedelta
 from .utils import (
-    encode_datetime,
     is_docker,
     parse_datetime,
     parse_subreddit,
@@ -34,7 +33,6 @@ __all__ = [
     "PinName",
     "PinAllFlags",
     "parse_datetime",
-    "encode_datetime",
     "Embed",
     "ErrorEmbed",
     "parse_subreddit",
@@ -55,7 +53,6 @@ __all__ = [
     "is_mod",
     "is_admin",
     "setup_ssl",
-    "CheckLegitUser",
     "is_docker",
     "human_timedelta",
     "ensure_postgres_conn",

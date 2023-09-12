@@ -8,7 +8,13 @@ sys.path.append(str(path))
 
 load_dotenv()
 
-from Libs.cog_utils.dictionary import *
+from Libs.cog_utils.dictionary import (
+    EnglishDef,
+    EnglishDictEntry,
+    JapaneseDictEntry,
+    JapaneseEntryDef,
+    JapaneseWordEntry,
+)
 
 
 def test_japanese_word_entry():
