@@ -28,7 +28,7 @@ async def configure_settings(
             await cache.merge_json_cache(
                 key=key, value=None, path=".logging_config.channel_id"
             )
-        return return_status
+        return f"{str_status} EventsLog"
 
     query = """
     UPDATE guild

@@ -30,6 +30,11 @@ class Github(commands.Cog):
         self.session = self.bot.session
         self.gh_key = self.bot.config["GITHUB_API_KEY"]
         self.base_url = URL("https://api.github.com/repos/")
+        self.headers = {
+            "Authorization": f"Bearer: {self.gh_key}",
+            "accept": "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -51,17 +56,13 @@ class Github(commands.Cog):
         self, ctx: commands.Context, owner: str, repo: str, issue: int
     ) -> None:
         """Obtains detailed information about the given issue"""
-
-        headers = {
-            "Authorization": f"Bearer: {self.gh_key}",
-            "accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-        }
         issues_url = self.base_url / str(issue)
         comments_url = self.base_url / str(issue) / "comments"
         async with self.session.get(
-            issues_url, headers=headers
-        ) as issues_res, self.session.get(comments_url) as comments_res:
+            issues_url, headers=self.headers
+        ) as issues_res, self.session.get(
+            comments_url, headers=self.headers
+        ) as comments_res:
             issue_data = await issues_res.json(loads=orjson.loads)
             comments_data = await comments_res.json(loads=orjson.loads)
 
@@ -136,16 +137,13 @@ class Github(commands.Cog):
     )
     async def repo(self, ctx: commands.Context, owner: str, repo: str) -> None:
         """Provides detailed information about the given repo"""
-        headers = {
-            "Authorization": f"Bearer: {self.gh_key}",
-            "accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-        }
         repo_url = self.base_url / owner / repo
         releases_url = self.base_url / owner / repo / "releases"
         async with self.session.get(
-            repo_url, headers=headers
-        ) as repo_res, self.session.get(releases_url, headers=headers) as releases_res:
+            repo_url, headers=self.headers
+        ) as repo_res, self.session.get(
+            releases_url, headers=self.headers
+        ) as releases_res:
             repo_data = await repo_res.json(loads=orjson.loads)
             releases_data = await releases_res.json(loads=orjson.loads)
 
@@ -227,14 +225,9 @@ class Github(commands.Cog):
     )
     async def commits(self, ctx: commands.Context, owner: str, repo: str) -> None:
         """Get all of the latest commits from a given repo"""
-        headers = {
-            "Authorization": f"Bearer: {self.gh_key}",
-            "accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-        }
         params = {"per_page": 75}
         url = self.base_url / owner / repo / "commits"
-        async with self.session.get(url, headers=headers, params=params) as r:
+        async with self.session.get(url, headers=self.headers, params=params) as r:
             data = await r.json(loads=orjson.loads)
 
             if r.status == 404:

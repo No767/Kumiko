@@ -47,14 +47,12 @@ class Economy(commands.Cog):
         result = await cache.get_json_cache(key=key, path=self.local_economy_key)
         if result is True:
             await ctx.send("Economy is already enabled for your server!")
-            return
         else:
             await self.pool.execute(query, ctx.guild.id, True)  # type: ignore
             await cache.merge_json_cache(
                 key=key, value=True, path=self.local_economy_key, ttl=None
             )
             await ctx.send("Enabled economy!")
-            return
 
     @is_manager()
     @is_economy_enabled()

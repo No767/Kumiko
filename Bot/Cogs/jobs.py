@@ -252,7 +252,6 @@ class Jobs(commands.Cog):
         await ctx.send(
             f"Successfully updated the job `{name}` (RR: {required_rank}, Pay: {pay})"
         )
-        return
 
     @is_economy_enabled()
     @jobs.command(name="delete")
@@ -352,7 +351,6 @@ class Jobs(commands.Cog):
 
             status = await submit_job_app(ctx.author.id, ctx.guild.id, name.lower(), False, conn)  # type: ignore
             await ctx.send(status)
-            return
 
     @is_economy_enabled()
     @jobs.command(name="quit")
@@ -369,11 +367,9 @@ class Jobs(commands.Cog):
 
             if dict(rows)["worker_id"] is None:
                 await ctx.send("This job is available! Apply for it first!")
-                return
             else:
                 status = await submit_job_app(None, ctx.guild.id, name.lower(), True, conn)  # type: ignore
                 await ctx.send(status)
-                return
 
     @is_economy_enabled()
     @jobs.command(name="info")
@@ -414,7 +410,6 @@ class Jobs(commands.Cog):
             await pages.start()
         else:
             await ctx.send("No jobs were found")
-            return
 
     @is_economy_enabled()
     @jobs.command(name="output", usage="<name> price: int amount_per_hour: int")
@@ -470,10 +465,8 @@ class Jobs(commands.Cog):
             await ctx.send(
                 f"Successfully created the output item `{name}` (Price: {flags.price}, Amount Per Hour: {flags.amount_per_hour})"
             )
-            return
         else:
             await ctx.send("There was an error making it. Please try again")
-            return
 
 
 async def setup(bot: KumikoCore) -> None:

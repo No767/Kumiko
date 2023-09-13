@@ -118,7 +118,6 @@ class Marketplace(commands.Cog):
                     "2. You don't have enough funds to make the purchase\n"
                     "3. There are no remaining in stock\n"
                 )
-                return
 
     @is_economy_enabled()
     @marketplace.command(name="info")
