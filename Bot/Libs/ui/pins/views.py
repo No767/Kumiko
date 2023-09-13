@@ -1,13 +1,23 @@
 import asyncpg
 import discord
-from Libs.utils import ErrorEmbed, SuccessActionEmbed
+from discord.ext import commands
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
 
 
 class DeletePinView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool, name: str):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool, name: str):
         super().__init__()
+        self.author = ctx.author
         self.pool = pool
         self.name = name
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.author:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -66,9 +76,18 @@ class DeletePinView(discord.ui.View):
 
 
 class PurgePinView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool):
         super().__init__()
+        self.author = ctx.author
         self.pool = pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.author:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",

@@ -1,7 +1,7 @@
 import asyncpg
 import discord
 from Libs.cog_utils.config import check_already_set, configure_settings
-from Libs.utils import Embed
+from Libs.utils import Embed, MessageConstants
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -50,7 +50,7 @@ class ConfirmToggleView(discord.ui.View):
         if interaction.user.id == self.author_id:
             return True
         await interaction.response.send_message(
-            "You can't control this view!", ephemeral=True
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
         )
         return False
 
@@ -132,7 +132,7 @@ class ConfigMenuView(discord.ui.View):
         if interaction.user.id == self.author_id:
             return True
         await interaction.response.send_message(
-            "You can't control this view!", ephemeral=True
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
         )
         return False
 

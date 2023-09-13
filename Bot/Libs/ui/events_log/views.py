@@ -1,17 +1,29 @@
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import disable_logging
 from Libs.config import LoggingGuildConfig
-from Libs.utils import ErrorEmbed, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
 from redis.asyncio.connection import ConnectionPool
 
 
 class RegisterView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool, redis_pool: ConnectionPool) -> None:
+    def __init__(
+        self, ctx: commands.Context, pool: asyncpg.Pool, redis_pool: ConnectionPool
+    ) -> None:
         super().__init__()
+        self.ctx = ctx
         self.pool = pool
         self.redis_pool = redis_pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.select(
         cls=discord.ui.ChannelSelect, channel_types=[discord.ChannelType.text]
@@ -73,10 +85,21 @@ class RegisterView(discord.ui.View):
 
 
 class UnregisterView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool, redis_pool: ConnectionPool) -> None:
+    def __init__(
+        self, ctx: commands.Context, pool: asyncpg.Pool, redis_pool: ConnectionPool
+    ) -> None:
         super().__init__()
+        self.ctx = ctx
         self.pool = pool
         self.redis_pool = redis_pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",

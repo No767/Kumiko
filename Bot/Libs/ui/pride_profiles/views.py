@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.utils import ErrorEmbed, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
 
 from .selects import SelectPrideCategory
 
@@ -11,6 +11,14 @@ class ConfirmRegisterView(discord.ui.View):
         self.author_id = author_id
         self.pool = pool
 
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.author_id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
+
     @discord.ui.button(
         label="Confirm",
         style=discord.ButtonStyle.green,
@@ -19,11 +27,6 @@ class ConfirmRegisterView(discord.ui.View):
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user.id != self.author_id:
-            await interaction.response.send_message(
-                "You can't confirm this view!", ephemeral=True
-            )
-            return
 
         query = """
         INSERT INTO pride_profiles (id, name)
@@ -61,9 +64,18 @@ class ConfirmRegisterView(discord.ui.View):
 
 
 class ConfigureView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool) -> None:
+    def __init__(self, author_id: int, pool: asyncpg.Pool) -> None:
         super().__init__()
         self.add_item(SelectPrideCategory(pool))
+        self.author_id = author_id
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.author_id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(label="Finish", style=discord.ButtonStyle.green, row=1)
     async def finish(
@@ -79,6 +91,14 @@ class DeleteProfileView(discord.ui.View):
         super().__init__()
         self.author_id = author_id
         self.pool = pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.author_id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",

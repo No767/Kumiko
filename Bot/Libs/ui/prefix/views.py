@@ -1,14 +1,24 @@
 import discord
+from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import ErrorEmbed, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
 
 
 class DeletePrefixView(discord.ui.View):
-    def __init__(self, bot: KumikoCore, prefix: str) -> None:
+    def __init__(self, bot: KumikoCore, ctx: commands.Context, prefix: str) -> None:
         super().__init__()
         self.bot = bot
+        self.ctx = ctx
         self.prefix = prefix
         self.pool = self.bot.pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",

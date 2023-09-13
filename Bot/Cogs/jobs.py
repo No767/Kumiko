@@ -261,7 +261,7 @@ class Jobs(commands.Cog):
         self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Deletes a job by name. You can only delete your own jobs."""
-        view = DeleteJobView(self.pool, name)
+        view = DeleteJobView(ctx, self.pool, name)
         embed = ConfirmEmbed()
         embed.description = f"Are you sure you want to delete the job `{name}`?"
         await ctx.send(embed=embed, view=view)
@@ -271,7 +271,7 @@ class Jobs(commands.Cog):
     @app_commands.describe(id="The ID of the job to delete")
     async def delete_via_id(self, ctx: commands.Context, id: int) -> None:
         """Deletes the job via the job ID"""
-        view = DeleteJobViaIDView(self.pool, id)
+        view = DeleteJobViaIDView(ctx, self.pool, id)
         embed = ConfirmEmbed()
         embed.description = f"Are you sure you want to delete the job? (ID: `{id}`)?"
         await ctx.send(embed=embed, view=view)
@@ -280,7 +280,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="purge")
     async def purge(self, ctx: commands.Context) -> None:
         """Purges all jobs that you own"""
-        view = PurgeJobsView(self.pool)
+        view = PurgeJobsView(ctx, self.pool)
         embed = ConfirmEmbed()
         embed.description = "Are you sure you want to delete all jobs that you own?"
         await ctx.send(embed=embed, view=view)

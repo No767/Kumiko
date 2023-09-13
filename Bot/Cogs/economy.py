@@ -107,7 +107,7 @@ class Economy(commands.Cog):
     @eco.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register for an economy account"""
-        view = RegisterView(self.pool)
+        view = RegisterView(ctx, self.pool)
         embed = ConfirmEmbed()
         embed.description = "Do you want to make an account? The account can only be accessed from your current guild"
         await ctx.send(embed=embed, view=view)

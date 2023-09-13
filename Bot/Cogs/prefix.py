@@ -101,7 +101,7 @@ class Prefix(commands.Cog):
     @app_commands.describe(prefix="The prefix to delete")
     async def delete(self, ctx: commands.Context, prefix: str) -> None:
         """Deletes a prefix from your server"""
-        view = DeletePrefixView(bot=self.bot, prefix=prefix)
+        view = DeletePrefixView(bot=self.bot, ctx=ctx, prefix=prefix)
         embed = ConfirmEmbed()
         embed.description = f"Do you want to delete the following prefix: {prefix}"
         await ctx.send(embed=embed, view=view)

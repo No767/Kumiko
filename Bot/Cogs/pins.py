@@ -211,7 +211,7 @@ class Pins(commands.Cog):
         self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Deletes a pin. You can only delete your own."""
-        view = DeletePinView(self.pool, name)
+        view = DeletePinView(ctx, self.pool, name)
         embed = ConfirmEmbed()
         embed.description = f"Do you want to delete the pin: {name}?"
         await ctx.send(embed=embed, view=view)
@@ -394,7 +394,7 @@ class Pins(commands.Cog):
     @pins.command(name="purge")
     async def purge(self, ctx: commands.Context) -> None:
         """Purges all pins that you own in the server"""
-        view = PurgePinView(self.pool)
+        view = PurgePinView(ctx, self.pool)
         embed = ConfirmEmbed()
         embed.description = (
             "Are you sure you want to delete all pins that you own in the server?"

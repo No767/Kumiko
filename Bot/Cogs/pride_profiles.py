@@ -69,7 +69,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
     @pride_profiles.command(name="configure", aliases=["config"])
     async def configure(self, ctx: commands.Context) -> None:
         """Configure your pride profile"""
-        view = ConfigureView(self.pool)
+        view = ConfigureView(ctx.author.id, self.pool)
         embed = Embed(title="Configuring your pride profile")
         embed.description = "In order to configure your pride profile, select at one of the categories listed in the drop down."
         await ctx.send(embed=embed, view=view, ephemeral=True)

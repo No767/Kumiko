@@ -1,13 +1,25 @@
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
 
 
 class DeleteJobView(discord.ui.View):
-    def __init__(self, pool: asyncpg.pool.Pool, job_name: str) -> None:
+    def __init__(
+        self, ctx: commands.Context, pool: asyncpg.pool.Pool, job_name: str
+    ) -> None:
         super().__init__()
+        self.ctx = ctx
         self.pool: asyncpg.pool.Pool = pool
         self.job_name = job_name
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -52,10 +64,21 @@ class DeleteJobView(discord.ui.View):
 
 
 class DeleteJobViaIDView(discord.ui.View):
-    def __init__(self, pool: asyncpg.pool.Pool, job_id: int) -> None:
+    def __init__(
+        self, ctx: commands.Context, pool: asyncpg.pool.Pool, job_id: int
+    ) -> None:
         super().__init__()
+        self.ctx = ctx
         self.pool: asyncpg.pool.Pool = pool
         self.job_id = job_id
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -100,9 +123,18 @@ class DeleteJobViaIDView(discord.ui.View):
 
 
 class PurgeJobsView(discord.ui.View):
-    def __init__(self, pool: asyncpg.pool.Pool) -> None:
+    def __init__(self, ctx: commands.Context, pool: asyncpg.pool.Pool) -> None:
         super().__init__()
+        self.ctx = ctx
         self.pool: asyncpg.pool.Pool = pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",

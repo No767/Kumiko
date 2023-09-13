@@ -2,6 +2,7 @@ from typing import Union
 
 import discord
 from Libs.cog_utils.redirects import mark_as_resolved
+from Libs.utils import MessageConstants
 
 
 class ConfirmResolvedView(discord.ui.View):
@@ -10,11 +11,19 @@ class ConfirmResolvedView(discord.ui.View):
         thread: discord.Thread,
         author: Union[discord.User, discord.Member],
         *args,
-        **kwargs
+        **kwargs,
     ) -> None:
         super().__init__(*args, **kwargs)
         self.thread = thread
         self.author = author
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.author:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -24,12 +33,6 @@ class ConfirmResolvedView(discord.ui.View):
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user.id != self.author.id:
-            await interaction.response.send_message(
-                "You are not the author of the thread", ephemeral=True
-            )
-            return
-
         # Avoid relocking locked threads
         if self.thread.locked:
             return

@@ -37,7 +37,7 @@ class EventsLog(commands.Cog):
         register_info = "In order to get started, **only** select one of the options within the dropdown menu in order to set it.\nOnce you are done, click the finish button."
         embed = Embed(title="Registration Info")
         embed.description = register_info
-        view = RegisterView(pool=self.pool, redis_pool=self.redis_pool)
+        view = RegisterView(ctx=ctx, pool=self.pool, redis_pool=self.redis_pool)
         await ctx.send(embed=embed, view=view)
 
     @is_manager()
@@ -45,7 +45,7 @@ class EventsLog(commands.Cog):
     @logs.command(name="disable")
     async def disable(self, ctx: commands.Context) -> None:
         """Disables and unregisters the events logging on the server"""
-        view = UnregisterView(pool=self.pool, redis_pool=self.redis_pool)
+        view = UnregisterView(ctx=ctx, pool=self.pool, redis_pool=self.redis_pool)
         embed = ConfirmEmbed()
         embed.description = "You are about to disable and unregister the events logging feature on Kumiko. Press Confirm to confirm your action."
         await ctx.send(embed=embed, view=view)

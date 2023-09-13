@@ -1,12 +1,22 @@
 import asyncpg
 import discord
-from Libs.utils import Embed, SuccessActionEmbed
+from discord.ext import commands
+from Libs.utils import Embed, MessageConstants, SuccessActionEmbed
 
 
 class RegisterView(discord.ui.View):
-    def __init__(self, pool: asyncpg.Pool) -> None:
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
         super().__init__()
+        self.ctx = ctx
         self.pool = pool
+
+    async def interaction_check(self, interaction: discord.Interaction, /):
+        if interaction.user.id == self.ctx.author.id:
+            return True
+        await interaction.response.send_message(
+            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
+        )
+        return False
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(

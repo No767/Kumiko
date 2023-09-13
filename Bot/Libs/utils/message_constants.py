@@ -12,3 +12,4 @@ class MessageConstants(Enum):
     NO_HELP_FOUND = "No help found..."
     NO_COMMENTS = "This issue has no comments"
     NO_ASSIGNEES = "This issue has no assignees"
+    NO_CONTROL_VIEW = "You can't control this view!"
