@@ -1,14 +1,15 @@
 import discord
 from discord.ext import commands
-from Libs.cog_utils.dictionary import (
+from Libs.utils.pages import KumikoPages
+
+from .sources import EnglishDefinePageSource, JapaneseDefPageSource
+from .structs import (
+    EnglishDef,
     EnglishDictEntry,
     JapaneseDictEntry,
     JapaneseEntryDef,
     JapaneseWordEntry,
 )
-from Libs.utils.pages import KumikoPages
-
-from .sources import EnglishDefinePageSource, JapaneseDefPageSource
 
 
 class DictPages(KumikoPages):
@@ -18,7 +19,18 @@ class DictPages(KumikoPages):
                 word=entry["word"],
                 phonetics=entry["phonetics"],
                 part_of_speech=entry["meanings"][0]["partOfSpeech"],
-                definitions=[item["definitions"] for item in entry["meanings"]],
+                definitions=[
+                    [
+                        EnglishDef(
+                            definition=adef["definition"],
+                            synonyms=adef["synonyms"],
+                            antonyms=adef["antonyms"],
+                            example=adef["example"] if "example" in adef else None,
+                        )
+                        for adef in item["definitions"]
+                    ]
+                    for item in entry["meanings"]
+                ],
             )
             for entry in entries
         ]

@@ -1,39 +1,34 @@
 from typing import Dict, List, Optional
 
-from attrs import define
+import msgspec
 
 
-@define
-class EnglishDef:
+class EnglishDef(msgspec.Struct):
     definition: str
     synonyms: List[str]
     antonyms: List[str]
-    example: str
+    example: Optional[str]
 
 
-@define
-class EnglishDictEntry:
+class EnglishDictEntry(msgspec.Struct):
     word: str
     phonetics: List[Dict[str, str]]
     part_of_speech: str
-    definitions: List[EnglishDef]
+    definitions: List[List[EnglishDef]]
 
 
-@define
-class JapaneseEntryDef:
+class JapaneseEntryDef(msgspec.Struct):
     english_definitions: List[str]
     parts_of_speech: List[str]
     tags: List[str]
 
 
-@define
-class JapaneseWordEntry:
+class JapaneseWordEntry(msgspec.Struct):
     word: Optional[str]
     reading: Optional[str]
 
 
-@define
-class JapaneseDictEntry:
+class JapaneseDictEntry(msgspec.Struct):
     word: List[JapaneseWordEntry]
     definitions: List[JapaneseEntryDef]
     is_common: Optional[bool]
