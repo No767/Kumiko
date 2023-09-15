@@ -59,7 +59,7 @@ class Moderation(commands.Cog):
         """
         unban_list = ", ".join([user.mention for user in flags.members]).rstrip(",")
         for members in flags.members:
-            await ctx.guild.unban(user=members, reason=reason)  # type: ignore
+            await ctx.guild.unban(user=members, reason=flags.reason)  # type: ignore
         embed = Embed(
             title="Issued Unban", description=f"Successfully unbanned {unban_list}"
         )
