@@ -19,14 +19,7 @@ from .message_constants import MessageConstants
 from .prefix import get_prefix
 from .rank_utils import calc_petals, calc_rank
 from .time import human_timedelta
-from .utils import (
-    is_docker,
-    parse_datetime,
-    parse_subreddit,
-    parse_time_str,
-    read_env,
-    setup_ssl,
-)
+from .utils import is_docker, parse_datetime, parse_subreddit, read_env, setup_ssl
 
 __all__ = [
     "PrefixConverter",
@@ -36,7 +29,6 @@ __all__ = [
     "Embed",
     "ErrorEmbed",
     "parse_subreddit",
-    "parse_time_str",
     "format_greedy",
     "KumikoLogger",
     "get_prefix",

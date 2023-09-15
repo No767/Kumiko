@@ -1,25 +1,12 @@
 import os
 import re
 import ssl
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, Optional, TypeVar, Union
+from typing import Dict, Optional, Union
 
 import ciso8601
 from dotenv import dotenv_values
-
-T = TypeVar("T", str, None)
-
-# From https://stackoverflow.com/questions/4628122/how-to-construct-a-timedelta-object-from-a-simple-string
-# Answer: https://stackoverflow.com/a/51916936
-# datetimeParseRegex = re.compile(r'^((?P<days>[\.\d]+?)d)?((?P<hours>[\.\d]+?)h)?((?P<minutes>[\.\d]+?)m)?((?P<seconds>[\.\d]+?)s)?$')
-datetime_regex = re.compile(
-    r"^((?P<weeks>[\.\d]+?)w)? *"
-    r"^((?P<days>[\.\d]+?)d)? *"
-    r"((?P<hours>[\.\d]+?)h)? *"
-    r"((?P<minutes>[\.\d]+?)m)? *"
-    r"((?P<seconds>[\.\d]+?)s?)?$"
-)
 
 
 def parse_datetime(datetime: Union[datetime, str]) -> datetime:
@@ -48,28 +35,6 @@ def parse_subreddit(subreddit: Union[str, None]) -> str:
     if subreddit is None:
         return "all"
     return re.sub(r"^[r/]{2}", "", subreddit, re.IGNORECASE)
-
-
-def parse_time_str(time_str: str) -> Union[timedelta, None]:
-    """Parse a time string e.g. (2h13m) into a timedelta object.
-
-    Taken straight from https://stackoverflow.com/a/4628148
-
-    Args:
-        time_str (str): A string identifying a duration.  (eg. 2h13m)
-
-    Returns:
-        datetime.timedelta: A datetime.timedelta object
-    """
-    parts = datetime_regex.match(time_str)
-    if not parts:
-        return
-    parts = parts.groupdict()
-    time_params = {}
-    for name, param in parts.items():
-        if param:
-            time_params[name] = int(param)
-    return timedelta(**time_params)
 
 
 def setup_ssl(

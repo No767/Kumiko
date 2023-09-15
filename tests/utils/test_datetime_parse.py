@@ -1,12 +1,12 @@
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 import pytest
-from Libs.utils import parse_datetime, parse_time_str
+from Libs.utils import parse_datetime
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -24,15 +24,3 @@ def test_parse_date_str():
     date = datetime.now(tz=timezone.utc).isoformat()
     res = parse_datetime(datetime=date)
     assert isinstance(res, datetime)  # nosec
-
-
-def test_parse_time_str():
-    assert isinstance(parse_time_str("2h"), timedelta)
-
-
-def test_parse_time_str_empty():
-    assert isinstance(parse_time_str(""), timedelta)  # this should not work...
-
-
-def test_parse_time_str_invalid():
-    assert parse_time_str("what mate") is None
