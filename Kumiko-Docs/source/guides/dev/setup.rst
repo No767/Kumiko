@@ -34,8 +34,7 @@ Local Setup
 
     .. code-block:: bash
 
-        cp Envs/dev.env Bot/.env \
-        cp Envs/docker.env .env
+        cp Envs/dev.env Bot/.env
 
 5. Edit the ``.env`` file placed in the root of the repo and in the ``Bot`` folder to include any credentials needed for the bot to run
     

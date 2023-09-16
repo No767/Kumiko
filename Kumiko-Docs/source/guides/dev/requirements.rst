@@ -23,7 +23,7 @@ Debian/Ubuntu
 
 .. code-block:: bash
 
-    sudo apt-get install libffi-dev python3-dev libnacl-dev libopus-dev  \
+    sudo apt-get install libffi-dev python3-dev libnacl-dev \
     libopus-dev libssl-dev curl wget git make
 
 
