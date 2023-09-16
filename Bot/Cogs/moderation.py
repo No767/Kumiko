@@ -110,18 +110,20 @@ class Moderation(commands.Cog):
         `>mod timeout members: @user reason: Good reason`
         Removes the timeout of @user with the reason of "Good Reason
         """
-        dt = dateparser.parse(
-            flags.duration,
-            settings={"TIMEZONE": "Etc/UTC", "RETURN_AS_TIMEZONE_AWARE": True},
-        )
-        if dt is None:
-            await ctx.send("Cannot parse duration")
-            return
+        dt = None
+        if flags.duration is not None:
+            dt = dateparser.parse(
+                flags.duration,
+                settings={"TIMEZONE": "Etc/UTC", "RETURN_AS_TIMEZONE_AWARE": True},
+            )
+            if dt is None:
+                await ctx.send("Cannot parse duration")
+                return
 
-        delta = utcnow() - dt
-        if delta.days > 28:
-            await ctx.send("Max duration is 28 days from now")
-            return
+            delta = utcnow() - dt
+            if delta.days > 28:
+                await ctx.send("Max duration is 28 days from now")
+                return
 
         out_list = ", ".join([user.mention for user in flags.members]).rstrip(",")
 
