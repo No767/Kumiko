@@ -1,10 +1,12 @@
 import platform
+from typing import Union
 
 import discord
 import psutil
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
+from Libs.ui.meta import InfoPages
 from Libs.utils import Embed, human_timedelta
 from psutil._common import bytes2human
 
@@ -35,7 +37,16 @@ class Meta(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="info")
-    async def info(self, ctx: commands.Context) -> None:
+    async def info(
+        self, ctx: commands.Context, *, user: Union[discord.Member, discord.User]
+    ) -> None:
+        """Shows info about a user"""
+        user = user or ctx.author
+        pages = InfoPages(user, ctx=ctx)
+        await pages.start()
+
+    @commands.hybrid_command(name="about")
+    async def about(self, ctx: commands.Context) -> None:
         """Shows some basic info about Kumiko"""
         embed = Embed()
         embed.title = f"{self.bot.user.name} Info"  # type: ignore

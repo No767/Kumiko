@@ -108,3 +108,12 @@ def human_timedelta(
             return human_join(output, final="and") + output_suffix
         else:
             return " ".join(output) + output_suffix
+
+
+def format_dt(dt: datetime.datetime, style: Optional[str] = None) -> str:
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.timezone.utc)
+
+    if style is None:
+        return f"<t:{int(dt.timestamp())}>"
+    return f"<t:{int(dt.timestamp())}:{style}>"

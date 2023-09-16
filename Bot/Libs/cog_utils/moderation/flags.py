@@ -1,3 +1,5 @@
+from typing import Optional
+
 import discord
 from discord.ext import commands
 
@@ -38,7 +40,7 @@ class TimeoutFlags(commands.FlagConverter):
     members: commands.Greedy[discord.Member] = commands.flag(
         aliases=["m"], default=lambda ctx: [], description="The member(s) to timeout"
     )
-    duration: str = commands.flag(
+    duration: Optional[str] = commands.flag(
         aliases=["d"],
         default=None,
         description="The duration to timeout the user(s) for. Leave this out in order to remove the timeout",
