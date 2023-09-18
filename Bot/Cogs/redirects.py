@@ -1,3 +1,5 @@
+from typing import Optional
+
 import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
@@ -5,6 +7,7 @@ from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
 from Libs.cog_utils.redirects import (
     can_close_threads,
+    create_redirected_thread,
     is_redirects_enabled,
     is_thread,
     mark_as_resolved,
@@ -12,7 +15,9 @@ from Libs.cog_utils.redirects import (
 from Libs.ui.redirects import ConfirmResolvedView
 from Libs.utils import is_manager
 
-
+CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
+# Required Perms (from discord.Permission):
+# send_message_in_threads, manage_threads, create_public_threads, manage_messages
 class Redirects(commands.Cog):
     """Redirects a conversation into a separate thread
 
@@ -58,14 +63,26 @@ class Redirects(commands.Cog):
         channel = interaction.channel
 
         if isinstance(channel, discord.TextChannel):
-            created_thread = await channel.create_thread(
-                name=f"{interaction.user.display_name} and {message.author.display_name}'s conversation from #{channel.name}",
-                message=message,
-                reason=f"Conversation redirected by {interaction.user.display_name}",
-            )
+            if interaction.user.id == message.author.id:
+                await interaction.response.send_message(
+                    CANNOT_REDIRECT_OWN_MESSAGE, ephemeral=True
+                )
+                return
 
+            reference_author = message.author
+            author = interaction.user
+
+            default_thread_name = f"{author.display_name} and {reference_author.display_name}'s conversation"
+            redirected_thread = await create_redirected_thread(
+                channel=channel,
+                thread_name=default_thread_name,
+                reason=f"Conversation redirected by {author.global_name}",
+                msg=message,
+                author=author,
+                reference_author=reference_author,
+            )
             await interaction.response.send_message(
-                f"Hey, {interaction.user.mention} has requested that {message.author.mention} redirect this conversation to {created_thread.jump_url} instead."
+                f"Notified {reference_author.display_name} to redirect the conversation to {redirected_thread}"
             )
             return
 
@@ -76,9 +93,10 @@ class Redirects(commands.Cog):
     @is_redirects_enabled()
     @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.command(name="redirect")
-    async def redirect(self, ctx: commands.Context, *, thread_name: str) -> None:
+    async def redirect(
+        self, ctx: commands.Context, *, thread_name: Optional[str] = None
+    ) -> None:
         """Redirects a conversation into a separate thread"""
-        # Requires Permissions.create_public_threads
         msg = ctx.message.reference
 
         if msg is None:
@@ -89,14 +107,23 @@ class Redirects(commands.Cog):
 
         if isinstance(ctx.channel, discord.TextChannel):
             if msg and msg.cached_message is not None:
-                reference_author = msg.cached_message.author.mention
-                created_thread = await ctx.channel.create_thread(
-                    name=thread_name,
-                    message=msg.cached_message,
+                reference_author = msg.cached_message.author
+
+                if reference_author.id == ctx.author.id:
+                    await ctx.send(CANNOT_REDIRECT_OWN_MESSAGE)
+                    return
+
+                default_thread_name = f"{ctx.author.display_name} and {reference_author.display_name}'s conversation"
+                redirected_thread = await create_redirected_thread(
+                    channel=ctx.channel,
+                    thread_name=thread_name or default_thread_name,
                     reason=f"Conversation redirected by {ctx.author.name}",
+                    msg=msg.cached_message,
+                    author=ctx.author,
+                    reference_author=reference_author,
                 )
                 await ctx.send(
-                    f"Hey, {ctx.author.mention} has requested that {reference_author} redirect this conversation to {created_thread.jump_url} instead."
+                    f"Notified {reference_author.display_name} to redirect the conversation to {redirected_thread}"
                 )
         else:
             await ctx.send(
