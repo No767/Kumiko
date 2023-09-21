@@ -26,7 +26,7 @@ class KContext(commands.Context):
         Returns:
             asyncpg.Pool: Asyncpg pool
         """
-        return bot.pool
+        return self.bot.pool
 
     @property
     def redis_pool(self) -> ConnectionPool:
@@ -35,7 +35,7 @@ class KContext(commands.Context):
         Returns:
             ConnectionPool: Redis pool
         """
-        return bot.redis_pool
+        return self.bot.redis_pool
 
     async def prompt(
         self,
