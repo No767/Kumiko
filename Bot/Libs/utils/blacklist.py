@@ -1,7 +1,12 @@
-from typing import Dict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict
 
 import asyncpg
 from discord.ext import commands
+
+if TYPE_CHECKING:
+    from Bot.kumikocore import KumikoCore
 
 
 async def check_blacklist(ctx: commands.Context):
@@ -39,7 +44,7 @@ async def load_blacklist(pool: asyncpg.Pool) -> Dict[int, bool]:
 
 
 # Circular import so bot is untyped
-async def get_or_fetch_blacklist(bot, id: int, pool: asyncpg.Pool) -> bool:
+async def get_or_fetch_blacklist(bot: KumikoCore, id: int, pool: asyncpg.Pool) -> bool:
     """Gets or fetches a user's blacklist status
 
     Args:

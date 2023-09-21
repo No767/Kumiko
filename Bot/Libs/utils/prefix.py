@@ -1,9 +1,14 @@
-from typing import List
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, List, Union
 
 import discord
 
+if TYPE_CHECKING:
+    from Bot.kumikocore import KumikoCore
 
-async def get_prefix(bot, msg: discord.Message) -> List[str]:
+
+async def get_prefix(bot: KumikoCore, msg: discord.Message) -> Union[str, List[str]]:
     if msg.guild is None:
         return bot.default_prefix
     cached_prefix = bot.prefixes.get(msg.guild.id)

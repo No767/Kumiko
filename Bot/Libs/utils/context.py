@@ -1,13 +1,20 @@
-from typing import Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional
 
 import asyncpg
 from discord.ext import commands
 from Libs.ui.commons import ConfirmationView
 from redis.asyncio.connection import ConnectionPool
 
+if TYPE_CHECKING:
+    from Bot.kumikocore import KumikoCore
+
 
 class KContext(commands.Context):
     """Subclassed `commands.Context` with some extra goodies"""
+
+    bot: KumikoCore
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -19,7 +26,7 @@ class KContext(commands.Context):
         Returns:
             asyncpg.Pool: Asyncpg pool
         """
-        return self.bot.pool
+        return bot.pool
 
     @property
     def redis_pool(self) -> ConnectionPool:
@@ -28,7 +35,7 @@ class KContext(commands.Context):
         Returns:
             ConnectionPool: Redis pool
         """
-        return self.bot.redis_pool
+        return bot.redis_pool
 
     async def prompt(
         self,
@@ -36,7 +43,7 @@ class KContext(commands.Context):
         *,
         timeout: float = 60.0,
         delete_after: bool = True,
-        author_id: Optional[int] = None
+        author_id: Optional[int] = None,
     ) -> Optional[bool]:
         """Prompts the user with an interaction confirmation dialog
 

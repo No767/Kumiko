@@ -1,12 +1,19 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
 from Libs.cog_utils.config import check_already_set, configure_settings
 from Libs.utils import Embed, MessageConstants
 from redis.asyncio.connection import ConnectionPool
 
+if TYPE_CHECKING:
+    from Bot.kumikocore import KumikoCore
+
 
 class ConfigMenu(discord.ui.Select):
-    def __init__(self, author_id: int, bot) -> None:
+    def __init__(self, author_id: int, bot: KumikoCore) -> None:
         self.author_id = author_id
         self.bot = bot
         self.pool = self.bot.pool
@@ -123,7 +130,7 @@ class ConfirmToggleView(discord.ui.View):
 
 
 class ConfigMenuView(discord.ui.View):
-    def __init__(self, author_id: int, bot) -> None:
+    def __init__(self, author_id: int, bot: KumikoCore) -> None:
         super().__init__()
         self.author_id = author_id
         self.add_item(ConfigMenu(author_id, bot))
