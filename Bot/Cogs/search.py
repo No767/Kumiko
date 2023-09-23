@@ -1,4 +1,5 @@
 from typing import Literal, Optional
+from urllib.parse import quote_plus
 
 import ciso8601
 import orjson
@@ -9,6 +10,8 @@ from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
 from Libs.utils.pages import EmbedListSource, KumikoPages
+from typing_extensions import Annotated
+from yarl import URL
 
 
 class Searches(commands.Cog):
@@ -22,6 +25,16 @@ class Searches(commands.Cog):
     @property
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji.from_str("<a:typing:597589448607399949>")
+
+    @commands.hybrid_command(name="lmgtfy")
+    @app_commands.describe(query="What do you want to search?")
+    async def lmgtfy(
+        self, ctx: commands.Context, query: Annotated[str, commands.clean_content]
+    ) -> None:
+        """Let Me Google That For You"""
+        query = quote_plus(query)
+        url = URL("https://letmegooglethat.com") % {"q": query}
+        await ctx.send(f"Link: {str(url)}")
 
     @commands.hybrid_group(name="search")
     async def search(self, ctx: commands.Context) -> None:
