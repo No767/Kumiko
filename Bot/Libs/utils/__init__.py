@@ -1,4 +1,9 @@
-from .blacklist import check_blacklist, get_or_fetch_blacklist, load_blacklist
+from .blacklist import (
+    check_blacklist,
+    get_or_fetch_blacklist,
+    get_or_fetch_full_blacklist,
+    load_blacklist,
+)
 from .checks import is_admin, is_manager, is_mod
 from .connection_checks import ensure_postgres_conn, ensure_redis_conn
 from .context import KContext
@@ -56,4 +61,5 @@ __all__ = [
     "load_blacklist",
     "get_or_fetch_blacklist",
     "format_dt",
+    "get_or_fetch_full_blacklist",
 ]

@@ -3,9 +3,10 @@ from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.ui.blacklist import BlacklistPages
+from Libs.utils import get_or_fetch_full_blacklist
 
-HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
-TESTING_GUILD_ID = discord.Object(id=970159505390325842)
+HANGOUT_GUILD_ID = 1145897416160194590
+TESTING_GUILD_ID = 970159505390325842
 DONE_MSG = "Done."
 NO_HANGOUT_BLOCK = "Can't block the hangout guild"
 ID_DESC = "User or Guild ID to add"
@@ -20,16 +21,21 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.guild_only()
     @commands.is_owner()
-    @commands.hybrid_group(name="blacklist", fallback="view", hidden=True)
-    @app_commands.guilds(HANGOUT_GUILD_ID, TESTING_GUILD_ID)
+    @commands.hybrid_group(
+        name="blacklist",
+        fallback="view",
+        hidden=True,
+        guild_ids=[HANGOUT_GUILD_ID, TESTING_GUILD_ID],
+    )
     async def blacklist(self, ctx: commands.Context) -> None:
         """Blacklist management module - No subcommands means viewing the blacklist"""
-        cache = self.bot.blacklist_cache
-        cache_to_list = [{k: v} for k, v in cache.items()]
-        if len(cache) == 0:
+        cache = await get_or_fetch_full_blacklist(self.bot, self.pool)
+
+        if cache is None:
             await ctx.send("No entries in the blacklist cache")
             return
 
+        cache_to_list = [{k: v} for k, v in cache.items()]
         pages = BlacklistPages(entries=cache_to_list, ctx=ctx)
         await pages.start()
 
@@ -41,7 +47,7 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
     async def add(self, ctx: commands.Context, id: str) -> None:
         """Blacklists the given user or guild ID"""
         obj = discord.Object(id=int(id))
-        if obj.id != HANGOUT_GUILD_ID.id and obj.id != TESTING_GUILD_ID.id:
+        if obj.id != HANGOUT_GUILD_ID and obj.id != TESTING_GUILD_ID:
             query = """
             INSERT INTO blacklist (id, blacklist_status)
             VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;
@@ -62,7 +68,7 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
     async def delete(self, ctx: commands.Context, id: str) -> None:
         """Un-blacklists the given user or guild ID"""
         obj = discord.Object(id=int(id))
-        if obj.id != HANGOUT_GUILD_ID.id and obj.id != TESTING_GUILD_ID.id:
+        if obj.id != HANGOUT_GUILD_ID and obj.id != TESTING_GUILD_ID:
             query = """
             DELETE FROM blacklist
             WHERE id = $1;
@@ -85,7 +91,7 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
     async def update(self, ctx: commands.Context, id: str, status: bool) -> None:
         """Updates the blacklist entry for the given user or guild ID"""
         obj = discord.Object(id=int(id))
-        if obj.id != HANGOUT_GUILD_ID.id and obj.id != TESTING_GUILD_ID.id:
+        if obj.id != HANGOUT_GUILD_ID and obj.id != TESTING_GUILD_ID:
             query = """
             UPDATE blacklist
             SET status = $2

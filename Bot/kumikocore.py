@@ -184,6 +184,9 @@ class KumikoCore(commands.Bot):
     def remove_from_blacklist_cache(self, id: int) -> None:
         self._blacklist_cache.pop(id)
 
+    def replace_blacklist_cache(self, new_cache: Dict[int, bool]) -> None:
+        self._blacklist_cache = new_cache
+
     async def fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
         async for changes in awatch(cogs_path):

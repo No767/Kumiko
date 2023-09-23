@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, Optional
 
 import asyncpg
 from discord.ext import commands
@@ -40,7 +40,8 @@ async def load_blacklist(pool: asyncpg.Pool) -> Dict[int, bool]:
     FROM blacklist;
     """
     records = await pool.fetch(query)
-    return {record["id"]: record["blacklist_status"] for record in records}
+    formatted_records = {record["id"]: record["blacklist_status"] for record in records}
+    return formatted_records
 
 
 # Circular import so bot is untyped
@@ -68,3 +69,27 @@ async def get_or_fetch_blacklist(bot: KumikoCore, id: int, pool: asyncpg.Pool) -
         return False
     bot.blacklist_cache[id] = record["blacklist_status"]
     return record["blacklist_status"]
+
+
+async def get_or_fetch_full_blacklist(
+    bot: KumikoCore, pool: asyncpg.Pool
+) -> Optional[Dict[int, bool]]:
+    cache = bot.blacklist_cache
+
+    # We can guarantee these to be 1:1 mappings
+    if len(cache) != 0:
+        return cache
+
+    query = """
+    SELECT id, blacklist_status
+    FROM blacklist;
+    """
+    records = await pool.fetch(query)
+    if len(records) == 0:
+        return None
+
+    converted_records: Dict[int, bool] = {
+        record["id"]: record["blacklist_status"] for record in records
+    }
+    bot.replace_blacklist_cache(converted_records)
+    return converted_records

@@ -3,15 +3,14 @@ from typing import Union
 
 import discord
 import psutil
-from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.meta import format_badges, format_date
 from Libs.utils import Embed, human_timedelta
 from psutil._common import bytes2human
 
-TESTING_GUILD_ID = discord.Object(id=970159505390325842)
-HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
+TESTING_GUILD_ID = 970159505390325842
+HANGOUT_GUILD_ID = 1145897416160194590
 
 
 class Meta(commands.Cog):
@@ -116,8 +115,12 @@ class Meta(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.is_owner()
-    @app_commands.guilds(TESTING_GUILD_ID, HANGOUT_GUILD_ID)
-    @commands.hybrid_command(name="sys-metrics", aliases=["sysmetrics"])
+    @commands.hybrid_command(
+        name="sys-metrics",
+        aliases=["sysmetrics"],
+        hidden=True,
+        guild_ids=[TESTING_GUILD_ID, HANGOUT_GUILD_ID],
+    )
     async def sys_metrics(self, ctx: commands.Context) -> None:
         """Tells you the current system metrics along with other information"""
         await ctx.defer()
