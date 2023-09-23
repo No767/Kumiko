@@ -6,7 +6,7 @@ import psutil
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.meta import InfoPages
+from Libs.cog_utils.meta import format_badges, format_date
 from Libs.utils import Embed, human_timedelta
 from psutil._common import bytes2human
 
@@ -42,8 +42,45 @@ class Meta(commands.Cog):
     ) -> None:
         """Shows info about a user"""
         user = user or ctx.author
-        pages = InfoPages(user, ctx=ctx)
-        await pages.start()
+
+        status_str = ""
+        if isinstance(user, discord.Member):
+            status_lookup = [
+                ("\U0001f5a5", user.desktop_status),
+                ("\U0001f4f1", user.mobile_status),
+                ("\U0001f310", user.web_status),
+            ]
+            status_str = "".join(
+                [item[0] for item in status_lookup if item[1] == discord.Status.online]
+            )
+
+        platform_status = (
+            f"**Platform Statuses**: {status_str}" if len(status_str) != 0 else ""
+        )
+
+        roles = []
+        if ctx.guild is not None and isinstance(user, discord.Member):
+            roles = [role.name.replace("@", "@\u200b") for role in user.roles]
+
+        desc = f"{format_badges(ctx, user)}"
+
+        desc = f"""
+        {format_badges(ctx, user)}
+        
+        **Name/ID**: {user.global_name} / {user.id}
+        **Created**: {format_date(user.created_at)}
+        **Status**: {user.status if isinstance(user, discord.Member) else 'Unknown'}
+        {platform_status}
+        **Mutual Guilds**: {len(user.mutual_guilds)}
+        **Roles**: {', '.join(roles)}
+        """
+
+        embed = discord.Embed(colour=discord.Colour.from_rgb(255, 125, 212))
+        embed.set_author(name=user.global_name, icon_url=user.display_avatar.url)
+        embed.description = desc
+        embed.timestamp = user.joined_at if isinstance(user, discord.Member) else None
+        embed.set_footer(text="Joined at")
+        await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="about")
     async def about(self, ctx: commands.Context) -> None:
