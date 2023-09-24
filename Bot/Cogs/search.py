@@ -269,11 +269,11 @@ class Searches(commands.Cog):
             "facets": f"[{','.join(list_facets).rstrip(',')}]",
         }
         async with self.session.get(url, params=params) as r:
-
             data = await r.json(loads=orjson.loads)
             if data["total_hits"] == 0:
                 await ctx.send("The projects(s) were/was not found")
                 return
+
             converted = [
                 ModrinthProject(
                     title=item["title"],
