@@ -5,10 +5,21 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from gql import Client, gql
-from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
-from Libs.cog_utils.search import ModrinthFlags
-from Libs.ui.search import ModrinthPages, ModrinthProject
+from Libs.cog_utils.search import (
+    AIOHTTPTransportExistingSession,
+    ModrinthFlags,
+    parse_anilist_dates,
+)
+from Libs.ui.search import (
+    AniListAnime,
+    AniListAnimePages,
+    AniListManga,
+    AniListMangaPages,
+    AniListMediaTitle,
+    ModrinthPages,
+    ModrinthProject,
+)
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
@@ -21,6 +32,7 @@ class Searches(commands.Cog):
         self.bot = bot
         self.session = self.bot.session
         self._TENOR_KEY = self.bot.config["TENOR_API_KEY"]
+        self.api_url = "https://graphql.anilist.co/"
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -46,7 +58,9 @@ class Searches(commands.Cog):
     async def anime(self, ctx: commands.Context, *, name: str) -> None:
         """Searches up animes"""
         async with Client(
-            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
+            transport=AIOHTTPTransportExistingSession(
+                url=self.api_url, client_session=self.session
+            ),
             fetch_schema_from_transport=True,
         ) as gql_session:
             query = gql(
@@ -59,10 +73,10 @@ class Searches(commands.Cog):
                             english
                             romaji
                         }
-                        description
+                        status
+                        description(asHtml: false)
                         format
                         status
-                        seasonYear
                         startDate {
                             day
                             month
@@ -73,15 +87,25 @@ class Searches(commands.Cog):
                             month
                             year
                         }
+                        episodes
+                        duration
                         coverImage {
                             extraLarge
+                            color
                         }
                         genres
                         tags {
                             name
                         }
+                        source
                         synonyms
-                        id
+                        idMal
+                        siteUrl
+                        averageScore
+                        meanScore
+                        popularity
+                        trending
+                        isAdult
 
                     }
                 }
@@ -95,41 +119,37 @@ class Searches(commands.Cog):
             if len(data["Page"]["media"]) == 0:
                 await ctx.send("The anime was not found")
                 return
-            main_data = [
-                {
-                    "title": item["title"]["romaji"],
-                    "description": str(item["description"]).replace("<br>", ""),
-                    "image": item["coverImage"]["extraLarge"],
-                    "fields": [
-                        {"name": "Native Name", "value": item["title"]["native"]},
-                        {"name": "English Name", "value": item["title"]["english"]},
-                        {"name": "Status", "value": item["status"]},
-                        {
-                            "name": "Start Date",
-                            "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
-                        },
-                        {
-                            "name": "End Date",
-                            "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
-                        },
-                        {"name": "Genres", "value": item["genres"]},
-                        {"name": "Synonyms", "value": item["synonyms"]},
-                        {"name": "Format", "value": item["format"]},
-                        {"name": "Season Year", "value": item["seasonYear"]},
-                        {
-                            "name": "Tags",
-                            "value": [tagItem["name"] for tagItem in item["tags"]],
-                        },
-                        {
-                            "name": "AniList URL",
-                            "value": f"https://anilist.co/anime/{item['id']}",
-                        },
-                    ],
-                }
-                for item in data["Page"]["media"]
+
+            converted = [
+                AniListAnime(
+                    title=AniListMediaTitle(
+                        native=anime["title"]["native"],
+                        english=anime["title"]["english"],
+                        romaji=anime["title"]["romaji"],
+                    ),
+                    status=anime["status"],
+                    description=anime["description"],
+                    format=anime["format"],
+                    start_date=parse_anilist_dates(anime["startDate"]),
+                    end_date=parse_anilist_dates(anime["endDate"]),
+                    episodes=anime["episodes"],
+                    duration=anime["duration"],
+                    cover_image=anime["coverImage"]["extraLarge"],
+                    cover_image_color=anime["coverImage"]["color"],
+                    genres=anime["genres"],
+                    tags=[tag["name"] for tag in anime["tags"]],
+                    synonyms=anime["synonyms"],
+                    mal_id=anime["idMal"],
+                    site_url=anime["siteUrl"],
+                    avg_score=anime["averageScore"],
+                    mean_score=anime["meanScore"],
+                    popularity=anime["popularity"],
+                    trending=anime["trending"],
+                    is_adult=anime["isAdult"],
+                )
+                for anime in data["Page"]["media"]
             ]
-            embed_source = EmbedListSource(main_data, per_page=1)
-            pages = KumikoPages(source=embed_source, ctx=ctx)
+            pages = AniListAnimePages(converted, ctx=ctx)
             await pages.start()
 
     @search.command(name="manga")
@@ -137,46 +157,59 @@ class Searches(commands.Cog):
     async def manga(self, ctx: commands.Context, *, name: str):
         """Searches for manga on AniList"""
         async with Client(
-            transport=AIOHTTPTransport(url="https://graphql.anilist.co/"),
+            transport=AIOHTTPTransportExistingSession(
+                url=self.api_url, client_session=self.session
+            ),
             fetch_schema_from_transport=True,
         ) as gql_session:
             query = gql(
                 """
-            query ($mangaName: String!, $perPage: Int, $isAdult: Boolean!) {
-                Page (perPage: $perPage){
-                    media(search: $mangaName, isAdult: $isAdult, type: MANGA) {
-                        title {
-                            native
-                            english
-                            romaji
-                        }
-                        description
-                        format
-                        status
-                        startDate {
-                            day
-                            month
-                            year
-                        }
-                        endDate {
-                            day
-                            month
-                            year
-                        }
-                        coverImage {
-                            extraLarge
-                        }
-                        genres
-                        tags {
-                            name
-                        }
-                        synonyms
-                        id
+                query ($mangaName: String!, $perPage: Int, $isAdult: Boolean!) {
+                    Page (perPage: $perPage){
+                        media(search: $mangaName, isAdult: $isAdult, type: MANGA) {
+                            title {
+                                native
+                                english
+                                romaji
+                            }
+                            status
+                            description(asHtml: false)
+                            format
+                            status
+                            startDate {
+                                day
+                                month
+                                year
+                            }
+                            endDate {
+                                day
+                                month
+                                year
+                            }
+                            chapters
+                            volumes
+                            coverImage {
+                                extraLarge
+                                color
+                            }
+                            genres
+                            tags {
+                                name
+                            }
+                            source
+                            synonyms
+                            idMal
+                            siteUrl
+                            averageScore
+                            meanScore
+                            popularity
+                            trending
+                            isAdult
 
+                        }
                     }
                 }
-            }
-            """
+                """
             )
 
             params = {"mangaName": name, "perPage": 25, "isAdult": False}
@@ -184,40 +217,37 @@ class Searches(commands.Cog):
             if len(data["Page"]["media"]) == 0:
                 await ctx.send("The manga(s) were not found")
                 return
-            main_data = [
-                {
-                    "title": item["title"]["romaji"],
-                    "description": str(item["description"]).replace("<br>", ""),
-                    "image": item["coverImage"]["extraLarge"],
-                    "fields": [
-                        {"name": "Native Name", "value": item["title"]["native"]},
-                        {"name": "English Name", "value": item["title"]["english"]},
-                        {"name": "Status", "value": item["status"]},
-                        {
-                            "name": "Start Date",
-                            "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
-                        },
-                        {
-                            "name": "End Date",
-                            "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
-                        },
-                        {"name": "Genres", "value": item["genres"]},
-                        {"name": "Synonyms", "value": item["synonyms"]},
-                        {"name": "Format", "value": item["format"]},
-                        {
-                            "name": "Tags",
-                            "value": [tagItem["name"] for tagItem in item["tags"]],
-                        },
-                        {
-                            "name": "AniList URL",
-                            "value": f"https://anilist.co/anime/{item['id']}",
-                        },
-                    ],
-                }
-                for item in data["Page"]["media"]
+
+            converted = [
+                AniListManga(
+                    title=AniListMediaTitle(
+                        native=manga["title"]["native"],
+                        english=manga["title"]["english"],
+                        romaji=manga["title"]["romaji"],
+                    ),
+                    status=manga["status"],
+                    description=manga["description"],
+                    format=manga["format"],
+                    start_date=parse_anilist_dates(manga["startDate"]),
+                    end_date=parse_anilist_dates(manga["endDate"]),
+                    chapters=manga["chapters"],
+                    volumes=manga["volumes"],
+                    cover_image=manga["coverImage"]["extraLarge"],
+                    cover_image_color=manga["coverImage"]["color"],
+                    genres=manga["genres"],
+                    tags=[tag["name"] for tag in manga["tags"]],
+                    synonyms=manga["synonyms"],
+                    mal_id=manga["idMal"],
+                    site_url=manga["siteUrl"],
+                    avg_score=manga["averageScore"],
+                    mean_score=manga["meanScore"],
+                    popularity=manga["popularity"],
+                    trending=manga["trending"],
+                    is_adult=manga["isAdult"],
+                )
+                for manga in data["Page"]["media"]
             ]
-            embed_source = EmbedListSource(main_data, per_page=1)
-            pages = KumikoPages(source=embed_source, ctx=ctx)
+            pages = AniListMangaPages(converted, ctx=ctx)
             await pages.start()
 
     @search.command(name="gifs")
