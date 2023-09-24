@@ -1,14 +1,14 @@
-from typing import Literal, Optional
 from urllib.parse import quote_plus
 
 import ciso8601
 import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
-from discord.utils import format_dt
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
+from Libs.cog_utils.search import ModrinthFlags
+from Libs.ui.search import ModrinthPages, ModrinthProject
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
@@ -250,71 +250,52 @@ class Searches(commands.Cog):
                 pages = KumikoPages(source=embed_source, ctx=ctx)
                 await pages.start()
 
-    @search.command(name="mc-mods")
-    @app_commands.describe(
-        mod_name="The name of the mod to search for",
-        modloader="Which modloader to use. Defaults to Forge.",
+    @search.command(
+        name="modrinth",
+        usage="query: <str> project_type: <str> loader: <str> version: <str>",
     )
-    async def mods(
-        self,
-        ctx: commands.Context,
-        *,
-        mod_name: str,
-        modloader: Optional[Literal["Forge", "Fabric"]] = "Forge",
-    ) -> None:
-        """Search for Minecraft mods and plugins on Modrinth"""
+    async def modrinth(self, ctx: commands.Context, *, flags: ModrinthFlags) -> None:
+        """Search for Minecraft projects on Modrinth"""
+        url = URL("https://api.modrinth.com/v2/search")
+        facets = [
+            f"project_type:{flags.project_type.lower()}",
+            f"categories:{flags.loader.lower()}",
+            f"versions:{flags.version.lower()}",
+        ]
+        list_facets = [f'["{item}"]' for item in facets]
         params = {
-            "query": mod_name,
-            "index": "relevance",
+            "query": flags.query,
             "limit": 25,
-            "facets": f'[["categories:{str(modloader).lower()}"]]',
+            "facets": f"[{','.join(list_facets).rstrip(',')}]",
         }
-        async with self.session.get(
-            "https://api.modrinth.com/v2/search", params=params
-        ) as r:
+        async with self.session.get(url, params=params) as r:
+
             data = await r.json(loads=orjson.loads)
-            if len(data["hits"]) == 0:
-                await ctx.send("The mod(s) were/was not found")
+            if data["total_hits"] == 0:
+                await ctx.send("The projects(s) were/was not found")
                 return
-            else:
-                main_data = [
-                    {
-                        "title": item["title"],
-                        "description": item["description"],
-                        "thumbnail": item["icon_url"],
-                        "fields": [
-                            {"name": "Author", "value": item["author"]},
-                            {"name": "Categories", "value": item["categories"]},
-                            {"name": "Versions", "value": item["versions"]},
-                            {
-                                "name": "Latest Version",
-                                "value": item["latest_version"],
-                            },
-                            {
-                                "name": "Date Created",
-                                "value": format_dt(
-                                    ciso8601.parse_datetime(item["date_created"])
-                                ),
-                            },
-                            {
-                                "name": "Date Modified",
-                                "value": format_dt(
-                                    ciso8601.parse_datetime(item["date_modified"])
-                                ),
-                            },
-                            {"name": "Downloads", "value": item["downloads"]},
-                            {"name": "License", "value": item["license"]},
-                            {
-                                "name": "Modrinth URL",
-                                "value": f"https://modrinth.com/{item['project_type']}/{item['slug']}",
-                            },
-                        ],
-                    }
-                    for item in data["hits"]
-                ]
-                embed_source = EmbedListSource(main_data, per_page=1)
-                pages = KumikoPages(source=embed_source, ctx=ctx)
-                await pages.start()
+            converted = [
+                ModrinthProject(
+                    title=item["title"],
+                    description=item["description"],
+                    display_categories=item["display_categories"],
+                    client_side=item["client_side"],
+                    server_side=item["server_side"],
+                    project_type=item["project_type"],
+                    project_slug=item["slug"],
+                    downloads=item["downloads"],
+                    icon_url=item["icon_url"],
+                    author=item["author"],
+                    versions=item["versions"],
+                    latest_version=item["latest_version"],
+                    date_created=ciso8601.parse_datetime(item["date_created"]),
+                    date_updated=ciso8601.parse_datetime(item["date_modified"]),
+                    license=item["license"],
+                )
+                for item in data["hits"]
+            ]
+            pages = ModrinthPages(converted, ctx=ctx)
+            await pages.start()
 
 
 async def setup(bot: KumikoCore) -> None:
