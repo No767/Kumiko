@@ -32,9 +32,8 @@ class Searches(commands.Cog):
         self, ctx: commands.Context, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Let Me Google That For You"""
-        query = quote_plus(query)
-        url = URL("https://letmegooglethat.com") % {"q": query}
-        await ctx.send(f"Link: {str(url)}")
+        url = URL("https://letmegooglethat.com") % {"q": quote_plus(query)}
+        await ctx.send(str(url))
 
     @commands.hybrid_group(name="search")
     async def search(self, ctx: commands.Context) -> None:
@@ -96,43 +95,42 @@ class Searches(commands.Cog):
             if len(data["Page"]["media"]) == 0:
                 await ctx.send("The anime was not found")
                 return
-            else:
-                main_data = [
-                    {
-                        "title": item["title"]["romaji"],
-                        "description": str(item["description"]).replace("<br>", ""),
-                        "image": item["coverImage"]["extraLarge"],
-                        "fields": [
-                            {"name": "Native Name", "value": item["title"]["native"]},
-                            {"name": "English Name", "value": item["title"]["english"]},
-                            {"name": "Status", "value": item["status"]},
-                            {
-                                "name": "Start Date",
-                                "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
-                            },
-                            {
-                                "name": "End Date",
-                                "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
-                            },
-                            {"name": "Genres", "value": item["genres"]},
-                            {"name": "Synonyms", "value": item["synonyms"]},
-                            {"name": "Format", "value": item["format"]},
-                            {"name": "Season Year", "value": item["seasonYear"]},
-                            {
-                                "name": "Tags",
-                                "value": [tagItem["name"] for tagItem in item["tags"]],
-                            },
-                            {
-                                "name": "AniList URL",
-                                "value": f"https://anilist.co/anime/{item['id']}",
-                            },
-                        ],
-                    }
-                    for item in data["Page"]["media"]
-                ]
-                embed_source = EmbedListSource(main_data, per_page=1)
-                pages = KumikoPages(source=embed_source, ctx=ctx)
-                await pages.start()
+            main_data = [
+                {
+                    "title": item["title"]["romaji"],
+                    "description": str(item["description"]).replace("<br>", ""),
+                    "image": item["coverImage"]["extraLarge"],
+                    "fields": [
+                        {"name": "Native Name", "value": item["title"]["native"]},
+                        {"name": "English Name", "value": item["title"]["english"]},
+                        {"name": "Status", "value": item["status"]},
+                        {
+                            "name": "Start Date",
+                            "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
+                        },
+                        {
+                            "name": "End Date",
+                            "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
+                        },
+                        {"name": "Genres", "value": item["genres"]},
+                        {"name": "Synonyms", "value": item["synonyms"]},
+                        {"name": "Format", "value": item["format"]},
+                        {"name": "Season Year", "value": item["seasonYear"]},
+                        {
+                            "name": "Tags",
+                            "value": [tagItem["name"] for tagItem in item["tags"]],
+                        },
+                        {
+                            "name": "AniList URL",
+                            "value": f"https://anilist.co/anime/{item['id']}",
+                        },
+                    ],
+                }
+                for item in data["Page"]["media"]
+            ]
+            embed_source = EmbedListSource(main_data, per_page=1)
+            pages = KumikoPages(source=embed_source, ctx=ctx)
+            await pages.start()
 
     @search.command(name="manga")
     @app_commands.describe(name="The name of the manga to search")
@@ -186,47 +184,47 @@ class Searches(commands.Cog):
             if len(data["Page"]["media"]) == 0:
                 await ctx.send("The manga(s) were not found")
                 return
-            else:
-                main_data = [
-                    {
-                        "title": item["title"]["romaji"],
-                        "description": str(item["description"]).replace("<br>", ""),
-                        "image": item["coverImage"]["extraLarge"],
-                        "fields": [
-                            {"name": "Native Name", "value": item["title"]["native"]},
-                            {"name": "English Name", "value": item["title"]["english"]},
-                            {"name": "Status", "value": item["status"]},
-                            {
-                                "name": "Start Date",
-                                "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
-                            },
-                            {
-                                "name": "End Date",
-                                "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
-                            },
-                            {"name": "Genres", "value": item["genres"]},
-                            {"name": "Synonyms", "value": item["synonyms"]},
-                            {"name": "Format", "value": item["format"]},
-                            {
-                                "name": "Tags",
-                                "value": [tagItem["name"] for tagItem in item["tags"]],
-                            },
-                            {
-                                "name": "AniList URL",
-                                "value": f"https://anilist.co/anime/{item['id']}",
-                            },
-                        ],
-                    }
-                    for item in data["Page"]["media"]
-                ]
-                embed_source = EmbedListSource(main_data, per_page=1)
-                pages = KumikoPages(source=embed_source, ctx=ctx)
-                await pages.start()
+            main_data = [
+                {
+                    "title": item["title"]["romaji"],
+                    "description": str(item["description"]).replace("<br>", ""),
+                    "image": item["coverImage"]["extraLarge"],
+                    "fields": [
+                        {"name": "Native Name", "value": item["title"]["native"]},
+                        {"name": "English Name", "value": item["title"]["english"]},
+                        {"name": "Status", "value": item["status"]},
+                        {
+                            "name": "Start Date",
+                            "value": f'{item["startDate"]["year"]}-{item["startDate"]["month"]}-{item["startDate"]["day"]}',
+                        },
+                        {
+                            "name": "End Date",
+                            "value": f'{item["endDate"]["year"]}-{item["endDate"]["month"]}-{item["endDate"]["day"]}',
+                        },
+                        {"name": "Genres", "value": item["genres"]},
+                        {"name": "Synonyms", "value": item["synonyms"]},
+                        {"name": "Format", "value": item["format"]},
+                        {
+                            "name": "Tags",
+                            "value": [tagItem["name"] for tagItem in item["tags"]],
+                        },
+                        {
+                            "name": "AniList URL",
+                            "value": f"https://anilist.co/anime/{item['id']}",
+                        },
+                    ],
+                }
+                for item in data["Page"]["media"]
+            ]
+            embed_source = EmbedListSource(main_data, per_page=1)
+            pages = KumikoPages(source=embed_source, ctx=ctx)
+            await pages.start()
 
     @search.command(name="gifs")
     @app_commands.describe(search="The search term to use")
     async def gifs(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for gifs on Tenor"""
+        url = URL("https://tenor.googleapis.com/v2/search")
         params = {
             "q": search,
             "key": self._TENOR_KEY,
@@ -234,9 +232,7 @@ class Searches(commands.Cog):
             "limit": 25,
             "media_filter": "minimal",
         }
-        async with self.session.get(
-            "https://tenor.googleapis.com/v2/search", params=params
-        ) as r:
+        async with self.session.get(url, params=params) as r:
             data = await r.json(loads=orjson.loads)
             if len(data["results"]) == 0 or r.status == 404:
                 await ctx.send("The gifs were not found")
