@@ -57,6 +57,7 @@ class Searches(commands.Cog):
     @app_commands.describe(name="The name of the anime to search")
     async def anime(self, ctx: commands.Context, *, name: str) -> None:
         """Searches up animes"""
+        await ctx.defer()
         async with Client(
             transport=AIOHTTPTransportExistingSession(
                 url=self.api_url, client_session=self.session
@@ -156,6 +157,7 @@ class Searches(commands.Cog):
     @app_commands.describe(name="The name of the manga to search")
     async def manga(self, ctx: commands.Context, *, name: str):
         """Searches for manga on AniList"""
+        await ctx.defer()
         async with Client(
             transport=AIOHTTPTransportExistingSession(
                 url=self.api_url, client_session=self.session

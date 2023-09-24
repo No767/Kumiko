@@ -145,32 +145,6 @@ class KumikoPages(discord.ui.View):
                 "An unknown error occurred, sorry", ephemeral=True
             )
 
-        # try:
-        #     exc = "".join(
-        #         traceback.format_exception(
-        #             type(error), error, error.__traceback__, chain=False
-        #         )
-        #     )
-        #     embed = discord.Embed(
-        #         title=f"{self.source.__class__.__name__} Error",
-        #         description=f"```py\n{exc}\n```",
-        #         timestamp=interaction.created_at,
-        #         colour=0xCC3366,
-        #     )
-        #     embed.add_field(
-        #         name="User", value=f"{interaction.user} ({interaction.user.id})"
-        #     )
-        #     embed.add_field(
-        #         name="Guild", value=f"{interaction.guild} ({interaction.guild_id})"
-        #     )
-        #     embed.add_field(
-        #         name="Channel",
-        #         value=f"{interaction.channel} ({interaction.channel_id})",
-        #     )
-        #     await self.ctx.bot.stats_webhook.send(embed=embed) # Probably will integrate this later
-        # except discord.HTTPException:
-        #     pass
-
     async def start(
         self, *, content: Optional[str] = None, ephemeral: bool = False
     ) -> None:
