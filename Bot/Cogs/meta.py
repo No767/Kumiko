@@ -4,6 +4,7 @@ from typing import Union
 import discord
 import psutil
 from discord.ext import commands
+from discord.utils import oauth_url
 from kumikocore import KumikoCore
 from Libs.cog_utils.meta import format_badges, format_date
 from Libs.utils import Embed, human_timedelta
@@ -113,6 +114,26 @@ class Meta(commands.Cog):
         embed = Embed()
         embed.description = f"Pong! {round(self.bot.latency * 1000)}ms"
         await ctx.send(embed=embed)
+
+    @commands.hybrid_command(name="invite")
+    async def invite(self, ctx: commands.Context) -> None:
+        """Invite Kumiko to your server!"""
+        if self.bot.application_id is None:
+            return None
+        perms = discord.Permissions()
+        perms.kick_members = True
+        perms.ban_members = True
+        perms.moderate_members = True
+        perms.manage_messages = True
+        perms.send_messages_in_threads = True
+        perms.manage_threads = True
+        perms.create_public_threads = True
+        perms.embed_links = True
+        perms.read_message_history = True
+        perms.external_emojis = True
+        perms.add_reactions = True
+        url = oauth_url(self.bot.application_id, permissions=perms)
+        await ctx.send(url)
 
     @commands.is_owner()
     @commands.hybrid_command(
