@@ -1,7 +1,9 @@
 import datetime
+import itertools
 from typing import Optional, Union
 
 import discord
+import pygit2
 from discord.ext import commands
 from discord.utils import format_dt
 
@@ -47,3 +49,31 @@ def format_date(dt: Optional[datetime.datetime]):
     if dt is None:
         return "N/A"
     return f'{format_dt(dt, "F")} ({format_dt(dt, "R")})'
+
+
+def format_commit(commit: pygit2.Commit) -> str:
+    short, _, _ = commit.message.partition("\n")
+    short_sha2 = commit.hex[0:6]
+    commit_tz = datetime.timezone(datetime.timedelta(minutes=commit.commit_time_offset))
+    commit_time = datetime.datetime.fromtimestamp(commit.commit_time).astimezone(
+        commit_tz
+    )
+
+    # [`hash`](url) message (offset)
+    offset = format_dt(commit_time.astimezone(datetime.timezone.utc), "R")
+    return f"[`{short_sha2}`](https://github.com/No767/Catherine-Chan/commit/{commit.hex}) {short} ({offset})"
+
+
+def get_last_commits(count: int = 10):
+    repo = pygit2.Repository(".git")
+    commits = list(
+        itertools.islice(
+            repo.walk(repo.head.target, pygit2.GIT_SORT_TOPOLOGICAL), count
+        )
+    )
+    return "\n".join(format_commit(c) for c in commits)
+
+
+def get_current_branch() -> str:
+    repo = pygit2.Repository(".git")
+    return repo.head.shorthand

@@ -6,8 +6,13 @@ import psutil
 from discord.ext import commands
 from discord.utils import oauth_url
 from kumikocore import KumikoCore
-from Libs.cog_utils.meta import format_badges, format_date
-from Libs.utils import Embed, human_timedelta
+from Libs.cog_utils.meta import (
+    format_badges,
+    format_date,
+    get_current_branch,
+    get_last_commits,
+)
+from Libs.utils import Embed, human_timedelta, is_docker
 from psutil._common import bytes2human
 
 TESTING_GUILD_ID = 970159505390325842
@@ -19,6 +24,7 @@ class Meta(commands.Cog):
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
+        self.process = psutil.Process()
 
     @property
     def display_emoji(self) -> discord.PartialEmoji:
@@ -84,21 +90,52 @@ class Meta(commands.Cog):
 
     @commands.hybrid_command(name="about")
     async def about(self, ctx: commands.Context) -> None:
-        """Shows some basic info about Kumiko"""
+        """Shows info and stats about Kumiko"""
+        total_members = 0
+        total_unique = len(self.bot.users)
+
+        text = 0
+        voice = 0
+        guilds = 0
+        for guild in self.bot.guilds:
+            guilds += 1
+            if guild.unavailable:
+                continue
+
+            total_members += guild.member_count or 0
+            for channel in guild.channels:
+                if isinstance(channel, discord.TextChannel):
+                    text += 1
+                elif isinstance(channel, discord.VoiceChannel):
+                    voice += 1
+
+        proc_mem = bytes2human(self.process.memory_info().rss)
+        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
+
+        revisions = get_last_commits(5)
+        working_branch = get_current_branch().title()
+
+        if is_docker():
+            revisions = "See [GitHub](https://github.com/No767/Kumiko)"
+            working_branch = "Docker"
+
         embed = Embed()
-        embed.title = f"{self.bot.user.name} Info"  # type: ignore
-        embed.set_thumbnail(url=self.bot.user.display_avatar.url)  # type: ignore
-        embed.add_field(name="Server Count", value=len(self.bot.guilds), inline=True)
-        embed.add_field(name="User Count", value=len(self.bot.users), inline=True)
-        embed.add_field(
-            name="Python Version", value=platform.python_version(), inline=True
+        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.display_avatar.url)  # type: ignore
+        embed.title = "Support Server Invite"
+        embed.url = "https://discord.gg/ns3e74frqn"
+        embed.description = f"Latest Changes ({working_branch}):\n {revisions}"
+        embed.set_footer(
+            text=f"Made with discord.py v{discord.__version__} | Running Python {platform.python_version()}",
+            icon_url="https://cdn.discordapp.com/emojis/596577034537402378.png?size=100",
         )
         embed.add_field(
-            name="Discord.py Version", value=discord.__version__, inline=True
+            name="Members", value=f"{total_members} total\n{total_unique} unique"
         )
-        embed.add_field(
-            name="Kumiko Build Version", value=str(self.bot.version), inline=True
-        )
+        embed.add_field(name="Channels", value=f"{text} text\n{voice} voice")
+        embed.add_field(name="Guilds", value=guilds)
+        embed.add_field(name="Process", value=f"{proc_mem}B \n{cpu_usage:.2f}% CPU")
+        embed.add_field(name="Build Version", value=str(self.bot.version))
+        embed.add_field(name="Uptime", value=self.get_bot_uptime(brief=True))
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="version")
