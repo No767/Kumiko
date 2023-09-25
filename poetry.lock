@@ -2346,6 +2346,20 @@ files = [
 ]
 
 [[package]]
+name = "objgraph"
+version = "3.6.0"
+description = "Draws Python object reference graphs with graphviz"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "objgraph-3.6.0-py2.py3-none-any.whl", hash = "sha256:7c4aa57754c41bdd4ba67a8edfb44e45e248a1474444d0b9adca3cfd2717c485"},
+    {file = "objgraph-3.6.0.tar.gz", hash = "sha256:369567c37b4f2f928160b6f6ededcbea8fc7e929831877fd1056c78a900c17d3"},
+]
+
+[package.extras]
+ipython = ["graphviz"]
+
+[[package]]
 name = "orjson"
 version = "3.9.7"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
@@ -3742,4 +3756,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "776a47039ded1c6a0d1869477940b3692b2f23d5aba6fd1210925f609bfe5da2"
+content-hash = "3d6f25c9562031a4efe95d5c2336d213aa0b43ca4e1b445eb7cb66373dd2a02e"

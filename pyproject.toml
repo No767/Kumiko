@@ -47,6 +47,7 @@ pyright = "^1.1.327"
 watchfiles = "^0.20.0"
 jishaku = "^2.5.1"
 ruff = "^0.0.291"
+objgraph = "^3.6.0"
 
 
 [tool.poetry.group.docs.dependencies]
