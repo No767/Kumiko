@@ -68,6 +68,10 @@ Local Setup
 Vagrant
 -------
 
+.. warning::
+
+    The Vagrant configs have not been tested yet. Please use at your own risk.
+
 Kumiko also supports using Vagrant as a development environment. 
 
 .. note::
@@ -97,4 +101,4 @@ Kumiko v0.7+ includes an development mode feature, which will set up jishaku and
 
 .. caution:: 
 
-    The FSWatcher automatically reloads extensions on each save. This is meant for development, so **if you deploy a production build, please make sure you disable this feature!**
+    The FSWatcher automatically reloads extensions on each save. This is meant for development only.

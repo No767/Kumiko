@@ -23,8 +23,8 @@ Debian/Ubuntu
 
 .. code-block:: bash
 
-    sudo apt-get install libffi-dev python3-dev libnacl-dev \
-    libopus-dev libssl-dev curl wget git make
+    sudo apt-get install libffi-dev python3-dev \
+    libnacl-dev libssl-dev curl wget git make
 
 
 Fedora
@@ -33,8 +33,7 @@ Fedora
 .. code-block:: bash
 
     sudo dnf install make libffi-devel python3-libnacl \
-    python3.11-devel openssl-devel \
-    opus-devel curl wget git
+    python3.11-devel openssl-devel curl wget git
 
 OpenSUSE
 ^^^^^^^^
@@ -42,18 +41,18 @@ OpenSUSE
 .. code-block:: bash
 
     sudo zypper install make openssl-devel libffi-devel \
-    python311-devel python311-libnacl libopus0 wget git curl
+    python311-devel python311-libnacl wget git curl
 
 Arch Linux
 ^^^^^^^^^^
 
 .. code-block:: bash
 
-    sudo pacman -S --needed base-devel openssl libffi python python-libnacl opus
+    sudo pacman -S --needed base-devel openssl libffi python python-libnacl
 
 MacOS
 ^^^^^
 
 .. code-block:: bash
 
-    brew install openssl libffi git curl make opus
+    brew install openssl libffi git curl make

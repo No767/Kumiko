@@ -33,12 +33,12 @@ Kumiko is a multipurpose Discord bot built with freedom and choice in mind. Kumi
 - Redirects module (If you have overlapping conversations in your channels, this is for you!)
 - Global pride profiles in order to show your pride
 - Pin text so others can retrieve it
+- Antiping w/ custom settings and embeds
 - Search for memes, posts, anime, manga, and others!
 
 And some ones that are planned:
 
-- Complete Web Dashboard + Custom Embeds (WIP, pinned for v2)
-- Annoucement releaser with support from GitHub (Pinned for v2)
+- Complete Web Dashboard (WIP, pinned for v2)
 
 To see the full list of planned features, please see the roadmap [here](https://github.com/No767/Kumiko/discussions/266) (#266)
 ## Prefix
