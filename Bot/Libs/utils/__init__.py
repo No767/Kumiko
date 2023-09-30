@@ -25,7 +25,14 @@ from .pg_init_codecs import init_codecs
 from .prefix import get_prefix
 from .rank_utils import calc_petals, calc_rank
 from .time import format_dt, human_timedelta
-from .utils import is_docker, parse_datetime, parse_subreddit, read_env, setup_ssl
+from .utils import (
+    is_docker,
+    parse_datetime,
+    parse_dt,
+    parse_subreddit,
+    read_env,
+    setup_ssl,
+)
 
 __all__ = [
     "PrefixConverter",
@@ -64,4 +71,5 @@ __all__ = [
     "format_dt",
     "get_or_fetch_full_blacklist",
     "init_codecs",
+    "parse_dt",
 ]

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, Optional, Union
 
 import ciso8601
+import dateparser
 from dotenv import dotenv_values
 
 
@@ -60,3 +61,7 @@ def read_env(path: Path, read_from_file: bool = True) -> Dict[str, Optional[str]
     if is_docker() or read_from_file is False:
         return {**os.environ}
     return {**dotenv_values(path)}
+
+
+def parse_dt(dt: str) -> Optional[datetime]:
+    return dateparser.parse(dt)

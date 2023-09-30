@@ -8,7 +8,9 @@ from dotenv import load_dotenv
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-load_dotenv()
+env_path = path / ".env"
+
+load_dotenv(dotenv_path=env_path)
 
 import asyncpg
 from Libs.utils import ensure_postgres_conn
