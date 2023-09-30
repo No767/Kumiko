@@ -12,3 +12,5 @@ ignore:
   - "Bot/Libs/utils/time.py" # too lazy to test
   - "Bot/Libs/utils/message_constants.py" # Literally just constants so there is no need to test
   - "Bot/Libs/utils/blacklist.py" # Technically this is testable (Catherine-Chan already has it)., but i'm too lazy lol
+  - "Bot/Libs/utils/timer/**" # nah
+  - "Bot/Libs/utils/pg_init_codecs.py" # dont think u can test this...

@@ -21,6 +21,7 @@ from .greedy_formatter import format_greedy
 from .kumiko_logger import KumikoLogger
 from .member_utils import get_or_fetch_member
 from .message_constants import MessageConstants
+from .pg_init_codecs import init_codecs
 from .prefix import get_prefix
 from .rank_utils import calc_petals, calc_rank
 from .time import format_dt, human_timedelta
@@ -62,4 +63,5 @@ __all__ = [
     "get_or_fetch_blacklist",
     "format_dt",
     "get_or_fetch_full_blacklist",
+    "init_codecs",
 ]
