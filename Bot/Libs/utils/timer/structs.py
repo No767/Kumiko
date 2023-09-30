@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, NamedTuple, Optional, Sequence
+from typing import Any, Dict, NamedTuple, Optional, Sequence
 
 import asyncpg
 from discord import app_commands
@@ -15,7 +15,7 @@ class Timer:
 
         extra = record["extra"]
         self.args: Sequence[Any] = extra.get("args", [])
-        self.kwargs: dict[str, Any] = extra.get("kwargs", {})
+        self.kwargs: Dict[str, Any] = extra.get("kwargs", {})
         self.event: str = record["event"]
         self.created_at: datetime.datetime = record["created"]
         self.expires: datetime.datetime = record["expires"]
@@ -29,7 +29,7 @@ class Timer:
         created: datetime.datetime,
         event: str,
         args: Sequence[Any],
-        kwargs: dict[str, Any],
+        kwargs: Dict[str, Any],
         timezone: str,
     ) -> Self:
         pseudo = {
