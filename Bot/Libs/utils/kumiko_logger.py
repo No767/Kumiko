@@ -14,7 +14,7 @@ BE = TypeVar("BE", bound=BaseException)
 class KumikoLogger:
     def __init__(self) -> None:
         self.self = self
-        self.log = logging.getLogger()
+        self.log = logging.getLogger("kumiko")
 
     def __enter__(self) -> None:
         max_bytes = 32 * 1024 * 1024  # 32 MiB
@@ -29,7 +29,7 @@ class KumikoLogger:
             backupCount=5,
         )
         fmt = logging.Formatter(
-            fmt="%(asctime)s %(levelname)s    %(message)s",
+            fmt="%(asctime)s %(levelname)s\t%(message)s",
             datefmt="[%Y-%m-%d %H:%M:%S]",
         )
         handler.setFormatter(fmt)

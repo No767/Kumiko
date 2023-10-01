@@ -13,3 +13,4 @@ class MessageConstants(Enum):
     NO_COMMENTS = "This issue has no comments"
     NO_ASSIGNEES = "This issue has no assignees"
     NO_CONTROL_VIEW = "You can't control this view!"
+    BLACKLIST_APPEAL_MSG = "You are blacklisted from using this bot. Take an \U0001f1f1, \U0001f1f1oser. [Here's how to appeal the blacklist.](https://www.youtube.com/watch?v=dQw4w9WgXcQ)"

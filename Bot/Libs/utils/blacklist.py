@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Dict, Optional
 import asyncpg
 from discord.ext import commands
 
+from .message_constants import MessageConstants
+
 if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
 
@@ -19,7 +21,7 @@ async def check_blacklist(ctx: commands.Context):
         # Get RickRolled lol
         # While implementing this, I was listening to Rick Astley
         await ctx.send(
-            f"My fellow user, {ctx.author.mention}, you just got the L. You are blacklisted from using this bot. Take an \U0001f1f1, \U0001f1f1oser. [Here's how to appeal the blacklist.](https://www.youtube.com/watch?v=dQw4w9WgXcQ)",
+            f"My fellow user, {ctx.author.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
             suppress_embeds=True,
         )
         return False

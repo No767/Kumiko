@@ -11,6 +11,7 @@ from discord.app_commands import CommandTree
 from discord.ext import commands, ipcx
 from Libs.cog_utils.antiping import AntiPingSession
 from Libs.utils import (
+    MessageConstants,
     check_blacklist,
     ensure_postgres_conn,
     ensure_redis_conn,
@@ -46,7 +47,7 @@ class KumikoCommandTree(CommandTree):
             # Get RickRolled lol
             # While implementing this, I was listening to Rick Astley
             await interaction.response.send_message(
-                f"My fellow user, {interaction.user.mention}, you just got the L. You are blacklisted from using this bot. Take an \U0001f1f1, \U0001f1f1oser. [Here's how to appeal the blacklist.](https://www.youtube.com/watch?v=dQw4w9WgXcQ)",
+                f"My fellow user, {interaction.user.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
                 suppress_embeds=True,
             )
             return False
@@ -94,7 +95,7 @@ class KumikoCore(commands.Bot):
         self.ipc = ipcx.Server(
             self, host=self._ipc_host, secret_key=self._ipc_secret_key
         )
-        self.logger: logging.Logger = logging.getLogger()
+        self.logger: logging.Logger = logging.getLogger("kumiko")
 
     @property
     def blacklist_cache(self) -> Dict[int, bool]:

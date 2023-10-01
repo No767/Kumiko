@@ -11,7 +11,7 @@ class Tasks(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.pool = self.bot.pool
-        self.logger = logging.getLogger("discord")
+        self.logger = logging.getLogger("kumiko")
 
     async def cog_load(self):
         self.update_item_stock.start()

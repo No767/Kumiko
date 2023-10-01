@@ -15,7 +15,7 @@ async def ensure_postgres_conn(pool: asyncpg.Pool) -> Literal[True]:
     Returns:
         Literal[True]: If successful, the coroutine will return True, otherwise it will raise an exception
     """
-    logger = logging.getLogger()
+    logger = logging.getLogger("kumiko")
     async with pool.acquire() as conn:
         res = conn.is_closed()
         if res is False:
@@ -32,7 +32,7 @@ async def ensure_redis_conn(redis_pool: ConnectionPool) -> Literal[True]:
     Returns:
         Literal[True]: If successful, the coroutine will return True, otherwise it will raise an exception
     """
-    logger = logging.getLogger()
+    logger = logging.getLogger("kumiko")
     r: redis.Redis = redis.Redis(connection_pool=redis_pool)
     res = await r.ping()
     if res:
