@@ -2,7 +2,7 @@ from io import BytesIO
 from typing import Union
 
 import discord
-from PIL import Image, ImageChops, ImageDraw
+from PIL import Image, ImageChops, ImageDraw, ImageOps
 
 
 async def obtain_avatar_bytes(user: Union[discord.User, discord.Member]) -> bytes:
@@ -64,7 +64,9 @@ def process_circle_image(image_bytes: bytes):
         im.putalpha(mask)
         # use im for stuff
 
+        border = ImageOps.expand(im, border=10, fill=(223, 196, 255))
+
         final = BytesIO()
-        im.save(final, "png")
+        border.save(final, "png")
         final.seek(0)
         return final
