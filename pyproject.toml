@@ -43,7 +43,7 @@ dpytest = "^0.7.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.4.0"
-pyinstrument = "^4.5.3"
+pyinstrument = "^4.6.0"
 pyright = "^1.1.331"
 watchfiles = "^0.20.0"
 jishaku = "^2.5.1"
