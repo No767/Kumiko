@@ -8,7 +8,7 @@ from aiohttp import ClientSession
 from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
-from Libs.utils import KumikoLogger, init_codecs, read_env, setup_ssl
+from Libs.utils import KumikoLogger, init_codecs, read_env
 
 # Only used for Windows development
 if os.name == "nt":
@@ -34,14 +34,6 @@ IPC_HOST = os.environ["IPC_HOST"]
 POSTGRES_URI = os.environ["POSTGRES_URI"]
 REDIS_URI = os.environ["REDIS_URI"]
 
-# SSL configs
-SSL = os.getenv("SSL") in ("True", "TRUE")
-SSL_CA = os.getenv("SSL_CA")
-SSL_CERT = os.environ["SSL_CERT"]
-SSL_KEY = os.getenv("SSL_KEY")
-SSL_KEY_PASSWORD = os.getenv("SSL_KEY_PASSWORD")
-
-
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -50,17 +42,9 @@ intents.members = True
 async def main() -> None:
     async with ClientSession() as session, asyncpg.create_pool(
         dsn=POSTGRES_URI,
-        command_timeout=60,
+        command_timeout=30,
         max_size=25,
         min_size=25,
-        ssl=setup_ssl(
-            ca_path=SSL_CA,
-            cert_path=SSL_CERT,
-            key_path=SSL_KEY,
-            key_password=SSL_KEY_PASSWORD,
-        )
-        if SSL is True
-        else None,
         init=init_codecs,
     ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
         async with KumikoCore(
