@@ -81,6 +81,12 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
             await self.bot.reload_extension(cog)
         await ctx.send("Reloaded all cogs")
 
+    @commands.is_owner()
+    @commands.hybrid_command(name="raise-error")
+    async def raise_error(self, ctx: commands.Context) -> None:
+        """Simple test command"""
+        raise RuntimeError("Invalid...")
+
 
 async def setup(bot: KumikoCore):
     await bot.add_cog(DevTools(bot))

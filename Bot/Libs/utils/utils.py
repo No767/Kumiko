@@ -1,13 +1,17 @@
 import os
 import re
 import ssl
+import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional, Union
 
 import ciso8601
 import dateparser
+from discord.utils import utcnow
 from dotenv import dotenv_values
+
+from .embeds import ErrorEmbed
 
 
 def parse_datetime(datetime: Union[datetime, str]) -> datetime:
@@ -65,3 +69,18 @@ def read_env(path: Path, read_from_file: bool = True) -> Dict[str, Optional[str]
 
 def parse_dt(dt: str) -> Optional[datetime]:
     return dateparser.parse(dt)
+
+
+def make_error_embed(error: Exception) -> ErrorEmbed:
+    error_traceback = "\n".join(traceback.format_exception_only(type(error), error))
+    embed = ErrorEmbed()
+    desc = f"""
+    Uh oh! It seems like there was an issue. For support, please visit [Kumiko's Support Server](https://discord.gg/ns3e74frqn) to get help!
+    
+    **Error**:
+    ```{error_traceback}```
+    """
+    embed.description = "\n".join(desc)
+    embed.set_footer(text="Happened At")
+    embed.timestamp = utcnow()
+    return embed

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from discord.ext.commands.errors import CommandError
+from discord.ext.commands.errors import CheckFailure
 
 
 class KumikoExceptionError(Exception):
@@ -54,28 +54,31 @@ class NotFoundError(HTTPError):
         super().__init__(404, "Resource or endpoint not found")
 
 
-class EconomyDisabledError(CommandError):
+class EconomyDisabledError(CheckFailure):
     """Raised when the economy system is disabled in a guild"""
 
     def __init__(self) -> None:
         super().__init__(
             message="The economy module is disabled in this server. Please ask your server admin to enable it."
         )
+        self.title = "Economy Disabled"
 
 
-class RedirectsDisabledError(CommandError):
+class RedirectsDisabledError(CheckFailure):
     """Raised when the redirects system is disabled in a guild"""
 
     def __init__(self) -> None:
         super().__init__(
             message="The redirects module is disabled in this server. Please ask your server admin to enable it."
         )
+        self.title = "Redirects Disabled"
 
 
-class PinsDisabledError(CommandError):
+class PinsDisabledError(CheckFailure):
     """Raised when the pins system is disabled in a guild"""
 
     def __init__(self) -> None:
         super().__init__(
             message="The pins module is disabled in this server. Please ask your server admin to enable it."
         )
+        self.title = "Pins Disabled"
