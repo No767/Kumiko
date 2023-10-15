@@ -71,14 +71,12 @@ class Config(commands.Cog):
 
         lgc = LoggingGuildConfig(
             channel_id=int(get_channel_id),
-            member_events=statuses["member_events"],
             mod_events=statuses["mod_events"],
             eco_events=statuses["eco_events"],
         )
         if events.all is True:
             lgc = LoggingGuildConfig(
                 channel_id=int(get_channel_id),
-                member_events=True,
                 mod_events=True,
                 eco_events=True,
             )
