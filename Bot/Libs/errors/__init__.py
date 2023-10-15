@@ -9,6 +9,7 @@ from .exceptions import (
     RedirectsDisabledError,
     ValidationError,
 )
+from .utils import make_error_embed, send_error_embed
 
 __all__ = [
     "KumikoExceptionError",
@@ -20,4 +21,6 @@ __all__ = [
     "EconomyDisabledError",
     "RedirectsDisabledError",
     "PinsDisabledError",
+    "make_error_embed",
+    "send_error_embed",
 ]

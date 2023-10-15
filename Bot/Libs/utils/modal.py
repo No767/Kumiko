@@ -1,6 +1,5 @@
 import discord
-
-from .utils import make_error_embed
+from Libs.errors import make_error_embed
 
 NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 

@@ -10,6 +10,7 @@ from Cogs import EXTENSIONS, VERSION
 from discord.app_commands import CommandTree
 from discord.ext import commands, ipcx
 from Libs.cog_utils.antiping import AntiPingSession
+from Libs.errors import send_error_embed
 from Libs.utils import (
     MessageConstants,
     check_blacklist,
@@ -198,6 +199,11 @@ class KumikoCore(commands.Bot):
                 reload_file = SyncPath(changes_list[1])
                 self.logger.info(f"Reloading extension: {reload_file.name[:-3]}")
                 await self.reload_extension(f"Cogs.{reload_file.name[:-3]}")
+
+    async def on_command_error(
+        self, ctx: commands.Context, error: commands.CommandError
+    ):
+        await send_error_embed(ctx, error)
 
     # Need to override context for custom ones
     # for now, we can just use the default commands.Context

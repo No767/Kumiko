@@ -2,8 +2,7 @@ from typing import Any
 
 import discord
 from discord.ext import commands
-
-from .utils import make_error_embed
+from Libs.errors import make_error_embed
 
 NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 
