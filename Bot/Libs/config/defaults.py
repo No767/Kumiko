@@ -5,9 +5,9 @@ import msgspec
 
 class LoggingGuildConfig(msgspec.Struct):
     channel_id: Union[int, None]
-    member_events: bool = True
     mod_events: bool = True
     eco_events: bool = False
+    redirects: bool = True
 
 
 class GuildConfig(msgspec.Struct):

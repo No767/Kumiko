@@ -92,43 +92,11 @@ class EventsHandler(commands.Cog):
             del self.bot.prefixes[guild.id]
 
     @commands.Cog.listener()
-    async def on_member_join(self, member: discord.Member) -> None:
-        guild = member.guild
-        get_config = await get_or_fetch_config(
-            id=member.guild.id, redis_pool=self.redis_pool, pool=self.pool
-        )
-        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
-            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
-            if isinstance(channel, discord.TextChannel):
-                embed = self.produce_embeds(
-                    member=member,
-                    type="join",
-                    type_msg="Member Joined",
-                )
-                await channel.send(embed=embed)
-
-    @commands.Cog.listener()
-    async def on_member_remove(self, member: discord.Member) -> None:
-        guild = member.guild
-        get_config = await get_or_fetch_config(
-            id=guild.id, redis_pool=self.redis_pool, pool=self.pool
-        )
-        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
-            channel = guild.get_channel(get_config["channel_id"])  # type: ignore
-            if isinstance(channel, discord.TextChannel):
-                embed = self.produce_embeds(
-                    member=member,
-                    type="leave",
-                    type_msg="Member Left",
-                )
-                await channel.send(embed=embed)
-
-    @commands.Cog.listener()
     async def on_member_ban(self, guild: discord.Guild, user: discord.User) -> None:
         get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "mod_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = self.produce_embeds(
@@ -143,7 +111,7 @@ class EventsHandler(commands.Cog):
         get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "mod_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = self.produce_embeds(
@@ -158,7 +126,7 @@ class EventsHandler(commands.Cog):
         get_config = await get_or_fetch_config(
             id=guild.id, redis_pool=self.redis_pool, pool=self.pool
         )
-        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "member_events"):  # type: ignore
+        if await self.ensure_all_enabled(guild.id, self.pool, self.redis_pool, get_config, "mod_events"):  # type: ignore
             channel = guild.get_channel(get_config["channel_id"])  # type: ignore
             if isinstance(channel, discord.TextChannel):
                 embed = self.produce_embeds(
