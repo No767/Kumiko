@@ -25,7 +25,7 @@ class Config(commands.Cog):
     @commands.hybrid_group(name="configure", aliases=["config"], fallback="features")
     async def config(self, ctx: commands.Context) -> None:
         """Configure the settings for Kumiko"""
-        view = ConfigMenuView(ctx.author.id, self.bot)
+        view = ConfigMenuView(self.bot, ctx)
         embed = Embed()
         embed.description = "If you are the owner or a server mod, this is the main configuration menu! This menu is meant for enabling/disabling features."
         embed.add_field(

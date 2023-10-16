@@ -4,6 +4,7 @@ import discord
 
 
 # Again, from RDanny
+# This is an exception since a message is needed
 class ConfirmationView(discord.ui.View):
     def __init__(self, *, timeout: float, author_id: int, delete_after: bool) -> None:
         super().__init__(timeout=timeout)

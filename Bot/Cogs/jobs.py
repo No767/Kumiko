@@ -119,7 +119,7 @@ class Jobs(commands.Cog):
     ) -> None:
         """Create a job for your server"""
         if ctx.interaction is not None:
-            create_job_modal = CreateJob(self.pool, required_rank, pay)
+            create_job_modal = CreateJob(ctx, self.pool, required_rank, pay)
             await ctx.interaction.response.send_modal(create_job_modal)
             return
 
@@ -215,7 +215,7 @@ class Jobs(commands.Cog):
     ) -> None:
         """Updates an owned job with new information"""
         if ctx.interaction is not None:
-            update_job_modal = UpdateJobModal(self.pool, name, required_rank, pay)
+            update_job_modal = UpdateJobModal(ctx, self.pool, name, required_rank, pay)
             await ctx.interaction.response.send_modal(update_job_modal)
             return
 
@@ -424,7 +424,7 @@ class Jobs(commands.Cog):
         """Associate an item with the job's output. A job can only produce one item."""
         if ctx.interaction is not None:
             output_modal = CreateJobOutputItemModal(
-                self.pool, name, flags.price, flags.amount_per_hour
+                ctx, self.pool, name, flags.price, flags.amount_per_hour
             )
             await ctx.interaction.response.send_modal(output_modal)
             return

@@ -1,23 +1,15 @@
 import asyncpg
 import discord
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
+from discord.ext import commands
+from Libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
 
 from .selects import SelectPrideCategory
 
 
-class ConfirmRegisterView(discord.ui.View):
-    def __init__(self, author_id: int, pool: asyncpg.Pool) -> None:
-        super().__init__()
-        self.author_id = author_id
+class ConfirmRegisterView(KumikoView):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+        super().__init__(ctx)
         self.pool = pool
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.author_id:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -63,19 +55,10 @@ class ConfirmRegisterView(discord.ui.View):
         self.stop()
 
 
-class ConfigureView(discord.ui.View):
-    def __init__(self, author_id: int, pool: asyncpg.Pool) -> None:
-        super().__init__()
-        self.add_item(SelectPrideCategory(pool))
-        self.author_id = author_id
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.author_id:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
+class ConfigureView(KumikoView):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+        super().__init__(ctx)
+        self.add_item(SelectPrideCategory(ctx, pool))
 
     @discord.ui.button(label="Finish", style=discord.ButtonStyle.green, row=1)
     async def finish(
@@ -86,19 +69,10 @@ class ConfigureView(discord.ui.View):
         self.stop()
 
 
-class DeleteProfileView(discord.ui.View):
-    def __init__(self, author_id: int, pool: asyncpg.Pool) -> None:
-        super().__init__()
-        self.author_id = author_id
+class DeleteProfileView(KumikoView):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+        super().__init__(ctx)
         self.pool = pool
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.author_id:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -108,11 +82,6 @@ class DeleteProfileView(discord.ui.View):
     async def confirm(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        if interaction.user.id != self.author_id:
-            await interaction.response.send_message(
-                "You can't confirm this view!", ephemeral=True
-            )
-            return
 
         query = """
         DELETE FROM pride_profiles

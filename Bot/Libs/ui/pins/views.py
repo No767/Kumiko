@@ -1,23 +1,14 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
+from Libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
 
 
-class DeletePinView(discord.ui.View):
+class DeletePinView(KumikoView):
     def __init__(self, ctx: commands.Context, pool: asyncpg.Pool, name: str):
-        super().__init__()
-        self.author = ctx.author
+        super().__init__(ctx)
         self.pool = pool
         self.name = name
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.author:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(
         label="Confirm",
@@ -75,19 +66,10 @@ class DeletePinView(discord.ui.View):
         self.stop()
 
 
-class PurgePinView(discord.ui.View):
+class PurgePinView(KumikoView):
     def __init__(self, ctx: commands.Context, pool: asyncpg.Pool):
-        super().__init__()
-        self.author = ctx.author
+        super().__init__(ctx)
         self.pool = pool
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.author:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(
         label="Confirm",

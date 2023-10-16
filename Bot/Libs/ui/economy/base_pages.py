@@ -23,6 +23,7 @@ class UserInvBasePages(KumikoPages):
         super().__init__(
             EmbedListSource(entries, per_page=per_page), ctx=ctx, compact=True
         )
+        self.ctx = ctx
         self.pool = pool
         self.add_item(self.ah_list)
         self.add_item(self.refund)
@@ -48,7 +49,7 @@ class UserInvBasePages(KumikoPages):
         item_id = int(page_data["fields"][0]["value"])
         curr_amount = int(page_data["fields"][-1]["value"])
         await interaction.response.send_modal(
-            UserInvAHListModal(curr_amount, item_id, self.pool)
+            UserInvAHListModal(self.ctx, curr_amount, item_id, self.pool)
         )
 
     @discord.ui.button(
@@ -64,5 +65,5 @@ class UserInvBasePages(KumikoPages):
         item_id = int(page_data["fields"][0]["value"])
         curr_amount = int(page_data["fields"][-1]["value"])
         await interaction.response.send_modal(
-            UserInvRefundModal(curr_amount, item_id, self.pool)
+            UserInvRefundModal(self.ctx, curr_amount, item_id, self.pool)
         )

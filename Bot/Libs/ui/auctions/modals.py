@@ -2,16 +2,24 @@ from typing import Optional
 
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.cog_utils.auctions import add_more_to_auction
+from Libs.utils import KumikoModal
 
 
-class OwnedAuctionItemAdd(discord.ui.Modal, title="Add more"):
+class OwnedAuctionItemAdd(KumikoModal, title="Add more"):
     amount = discord.ui.TextInput(
         label="Amount", placeholder="Enter a number", min_length=1
     )
 
-    def __init__(self, max_amount: Optional[int], item_id: int, pool: asyncpg.Pool):
-        super().__init__()
+    def __init__(
+        self,
+        ctx: commands.Context,
+        max_amount: Optional[int],
+        item_id: int,
+        pool: asyncpg.Pool,
+    ):
+        super().__init__(ctx)
         self.item_id = item_id
         self.pool = pool
         if max_amount is not None:

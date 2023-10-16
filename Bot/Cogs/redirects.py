@@ -203,7 +203,9 @@ class Redirects(commands.Cog):
             return
         else:
             prompt_message = f"<@!{channel.owner_id}>, would you like to mark this thread as solved? If this thread is not marked as resolved, then it will not be resolved. This has been requested by {ctx.author.mention}."
-            view = ConfirmResolvedView(thread=channel, author=ctx.author, timeout=300.0)
+            view = ConfirmResolvedView(
+                ctx=ctx, thread=channel, author=ctx.author, timeout=300.0
+            )
             await ctx.send(content=prompt_message, view=view)
 
     @resolved.error

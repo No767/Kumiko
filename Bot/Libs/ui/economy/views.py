@@ -1,22 +1,13 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import Embed, MessageConstants, SuccessEmbed
+from Libs.utils import Embed, KumikoView, SuccessEmbed
 
 
-class RegisterView(discord.ui.View):
+class RegisterView(KumikoView):
     def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
-        super().__init__()
-        self.ctx = ctx
+        super().__init__(ctx)
         self.pool = pool
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.ctx.author.id:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(

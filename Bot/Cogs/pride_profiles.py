@@ -61,7 +61,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
     @pride_profiles.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register a pride profile"""
-        view = ConfirmRegisterView(ctx.author.id, self.pool)
+        view = ConfirmRegisterView(ctx, self.pool)
         embed = ConfirmEmbed()
         embed.description = "Are you sure you want to register for a pride profile? It's very exciting and fun"
         await ctx.send(embed=embed, view=view, ephemeral=True)
@@ -69,7 +69,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
     @pride_profiles.command(name="configure", aliases=["config"])
     async def configure(self, ctx: commands.Context) -> None:
         """Configure your pride profile"""
-        view = ConfigureView(ctx.author.id, self.pool)
+        view = ConfigureView(ctx, self.pool)
         embed = Embed(title="Configuring your pride profile")
         embed.description = "In order to configure your pride profile, select at one of the categories listed in the drop down."
         await ctx.send(embed=embed, view=view, ephemeral=True)
@@ -112,7 +112,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
     @pride_profiles.command(name="delete")
     async def delete(self, ctx: commands.Context) -> None:
         """Permanently deletes your pride profile"""
-        view = DeleteProfileView(ctx.author.id, self.pool)
+        view = DeleteProfileView(ctx, self.pool)
         embed = ConfirmEmbed()
         embed.description = "Are you sure you really want to delete your profile?"
         await ctx.send(embed=embed, view=view, ephemeral=True)

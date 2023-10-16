@@ -1,11 +1,13 @@
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.cog_utils.pins import edit_pin
+from Libs.utils import KumikoModal
 
 
-class CreatePin(discord.ui.Modal, title="Create Pin"):
-    def __init__(self, pool: asyncpg.pool.Pool) -> None:
-        super().__init__()
+class CreatePin(KumikoModal, title="Create Pin"):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.pool.Pool) -> None:
+        super().__init__(ctx)
         self.pool: asyncpg.Pool = pool
         self.name = discord.ui.TextInput(
             label="Name",
@@ -59,17 +61,10 @@ class CreatePin(discord.ui.Modal, title="Create Pin"):
                     f"Pin {self.name} successfully created."
                 )
 
-    async def on_error(
-        self, interaction: discord.Interaction, error: Exception
-    ) -> None:
-        await interaction.response.send_message(
-            f"An error occurred ({error.__class__.__name__})", ephemeral=True
-        )
 
-
-class PinEditModal(discord.ui.Modal, title="Edit Pin"):
-    def __init__(self, pool: asyncpg.Pool, name: str) -> None:
-        super().__init__()
+class PinEditModal(KumikoModal, title="Edit Pin"):
+    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool, name: str) -> None:
+        super().__init__(ctx)
         self.pool: asyncpg.Pool = pool
         self.name = name
         self.content = discord.ui.TextInput(
@@ -95,11 +90,3 @@ class PinEditModal(discord.ui.Modal, title="Edit Pin"):
             self.stop()
         else:
             await interaction.response.send_message("Successfully edited pin")
-
-    async def on_error(
-        self, interaction: discord.Interaction, error: Exception
-    ) -> None:
-        await interaction.response.send_message(
-            f"An error occurred ({error.__class__.__name__})", ephemeral=True
-        )
-        self.stop()

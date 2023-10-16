@@ -1,12 +1,12 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
+from Libs.utils import ErrorEmbed, KumikoView, MessageConstants, SuccessEmbed
 
 
-class DeletePrefixView(discord.ui.View):
+class DeletePrefixView(KumikoView):
     def __init__(self, bot: KumikoCore, ctx: commands.Context, prefix: str) -> None:
-        super().__init__()
+        super().__init__(ctx)
         self.bot = bot
         self.ctx = ctx
         self.prefix = prefix

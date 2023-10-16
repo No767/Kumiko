@@ -4,26 +4,17 @@ from discord.ext import commands
 from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import disable_logging
 from Libs.config import LoggingGuildConfig
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
+from Libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
 from redis.asyncio.connection import ConnectionPool
 
 
-class RegisterView(discord.ui.View):
+class RegisterView(KumikoView):
     def __init__(
         self, ctx: commands.Context, pool: asyncpg.Pool, redis_pool: ConnectionPool
     ) -> None:
-        super().__init__()
-        self.ctx = ctx
+        super().__init__(ctx)
         self.pool = pool
         self.redis_pool = redis_pool
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.ctx.author.id:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.select(
         cls=discord.ui.ChannelSelect, channel_types=[discord.ChannelType.text]
@@ -84,22 +75,13 @@ class RegisterView(discord.ui.View):
         self.stop()
 
 
-class UnregisterView(discord.ui.View):
+class UnregisterView(KumikoView):
     def __init__(
         self, ctx: commands.Context, pool: asyncpg.Pool, redis_pool: ConnectionPool
     ) -> None:
-        super().__init__()
-        self.ctx = ctx
+        super().__init__(ctx)
         self.pool = pool
         self.redis_pool = redis_pool
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.ctx.author.id:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(
         label="Confirm",

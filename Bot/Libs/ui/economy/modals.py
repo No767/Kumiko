@@ -2,17 +2,25 @@ from typing import Optional
 
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.cog_utils.auctions import create_auction
 from Libs.cog_utils.economy import refund_item
+from Libs.utils import KumikoModal
 
 
-class UserInvAHListModal(discord.ui.Modal, title="List an item for auction"):
+class UserInvAHListModal(KumikoModal, title="List an item for auction"):
     amount = discord.ui.TextInput(
         label="Amount", placeholder="Enter a number", min_length=1
     )
 
-    def __init__(self, max_amount: Optional[int], item_id: int, pool: asyncpg.Pool):
-        super().__init__()
+    def __init__(
+        self,
+        ctx: commands.Context,
+        max_amount: Optional[int],
+        item_id: int,
+        pool: asyncpg.Pool,
+    ):
+        super().__init__(ctx)
         self.item_id = item_id
         self.pool = pool
         if max_amount is not None:
@@ -38,13 +46,19 @@ class UserInvAHListModal(discord.ui.Modal, title="List an item for auction"):
         return
 
 
-class UserInvRefundModal(discord.ui.Modal, title="Refund an item"):
+class UserInvRefundModal(KumikoModal, title="Refund an item"):
     amount = discord.ui.TextInput(
         label="Amount", placeholder="Enter a number", min_length=1
     )
 
-    def __init__(self, max_amount: Optional[int], item_id: int, pool: asyncpg.Pool):
-        super().__init__()
+    def __init__(
+        self,
+        ctx: commands.Context,
+        max_amount: Optional[int],
+        item_id: int,
+        pool: asyncpg.Pool,
+    ):
+        super().__init__(ctx)
         self.item_id = item_id
         self.pool = pool
         if max_amount is not None:

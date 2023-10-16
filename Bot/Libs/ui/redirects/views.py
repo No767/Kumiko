@@ -1,29 +1,23 @@
 from typing import Union
 
 import discord
+from discord.ext import commands
 from Libs.cog_utils.redirects import mark_as_resolved
-from Libs.utils import MessageConstants
+from Libs.utils import KumikoView
 
 
-class ConfirmResolvedView(discord.ui.View):
+class ConfirmResolvedView(KumikoView):
     def __init__(
         self,
+        ctx: commands.Context,
         thread: discord.Thread,
         author: Union[discord.User, discord.Member],
         *args,
         **kwargs,
     ) -> None:
-        super().__init__(*args, **kwargs)
+        super().__init__(ctx, *args, **kwargs)
         self.thread = thread
         self.author = author
-
-    async def interaction_check(self, interaction: discord.Interaction, /):
-        if interaction.user.id == self.author:
-            return True
-        await interaction.response.send_message(
-            MessageConstants.NO_CONTROL_VIEW.value, ephemeral=True
-        )
-        return False
 
     @discord.ui.button(
         label="Confirm",

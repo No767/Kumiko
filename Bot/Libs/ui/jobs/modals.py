@@ -1,11 +1,19 @@
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.cog_utils.jobs import create_job_output_item, update_job
+from Libs.utils import KumikoModal
 
 
-class CreateJob(discord.ui.Modal, title="Create Job"):
-    def __init__(self, pool: asyncpg.pool.Pool, required_rank: int, pay: int) -> None:
-        super().__init__()
+class CreateJob(KumikoModal, title="Create Job"):
+    def __init__(
+        self,
+        ctx: commands.Context,
+        pool: asyncpg.pool.Pool,
+        required_rank: int,
+        pay: int,
+    ) -> None:
+        super().__init__(ctx)
         self.pool: asyncpg.Pool = pool
         self.required_rank = required_rank
         self.pay = pay
@@ -65,11 +73,16 @@ class CreateJob(discord.ui.Modal, title="Create Job"):
                 )
 
 
-class UpdateJobModal(discord.ui.Modal, title="Update Job"):
+class UpdateJobModal(KumikoModal, title="Update Job"):
     def __init__(
-        self, pool: asyncpg.pool.Pool, name: str, required_rank: int, pay: int
+        self,
+        ctx: commands.Context,
+        pool: asyncpg.pool.Pool,
+        name: str,
+        required_rank: int,
+        pay: int,
     ) -> None:
-        super().__init__()
+        super().__init__(ctx)
         self.pool: asyncpg.Pool = pool
         self.name = name
         self.required_rank = required_rank
@@ -97,9 +110,16 @@ class UpdateJobModal(discord.ui.Modal, title="Update Job"):
         return
 
 
-class CreateJobOutputItemModal(discord.ui.Modal, title="Create Output Item"):
-    def __init__(self, pool: asyncpg.Pool, name: str, price: int, amount: int) -> None:
-        super().__init__()
+class CreateJobOutputItemModal(KumikoModal, title="Create Output Item"):
+    def __init__(
+        self,
+        ctx: commands.Context,
+        pool: asyncpg.Pool,
+        name: str,
+        price: int,
+        amount: int,
+    ) -> None:
+        super().__init__(ctx)
         self.pool = pool
         self.name = name
         self.price = price

@@ -1,11 +1,15 @@
 import asyncpg
 import discord
+from discord.ext import commands
 from Libs.cog_utils.pride_profiles import snake_case_to_title
+from Libs.utils import KumikoModal
 
 
-class EditProfileModal(discord.ui.Modal, title="Edit Profile"):
-    def __init__(self, profile_type: str, pool: asyncpg.Pool) -> None:
-        super().__init__()
+class EditProfileModal(KumikoModal, title="Edit Profile"):
+    def __init__(
+        self, ctx: commands.Context, profile_type: str, pool: asyncpg.Pool
+    ) -> None:
+        super().__init__(ctx)
         self.pool = pool
         self.profile_type = profile_type
         self.cleaned_type = snake_case_to_title(profile_type)

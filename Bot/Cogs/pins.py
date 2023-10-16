@@ -17,7 +17,13 @@ from Libs.cog_utils.pins import (
     get_pin_info,
     is_pins_enabled,
 )
-from Libs.ui.pins import CreatePin, DeletePinView, PinEditModal, PinPages, PurgePinView
+from Libs.ui.pins import (
+    CreatePin,
+    DeletePinView,
+    PinEditModal,
+    PinPages,
+    PurgePinView,
+)
 from Libs.utils import ConfirmEmbed, Embed, PinName, get_or_fetch_member
 from typing_extensions import Annotated
 
@@ -101,7 +107,7 @@ class Pins(commands.Cog):
     async def make(self, ctx: commands.Context) -> None:
         """Interactively creates a tag for you"""
         if ctx.interaction is not None:
-            create_pin_modal = CreatePin(self.pool)
+            create_pin_modal = CreatePin(ctx, self.pool)
             await ctx.interaction.response.send_modal(create_pin_modal)
             return
 
@@ -332,7 +338,7 @@ class Pins(commands.Cog):
                             ephemeral=True,
                         )
                         return
-                modal = PinEditModal(self.pool, row[0])
+                modal = PinEditModal(ctx, self.pool, row[0])
                 await ctx.interaction.response.send_modal(modal)
                 return
 

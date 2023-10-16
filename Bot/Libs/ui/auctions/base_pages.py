@@ -19,6 +19,7 @@ class OwnedAuctionItemBasePages(KumikoPages):
         self.add_item(self.add_more)
         self.add_item(self.delete)
         self.embed = discord.Embed(colour=discord.Colour.og_blurple())
+        self.ctx = ctx
         self.pool = pool
 
     async def get_embed_from_page(self, current_page: int) -> Dict[str, Any]:
@@ -37,7 +38,7 @@ class OwnedAuctionItemBasePages(KumikoPages):
         item_id = int(page_data["fields"][-1]["value"])
         curr_amount = int(page_data["fields"][3]["value"])
         await interaction.response.send_modal(
-            OwnedAuctionItemAdd(curr_amount, item_id, self.pool)
+            OwnedAuctionItemAdd(self.ctx, curr_amount, item_id, self.pool)
         )
 
     @discord.ui.button(
