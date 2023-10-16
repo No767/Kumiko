@@ -12,7 +12,7 @@ aiodns = "^3.1.0"
 Brotli = "^1.1.0"
 orjson = "^3.9.9"
 asyncpraw = "^7.7.1"
-uvloop = {markers = "sys_platform != \"win32\"", version = "^0.17.0"}
+uvloop = {markers = "sys_platform != \"win32\"", version = "^0.18.0"}
 gql = { extras = ["aiohttp"], version = "^3.4.1" }
 redis = {extras = ["hiredis"], version = "^5.0.1"}
 ciso8601 = "^2.3.0"
