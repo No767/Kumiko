@@ -1,3 +1,1 @@
-from .views import DeletePrefixView
-
-__all__ = ["DeletePrefixView"]
+from .views import DeletePrefixView as DeletePrefixView

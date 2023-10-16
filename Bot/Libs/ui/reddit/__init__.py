@@ -1,4 +1,8 @@
-from .pages import RedditMemePages, RedditPages
-from .structs import RedditEntry, RedditMemeEntry
-
-__all__ = ["RedditEntry", "RedditPages", "RedditMemePages", "RedditMemeEntry"]
+from .pages import (
+    RedditMemePages as RedditMemePages,
+    RedditPages as RedditPages,
+)
+from .structs import (
+    RedditEntry as RedditEntry,
+    RedditMemeEntry as RedditMemeEntry,
+)

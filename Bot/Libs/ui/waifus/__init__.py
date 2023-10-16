@@ -1,4 +1,2 @@
-from .pages import NekoImagesPages
-from .structs import NekosImages
-
-__all__ = ["NekosImages", "NekoImagesPages"]
+from .pages import NekoImagesPages as NekoImagesPages
+from .structs import NekosImages as NekosImages

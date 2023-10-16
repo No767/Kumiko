@@ -9,7 +9,7 @@ async def get_or_fetch_config(
     id: int, redis_pool: ConnectionPool, pool: asyncpg.Pool
 ) -> Union[Dict[str, Union[int, bool]], None]:
     query = """
-    SELECT logging_config.channel_id, logging_config.member_events, logging_config.eco_events
+    SELECT logging_config.channel_id, logging_config.eco_events
     FROM guild
     INNER JOIN logging_config
     ON guild.id = logging_config.guild_id

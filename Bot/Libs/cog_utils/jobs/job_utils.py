@@ -135,17 +135,6 @@ async def get_job(
         return dict(res)
 
 
-async def create_job_link(
-    worker_id: int, item_id: int, job_id: int, conn: asyncpg.connection.Connection
-):
-    sql = """
-    INSERT INTO job_output (worker_id, item_id, job_id)
-    VALUES ($1, $2, $3);
-    """
-    status = await conn.execute(sql, worker_id, item_id, job_id)
-    return status
-
-
 async def create_job_output_item(
     name: str,
     description: str,

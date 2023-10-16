@@ -1,3 +1,1 @@
-from .pages import BlacklistPages
-
-__all__ = ["BlacklistPages"]
+from .pages import BlacklistPages as BlacklistPages

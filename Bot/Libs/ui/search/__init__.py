@@ -1,12 +1,11 @@
-from .pages import AniListAnimePages, AniListMangaPages, ModrinthPages
-from .structs import AniListAnime, AniListManga, AniListMediaTitle, ModrinthProject
-
-__all__ = [
-    "ModrinthProject",
-    "ModrinthPages",
-    "AniListManga",
-    "AniListMediaTitle",
-    "AniListMangaPages",
-    "AniListAnime",
-    "AniListAnimePages",
-]
+from .pages import (
+    AniListAnimePages as AniListAnimePages,
+    AniListMangaPages as AniListMangaPages,
+    ModrinthPages as ModrinthPages,
+)
+from .structs import (
+    AniListAnime as AniListAnime,
+    AniListManga as AniListManga,
+    AniListMediaTitle as AniListMediaTitle,
+    ModrinthProject as ModrinthProject,
+)

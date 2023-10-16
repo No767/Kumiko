@@ -1,31 +1,16 @@
 from .pages import (
-    PPPages,
-    PronounsInclusivePages,
-    PronounsNounsPages,
-    PronounsTermsPages,
+    PPPages as PPPages,
+    PronounsInclusivePages as PronounsInclusivePages,
+    PronounsNounsPages as PronounsNounsPages,
+    PronounsTermsPages as PronounsTermsPages,
 )
-from .profile_pages import PronounsProfilePages
+from .profile_pages import PronounsProfilePages as PronounsProfilePages
 from .structs import (
-    PronounsInclusiveEntry,
-    PronounsNounsEntry,
-    PronounsProfileCircleEntry,
-    PronounsProfileEntry,
-    PronounsTermsEntry,
-    PronounsValuesEntry,
-    PronounsWordsEntry,
+    PronounsInclusiveEntry as PronounsInclusiveEntry,
+    PronounsNounsEntry as PronounsNounsEntry,
+    PronounsProfileCircleEntry as PronounsProfileCircleEntry,
+    PronounsProfileEntry as PronounsProfileEntry,
+    PronounsTermsEntry as PronounsTermsEntry,
+    PronounsValuesEntry as PronounsValuesEntry,
+    PronounsWordsEntry as PronounsWordsEntry,
 )
-
-__all__ = [
-    "PPPages",
-    "PronounsProfileCircleEntry",
-    "PronounsValuesEntry",
-    "PronounsProfileEntry",
-    "PronounsWordsEntry",
-    "PronounsProfilePages",
-    "PronounsTermsPages",
-    "PronounsTermsEntry",
-    "PronounsInclusivePages",
-    "PronounsNounsPages",
-    "PronounsNounsEntry",
-    "PronounsInclusiveEntry",
-]

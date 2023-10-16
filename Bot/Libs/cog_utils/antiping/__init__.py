@@ -1,3 +1,1 @@
-from .structs import AntiPingSession
-
-__all__ = ["AntiPingSession"]
+from .structs import AntiPingSession as AntiPingSession

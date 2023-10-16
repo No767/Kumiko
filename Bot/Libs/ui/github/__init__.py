@@ -1,31 +1,18 @@
-from .pages import GitHubCommitPages, GithubIssuesPages, GithubRepoPages
-from .structs import (
-    GitHubCommentReactions,
-    GitHubCommit,
-    GitHubIssue,
-    GitHubIssueComment,
-    GitHubIssueLabel,
-    GitHubLicense,
-    GitHubParentCommit,
-    GitHubReleaseAsset,
-    GitHubRepo,
-    GitHubRepoReleases,
-    GitHubUser,
+from .pages import (
+    GitHubCommitPages as GitHubCommitPages,
+    GithubIssuesPages as GithubIssuesPages,
+    GithubRepoPages as GithubRepoPages,
 )
-
-__all__ = [
-    "GitHubCommentReactions",
-    "GitHubIssue",
-    "GitHubIssueComment",
-    "GitHubIssueLabel",
-    "GitHubUser",
-    "GithubIssuesPages",
-    "GitHubLicense",
-    "GitHubRepo",
-    "GitHubRepoReleases",
-    "GitHubReleaseAsset",
-    "GithubRepoPages",
-    "GitHubCommit",
-    "GitHubParentCommit",
-    "GitHubCommitPages",
-]
+from .structs import (
+    GitHubCommentReactions as GitHubCommentReactions,
+    GitHubCommit as GitHubCommit,
+    GitHubIssue as GitHubIssue,
+    GitHubIssueComment as GitHubIssueComment,
+    GitHubIssueLabel as GitHubIssueLabel,
+    GitHubLicense as GitHubLicense,
+    GitHubParentCommit as GitHubParentCommit,
+    GitHubReleaseAsset as GitHubReleaseAsset,
+    GitHubRepo as GitHubRepo,
+    GitHubRepoReleases as GitHubRepoReleases,
+    GitHubUser as GitHubUser,
+)

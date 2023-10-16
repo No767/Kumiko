@@ -1,5 +1,3 @@
-from .modals import CreatePin, PinEditModal
-from .pages import PinPages
-from .views import DeletePinView, PurgePinView
-
-__all__ = ["CreatePin", "DeletePinView", "PinPages", "PinEditModal", "PurgePinView"]
+from .modals import CreatePin as CreatePin, PinEditModal as PinEditModal
+from .pages import PinPages as PinPages
+from .views import DeletePinView as DeletePinView, PurgePinView as PurgePinView

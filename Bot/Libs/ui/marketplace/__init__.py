@@ -1,15 +1,7 @@
 from .pages import (
-    ItemEntry,
-    ItemPageEntry,
-    ItemPages,
-    SimpleItemPages,
-    SimpleSearchItemPages,
+    ItemEntry as ItemEntry,
+    ItemPageEntry as ItemPageEntry,
+    ItemPages as ItemPages,
+    SimpleItemPages as SimpleItemPages,
+    SimpleSearchItemPages as SimpleSearchItemPages,
 )
-
-__all__ = [
-    "ItemPages",
-    "ItemPageEntry",
-    "ItemEntry",
-    "SimpleItemPages",
-    "SimpleSearchItemPages",
-]

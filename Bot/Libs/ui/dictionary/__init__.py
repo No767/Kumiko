@@ -1,18 +1,11 @@
-from .pages import DictPages, JapaneseDictPages
-from .structs import (
-    EnglishDef,
-    EnglishDictEntry,
-    JapaneseDictEntry,
-    JapaneseEntryDef,
-    JapaneseWordEntry,
+from .pages import (
+    DictPages as DictPages,
+    JapaneseDictPages as JapaneseDictPages,
 )
-
-__all__ = [
-    "DictPages",
-    "JapaneseDictPages",
-    "EnglishDef",
-    "EnglishDictEntry",
-    "JapaneseDictEntry",
-    "JapaneseEntryDef",
-    "JapaneseWordEntry",
-]
+from .structs import (
+    EnglishDef as EnglishDef,
+    EnglishDictEntry as EnglishDictEntry,
+    JapaneseDictEntry as JapaneseDictEntry,
+    JapaneseEntryDef as JapaneseEntryDef,
+    JapaneseWordEntry as JapaneseWordEntry,
+)

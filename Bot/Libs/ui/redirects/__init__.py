@@ -1,3 +1,1 @@
-from .views import ConfirmResolvedView
-
-__all__ = ["ConfirmResolvedView"]
+from .views import ConfirmResolvedView as ConfirmResolvedView

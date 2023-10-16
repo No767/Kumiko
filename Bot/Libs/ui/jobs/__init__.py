@@ -1,13 +1,11 @@
-from .modals import CreateJob, CreateJobOutputItemModal, UpdateJobModal
-from .pages import JobPages
-from .views import DeleteJobViaIDView, DeleteJobView, PurgeJobsView
-
-__all__ = [
-    "JobPages",
-    "CreateJob",
-    "DeleteJobView",
-    "DeleteJobViaIDView",
-    "PurgeJobsView",
-    "UpdateJobModal",
-    "CreateJobOutputItemModal",
-]
+from .modals import (
+    CreateJob as CreateJob,
+    CreateJobOutputItemModal as CreateJobOutputItemModal,
+    UpdateJobModal as UpdateJobModal,
+)
+from .pages import JobPages as JobPages
+from .views import (
+    DeleteJobViaIDView as DeleteJobViaIDView,
+    DeleteJobView as DeleteJobView,
+    PurgeJobsView as PurgeJobsView,
+)

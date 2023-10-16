@@ -1,3 +1,5 @@
-from .pages import AuctionPages, AuctionSearchPages, OwnedAuctionPages
-
-__all__ = ["AuctionPages", "OwnedAuctionPages", "AuctionSearchPages"]
+from .pages import (
+    AuctionPages as AuctionPages,
+    AuctionSearchPages as AuctionSearchPages,
+    OwnedAuctionPages as OwnedAuctionPages,
+)
