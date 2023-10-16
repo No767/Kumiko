@@ -4,7 +4,7 @@ from discord.ext import commands
 from Libs.cache import KumikoCache
 from Libs.cog_utils.events_log import disable_logging
 from Libs.config import LoggingGuildConfig
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -146,7 +146,7 @@ class UnregisterView(discord.ui.View):
                 await tr.commit()
                 await disable_logging(guild_id=guild_id, redis_pool=self.redis_pool)
                 self.clear_items()
-                success_embed = SuccessActionEmbed()
+                success_embed = SuccessEmbed()
                 success_embed.description = "Disabled and cleared all logging configs"
 
                 await interaction.response.edit_message(embed=success_embed, view=self)

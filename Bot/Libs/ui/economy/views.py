@@ -1,7 +1,7 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import Embed, MessageConstants, SuccessActionEmbed
+from Libs.utils import Embed, MessageConstants, SuccessEmbed
 
 
 class RegisterView(discord.ui.View):
@@ -34,7 +34,7 @@ class RegisterView(discord.ui.View):
                 embed=error_embed, view=self, delete_after=20.0
             )
         else:
-            success_embed = SuccessActionEmbed()
+            success_embed = SuccessEmbed()
             success_embed.description = "Successfully created an economy account!"
             await interaction.response.edit_message(
                 embed=success_embed, view=self, delete_after=20.0

@@ -5,6 +5,8 @@ NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 
 
 class KumikoModal(discord.ui.Modal):
+    """Subclassed `discord.ui.Modal` that includes sane default functionality"""
+
     def __init__(self, interaction: discord.Interaction, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.interaction = interaction

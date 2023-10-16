@@ -6,9 +6,12 @@ from discord.ext import commands
 from discord.utils import format_dt, utcnow
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCache
-from Libs.cog_utils.events_log import get_or_fetch_config, get_or_fetch_log_enabled
+from Libs.cog_utils.events_log import (
+    get_or_fetch_config,
+    get_or_fetch_log_enabled,
+)
 from Libs.config import GuildConfig, LoggingGuildConfig
-from Libs.utils import CancelledActionEmbed, Embed, SuccessActionEmbed
+from Libs.utils import Embed, SuccessEmbed
 from redis.asyncio.connection import ConnectionPool
 
 
@@ -38,13 +41,12 @@ class EventsHandler(commands.Cog):
         type_msg: str,
         display_age: bool = True,
     ) -> discord.Embed:
-        embed = SuccessActionEmbed(title=type_msg)
+        embed = SuccessEmbed(title=type_msg)
 
-        if type == "leave":
-            embed = CancelledActionEmbed(title=type_msg)
-        elif type == "unban":
+        if type == "unban":
             embed = Embed(color=discord.Color.from_rgb(255, 143, 143))
-
+        elif type == "kick":
+            embed = Embed(color=discord.Color.blurple())
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.description = f"{member.mention} {member.global_name}"
         embed.timestamp = utcnow()

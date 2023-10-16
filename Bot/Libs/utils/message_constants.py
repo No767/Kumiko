@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class MessageConstants(Enum):
+    """Standard message constants"""
+
     NO_DM = "You can't use this command in private messages or DMs"
     TIMEOUT = "You took too long. Goodbye."
     NO_JOB = "You either don't own this job or the job doesn't exist. Try again."

@@ -1,6 +1,6 @@
 import asyncpg
 import discord
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
 
 from .selects import SelectPrideCategory
 
@@ -38,7 +38,7 @@ class ConfirmRegisterView(discord.ui.View):
         )
 
         if status[-1] != "0":
-            success_embed = SuccessActionEmbed()
+            success_embed = SuccessEmbed()
             success_embed.description = "Registered your pride profile!"
             await interaction.response.edit_message(
                 embed=success_embed, delete_after=10.0, view=None
@@ -121,7 +121,7 @@ class DeleteProfileView(discord.ui.View):
         status = await self.pool.execute(query, interaction.user.id)
 
         if status[-1] != "0":
-            success_embed = SuccessActionEmbed()
+            success_embed = SuccessEmbed()
             success_embed.description = "Successfully deleted your pride profile"
             await interaction.response.edit_message(
                 embed=success_embed, delete_after=10.0, view=None

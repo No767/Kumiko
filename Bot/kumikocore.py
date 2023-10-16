@@ -12,6 +12,7 @@ from discord.ext import commands, ipcx
 from Libs.cog_utils.antiping import AntiPingSession
 from Libs.errors import send_error_embed
 from Libs.utils import (
+    KumikoHelpPaginated,
     MessageConstants,
     check_blacklist,
     ensure_postgres_conn,
@@ -20,7 +21,6 @@ from Libs.utils import (
     get_prefix,
     load_blacklist,
 )
-from Libs.utils.help import KumikoHelpPaginated
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
 

@@ -8,6 +8,8 @@ NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 
 
 class KumikoView(discord.ui.View):
+    """Subclassed `discord.ui.View` that includes sane default functionality"""
+
     def __init__(self, ctx: commands.Context):
         super().__init__()
         self.ctx = ctx

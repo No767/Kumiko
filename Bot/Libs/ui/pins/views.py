@@ -1,7 +1,7 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
 
 
 class DeletePinView(discord.ui.View):
@@ -54,7 +54,7 @@ class DeletePinView(discord.ui.View):
                         embed=error_embed, view=self, delete_after=20.0
                     )
                 else:
-                    success_embed = SuccessActionEmbed()
+                    success_embed = SuccessEmbed()
                     success_embed.description = (
                         f"Deleted the following pin: `{self.name}`"
                     )
@@ -113,7 +113,7 @@ class PurgePinView(discord.ui.View):
                         embed=error_embed, view=self, delete_after=20.0
                     )
                 else:
-                    success_embed = SuccessActionEmbed()
+                    success_embed = SuccessEmbed()
                     success_embed.description = (
                         f"Fully purged all pins belonging to {interaction.user.mention}"
                     )

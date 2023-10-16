@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
 
 
 class DeletePrefixView(discord.ui.View):
@@ -42,7 +42,7 @@ class DeletePrefixView(discord.ui.View):
                 self.prefix
             )  # This makes the assumption that the guild is already in the LRU cache. This is not the best - Noelle
             self.clear_items()
-            embed = SuccessActionEmbed(
+            embed = SuccessEmbed(
                 description=f"The prefix `{self.prefix}` was successfully removed"
             )
             await interaction.response.edit_message(embed=embed, view=self)

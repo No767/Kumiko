@@ -46,7 +46,6 @@ async def load_blacklist(pool: asyncpg.Pool) -> Dict[int, bool]:
     return formatted_records
 
 
-# Circular import so bot is untyped
 async def get_or_fetch_blacklist(bot: KumikoCore, id: int, pool: asyncpg.Pool) -> bool:
     """Gets or fetches a user's blacklist status
 

@@ -1,6 +1,5 @@
 import os
 import re
-import ssl
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional, Union
@@ -36,18 +35,6 @@ def parse_subreddit(subreddit: Union[str, None]) -> str:
     if subreddit is None:
         return "all"
     return re.sub(r"^[r/]{2}", "", subreddit, re.IGNORECASE)
-
-
-def setup_ssl(
-    ca_path: Union[str, None],
-    cert_path: str,
-    key_path: Union[str, None],
-    key_password: Union[str, None],
-) -> ssl.SSLContext:
-    sslctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=ca_path)
-    sslctx.check_hostname = True
-    sslctx.load_cert_chain(cert_path, key_path, key_password)
-    return sslctx
 
 
 def is_docker() -> bool:

@@ -1,7 +1,7 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import ErrorEmbed, MessageConstants, SuccessActionEmbed
+from Libs.utils import ErrorEmbed, MessageConstants, SuccessEmbed
 
 
 class DeleteJobView(discord.ui.View):
@@ -44,7 +44,7 @@ class DeleteJobView(discord.ui.View):
                     embed=error_embed, view=self, delete_after=20.0
                 )
             else:
-                success_embed = SuccessActionEmbed()
+                success_embed = SuccessEmbed()
                 success_embed.description = f"Deleted job `{self.job_name}`"
                 await interaction.response.edit_message(
                     embed=success_embed, view=self, delete_after=20.0
@@ -103,7 +103,7 @@ class DeleteJobViaIDView(discord.ui.View):
                     embed=error_embed, view=self, delete_after=20.0
                 )
             else:
-                success_embed = SuccessActionEmbed()
+                success_embed = SuccessEmbed()
                 success_embed.description = f"Deleted job via ID (ID: `{self.job_id}`)"
                 await interaction.response.edit_message(
                     embed=success_embed, view=self, delete_after=20.0
@@ -159,7 +159,7 @@ class PurgeJobsView(discord.ui.View):
                     embed=error_embed, view=self, delete_after=20.0
                 )
             else:
-                success_embed = SuccessActionEmbed()
+                success_embed = SuccessEmbed()
                 success_embed.description = "Fully purged all jobs that you own."
                 await interaction.response.edit_message(
                     embed=success_embed, view=self, delete_after=20.0
