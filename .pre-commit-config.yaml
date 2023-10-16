@@ -12,15 +12,6 @@ repos:
        name: Bandit
        stages: [commit]
        additional_dependencies: ["bandit[toml]"]
-       
-        
-# -   repo: https://github.com/pre-commit/mirrors-autopep8
-#     rev: 'v1.6.0'  
-#     hooks:
-#     -   id: autopep8
-#         args: ["--in-place", "-r"]
-#         name: AutoPEP8
-#         description: "Format with AutoPEP8"
         
 -   repo: https://github.com/psf/black
     rev: 22.6.0
@@ -33,10 +24,17 @@ repos:
     rev: v1.4
     hooks:
     -   id: autoflake
-        args: ["--in-place", "--remove-unused-variables", "--remove-all-unused-imports", "--recursive"]
+        args: ["--in-place", "--remove-unused-variables", "--recursive"]
         name: AutoFlake
         description: "Format with AutoFlake"
         stages: [commit]
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.292
+    hooks:
+      - id: ruff
+        name: Ruff
+        args: ["--fix", "--exit-non-zero-on-fix", "--config", "pyproject.toml"]
         
 -   repo: https://github.com/PyCQA/isort
     rev: 5.12.0

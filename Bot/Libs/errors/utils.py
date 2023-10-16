@@ -2,8 +2,13 @@ import traceback
 
 from discord.ext import commands
 from discord.utils import utcnow
-from exceptions import EconomyDisabledError, PinsDisabledError, RedirectsDisabledError
 from Libs.utils import ErrorEmbed
+
+from .exceptions import (
+    EconomyDisabledError,
+    PinsDisabledError,
+    RedirectsDisabledError,
+)
 
 
 def make_error_embed(error: Exception) -> ErrorEmbed:
