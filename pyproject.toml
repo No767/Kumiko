@@ -42,7 +42,7 @@ pytest-cov = "^4.1.0"
 dpytest = "^0.7.0"
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.4.0"
+pre-commit = "^3.5.0"
 pyinstrument = "^4.6.0"
 pyright = "^1.1.331"
 watchfiles = "^0.20.0"
