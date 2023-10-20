@@ -20,7 +20,7 @@ WORKDIR /Kumiko
 COPY /pyproject.toml /Kumiko/
 COPY /poetry.lock /Kumiko/
 
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes --only main
+RUN poetry export --output requirements.txt --only main
 
 ####################################################################################################
 ## Final image
