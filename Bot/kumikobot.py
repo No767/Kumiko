@@ -10,18 +10,10 @@ from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
 from Libs.utils import KumikoLogger, init_codecs, read_env
 
-# Only used for Windows development
 if os.name == "nt":
     import winloop
 
     asyncio.set_event_loop_policy(winloop.WinLoopPolicy())
-else:
-    try:
-        import uvloop
-
-        asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-    except ImportError:
-        pass
 
 load_dotenv()
 
@@ -62,7 +54,12 @@ async def main() -> None:
 
 def launch() -> None:
     with KumikoLogger():
-        asyncio.run(main())
+        try:
+            import uvloop
+
+            uvloop.run(main())
+        except ImportError:
+            asyncio.run(main())
 
 
 if __name__ == "__main__":
