@@ -5,17 +5,19 @@ import msgspec
 
 class LoggingGuildConfig(msgspec.Struct):
     channel_id: Union[int, None]
-    mod_events: bool = True
-    eco_events: bool = False
-    redirects: bool = True
+    mod: bool = True
+    eco: bool = False
+    redirects: bool = False
 
 
 class GuildConfig(msgspec.Struct):
     id: int
-    logging_config: Union[LoggingGuildConfig, None]
     logs: bool = True
-    birthday: bool = False
     local_economy: bool = False
     redirects: bool = True
     pins: bool = True
-    local_economy_name: str = "Server Economy"
+
+
+class FullGuildConfig(msgspec.Struct):
+    config: GuildConfig
+    logging_config: LoggingGuildConfig
