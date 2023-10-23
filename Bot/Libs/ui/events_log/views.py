@@ -37,7 +37,7 @@ class RegisterView(KumikoView):
         async with self.pool.acquire() as conn:
             guild_id = interaction.guild.id  # type: ignore
             cache = KumikoCache(connection_pool=self.redis_pool)
-            lgc = LoggingGuildConfig(channel_id=select.values[0].id)
+            lgc = LoggingGuildConfig()
             tr = conn.transaction()
             await tr.start()
 

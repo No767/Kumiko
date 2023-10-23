@@ -5,7 +5,4 @@ from .exceptions import (
     RedirectsDisabledError as RedirectsDisabledError,
     ValidationError as ValidationError,
 )
-from .utils import (
-    make_error_embed as make_error_embed,
-    send_error_embed as send_error_embed,
-)
+from .utils import send_error_embed as send_error_embed

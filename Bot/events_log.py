@@ -1,7 +1,6 @@
 from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.config import get_or_fetch_guild_config
 from Libs.ui.events_log import RegisterView, UnregisterView
 from Libs.utils import ConfirmEmbed, Embed, is_manager
 
@@ -55,11 +54,7 @@ class EventsLog(commands.Cog):
     @logs.command(name="info")
     async def info(self, ctx: commands.Context) -> None:
         """Displays info about the events logging module"""
-        guild_id = ctx.guild.id  # type: ignore
-        results = await get_or_fetch_guild_config(guild_id, self.pool, self.redis_pool)
-        if results is None:
-            await ctx.send("The config was not set up. Please enable the logs module")
-            return
+        results = {}
         embed = Embed()
         embed.set_author(name="Events Logging Info", icon_url=ctx.guild.icon.url)  # type: ignore
         embed.description = f"**Enabled?:** {results['logs']}\n**Events Logging Channel:** <#{results['logging_config']['channel_id']}>"
