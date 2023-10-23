@@ -26,6 +26,7 @@ from .embeds import (
     ErrorEmbed as ErrorEmbed,
     SuccessEmbed as SuccessEmbed,
 )
+from .error_preset import produce_error_embed as produce_error_embed
 from .greedy_formatter import format_greedy as format_greedy
 from .help import KumikoHelpPaginated as KumikoHelpPaginated
 from .kumiko_logger import KumikoLogger as KumikoLogger
@@ -36,6 +37,7 @@ from .pg_init_codecs import init_codecs as init_codecs
 from .prefix import get_prefix as get_prefix
 from .rank_utils import calc_petals as calc_petals, calc_rank as calc_rank
 from .time import format_dt as format_dt, human_timedelta as human_timedelta
+from .tree import KumikoCommandTree as KumikoCommandTree
 from .utils import (
     is_docker as is_docker,
     parse_datetime as parse_datetime,

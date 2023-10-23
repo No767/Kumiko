@@ -4,10 +4,12 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from Libs.errors import make_error_embed
+
+from .error_preset import produce_error_embed
 
 if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
+
 NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 
 
@@ -31,6 +33,6 @@ class KumikoModal(discord.ui.Modal):
         self, interaction: discord.Interaction, error: Exception, /
     ) -> None:
         await interaction.response.send_message(
-            embed=make_error_embed(error), ephemeral=True
+            embed=produce_error_embed(error), ephemeral=True
         )
         self.stop()

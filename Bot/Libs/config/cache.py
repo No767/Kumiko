@@ -6,12 +6,9 @@ import msgspec
 import redis.asyncio as redis
 from redis.asyncio.connection import ConnectionPool
 
-# from .utils import parse_json_key
 from .structs import FullGuildConfig, GuildConfig, LoggingGuildConfig
 
-T = TypeVar("T", str, int, bool, None)
-
-ValueType = Union[str, bool, int, Dict]
+T = TypeVar("T", str, bool, None)
 
 
 class ConfigType(Enum):
@@ -35,6 +32,15 @@ class GuildCacheHandler:
         key_exists = await client.exists(key) >= 1
         return True if key_exists else False
 
+    async def is_there(self):
+        client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
+        key_exists = await client.exists(self.key) >= 1
+        return True if key_exists else False
+
+    async def invalidate(self):
+        client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
+        await client.delete(self.key)
+
     async def cache_defaults(self) -> FullGuildConfig:
         """Cache the default settings
 
@@ -42,8 +48,8 @@ class GuildCacheHandler:
             FullGuildConfig: The default settings
         """
         config_set = FullGuildConfig(
-            config=GuildConfig(id=self.guild_id),
-            logging_config=LoggingGuildConfig(channel_id=None),
+            config=GuildConfig(),
+            logging_config=LoggingGuildConfig(),
         )
         client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
         await client.json(encoder=msgspec.json, decoder=msgspec.json).set(name=self.key, path="$", obj=config_set)  # type: ignore
@@ -61,27 +67,42 @@ class GuildCacheHandler:
         json = await client.json(encoder=None, decoder=None).get(self.key)  # type: ignore
         return msgspec.json.decode(json, type=FullGuildConfig)
 
-    async def get_value(self, path: str) -> ValueType:
+    async def get_value(self, path: str) -> Union[str, bool, Dict]:
         """Gets the value given the path
 
         Args:
             path (str): Path to the value. This is also the key of the value
 
         Returns:
-            ValueType: The value.
+            Union[str, bool, Dict]: The returned value from cache.
         """
         client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
 
-        json = await client.json(encoder=None, decoder=msgspec.json.decode).get(self.key, path)  # type: ignore
-        if isinstance(json, float):
-            return int(json)
-        return json
+        json = await client.json(encoder=..., decoder=...).get(self.key, path)  # type: ignore
+        decoded = msgspec.json.decode(json)
+        return decoded
 
-    async def merge_value(self, path: str, value: T) -> None:
+    async def merge_value(self, path: str, value: Union[str, bool, None]) -> None:
+        """Merge (aka replace) the value at the given path
+
+        Args:
+            path (str): Path to the value (aka the key)
+            value (Union[str, bool, None]): New value to merge
+        """
+        client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
+        await client.json(encoder=msgspec.json, decoder=msgspec.json).merge(name=self.key, path=path, obj=value)  # type: ignore
+
+    async def replace_config(
+        self, path: str, value: Union[GuildConfig, LoggingGuildConfig]
+    ) -> None:
         client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
         await client.json(encoder=msgspec.json, decoder=msgspec.json).merge(name=self.key, path=path, obj=value)  # type: ignore
 
     async def replace_full_config(self, config: FullGuildConfig) -> None:
+        """Replace the whole entire cache with a new config
+
+        Args:
+            config (FullGuildConfig): New config
+        """
         client: redis.Redis = redis.Redis(connection_pool=self.redis_pool)
         await client.json(encoder=msgspec.json, decoder=msgspec.json).set(name=self.key, path="$", obj=config)  # type: ignore
-        await client.expire(self.key, 3600, nx=True)

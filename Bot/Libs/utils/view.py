@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, Any
 
 import discord
 from discord.ext import commands
-from Libs.errors import make_error_embed
+
+from .error_preset import produce_error_embed
 
 if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
@@ -20,7 +21,7 @@ class KumikoView(discord.ui.View):
         self.ctx = ctx
 
     async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
-        if interaction.user and interaction.user in (
+        if interaction.user and interaction.user.id in (
             self.ctx.bot.application.owner.id,  # type: ignore
             self.ctx.author.id,
         ):
@@ -41,6 +42,6 @@ class KumikoView(discord.ui.View):
         /,
     ) -> None:
         await interaction.response.send_message(
-            embed=make_error_embed(error), ephemeral=True
+            embed=produce_error_embed(error), ephemeral=True
         )
         self.stop()

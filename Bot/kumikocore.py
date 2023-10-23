@@ -7,17 +7,15 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
-from discord.app_commands import CommandTree
 from discord.ext import commands, ipcx
 from Libs.cog_utils.antiping import AntiPingSession
 from Libs.errors import send_error_embed
 from Libs.utils import (
+    KumikoCommandTree,
     KumikoHelpPaginated,
-    MessageConstants,
     check_blacklist,
     ensure_postgres_conn,
     ensure_redis_conn,
-    get_or_fetch_blacklist,
     get_prefix,
     load_blacklist,
 )
@@ -30,29 +28,6 @@ try:
     from watchfiles import awatch
 except ImportError:
     _fsw = False
-
-
-class KumikoCommandTree(CommandTree):
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        bot: KumikoCore = interaction.client  # type: ignore # Pretty much returns the subclass anyways. I checked - Noelle
-        if (
-            bot.owner_id == interaction.user.id
-            or bot.application_id == interaction.user.id
-        ):
-            return True
-
-        blacklisted_status = await get_or_fetch_blacklist(
-            bot, interaction.user.id, bot.pool
-        )
-        if blacklisted_status is True:
-            # Get RickRolled lol
-            # While implementing this, I was listening to Rick Astley
-            await interaction.response.send_message(
-                f"My fellow user, {interaction.user.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
-                suppress_embeds=True,
-            )
-            return False
-        return True
 
 
 class KumikoCore(commands.Bot):

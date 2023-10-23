@@ -1,29 +1,11 @@
-import traceback
-
 from discord.ext import commands
-from discord.utils import utcnow
-from Libs.utils import ErrorEmbed
 
+from ..utils import ErrorEmbed, produce_error_embed
 from .exceptions import (
     EconomyDisabledError,
     PinsDisabledError,
     RedirectsDisabledError,
 )
-
-
-def make_error_embed(error: Exception) -> ErrorEmbed:
-    error_traceback = "\n".join(traceback.format_exception_only(type(error), error))
-    embed = ErrorEmbed()
-    desc = f"""
-    Uh oh! It seems like there was an issue. For support, please visit [Kumiko's Support Server](https://discord.gg/ns3e74frqn) to get help!
-    
-    **Error**:
-    ```{error_traceback}```
-    """
-    embed.description = "\n".join(desc)
-    embed.set_footer(text="Happened At")
-    embed.timestamp = utcnow()
-    return embed
 
 
 def create_premade_embed(title: str, description: str):
@@ -41,7 +23,7 @@ async def send_error_embed(ctx: commands.Context, error: commands.CommandError) 
     elif isinstance(error, commands.CommandInvokeError) or isinstance(
         error, commands.HybridCommandError
     ):
-        await ctx.send(embed=make_error_embed(error))
+        await ctx.send(embed=produce_error_embed(error))
     elif isinstance(error, commands.CommandNotFound):
         await ctx.send(
             embed=create_premade_embed(
@@ -78,4 +60,4 @@ async def send_error_embed(ctx: commands.Context, error: commands.CommandError) 
     ):
         await ctx.send(embed=create_premade_embed(error.title, str(error)))
     else:
-        await ctx.send(embed=make_error_embed(error))
+        await ctx.send(embed=produce_error_embed(error))

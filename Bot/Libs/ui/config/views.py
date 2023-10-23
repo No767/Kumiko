@@ -2,23 +2,23 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cog_utils.config import check_already_set, configure_settings
+from Libs.config import GuildCacheHandler, GuildConfig
 from Libs.utils import Embed, KumikoView
-from redis.asyncio.connection import ConnectionPool
 
 if TYPE_CHECKING:
+    from Bot.Cogs.config import Config
     from Bot.kumikocore import KumikoCore
 
 
 class ConfigMenu(discord.ui.Select):
-    def __init__(self, bot: KumikoCore, ctx: commands.Context) -> None:
+    def __init__(
+        self, bot: KumikoCore, ctx: commands.Context, config_cog: Config
+    ) -> None:
         self.bot = bot
         self.ctx = ctx
-        self.pool = self.bot.pool
-        self.redis_pool = self.bot.redis_pool
+        self.config_cog = config_cog
         options = [
             discord.SelectOption(
                 emoji=getattr(cog, "display_emoji", None),
@@ -38,24 +38,51 @@ class ConfigMenu(discord.ui.Select):
         # You can't just define a variable for columns
         # See https://github.com/MagicStack/asyncpg/issues/208#issuecomment-335498184
         value = self.values[0]
-        view = ConfirmToggleView(self.ctx, value, self.pool, self.redis_pool)
+        view = ToggleCacheView(self.ctx, self.config_cog, value)
         embed = Embed()
         embed.description = "Select on the buttons below in order to enable or disable the current module."
         await interaction.response.send_message(embed=embed, view=view)
 
 
-class ConfirmToggleView(KumikoView):
-    def __init__(
-        self,
-        ctx: commands.Context,
-        value: str,
-        pool: asyncpg.Pool,
-        redis_pool: ConnectionPool,
-    ):
+class ToggleCacheView(KumikoView):
+    def __init__(self, ctx: commands.Context, config_cog: Config, value: str):
         super().__init__(ctx)
+        self.ctx = ctx
+        self.config_cog = config_cog
         self.value = value
-        self.pool = pool
-        self.redis_pool = redis_pool
+
+    async def set_cached_status(
+        self, interaction: discord.Interaction, status: bool
+    ) -> None:
+        value_to_key = {
+            "Economy": "local_economy",
+            "Redirects": "redirects",
+            "EventsLog": "logs",
+            "Pins": "pins",
+        }
+        key = value_to_key[self.value]
+        str_status = "enabled" if status is True else "disabled"
+        if interaction.guild is None or self.config_cog is None:
+            return
+
+        is_already_enabled = self.config_cog.check_already_enabled(
+            interaction.guild.id, self.value
+        )
+        if is_already_enabled is status:
+            await interaction.response.send_message(
+                f"Module `{self.value}` is already {str_status}!", ephemeral=True
+            )
+            return
+
+        # This will only run if the module is enabled/disabled
+        if self.config_cog.is_config_in_progress(interaction.guild.id):
+            self.config_cog.set_status_in_progress(interaction.guild.id, key, status)
+            await interaction.response.send_message(
+                f"Module `{self.value}` is now {str_status}", ephemeral=True
+            )
+            return
+
+        await interaction.response.send_message("You did not start the config process")
 
     @discord.ui.button(
         label="Enable",
@@ -63,27 +90,10 @@ class ConfirmToggleView(KumikoView):
         emoji="<:greenTick:596576670815879169>",
         row=0,
     )
-    async def confirm(
+    async def enable(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        assert interaction.guild is not None
-        if (
-            await check_already_set(self.value, interaction.guild.id, self.redis_pool)
-            is True
-        ):
-            await interaction.response.send_message(
-                f"{self.value} is already enabled!", ephemeral=True
-            )
-            return
-        # Must be disabled in order to run
-        return_status = await configure_settings(
-            status=True,
-            value=self.value,
-            guild_id=interaction.guild.id,
-            pool=self.pool,
-            redis_pool=self.redis_pool,
-        )
-        await interaction.response.send_message(return_status, ephemeral=True)
+        await self.set_cached_status(interaction, True)
 
     @discord.ui.button(
         label="Disable",
@@ -94,24 +104,7 @@ class ConfirmToggleView(KumikoView):
     async def disable(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        assert interaction.guild is not None
-        if (
-            await check_already_set(self.value, interaction.guild.id, self.redis_pool)
-            is False
-        ):
-            await interaction.response.send_message(
-                f"{self.value} is already disabled!", ephemeral=True
-            )
-            return
-        # Basically must be enabled in order to run
-        return_status = await configure_settings(
-            status=False,
-            value=self.value,
-            guild_id=interaction.guild.id,
-            pool=self.pool,
-            redis_pool=self.redis_pool,
-        )
-        await interaction.response.send_message(return_status, ephemeral=True)
+        await self.set_cached_status(interaction, False)
 
     @discord.ui.button(
         label="Finish",
@@ -126,15 +119,42 @@ class ConfirmToggleView(KumikoView):
 
 
 class ConfigMenuView(KumikoView):
-    def __init__(self, bot: KumikoCore, ctx: commands.Context) -> None:
+    def __init__(
+        self, bot: KumikoCore, ctx: commands.Context, config_cog: Config
+    ) -> None:
         super().__init__(ctx)
-        # self.author_id = author_id
-        self.add_item(ConfigMenu(bot, ctx))
+        self.config_cog = config_cog
+        self.pool = bot.pool
+        self.redis_pool = bot.redis_pool
+        self.add_item(ConfigMenu(bot, ctx, config_cog))
 
-    @discord.ui.button(label="Finish", style=discord.ButtonStyle.green, row=1)
-    async def finish(
+    @discord.ui.button(label="Save and Finish", style=discord.ButtonStyle.green, row=1)
+    async def save(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        query = """
+        UPDATE guild
+        SET logs = $2,
+            local_economy = $3,
+            redirects = $4,
+            pins = $5
+        WHERE id = $1;
+        """
+        if interaction.guild is None:
+            return
+
+        cache = GuildCacheHandler(interaction.guild.id, self.redis_pool)
+        cached_status = self.config_cog.get_status_config(interaction.guild.id)
+
+        if cached_status is None:
+            return
+
+        new_config = GuildConfig(**cached_status)
+        status_values = [v for v in cached_status.values()]
+
+        await self.pool.execute(query, interaction.guild.id, *status_values)
+        await cache.replace_config(".config", new_config)
+        self.config_cog.remove_in_progress_config(interaction.guild.id)
         await interaction.response.defer()
         await interaction.delete_original_response()
         self.stop()

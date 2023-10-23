@@ -1,8 +1,7 @@
 import discord
 from discord.ext import commands
+from Libs.config import GuildCacheHandler
 from Libs.errors import RedirectsDisabledError
-
-from .utils import get_or_fetch_status
 
 
 def check_if_thread(ctx: commands.Context):
@@ -21,10 +20,10 @@ def is_thread():
 async def check_redirects_enabled(ctx: commands.Context):
     if ctx.guild is None:
         raise RedirectsDisabledError
-    status = await get_or_fetch_status(ctx.guild.id, ctx.bot.pool, ctx.bot.redis_pool)
-    if status is None:
-        raise RedirectsDisabledError
-    elif status is False:
+
+    cache = GuildCacheHandler(ctx.guild.id, ctx.bot.redis_pool)
+    status = await cache.get_value(".config.redirects")
+    if not isinstance(status, bool) or status is False:
         raise RedirectsDisabledError
     return status
 
