@@ -34,7 +34,7 @@ pygit2 = "^1.13.1"
 async-lru = "^2.0.4"
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.4.2"
+pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"
 nox = "^2023.4.22"
 nox-poetry = "^1.0.3"
