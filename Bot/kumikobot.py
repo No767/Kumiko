@@ -11,9 +11,9 @@ from Libs.cache import KumikoCPManager
 from Libs.utils import KumikoLogger, init_codecs, read_env
 
 if os.name == "nt":
-    import winloop
-
-    asyncio.set_event_loop_policy(winloop.WinLoopPolicy())
+    from winloop import install
+else:
+    from uvloop import install
 
 load_dotenv()
 
@@ -54,12 +54,8 @@ async def main() -> None:
 
 def launch() -> None:
     with KumikoLogger():
-        try:
-            import uvloop
-
-            uvloop.run(main())
-        except ImportError:
-            asyncio.run(main())
+        install()
+        asyncio.run(main())
 
 
 if __name__ == "__main__":
