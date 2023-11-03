@@ -6,3 +6,10 @@ class ReservedConfig(TypedDict):
     local_economy: bool
     redirects: bool
     pins: bool
+
+
+class ReservedLogConfig(TypedDict):
+    channel_id: int
+    mod: bool
+    eco: bool
+    redirects: bool
