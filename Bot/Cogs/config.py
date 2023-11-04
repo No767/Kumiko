@@ -107,7 +107,7 @@ class Config(commands.Cog):
         await ctx.send(embed=embed, view=view)
 
     @commands.guild_only()
-    @commands.hybrid_group(name="prefix", fallback="info")
+    @config.group(name="prefix", fallback="info")
     async def prefix(self, ctx: commands.Context) -> None:
         """Displays info about the current prefix set on your server"""
         prefixes = await get_prefix(self.bot, ctx.message)
