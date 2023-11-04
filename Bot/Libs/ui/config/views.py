@@ -7,6 +7,8 @@ from discord.ext import commands
 from Libs.config import GuildCacheHandler, GuildConfig
 from Libs.utils import Embed, KumikoView
 
+from .utils import determine_status, format_conf_desc
+
 if TYPE_CHECKING:
     from Bot.Cogs.config import Config
     from Bot.kumikocore import KumikoCore
@@ -37,11 +39,22 @@ class ConfigMenu(discord.ui.Select):
         # I know that this is pretty dirty on how to do it, but there is quite literally no other way to do it
         # You can't just define a variable for columns
         # See https://github.com/MagicStack/asyncpg/issues/208#issuecomment-335498184
+        assert interaction.guild is not None
         value = self.values[0]
+        value_to_key = {
+            "Economy": "local_economy",
+            "Redirects": "redirects",
+            "EventsLog": "logs",
+            "Pins": "pins",
+        }
+        key = value_to_key[value]
+        current_status = self.config_cog.reserved_configs[interaction.guild.id][key]
         view = ToggleCacheView(self.ctx, self.config_cog, value)
         embed = Embed()
-        embed.description = "Select on the buttons below in order to enable or disable the current module."
+        embed.description = format_conf_desc(value, current_status)
         await interaction.response.send_message(embed=embed, view=view)
+
+        view.original_response = await interaction.original_response()  # type: ignore
 
 
 class ToggleCacheView(KumikoView):
@@ -52,7 +65,10 @@ class ToggleCacheView(KumikoView):
         self.value = value
 
     async def set_cached_status(
-        self, interaction: discord.Interaction, status: bool
+        self,
+        interaction: discord.Interaction,
+        original_resp: discord.InteractionMessage,
+        status: bool,
     ) -> None:
         value_to_key = {
             "Economy": "local_economy",
@@ -61,24 +77,29 @@ class ToggleCacheView(KumikoView):
             "Pins": "pins",
         }
         key = value_to_key[self.value]
-        str_status = "enabled" if status is True else "disabled"
+        str_status = determine_status(status)
         if interaction.guild is None or self.config_cog is None:
             return
 
-        is_already_enabled = self.config_cog.check_already_enabled(
-            interaction.guild.id, self.value
+        guild_id = interaction.guild.id
+        is_already_enabled = self.config_cog.is_config_already_enabled(
+            guild_id, self.value
         )
         if is_already_enabled is status:
             await interaction.response.send_message(
-                f"Module `{self.value}` is already {str_status}!", ephemeral=True
+                f"Module `{self.value}` is already {str_status.lower()}!",
+                ephemeral=True,
             )
             return
 
         # This will only run if the module is enabled/disabled
-        if self.config_cog.is_config_in_progress(interaction.guild.id):
-            self.config_cog.set_status_in_progress(interaction.guild.id, key, status)
+        if guild_id in self.config_cog.reserved_configs:
+            self.config_cog.reserved_configs[guild_id][key] = status
+            await original_resp.edit(
+                embed=Embed(description=format_conf_desc(self.value, status))
+            )
             await interaction.response.send_message(
-                f"Module `{self.value}` is now {str_status}", ephemeral=True
+                f"Module `{self.value}` is now {str_status.lower()}", ephemeral=True
             )
             return
 
@@ -93,7 +114,7 @@ class ToggleCacheView(KumikoView):
     async def enable(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self.set_cached_status(interaction, True)
+        await self.set_cached_status(interaction, self.original_response, True)  # type: ignore
 
     @discord.ui.button(
         label="Disable",
@@ -104,7 +125,7 @@ class ToggleCacheView(KumikoView):
     async def disable(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self.set_cached_status(interaction, False)
+        await self.set_cached_status(interaction, self.original_response, False)  # type: ignore
 
     @discord.ui.button(
         label="Finish",
@@ -132,6 +153,12 @@ class ConfigMenuView(KumikoView):
     async def save(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        value_map = {
+            "local_economy": "Economy",
+            "redirects": "Redirects",
+            "logs": "Logs",
+            "pins": "Pins",
+        }
         query = """
         UPDATE guild
         SET logs = $2,
@@ -143,18 +170,26 @@ class ConfigMenuView(KumikoView):
         if interaction.guild is None:
             return
 
-        cache = GuildCacheHandler(interaction.guild.id, self.redis_pool)
-        cached_status = self.config_cog.get_status_config(interaction.guild.id)
+        guild_id = interaction.guild.id
+        cache = GuildCacheHandler(guild_id, self.redis_pool)
+        cached_status = self.config_cog.reserved_configs.get(guild_id)
 
         if cached_status is None:
             return
 
+        change_desc = "\n".join(
+            [f"{value_map[k]}: {v}" for k, v in cached_status.items()]
+        )
+        desc = f"The following changes were made:\n{change_desc}"
+
         new_config = GuildConfig(**cached_status)
         status_values = [v for v in cached_status.values()]
 
-        await self.pool.execute(query, interaction.guild.id, *status_values)
+        await self.pool.execute(query, guild_id, *status_values)
         await cache.replace_config(".config", new_config)
-        self.config_cog.remove_in_progress_config(interaction.guild.id)
+        if guild_id in self.config_cog.reserved_configs:
+            self.config_cog.reserved_configs.pop(guild_id)
+
         await interaction.response.defer()
-        await interaction.delete_original_response()
+        await interaction.edit_original_response(content=desc, embed=None, view=None)
         self.stop()

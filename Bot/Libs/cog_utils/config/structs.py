@@ -13,3 +13,9 @@ class ReservedLogConfig(TypedDict):
     mod: bool
     eco: bool
     redirects: bool
+
+
+class ReservedLGC(TypedDict):
+    mod: bool
+    eco: bool
+    redirects: bool

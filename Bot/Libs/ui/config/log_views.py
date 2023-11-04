@@ -7,6 +7,8 @@ from discord.ext import commands
 from Libs.config.cache import GuildCacheHandler, LoggingGuildConfig
 from Libs.utils import KumikoView
 
+from .utils import determine_status, format_desc
+
 if TYPE_CHECKING:
     from Bot.Cogs.config import Config
     from Bot.kumikocore import KumikoCore
@@ -41,9 +43,16 @@ class LoggingConfigMenu(discord.ui.Select):
         self.ctx = ctx
 
     async def callback(self, interaction: discord.Interaction) -> None:
+        assert interaction.guild is not None
         value = self.values[0]
+        current_status = self.cog.reserved_lgc[interaction.guild.id][value]
         view = LGCToggleView(self.cog, self.ctx, value)
-        await interaction.response.send_message(f"You selected: {value}", view=view)
+        desc = format_desc(value, current_status)
+        await interaction.response.send_message(desc, view=view)
+
+        # So in this case, we just assign a runtime attr instead
+        # Pyright does not like it
+        view.original_response = await interaction.original_response()  # type: ignore
 
 
 class LGCView(KumikoView):
@@ -59,6 +68,7 @@ class LGCView(KumikoView):
     async def save_and_finish(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        value_map = {"mod": "Moderation", "eco": "Economy", "redirects": "Redirects"}
         query = """
         UPDATE logging_config
         SET mod = $2,
@@ -69,18 +79,26 @@ class LGCView(KumikoView):
         if interaction.guild is None:
             return
 
-        cache = GuildCacheHandler(interaction.guild.id, self.redis_pool)
-        cached_status = self.conf_cog.get_cached_lgc(interaction.guild.id)
+        guild_id = interaction.guild.id
+        cache = GuildCacheHandler(guild_id, self.redis_pool)
+        cached_status = self.conf_cog.reserved_lgc.get(guild_id)
         if cached_status is None:
             return
 
+        change_desc = "\n".join(
+            [f"{value_map[k]}: {v}" for k, v in cached_status.items()]
+        )
+        desc = f"The following changes were made:\n{change_desc}"
         new_conf = LoggingGuildConfig(**cached_status)
         status_values = [v for v in cached_status.values()]
-        await self.pool.execute(query, interaction.guild.id, *status_values)
+        await self.pool.execute(query, guild_id, *status_values)
         await cache.replace_config(".logging_config", new_conf)
-        self.conf_cog.remove_lgc(interaction.guild.id)
+
+        if guild_id in self.conf_cog.reserved_lgc:
+            self.conf_cog.reserved_lgc.pop(guild_id)
+
         await interaction.response.defer()
-        await interaction.delete_original_response()
+        await interaction.edit_original_response(content=desc, embed=None, view=None)
         self.stop()
 
 
@@ -91,25 +109,32 @@ class LGCToggleView(KumikoView):
         self.conf_cog = cog
         self.value = value
 
-    async def set_status(self, interaction: discord.Interaction, status: bool):
-        str_status = "enabled" if status is True else "disabled"
-
+    async def set_status(
+        self,
+        interaction: discord.Interaction,
+        original_resp: discord.InteractionMessage,
+        status: bool,
+    ):
+        str_status = determine_status(status)
         if interaction.guild is None or self.conf_cog is None:
             return
 
-        is_already_enabled = self.conf_cog.check_lgc_value_enabled(
+        guild_id = interaction.guild.id
+        is_already_enabled = self.conf_cog.is_lgc_already_enabled(
             interaction.guild.id, self.value
         )
         if is_already_enabled is status:
             await interaction.response.send_message(
-                f"Module `{self.value} is already {str_status}!`", ephemeral=True
+                f"Module `{self.value} is already {str_status.lower()}!`",
+                ephemeral=True,
             )
             return
 
-        if self.conf_cog.is_lgc_in(interaction.guild.id):
-            self.conf_cog.set_lgc(interaction.guild.id, self.value, status)
+        if guild_id in self.conf_cog.reserved_lgc:
+            self.conf_cog.reserved_lgc[guild_id][self.value] = status
+            await original_resp.edit(content=format_desc(self.value, status))
             await interaction.response.send_message(
-                f"Module `{self.value}` is now {str_status}", ephemeral=True
+                f"Module `{self.value}` is now {str_status.lower()}", ephemeral=True
             )
             return
 
@@ -124,7 +149,7 @@ class LGCToggleView(KumikoView):
     async def enable(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self.set_status(interaction, True)
+        await self.set_status(interaction, self.original_response, True)  # type: ignore
 
     @discord.ui.button(
         label="Disable",
@@ -135,7 +160,7 @@ class LGCToggleView(KumikoView):
     async def disable(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
-        await self.set_status(interaction, False)
+        await self.set_status(interaction, self.original_response, False)  # type: ignore
 
     @discord.ui.button(
         label="Finish",
