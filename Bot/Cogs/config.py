@@ -45,9 +45,9 @@ class Config(commands.Cog):
         return discord.PartialEmoji(name="\U0001f6e0")
 
     @is_manager()
-    @commands.hybrid_group(name="configure", aliases=["config"], fallback="features")
+    @commands.hybrid_group(name="configure", aliases=["config"], fallback="modules")
     async def config(self, ctx: commands.Context) -> None:
-        """Configure the settings for Kumiko"""
+        """Configure the settings for the modules on Kumiko"""
         assert ctx.guild is not None
 
         query = """
