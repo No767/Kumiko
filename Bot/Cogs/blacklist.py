@@ -38,7 +38,7 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
         pages = BlacklistPages(entries=cache_to_list, ctx=ctx)
         await pages.start()
 
-    @blacklist.command(name="add")
+    @blacklist.command(name="add", hidden=True)
     async def add(self, ctx: commands.Context, id: discord.Object) -> None:
         """Blacklists the given user or guild ID"""
         gid = id.id
@@ -55,7 +55,7 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
             return
         await ctx.send(NO_HANGOUT_BLOCK)
 
-    @blacklist.command(name="delete")
+    @blacklist.command(name="delete", hidden=True)
     async def delete(self, ctx: commands.Context, id: discord.Object) -> None:
         """Un-blacklists the given user or guild ID"""
         gid = id.id

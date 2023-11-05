@@ -15,9 +15,6 @@ from Libs.cog_utils.meta import (
 from Libs.utils import Embed, human_timedelta, is_docker
 from psutil._common import bytes2human
 
-TESTING_GUILD_ID = 970159505390325842
-HANGOUT_GUILD_ID = 1145897416160194590
-
 
 class Meta(commands.Cog):
     """Commands to obtain info about Kumiko or others"""
@@ -173,11 +170,10 @@ class Meta(commands.Cog):
         await ctx.send(url)
 
     @commands.is_owner()
-    @commands.hybrid_command(
+    @commands.command(
         name="sys-metrics",
         aliases=["sysmetrics"],
         hidden=True,
-        guild_ids=[TESTING_GUILD_ID, HANGOUT_GUILD_ID],
     )
     async def sys_metrics(self, ctx: commands.Context) -> None:
         """Tells you the current system metrics along with other information"""

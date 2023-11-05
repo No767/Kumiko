@@ -82,7 +82,7 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.send("Reloaded all cogs")
 
     @commands.is_owner()
-    @commands.hybrid_command(name="raise-error")
+    @commands.command(name="raise-error", hidden=True)
     async def raise_error(self, ctx: commands.Context) -> None:
         """Simple test command"""
         raise RuntimeError("Invalid...")
