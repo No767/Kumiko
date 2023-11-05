@@ -50,6 +50,12 @@ class Config(commands.Cog):
         """Configure the settings for the modules on Kumiko"""
         assert ctx.guild is not None
 
+        value_map = {
+            "local_economy": "Economy",
+            "redirects": "Redirects",
+            "logs": "Logs",
+            "pins": "Pins",
+        }
         query = """
         SELECT logs, local_economy, redirects, pins
         FROM guild
@@ -61,12 +67,18 @@ class Config(commands.Cog):
             return
         reserved_conf = ReservedConfig(**dict(rows))
         self.reserved_configs.setdefault(ctx.guild.id, reserved_conf)
+        current_status = "\n".join(
+            [f"{value_map[k]}: {v}" for k, v in reserved_conf.items()]
+        )
         view = ConfigMenuView(self.bot, ctx, self)
         embed = Embed()
         embed.description = """
         If you are the owner or a server mod, this is the main configuration menu!
         This menu is meant for enabling/disabling features.
         """
+        embed.add_field(
+            name="Last Saved Values", value=f"```{current_status}```", inline=False
+        )
         embed.add_field(
             name="How to use",
             value="Click on the select menu, and enable/disable the selected feature. Once finished, just click the 'Finish' button",
