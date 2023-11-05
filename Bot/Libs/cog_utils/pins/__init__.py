@@ -1,4 +1,7 @@
-from .checks import is_pins_enabled as is_pins_enabled
+from .checks import (
+    check_pin_enabled as check_pin_enabled,
+    is_pins_enabled as is_pins_enabled,
+)
 from .format_options import format_options as format_options
 from .pin_utils import (
     create_pin as create_pin,

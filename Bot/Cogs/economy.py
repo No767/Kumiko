@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import RefundFlags, is_economy_enabled
+from Libs.cog_utils.economy import RefundFlags, check_economy_enabled
 from Libs.ui.economy import LeaderboardPages, RegisterView, UserInvPages
 from Libs.utils import ConfirmEmbed, Embed
 
@@ -26,12 +26,14 @@ class Economy(commands.Cog):
     def configurable(self) -> bool:
         return True
 
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await check_economy_enabled(ctx)
+
     @commands.hybrid_group(name="eco", aliases=["economy"])
     async def eco(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @is_economy_enabled()
     @eco.command(name="wallet", aliases=["bal", "balance"])
     async def wallet(self, ctx: commands.Context) -> None:
         """View your eco wallet"""
@@ -58,7 +60,6 @@ class Economy(commands.Cog):
         embed.add_field(name="Petals", value=user_record["petals"], inline=True)
         await ctx.send(embed=embed)
 
-    @is_economy_enabled()
     @eco.command(name="register")
     async def register(self, ctx: commands.Context) -> None:
         """Register for an economy account"""
@@ -67,7 +68,6 @@ class Economy(commands.Cog):
         embed.description = "Do you want to make an account? The account can only be accessed from your current guild"
         await ctx.send(embed=embed, view=view)
 
-    @is_economy_enabled()
     @eco.command(name="inventory", aliases=["inv"])
     async def inventory(self, ctx: commands.Context) -> None:
         """View your inventory"""
@@ -85,7 +85,6 @@ class Economy(commands.Cog):
         pages = UserInvPages(entries=rows, ctx=ctx, per_page=1, pool=self.pool)
         await pages.start()
 
-    @is_economy_enabled()
     @eco.command(name="top", aliases=["baltop"])
     async def top(self, ctx: commands.Context) -> None:
         """View the top players in your server"""
@@ -103,7 +102,6 @@ class Economy(commands.Cog):
         pages = LeaderboardPages(entries=rows, ctx=ctx, per_page=10)
         await pages.start()
 
-    @is_economy_enabled()
     @eco.command(name="refund", aliases=["return"])
     async def refund(self, ctx: commands.Context, *, flags: RefundFlags) -> None:
         """Refunds your item, but you will only get 75% of the original price back"""

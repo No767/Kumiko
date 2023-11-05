@@ -2,8 +2,12 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import PurchaseFlags, is_economy_enabled
-from Libs.cog_utils.marketplace import format_item_options, get_item, is_payment_valid
+from Libs.cog_utils.economy import PurchaseFlags, check_economy_enabled
+from Libs.cog_utils.marketplace import (
+    format_item_options,
+    get_item,
+    is_payment_valid,
+)
 from Libs.ui.marketplace import ItemPages, SimpleSearchItemPages
 from Libs.utils import Embed, get_or_fetch_member
 from typing_extensions import Annotated
@@ -23,7 +27,9 @@ class Marketplace(commands.Cog):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji.from_str("<:shop:1132982447177478214>")
 
-    @is_economy_enabled()
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await check_economy_enabled(ctx)
+
     @commands.hybrid_group(name="marketplace", fallback="list")
     async def marketplace(self, ctx: commands.Context) -> None:
         """List the items available for purchase"""
@@ -41,7 +47,6 @@ class Marketplace(commands.Cog):
         pages = ItemPages(entries=rows, ctx=ctx, per_page=1)
         await pages.start()
 
-    @is_economy_enabled()
     @marketplace.command(name="buy", aliases=["purchase"], usage="amount: <int>")
     @app_commands.describe(name="The name of the item to buy")
     async def buy(
@@ -119,7 +124,6 @@ class Marketplace(commands.Cog):
                     "3. There are no remaining in stock\n"
                 )
 
-    @is_economy_enabled()
     @marketplace.command(name="info")
     @app_commands.describe(name="The name of the item to search for")
     async def info(
@@ -145,7 +149,6 @@ class Marketplace(commands.Cog):
         embed.add_field(name="Amount", value=record["amount"])
         await ctx.send(embed=embed)
 
-    @is_economy_enabled()
     @marketplace.command(name="search")
     @app_commands.describe(query="The name of the item to look for")
     async def search(

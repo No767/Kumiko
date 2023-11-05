@@ -13,7 +13,7 @@ from Libs.cog_utils.auctions import (
     obtain_item_info,
     purchase_auction,
 )
-from Libs.cog_utils.economy import is_economy_enabled
+from Libs.cog_utils.economy import check_economy_enabled
 from Libs.ui.auctions import AuctionPages, AuctionSearchPages, OwnedAuctionPages
 from Libs.utils import Embed, MessageConstants
 from typing_extensions import Annotated
@@ -30,7 +30,9 @@ class Auctions(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji.from_str("<:auction_house:1136906394323398749>")
 
-    @is_economy_enabled()
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await check_economy_enabled(ctx)
+
     @commands.hybrid_group(
         name="auctions", fallback="view", aliases=["auction-house", "ah"]
     )
@@ -54,7 +56,6 @@ class Auctions(commands.Cog):
         pages = AuctionPages(entries=rows, ctx=ctx, per_page=1)
         await pages.start()
 
-    @is_economy_enabled()
     @auctions.command(name="create", aliases=["make"], usage="amount: <int>")
     @app_commands.describe(name="The name of the item to list for purchase")
     async def create(
@@ -78,7 +79,6 @@ class Auctions(commands.Cog):
         )
         await ctx.send(status)
 
-    @is_economy_enabled()
     @auctions.command(name="delete", aliases=["remove"])
     @app_commands.describe(name="The name of the item to list for removal")
     async def delete(
@@ -96,7 +96,6 @@ class Auctions(commands.Cog):
         )
         await ctx.send(status)
 
-    @is_economy_enabled()
     @auctions.command(name="update", aliases=["edit"], usage="amount: <int>")
     @app_commands.describe(name="The name of the item you want to update")
     async def update(
@@ -119,7 +118,6 @@ class Auctions(commands.Cog):
         )
         await ctx.send(status)
 
-    @is_economy_enabled()
     @auctions.command(name="owned")
     async def owned(self, ctx: commands.Context) -> None:
         """Get items listed by you"""
@@ -137,7 +135,6 @@ class Auctions(commands.Cog):
         pages = OwnedAuctionPages(entries=rows, ctx=ctx, per_page=1, pool=self.pool)
         await pages.start()
 
-    @is_economy_enabled()
     @auctions.command(name="search")
     async def search(
         self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
@@ -163,7 +160,6 @@ class Auctions(commands.Cog):
         pages = AuctionSearchPages(entries=rows, ctx=ctx, per_page=10)
         await pages.start()
 
-    @is_economy_enabled()
     @auctions.command(name="info")
     @app_commands.describe(name="The name of the item to look at")
     async def info(
@@ -192,7 +188,6 @@ class Auctions(commands.Cog):
         embed.timestamp = item_info["listed_at"].replace(tzinfo=datetime.timezone.utc)
         await ctx.send(embed=embed)
 
-    @is_economy_enabled()
     @auctions.command(name="buy", aliases=["purchase"], usage="name amount: int")
     @app_commands.describe(name="The name of the item to purchase")
     async def buy(

@@ -6,12 +6,15 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.redirects import (
     can_close_threads,
+    check_redirects_enabled,
+    check_redirects_menu,
     create_redirected_thread,
     is_redirects_enabled,
     is_thread,
     mark_as_resolved,
 )
 from Libs.ui.redirects import ConfirmResolvedView
+from Libs.utils import ErrorEmbed
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
 # Required Perms (from discord.Permission):
@@ -38,19 +41,12 @@ class Redirects(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji(name="\U0001f500")
 
-    @commands.Cog.listener()
-    async def on_thread_create(self, thread: discord.Thread) -> None:
-        # this logic is the same as RoboDanny
-        # Requires Permissions.manage_messages
-        message = thread.get_partial_message(thread.id)
-        try:
-            await message.pin()
-        except discord.HTTPException:
-            pass
-
     @property
     def configurable(self) -> bool:
         return True
+
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await check_redirects_enabled(ctx)
 
     @is_redirects_enabled()
     @app_commands.checks.cooldown(1, 30, key=lambda i: (i.guild_id, i.user.id))
@@ -58,6 +54,14 @@ class Redirects(commands.Cog):
         self, interaction: discord.Interaction, message: discord.Message
     ) -> None:
         """Redirects a conversation into a separate thread"""
+        module_status = await check_redirects_menu(interaction)
+
+        if module_status is False:
+            e = ErrorEmbed(title="Redirects Disabled")
+            e.description = "The redirects module is disabled in this server. Please ask your server admin to enable it."
+            await interaction.response.send_message(embed=e)
+            return
+
         channel = interaction.channel
 
         if isinstance(channel, discord.TextChannel):
@@ -152,6 +156,16 @@ class Redirects(commands.Cog):
                 ctx=ctx, thread=channel, author=ctx.author, timeout=300.0
             )
             await ctx.send(content=prompt_message, view=view)
+
+    @commands.Cog.listener()
+    async def on_thread_create(self, thread: discord.Thread) -> None:
+        # this logic is the same as RoboDanny
+        # Requires Permissions.manage_messages
+        message = thread.get_partial_message(thread.id)
+        try:
+            await message.pin()
+        except discord.HTTPException:
+            pass
 
     @resolved.error
     async def on_resolved_error(self, ctx: commands.Context, error: Exception):

@@ -5,7 +5,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import is_economy_enabled
+from Libs.cog_utils.economy import check_economy_enabled
 from Libs.cog_utils.jobs import (
     JobListFlags,
     JobOutputFlags,
@@ -64,7 +64,9 @@ class Jobs(commands.Cog):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f4bc")
 
-    @is_economy_enabled()
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await check_economy_enabled(ctx)
+
     @commands.hybrid_group(name="jobs", fallback="list")
     async def jobs(self, ctx: commands.Context, flags: JobListFlags) -> None:
         """Lists all available jobs in your server"""
@@ -108,7 +110,6 @@ class Jobs(commands.Cog):
             pages = KumikoPages(EmbedListSource(data_list, per_page=1), ctx=ctx)
             await pages.start()
 
-    @is_economy_enabled()
     @jobs.command(name="create")
     @app_commands.describe(
         required_rank="The required rank or higher to obtain the job",
@@ -199,7 +200,6 @@ class Jobs(commands.Cog):
         finally:
             self.remove_in_progress_job(ctx.guild.id, name)  # type: ignore
 
-    @is_economy_enabled()
     @jobs.command(name="update")
     @app_commands.describe(
         name="The name of the job to update",
@@ -253,7 +253,6 @@ class Jobs(commands.Cog):
             f"Successfully updated the job `{name}` (RR: {required_rank}, Pay: {pay})"
         )
 
-    @is_economy_enabled()
     @jobs.command(name="delete")
     @app_commands.describe(name="The name of the job to delete")
     async def delete(
@@ -265,7 +264,6 @@ class Jobs(commands.Cog):
         embed.description = f"Are you sure you want to delete the job `{name}`?"
         await ctx.send(embed=embed, view=view)
 
-    @is_economy_enabled()
     @jobs.command(name="delete-id")
     @app_commands.describe(id="The ID of the job to delete")
     async def delete_via_id(self, ctx: commands.Context, id: int) -> None:
@@ -275,7 +273,6 @@ class Jobs(commands.Cog):
         embed.description = f"Are you sure you want to delete the job? (ID: `{id}`)?"
         await ctx.send(embed=embed, view=view)
 
-    @is_economy_enabled()
     @jobs.command(name="purge")
     async def purge(self, ctx: commands.Context) -> None:
         """Purges all jobs that you own"""
@@ -284,7 +281,6 @@ class Jobs(commands.Cog):
         embed.description = "Are you sure you want to delete all jobs that you own?"
         await ctx.send(embed=embed, view=view)
 
-    @is_economy_enabled()
     @jobs.command(name="file")
     @app_commands.describe(name="The name of the job to file")
     async def file(
@@ -302,7 +298,6 @@ class Jobs(commands.Cog):
         else:
             await ctx.send(f"Successfully filed job `{name}` for general availability.")
 
-    @is_economy_enabled()
     @jobs.command(name="unfile")
     @app_commands.describe(name="The name of the job to un-file")
     async def unfile(
@@ -323,7 +318,7 @@ class Jobs(commands.Cog):
             )
 
     # Probably should make a custom converter for this
-    @is_economy_enabled()
+
     @jobs.command(name="apply")
     @app_commands.describe(name="The name of the job to apply")
     async def apply(
@@ -352,7 +347,6 @@ class Jobs(commands.Cog):
             status = await submit_job_app(ctx.author.id, ctx.guild.id, name.lower(), False, conn)  # type: ignore
             await ctx.send(status)
 
-    @is_economy_enabled()
     @jobs.command(name="quit")
     @app_commands.describe(name="The name of the job to quit")
     async def quit(
@@ -371,7 +365,6 @@ class Jobs(commands.Cog):
                 status = await submit_job_app(None, ctx.guild.id, name.lower(), True, conn)  # type: ignore
                 await ctx.send(status)
 
-    @is_economy_enabled()
     @jobs.command(name="info")
     @app_commands.describe(name="The name of the job to get")
     async def info(
@@ -388,7 +381,6 @@ class Jobs(commands.Cog):
         embed.set_footer(text=f"ID: {job_results['id']}")  # type: ignore
         await ctx.send(embed=embed)
 
-    @is_economy_enabled()
     @jobs.command(name="search")
     @app_commands.describe(query="The name of the job to look for")
     async def search(
@@ -411,7 +403,6 @@ class Jobs(commands.Cog):
         else:
             await ctx.send("No jobs were found")
 
-    @is_economy_enabled()
     @jobs.command(name="output", usage="<name> price: int amount_per_hour: int")
     @app_commands.describe(name="The name of the item that the job outputs")
     async def associate_item(
