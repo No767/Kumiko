@@ -4,7 +4,6 @@ import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cache import KumikoCache
 from Libs.cog_utils.redirects import (
     can_close_threads,
     create_redirected_thread,
@@ -13,7 +12,6 @@ from Libs.cog_utils.redirects import (
     mark_as_resolved,
 )
 from Libs.ui.redirects import ConfirmResolvedView
-from Libs.utils import is_manager
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
 # Required Perms (from discord.Permission):
@@ -129,59 +127,6 @@ class Redirects(commands.Cog):
             await ctx.send(
                 "You can't use this on other types of channels. Only text channels are able to redirect messages."
             )
-
-    @commands.hybrid_group(name="redirects")
-    async def redirects(self, ctx: commands.Context) -> None:
-        """Module to handle redirecting replied conversations into threads"""
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help(ctx.command)
-
-    @is_manager()
-    @redirects.command(name="enable")
-    async def enable(self, ctx: commands.Context):
-        """Enables the redirect module"""
-        assert ctx.guild is not None
-        key = f"cache:kumiko:{ctx.guild.id}:guild_config"
-        cache = KumikoCache(self.redis_pool)
-        query = """
-        UPDATE guild
-        SET redirects = $2
-        WHERE id = $1;
-        """
-        results = await cache.get_json_cache(
-            key=key, path=self.redirects_path, value_only=False
-        )
-        if results is True:
-            await ctx.send("Redirects are already enabled")
-            return
-        else:
-            await self.pool.execute(query, ctx.guild.id, True)
-            await cache.merge_json_cache(
-                key=key, value=True, path=self.redirects_path, ttl=None
-            )
-            await ctx.send("Redirects are now enabled")
-            return
-
-    @is_manager()
-    @is_redirects_enabled()
-    @redirects.command(name="disable")
-    async def disable(self, ctx: commands.Context):
-        """Disables the redirects module"""
-        assert ctx.guild is not None
-        key = f"cache:kumiko:{ctx.guild.id}:guild_config"
-        cache = KumikoCache(connection_pool=self.redis_pool)
-        query = """
-        UPDATE guild
-        SET redirects = $2
-        WHERE id = $1;
-        """
-        await self.pool.execute(query, ctx.guild.id, False)
-        await cache.merge_json_cache(
-            key=key, value=False, path=self.redirects_path, ttl=None
-        )
-        await ctx.send(
-            "Redirects is now disabled for your server. Please enable it first."
-        )
 
     @is_thread()
     @is_redirects_enabled()

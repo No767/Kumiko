@@ -1,10 +1,9 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cache import KumikoCache
 from Libs.cog_utils.economy import RefundFlags, is_economy_enabled
 from Libs.ui.economy import LeaderboardPages, RegisterView, UserInvPages
-from Libs.utils import ConfirmEmbed, Embed, is_manager
+from Libs.utils import ConfirmEmbed, Embed
 
 
 class Economy(commands.Cog):
@@ -31,48 +30,6 @@ class Economy(commands.Cog):
     async def eco(self, ctx: commands.Context) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
-
-    # Throw checks on these later
-    @is_manager()
-    @eco.command(name="enable")
-    async def enable(self, ctx: commands.Context) -> None:
-        """Enables the economy module for your server"""
-        key = f"cache:kumiko:{ctx.guild.id}:guild_config"  # type: ignore
-        cache = KumikoCache(connection_pool=self.redis_pool)
-        query = """
-        UPDATE guild
-        SET local_economy = $2
-        WHERE id = $1;
-        """
-        result = await cache.get_json_cache(key=key, path=self.local_economy_key)
-        if result is True:
-            await ctx.send("Economy is already enabled for your server!")
-        else:
-            await self.pool.execute(query, ctx.guild.id, True)  # type: ignore
-            await cache.merge_json_cache(
-                key=key, value=True, path=self.local_economy_key, ttl=None
-            )
-            await ctx.send("Enabled economy!")
-
-    @is_manager()
-    @is_economy_enabled()
-    @eco.command(name="disable")
-    async def disable(self, ctx: commands.Context) -> None:
-        """Disables the economy module for your server"""
-        key = f"cache:kumiko:{ctx.guild.id}:guild_config"  # type: ignore
-        cache = KumikoCache(connection_pool=self.redis_pool)
-        query = """
-        UPDATE guild
-        SET local_economy = $2
-        WHERE id = $1;
-        """
-        await self.pool.execute(query, ctx.guild.id, False)  # type: ignore
-        await cache.merge_json_cache(
-            key=key, value=False, path=".local_economy", ttl=None
-        )
-        await ctx.send(
-            "Economy is now disabled for your server. Please enable it first."
-        )
 
     @is_economy_enabled()
     @eco.command(name="wallet", aliases=["bal", "balance"])
