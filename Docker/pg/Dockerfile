@@ -1,2 +1,2 @@
 FROM postgres:15
-COPY /init-ext.sql /docker-entrypoint-initdb.d/
+COPY /init-ext.sh /docker-entrypoint-initdb.d/
