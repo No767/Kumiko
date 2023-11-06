@@ -1,7 +1,9 @@
 Bot Setup
 ================
 
-This guide provides the steps for setting up a testing bot. This testing bot should only be used for development purposes, or for trying out a self hosted version of Kumiko. **DO NOT RUN THESE BOTS IN PRODUCTION**
+This guide provides the steps for setting up a testing bot. 
+This testing bot should only be used for development purposes, or for trying out a self hosted version of Kumiko. 
+**DO NOT RUN THESE BOTS IN PRODUCTION**
 
 
 1. Create a new application at https://discord.com/developers/applications

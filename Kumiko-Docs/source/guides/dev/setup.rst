@@ -18,11 +18,11 @@ Local Setup
         gh repo clone [username]/Kumiko && cd Kumiko
     
 
-2. Install all of the dependencies (including dev dependencies)
+2. Install all of the dependencies
 
     .. code-block:: bash
 
-        poetry install --with=dev,test,docs
+        poetry install
 
 3. Set up the pre-commit hooks
 
@@ -44,6 +44,7 @@ Local Setup
         POSTGRES_PASSWORD=...
         POSTGRES_USER=...
         POSTGRES_URI=postgres://user:somepass@localhost:5432/somedb
+        KUMIKO_PASSWORD=somepass
         
 
 6. Start the Docker Compose stack
@@ -52,14 +53,7 @@ Local Setup
 
         sudo docker compose -f docker-compose-dev.yml up -d
     
-
-7. Enable the PostgreSQL extension ``pg_trgm``
-
-    .. code-block:: sql
-
-        CREATE EXTENSION pg_trgm;
-
-8. Run the database migrations
+7. Run the database migrations
 
     .. code-block:: bash
 
@@ -76,7 +70,10 @@ Kumiko also supports using Vagrant as a development environment.
 
 .. note::
 
-    The Ansible playbook only sets up the environment which includes everything needed to get started. There is still a layer of manual configuration that needs to be done. The Ansible playbook installs PostgreSQL, Redis, Python and Poetry into the VM, and also sets up the repo for development. There is no need to use Docker since PostgreSQL and Redis are installed natively into the system.
+    The Ansible playbook only sets up the environment which includes everything needed to get started. 
+    There is still a layer of manual configuration that needs to be done. 
+    The Ansible playbook installs PostgreSQL, Redis, Python and Poetry into the VM, and also sets up the repo for development. 
+    There is no need to use Docker since PostgreSQL and Redis are installed natively into the system.
 
 Requirements
 ^^^^^^^^^^^^
@@ -92,12 +89,19 @@ Ansible roles needed:
 * ``staticdev.pyenv``
 
 
-In order to use Vagrant, you will need Oracle VirtualBox or VMWare Workstation installed on your machine. Once installed and properly configured, you can just run ``vagrant up`` (in your WSL2 or Linux environment) to provision and start it up, and connect to it by SSH or by VSCode. 
+In order to use Vagrant, you will need Oracle VirtualBox or VMWare Workstation installed on your machine. 
+Once installed and properly configured, you can just run ``vagrant up`` (in your WSL2 or Linux environment) to provision and start it up, 
+and connect to it by SSH or by VSCode. 
 
 Environment Variables
 ---------------------
 
-Kumiko v0.7+ includes an development mode feature, which will set up jishaku and a custom FS watcher. The FS (File System) watcher is just like HMR (Hot Module Replacements). Once you press Ctrl+s in your cog, it will automatically reload it so the code executed is changed. Later on, there may be more development features that will be included. Make sure you first install the dev dependencies first! And in order to enable it, set an environment variable called ``DEV_MODE`` to ``True``.
+Kumiko v0.7+ includes an development mode feature, which will set up jishaku and a custom FS watcher. 
+The FS (File System) watcher is just like HMR (Hot Module Replacements). 
+Once you press Ctrl+s in your cog, it will automatically reload it so the code executed is changed. 
+Later on, there may be more development features that will be included. 
+Make sure you first install the dev dependencies first! 
+And in order to enable it, set an environment variable called ``DEV_MODE`` to ``True``.
 
 .. caution:: 
 

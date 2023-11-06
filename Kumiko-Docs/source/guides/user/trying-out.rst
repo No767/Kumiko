@@ -3,10 +3,13 @@ Trying out Kumiko
 
 .. warning:: 
 
-    **I'd prefer if you do not run actual versions of Kumiko in production. These instructions are only for those who want to try out a local version of Kumiko in order to catch and fix bugs**
+    **I'd prefer if you do not run actual versions of Kumiko in production. 
+    These instructions are only for those who want to try out a local version of Kumiko in order to catch and fix bugs**
 
 
-Kumiko can be tried out by running the Docker image. For the official versions of Kumiko, please invite the bot into your guild instead. For those who want to try out the latest breaking features, using Docker is recommended.
+Kumiko can be tried out by running the Docker image. 
+For the official versions of Kumiko, please invite the bot into your guild instead. 
+For those who want to try out the latest breaking features, using Docker is recommended.
 
 Prerequisites
 -------------
@@ -61,6 +64,7 @@ Docker CLI (Standalone)
         POSTGRES_PASSWORD=...
         POSTGRES_USER=...
         POSTGRES_URI=postgres://user:somepass@localhost:5432/somedb
+        KUMIKO_PASSWORD=somepass
 
 4. Run the bot
 
@@ -73,13 +77,19 @@ Systemd (Standalone)
 
 **Before you start, ensure that you have PostgreSQL and Redis correctly configured and is running**
 
-1. Ensure that the database is created and the PostgreSQL extension ``pg_trgm`` and the RedisJSON module are loaded. Refer to the `Redis docs <https://redis.io/docs/data-types/json/#download-binaries>`_ on how to install and load the JSON module.
+.. NOTE::
+
+    Kumiko heavily relies RediJSON in order to cache data.
+    Refer to the `Redis docs <https://redis.io/docs/data-types/json/#download-binaries>`_ 
+    on how to install and load the JSON module, or use Redis Stack.
+
+1. Ensure that the database is created and the PostgreSQL extension ``pg_trgm`` and the RedisJSON module are loaded
 
     .. code-block:: sql
         
         CREATE ROLE kumiko WITH LOGIN PASSWORD 'somepass';
         CREATE DATABASE kumiko OWNER kumiko;
-        CREATE EXTENSION IF NOT EXISTS pg_trgm;
+        CREATE EXTENSION IF NOT EXISTS pg_trgm; -- This command needs to be ran in the kumiko database
 
 2. Clone the repo
 
@@ -139,7 +149,9 @@ Systemd (Standalone)
         [Install]
         WantedBy=multi-user.target
 
-7. Test whether you have everything set up. If you have ``make`` installed, you can run ``make prod-run`` in order to run the bot (the ``Makefile`` is found in the root of the repo). Otherwise, just run ``kumikobot.py``
+7. Test whether you have everything set up. 
+    If you have ``make`` installed, you can run ``make prod-run`` in order to run the bot 
+    (the ``Makefile`` is found in the root of the repo). Otherwise, just run ``kumikobot.py``
 
 8. Reload the system daemon
 
@@ -171,7 +183,8 @@ Docker Compose
 
     .. note:: 
 
-        By default, this will clone the dev branch. For stable releases, run ``git checkout master`` to checkout into stable releases (or checkout the latest tag)
+        By default, this will clone the dev branch. 
+        For stable releases, run ``git checkout master`` to checkout into stable releases (or checkout the latest tag)
 
 2. Copy the ENV files into the correct places
 

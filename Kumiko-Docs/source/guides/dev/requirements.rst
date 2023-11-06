@@ -13,7 +13,8 @@ Before you get started, please ensure you have the following installed:
 - Discord Account + App
 
 .. CAUTION::
-   Kumiko is natively developed for Linux. Development should work on Windows but it is highly untested.
+   Kumiko is natively developed for Linux. 
+   Development should work on Windows but it is highly untested.
 
 Package Prerequisites
 ----------------------
