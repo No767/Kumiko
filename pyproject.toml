@@ -47,7 +47,7 @@ pyinstrument = "^4.6.1"
 pyright = "^1.1.335"
 watchfiles = "^0.21.0"
 jishaku = "^2.5.2"
-ruff = "^0.1.4"
+ruff = "^0.1.5"
 objgraph = "^3.6.0"
 
 
