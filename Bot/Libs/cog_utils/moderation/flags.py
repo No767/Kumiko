@@ -8,8 +8,8 @@ from .converters import TimeoutDTConverter
 
 
 class BanFlags(commands.FlagConverter):
-    members: commands.Greedy[discord.Member] = commands.flag(
-        aliases=["m"], default=lambda ctx: [], description="The member(s) to ban"
+    member: discord.Member = commands.flag(
+        aliases=["m"], description="The member to ban"
     )
     delete_messages: bool = commands.flag(
         aliases=["delm"],
@@ -21,18 +21,9 @@ class BanFlags(commands.FlagConverter):
     )
 
 
-class UnbanFlags(commands.FlagConverter):
-    members: commands.Greedy[discord.Member] = commands.flag(
-        aliases=["m"], default=lambda ctx: [], description="The member(s) to ban"
-    )
-    reason: str = commands.flag(
-        aliases=["r"], default=None, description="The reason for unbanning said user(s)"
-    )
-
-
 class KickFlags(commands.FlagConverter):
-    members: commands.Greedy[discord.Member] = commands.flag(
-        aliases=["m"], default=lambda ctx: [], description="The member(s) to kick"
+    member: discord.Member = commands.flag(
+        aliases=["m"], description="The member to kick"
     )
     reason: str = commands.flag(
         aliases=["r"], default=None, description="The reason for kicking said user(s)"
@@ -40,8 +31,8 @@ class KickFlags(commands.FlagConverter):
 
 
 class TimeoutFlags(commands.FlagConverter):
-    members: commands.Greedy[discord.Member] = commands.flag(
-        aliases=["m"], default=lambda ctx: [], description="The member(s) to timeout"
+    member: discord.Member = commands.flag(
+        aliases=["m"], description="The member to timeout"
     )
     duration: Optional[Annotated[str, TimeoutDTConverter]] = commands.flag(
         aliases=["d"],

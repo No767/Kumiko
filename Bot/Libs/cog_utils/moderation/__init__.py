@@ -5,5 +5,4 @@ from .flags import (
     BanFlags as BanFlags,
     KickFlags as KickFlags,
     TimeoutFlags as TimeoutFlags,
-    UnbanFlags as UnbanFlags,
 )
