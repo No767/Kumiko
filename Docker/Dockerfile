@@ -8,7 +8,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   curl \
-  git
+  git \
+  && apt-get clean
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -35,14 +36,16 @@ RUN apt update \
   libopus-dev \
   libffi-dev \
   libsodium-dev \
-  git
+  git \
+  && apt-get clean
 
 WORKDIR /Kumiko
-COPY /Bot/kumikobot.py /Kumiko/Bot/
-COPY /Bot/kumikocore.py /Kumiko/Bot/
+COPY /Bot/ /Kumiko/Bot/
+# COPY /Bot/kumikobot.py /Kumiko/Bot/
+# COPY /Bot/kumikocore.py /Kumiko/Bot/
 COPY /Migrations /Kumiko/Migrations
-COPY /Bot/Cogs /Kumiko/Bot/Cogs
-COPY /Bot/Libs /Kumiko/Bot/Libs/
+# COPY /Bot/Cogs /Kumiko/Bot/Cogs
+# COPY /Bot/Libs /Kumiko/Bot/Libs/
 COPY /migrations-runner.py /Kumiko/migrations-runner.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
@@ -56,7 +59,7 @@ RUN adduser --disabled-password --gecos "" kumiko \
 
 USER kumiko
 
-ENV PATH="${PATH}:/home/kumiko/.local/bin"
+ENV PATH="${PATH}:${HOME}/.local/bin"
 
 RUN pip install --user -r requirements.txt
 
