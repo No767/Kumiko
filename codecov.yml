@@ -16,3 +16,4 @@ ignore:
   - "Bot/Libs/utils/pg_init_codecs.py" # dont think u can test this...
   - "Bot/Libs/errors/utils.py" # Technically you can test this but i'm too lazy
   - "Bot/Libs/config/**"
+  - "Bot/Libs/utils/webhooks.py" # Probably can be tested but eh

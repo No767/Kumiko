@@ -5,6 +5,7 @@ from Cogs import EXTENSIONS
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
+from Libs.utils import WebhookDispatcher
 
 TESTING_GUILD_ID = discord.Object(id=970159505390325842)
 HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
@@ -20,8 +21,9 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f6e0")
 
-    @commands.guild_only()
-    @commands.is_owner()
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return await self.bot.is_owner(ctx.author)
+
     @commands.command(name="sync", hidden=True)
     async def sync(
         self,
@@ -66,14 +68,12 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
 
         await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
 
-    @commands.is_owner()
     @commands.command(name="dispatch", aliases=["dispatch-event"], hidden=True)
     async def dispatch_event(self, ctx: commands.Context, event: str) -> None:
         """Dispatches an custom event"""
         self.bot.dispatch(event, ctx.guild)
         await ctx.send("Dispatched event")
 
-    @commands.is_owner()
     @commands.command(name="reload-all", hidden=True)
     async def upgrade(self, ctx: commands.Context) -> None:
         """Reloads all cogs. This is used for upgrading"""
@@ -81,11 +81,22 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
             await self.bot.reload_extension(cog)
         await ctx.send("Reloaded all cogs")
 
-    @commands.is_owner()
     @commands.command(name="raise-error", hidden=True)
     async def raise_error(self, ctx: commands.Context) -> None:
         """Simple test command"""
         raise RuntimeError("Invalid...")
+
+    @commands.command(name="dispatch-logs-webhook")
+    async def dispatch_webhook(self, ctx: commands.Context, *, content: str) -> None:
+        """Dispatch the webhook logs event"""
+        assert ctx.guild is not None
+        dispatcher = WebhookDispatcher(self.bot, ctx.guild.id)
+        wb = await dispatcher.get_webhook()
+        if wb is None:
+            await ctx.send("Guild does no have logs webhook. Aborting")
+            return
+        await wb.send(content=content)
+        await ctx.send(f"Webhook dispatched with message: {content}")
 
 
 async def setup(bot: KumikoCore):
