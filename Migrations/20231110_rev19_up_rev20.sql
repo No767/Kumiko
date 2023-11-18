@@ -1,0 +1,1 @@
+ALTER TABLE logging_config ADD COLUMN broadcast_url TEXT;

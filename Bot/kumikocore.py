@@ -213,24 +213,25 @@ class KumikoCore(commands.Bot):
             self.loop.create_task(self.fs_watcher())
             await self.load_extension("jishaku")
 
-    async def on_message(self, message: discord.Message) -> None:
-        if message.author.bot:
-            return
+    # Chances are that Kumiko may not get even popular to need this feature for message contents
+    # async def on_message(self, message: discord.Message) -> None:
+    #     if message.author.bot:
+    #         return
 
-        # Might be the most sus way I have done this...
-        # There isn't really I can do to optimize this
-        antiping_users = list(self.antiping_cache.keys())
-        mentioned_users = [user.id for user in message.mentions]
-        ap_active_found = any(user in antiping_users for user in mentioned_users)
+    #     # Might be the most sus way I have done this...
+    #     # There isn't really I can do to optimize this
+    #     antiping_users = list(self.antiping_cache.keys())
+    #     mentioned_users = [user.id for user in message.mentions]
+    #     ap_active_found = any(user in antiping_users for user in mentioned_users)
 
-        if ap_active_found:
-            await message.delete()
-            await message.channel.send(
-                "Antiping enabled"
-            )  # TODO - Replace with custom embed (ofc cached)
+    #     if ap_active_found:
+    #         await message.delete()
+    #         await message.channel.send(
+    #             "Antiping enabled"
+    #         )
 
-        # There is no need to override the process_commands method here.... bc unlike rdanny, we aren't checking for spam
-        await self.process_commands(message)
+    #     # There is no need to override the process_commands method here.... bc unlike rdanny, we aren't checking for spam
+    #     await self.process_commands(message)
 
     async def on_ready(self):
         if not hasattr(self, "uptime"):
