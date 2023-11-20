@@ -38,6 +38,13 @@ async def send_error_embed(ctx: commands.Context, error: commands.CommandError) 
                 "The command can only be ran by the owner of the guild",
             )
         )
+    elif isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(
+            embed=create_premade_embed(
+                "Command on Cooldown",
+                f"This command is on cooldown. Try again in {error.retry_after:.2f}s",
+            )
+        )
     elif isinstance(error, commands.MissingPermissions):
         missing_perms = ", ".join(error.missing_permissions).rstrip(",")
         await ctx.send(

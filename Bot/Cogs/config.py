@@ -54,9 +54,6 @@ class Config(commands.Cog):
         key = value_to_key[type]
         return conf[key]
 
-    def cooldown_formatter(self, retry_after: float) -> str:
-        return f"This command is on cooldown. Try again in {retry_after:.2f}s"
-
     @property
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f6e0")
@@ -348,20 +345,6 @@ class Config(commands.Cog):
         # Delete the unused entries
         delete_query = "DELETE FROM logging_webhooks WHERE id = $1;"
         await self.pool.execute(delete_query, channel.guild.id)
-
-    @logs_setup.error
-    async def on_logs_setup_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(self.cooldown_formatter(error.retry_after))
-
-    @logs_delete.error
-    async def on_logs_delete_error(
-        self, ctx: commands.Context, error: commands.CommandError
-    ) -> None:
-        if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(self.cooldown_formatter(error.retry_after))
 
 
 async def setup(bot: KumikoCore) -> None:
