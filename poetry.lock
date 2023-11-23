@@ -1065,17 +1065,21 @@ langdetect = ["langdetect"]
 
 [[package]]
 name = "discord-ext-ipcx"
-version = "0.1.1"
-description = "Maintained and updated version of discord-ext-ipc for discord.py"
+version = "0.2.0"
+description = "Maintained and updated version of discord-ext-ipc for discord.py v2"
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "discord_ext_ipcx-0.1.1-py3-none-any.whl", hash = "sha256:f82d3ea1a1296b71c329ab2c42f4d0781d9a042a7fb38e34da6be20d8dee9598"},
-    {file = "discord_ext_ipcx-0.1.1.tar.gz", hash = "sha256:37a28729cb3acd105b695257ce31940c616556cce2957de02f020b0d7d7378fc"},
+    {file = "discord-ext-ipcx-0.2.0.tar.gz", hash = "sha256:42a92c12c8fb1307ba6c5215108685e46fef52095fa4097e9b295280ae62bdd5"},
+    {file = "discord_ext_ipcx-0.2.0-py3-none-any.whl", hash = "sha256:e4c95298729326730e35de8d27550713f5b43f4a5dfe5a155740c797570605da"},
 ]
 
 [package.dependencies]
-discord-py = ">=2,<3"
+"discord.py" = ">=2,<3"
+
+[package.extras]
+dev = ["pre-commit", "pyright", "python-dotenv", "quart (>=0.18.4,<0.20.0)", "ruff"]
+docs = ["furo (>=2023.8.19)", "sphinx (==7.1.2)", "sphinx-autobuild (>=2021.3.14)", "sphinx-copybutton (>=0.5.2)"]
 
 [[package]]
 name = "discord-ext-menus"
@@ -3399,4 +3403,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "0f70ce13756df1f582f39a1f85e29a9127a4812612f2b555ed8bb0e1264ecec7"
+content-hash = "e21c1c04ad321de8e391e06799bbc89811c3a1b08f4b9c8716e924fc517f1abf"
