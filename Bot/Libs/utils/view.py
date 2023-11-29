@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 import discord
 from discord.ext import commands
 
+from .embeds import ErrorEmbed
 from .error_preset import produce_error_embed
 
 if TYPE_CHECKING:
@@ -16,9 +17,11 @@ NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 class KumikoView(discord.ui.View):
     """Subclassed `discord.ui.View` that includes sane default functionality"""
 
-    def __init__(self, ctx: commands.Context[KumikoCore]):
+    def __init__(self, ctx: commands.Context[KumikoCore], display_message: bool = True):
         super().__init__()
         self.ctx = ctx
+        self.message: Optional[discord.Message] = None
+        self.display_message = display_message
 
     async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
         if interaction.user and interaction.user.id in (
@@ -31,8 +34,17 @@ class KumikoView(discord.ui.View):
         return False
 
     async def on_timeout(self) -> None:
-        self.clear_items()
-        self.stop()
+        if self.message:
+            if self.display_message:
+                embed = ErrorEmbed()
+                embed.title = "\U00002757 Timed Out"
+                embed.description = (
+                    "Timed out waiting for a response. Cancelling action..."
+                )
+                await self.message.edit(embed=embed, view=None)
+                return
+
+            await self.message.edit(view=None)
 
     async def on_error(
         self,
