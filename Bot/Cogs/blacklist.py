@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.ui.blacklist import BlacklistPages
-from Libs.utils import get_or_fetch_full_blacklist
+from Libs.utils.blacklist import get_blacklist
 
 DONE_MSG = "Done."
 NO_HANGOUT_BLOCK = "Can't block these servers"
@@ -28,13 +28,19 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.guild_only()
     async def blacklist(self, ctx: commands.Context) -> None:
         """Blacklist management module - No subcommands means viewing the blacklist"""
-        cache = await get_or_fetch_full_blacklist(self.bot, self.pool)
-
-        if cache is None:
-            await ctx.send("No entries in the blacklist cache")
+        query = """
+        SELECT id, blacklist_status
+        FROM blacklist;
+        """
+        records = await self.pool.fetch(query)
+        if len(records) == 0:
+            await ctx.send("No blacklist entries found")
             return
 
-        cache_to_list = [{k: v} for k, v in cache.items()]
+        cache_to_list = [
+            {record["id"]: record["blacklist_status"]} for record in records
+        ]
+
         pages = BlacklistPages(entries=cache_to_list, ctx=ctx)
         await pages.start()
 
@@ -48,11 +54,10 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
             VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;
             """
             await self.pool.execute(query, gid, True)
-            if gid not in self.bot.blacklist_cache:
-                self.bot.add_to_blacklist_cache(gid)
-
-            await ctx.send(DONE_MSG)
+            get_blacklist.cache_invalidate(gid, self.pool)
+            await ctx.send(f"Done. Added ID {gid} to the blacklist")
             return
+
         await ctx.send(NO_HANGOUT_BLOCK)
 
     @blacklist.command(name="delete", hidden=True)
@@ -66,11 +71,8 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
             WHERE id = $1;
             """
             await self.pool.execute(query, gid)
-            if gid in self.bot.blacklist_cache:
-                self.bot.remove_from_blacklist_cache(gid)
-
-            await ctx.send(DONE_MSG)
-
+            get_blacklist.cache_invalidate(gid, self.pool)
+            await ctx.send(f"Done. Removed ID {gid} from the blacklist")
             return
 
         await ctx.send(NO_HANGOUT_BLOCK)
