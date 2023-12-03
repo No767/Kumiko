@@ -3,12 +3,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from discord.ext import commands
 
 from .error_preset import produce_error_embed
 
 if TYPE_CHECKING:
-    from Bot.kumikocore import KumikoCore
+    from .context import KContext
 
 NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 
@@ -16,7 +15,7 @@ NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 class KumikoModal(discord.ui.Modal):
     """Subclassed `discord.ui.Modal` that includes sane default functionality"""
 
-    def __init__(self, ctx: commands.Context[KumikoCore], *args, **kwargs):
+    def __init__(self, ctx: KContext, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ctx = ctx
 

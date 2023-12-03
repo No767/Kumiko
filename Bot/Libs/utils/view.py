@@ -3,13 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional
 
 import discord
-from discord.ext import commands
 
 from .embeds import ErrorEmbed
 from .error_preset import produce_error_embed
 
 if TYPE_CHECKING:
-    from Bot.kumikocore import KumikoCore
+    from .context import KContext
 
 NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 
@@ -17,8 +16,8 @@ NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 class KumikoView(discord.ui.View):
     """Subclassed `discord.ui.View` that includes sane default functionality"""
 
-    def __init__(self, ctx: commands.Context[KumikoCore], display_message: bool = True):
-        super().__init__()
+    def __init__(self, ctx: KContext, display_message: bool = True, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.ctx = ctx
         self.message: Optional[discord.Message] = None
         self.display_message = display_message

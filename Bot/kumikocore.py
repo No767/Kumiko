@@ -1,7 +1,7 @@
 import logging
 import signal
 from pathlib import Path as SyncPath
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 import asyncpg
 import discord
@@ -11,13 +11,13 @@ from discord.ext import commands, ipcx
 from Libs.cog_utils.antiping import AntiPingSession
 from Libs.errors import send_error_embed
 from Libs.utils import (
+    KContext,
     KumikoCommandTree,
     KumikoHelpPaginated,
     check_blacklist,
     ensure_postgres_conn,
     ensure_redis_conn,
     get_prefix,
-    load_blacklist,
 )
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
@@ -58,7 +58,6 @@ class KumikoCore(commands.Bot):
         )
         self.dev_mode = dev_mode
         self.lru_size = lru_size
-        self._blacklist_cache: Dict[int, bool] = {}
         self._config = config
         self._session = session
         self._ipc_secret_key = ipc_secret_key
@@ -72,17 +71,6 @@ class KumikoCore(commands.Bot):
             self, host=self._ipc_host, secret_key=self._ipc_secret_key
         )
         self.logger: logging.Logger = logging.getLogger("kumiko")
-
-    @property
-    def blacklist_cache(self) -> Dict[int, bool]:
-        """Global blacklist cache
-
-        The main blacklist is stored on PostgreSQL, and is always a 1:1 mapping of the cache. R. Danny loads it from a JSON file, but I call that json as a db.
-
-        Returns:
-            Dict[int, bool]: Cached version of all globally blacklisted users.
-        """
-        return self._blacklist_cache
 
     @property
     def config(self) -> Dict[str, Optional[str]]:
@@ -154,18 +142,6 @@ class KumikoCore(commands.Bot):
         """
         return self._prefixes
 
-    def add_to_blacklist_cache(self, id: int) -> None:
-        self._blacklist_cache[id] = True
-
-    def update_blacklist_cache(self, id: int, status: bool) -> None:
-        self._blacklist_cache.update({id: status})
-
-    def remove_from_blacklist_cache(self, id: int) -> None:
-        self._blacklist_cache.pop(id)
-
-    def replace_blacklist_cache(self, new_cache: Dict[int, bool]) -> None:
-        self._blacklist_cache = new_cache
-
     async def fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
         async for changes in awatch(cogs_path):
@@ -182,10 +158,10 @@ class KumikoCore(commands.Bot):
 
     # Need to override context for custom ones
     # for now, we can just use the default commands.Context
-    # async def get_context(
-    #     self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KContext
-    # ) -> KContext:
-    #     return await super().get_context(origin, cls=cls)
+    async def get_context(
+        self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KContext
+    ) -> KContext:
+        return await super().get_context(origin, cls=cls)
 
     async def setup_hook(self) -> None:
         def stop():
@@ -196,13 +172,12 @@ class KumikoCore(commands.Bot):
 
         # The blacklist checks
         self.add_check(check_blacklist)
-        self._blacklist_cache = await load_blacklist(self.pool)
-        self.logger.info("Blacklist cache loaded")
 
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
+        await self.load_extension("jishaku")
         await self.ipc.start()
 
         await ensure_postgres_conn(self._pool)
@@ -211,7 +186,6 @@ class KumikoCore(commands.Bot):
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
             self.loop.create_task(self.fs_watcher())
-            await self.load_extension("jishaku")
 
     # Chances are that Kumiko may not get even popular to need this feature for message contents
     # async def on_message(self, message: discord.Message) -> None:
