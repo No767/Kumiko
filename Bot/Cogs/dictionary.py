@@ -3,6 +3,7 @@ from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.ui.dictionary import DictPages, JapaneseDictPages
+from Libs.utils import GuildContext
 from typing_extensions import Annotated
 from yarl import URL
 
@@ -21,7 +22,7 @@ class Dictionary(commands.Cog):
     @commands.hybrid_group(name="define", fallback="english")
     @app_commands.describe(query="The word to define")
     async def define(
-        self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, *, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Define a word from the English dictionary"""
         url = URL("https://api.dictionaryapi.dev/api/v2/entries/en") / query
@@ -38,7 +39,7 @@ class Dictionary(commands.Cog):
         query="The word to define. This can be both in English or Japanese (romaji works)"
     )
     async def japanese(
-        self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, *, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Get the definition of a word from the Japanese dictionary"""
         params = {"keyword": query}

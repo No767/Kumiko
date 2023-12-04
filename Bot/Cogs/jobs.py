@@ -25,9 +25,30 @@ from Libs.ui.jobs import (
     PurgeJobsView,
     UpdateJobModal,
 )
-from Libs.utils import ConfirmEmbed, Embed, JobName, MessageConstants
+from Libs.utils import ConfirmEmbed, Embed, MessageConstants
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
+
+
+class JobName(commands.clean_content):
+    def __init__(self, *, lower: bool = False):
+        self.lower: bool = lower
+        super().__init__()
+
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        converted = await super().convert(ctx, argument)
+        lower = converted.lower().strip()
+
+        if len(lower) > 100:
+            raise commands.BadArgument("Job name is a maximum of 100 characters.")
+
+        first_word, _, _ = lower.partition(" ")
+
+        root: commands.GroupMixin = ctx.bot.get_command("jobs")
+        if first_word in root.all_commands:
+            raise commands.BadArgument("This Job name starts with a reserved word.")
+
+        return converted.strip() if not self.lower else lower
 
 
 class Jobs(commands.Cog):

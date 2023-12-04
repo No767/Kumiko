@@ -24,8 +24,30 @@ from Libs.ui.pins import (
     PinPages,
     PurgePinView,
 )
-from Libs.utils import ConfirmEmbed, Embed, PinName, get_or_fetch_member
+from Libs.utils import ConfirmEmbed, Embed, GuildContext
 from typing_extensions import Annotated
+
+
+class PinName(commands.clean_content):
+    def __init__(self, *, lower: bool = False):
+        self.lower: bool = lower
+        super().__init__()
+
+    async def convert(self, ctx: GuildContext, argument: str) -> str:
+        converted = await super().convert(ctx, argument)
+        lower = converted.lower().strip()
+
+        if len(lower) > 100:
+            raise commands.BadArgument("Tag name is a maximum of 100 characters.")
+
+        first_word, _, _ = lower.partition(" ")
+
+        # get tag command.
+        root: commands.GroupMixin = ctx.bot.get_command("pins")  # type: ignore
+        if first_word in root.all_commands:
+            raise commands.BadArgument("This tag name starts with a reserved word.")
+
+        return converted.strip() if not self.lower else lower
 
 
 class Pins(commands.Cog):
@@ -71,10 +93,10 @@ class Pins(commands.Cog):
     @commands.hybrid_group(name="pins", fallback="get")
     @app_commands.describe(name="Pin to get")
     async def pins(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, *, name: Annotated[str, commands.clean_content]
     ):
         """Pin text for later retrieval"""
-        pin_text = await get_pin_content(ctx.guild.id, name, self.bot.pool)  # type: ignore
+        pin_text = await get_pin_content(ctx.guild.id, name, self.bot.pool)
         if isinstance(pin_text, list):
             await ctx.send(format_options(pin_text) or ".")
             return
@@ -85,7 +107,7 @@ class Pins(commands.Cog):
     @pins.command(name="create")
     async def create(
         self,
-        ctx: commands.Context,
+        ctx: GuildContext,
         name: Annotated[str, commands.clean_content],
         *,
         content: Annotated[str, commands.clean_content],
@@ -96,7 +118,7 @@ class Pins(commands.Cog):
             await ctx.send("The pin content is too long. The max is 2000 characters")
             return
 
-        guild_id = ctx.guild.id  # type: ignore
+        guild_id = ctx.guild.id
         author_id = ctx.author.id
         status = await create_pin(author_id, guild_id, self.pool, name, content)
         await ctx.send(status)
@@ -104,7 +126,7 @@ class Pins(commands.Cog):
     @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="make", aliases=["add"])
-    async def make(self, ctx: commands.Context) -> None:
+    async def make(self, ctx: GuildContext) -> None:
         """Interactively creates a tag for you"""
         if ctx.interaction is not None:
             create_pin_modal = CreatePin(ctx, self.pool)
@@ -134,7 +156,7 @@ class Pins(commands.Cog):
         finally:
             ctx.message = original
 
-        if self.is_tag_being_made(ctx.guild.id, name):  # type: ignore
+        if self.is_tag_being_made(ctx.guild.id, name):
             await ctx.send(
                 "Sorry. This pins is currently being made by someone. "
                 f'Redo the command "{ctx.prefix}pins make" to retry.'
@@ -143,7 +165,7 @@ class Pins(commands.Cog):
 
         query = """SELECT 1 FROM pin WHERE guild_id=$1 AND LOWER(name)=$2;"""
         async with self.pool.acquire() as conn:
-            row = await conn.fetchrow(query, ctx.guild.id, name.lower())  # type: ignore
+            row = await conn.fetchrow(query, ctx.guild.id, name.lower())
             if row is not None:
                 await ctx.send(
                     "Sorry. A pins with that name already exists. "
@@ -151,7 +173,7 @@ class Pins(commands.Cog):
                 )
                 return None
 
-        self.add_in_progress_tag(ctx.guild.id, name)  # type: ignore
+        self.add_in_progress_tag(ctx.guild.id, name)
         await ctx.send(
             f"Neat. So the name is {name}. What about the pin's content? "
             f"**You can type {ctx.prefix}abort to abort the pin make process.**"
@@ -160,12 +182,12 @@ class Pins(commands.Cog):
         try:
             msg = await self.bot.wait_for("message", check=check, timeout=300.0)
         except asyncio.TimeoutError:
-            self.remove_in_progress_tag(ctx.guild.id, name)  # type: ignore
+            self.remove_in_progress_tag(ctx.guild.id, name)
             await ctx.send("You took too long. Goodbye.")
             return
 
         if msg.content == f"{ctx.prefix}abort":
-            self.remove_in_progress_tag(ctx.guild.id, name)  # type: ignore
+            self.remove_in_progress_tag(ctx.guild.id, name)
             await ctx.send("Aborting.")
             return
         elif msg.content:
@@ -182,20 +204,22 @@ class Pins(commands.Cog):
             return
 
         try:
-            status = await create_pin(ctx.author.id, ctx.guild.id, self.pool, name, clean_content)  # type: ignore
+            status = await create_pin(
+                ctx.author.id, ctx.guild.id, self.pool, name, clean_content
+            )
             await ctx.send(status)
         finally:
-            self.remove_in_progress_tag(ctx.guild.id, name)  # type: ignore
+            self.remove_in_progress_tag(ctx.guild.id, name)
 
     @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="info")
     @app_commands.describe(name="Pin name to search")
     async def info(
-        self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Provides info about a pin"""
-        pin_info = await get_pin_info(ctx.guild.id, name, self.pool)  # type: ignore
+        pin_info = await get_pin_info(ctx.guild.id, name, self.pool)
         if pin_info is None:
             await ctx.send("Pin not found.")
             return
@@ -214,7 +238,7 @@ class Pins(commands.Cog):
     @pins.command(name="delete")
     @app_commands.describe(name="Pin name to delete")
     async def delete(
-        self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Deletes a pin. You can only delete your own."""
         view = DeletePinView(ctx, self.pool, name)
@@ -228,7 +252,7 @@ class Pins(commands.Cog):
     @app_commands.describe(name="Pin name to alias", alias="The new name to alias")
     async def alias(
         self,
-        ctx: commands.Context,
+        ctx: GuildContext,
         name: Annotated[str, commands.clean_content],
         alias: Annotated[str, commands.clean_content],
     ) -> None:
@@ -243,7 +267,7 @@ class Pins(commands.Cog):
         AND (NOT $2 = ANY(aliases) OR aliases IS NULL);
         """
         async with self.pool.acquire() as conn:
-            status = await conn.execute(insert_query, name, alias, ctx.guild.id)  # type: ignore
+            status = await conn.execute(insert_query, name, alias, ctx.guild.id)
             if status[-1] == "0":
                 await ctx.send(
                     f"A pin with the name of `{name}` does not exist or there is an aliases with the name `{alias}` set already."
@@ -258,7 +282,7 @@ class Pins(commands.Cog):
     @app_commands.describe(name="Pin name to unalias", alias="The alias to remove")
     async def unalias(
         self,
-        ctx: commands.Context,
+        ctx: GuildContext,
         name: Annotated[str, commands.clean_content],
         alias: Annotated[str, commands.clean_content],
     ) -> None:
@@ -270,7 +294,7 @@ class Pins(commands.Cog):
         AND $2 = ANY(aliases);
         """
         async with self.pool.acquire() as conn:
-            status = await conn.execute(insert_query, name, alias, ctx.guild.id)  # type: ignore
+            status = await conn.execute(insert_query, name, alias, ctx.guild.id)
             if status[-1] == "0":
                 await ctx.send(
                     f"A pin with the name of `{name}` does not exist or there are no aliases set."
@@ -284,7 +308,7 @@ class Pins(commands.Cog):
     @pins.command(name="search")
     @app_commands.describe(name="Pin name to search")
     async def search(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, *, name: Annotated[str, commands.clean_content]
     ):
         """Searches for a tag.
 
@@ -301,7 +325,7 @@ class Pins(commands.Cog):
                  LIMIT 100;
               """
         async with self.pool.acquire() as conn:
-            records = await conn.fetch(sql, ctx.guild.id, name)  # type: ignore
+            records = await conn.fetch(sql, ctx.guild.id, name)
 
         # The reason why this is outside of the scope is that since the session can be long, we want to release the conn back into the pool once done
         # This will essentially prevent the conn from being stalled by a bunch of searches
@@ -319,7 +343,7 @@ class Pins(commands.Cog):
     )
     async def edit(
         self,
-        ctx: commands.Context,
+        ctx: GuildContext,
         name: Annotated[str, commands.clean_content],
         *,
         content: Annotated[Optional[str], commands.clean_content] = None,
@@ -331,7 +355,9 @@ class Pins(commands.Cog):
             else:
                 query = "SELECT content FROM pin WHERE LOWER(name)=$1 AND guild_id=$2 AND author_id=$3"
                 async with self.pool.acquire() as conn:
-                    row: Optional[tuple[str]] = await conn.fetchrow(query, name, ctx.guild.id, ctx.author.id)  # type: ignore
+                    row: Optional[tuple[str]] = await conn.fetchrow(
+                        query, name, ctx.guild.id, ctx.author.id
+                    )
                     if row is None:
                         await ctx.send(
                             "Could not find a tag with that name, are you sure it exists or you own it?",
@@ -346,7 +372,7 @@ class Pins(commands.Cog):
             await ctx.send("Ping content can only be up to 2000 characters")
             return
 
-        sql_res = await edit_pin(ctx.guild.id, ctx.author.id, self.pool, name, content)  # type: ignore
+        sql_res = await edit_pin(ctx.guild.id, ctx.author.id, self.pool, name, content)
         if sql_res[-1] == "0":
             await ctx.send("Could not edit the pin. Are you sure you own it?")
         else:
@@ -356,10 +382,10 @@ class Pins(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     @pins.command(name="dumps")
-    async def dumps(self, ctx: commands.Context) -> None:
+    async def dumps(self, ctx: GuildContext) -> None:
         """Dumps all tags in your guild into a JSON file"""
         await ctx.defer()
-        result = await get_all_pins(ctx.guild.id, self.pool)  # type: ignore
+        result = await get_all_pins(ctx.guild.id, self.pool)
         buffer = BytesIO(
             orjson.dumps([dict(row) for row in result], option=orjson.OPT_INDENT_2)
         )
@@ -372,9 +398,9 @@ class Pins(commands.Cog):
     @commands.guild_only()
     @commands.has_permissions(manage_guild=True)
     @pins.command(name="all")
-    async def all(self, ctx: commands.Context) -> None:
+    async def all(self, ctx: GuildContext) -> None:
         """Lists all pins in your guild"""
-        rows = await get_all_pins(ctx.guild.id, self.pool)  # type: ignore
+        rows = await get_all_pins(ctx.guild.id, self.pool)
         if rows:
             pages = PinPages(entries=rows, per_page=20, ctx=ctx)
             await pages.start()
@@ -385,9 +411,9 @@ class Pins(commands.Cog):
     @commands.guild_only()
     @pins.command(name="list")
     @app_commands.describe(member="The member or yourself to list pins from")
-    async def list(self, ctx: commands.Context, member: User = commands.Author) -> None:
+    async def list(self, ctx: GuildContext, member: User = commands.Author) -> None:
         """Lists all pins from a member or yourself"""
-        rows = await get_owned_pins(member.id, ctx.guild.id, self.pool)  # type: ignore
+        rows = await get_owned_pins(member.id, ctx.guild.id, self.pool)
         if len(rows) == 0:
             await ctx.send("The member does not have any pins")
             return
@@ -398,7 +424,7 @@ class Pins(commands.Cog):
     @is_pins_enabled()
     @commands.guild_only()
     @pins.command(name="purge")
-    async def purge(self, ctx: commands.Context) -> None:
+    async def purge(self, ctx: GuildContext) -> None:
         """Purges all pins that you own in the server"""
         view = PurgePinView(ctx, self.pool)
         embed = ConfirmEmbed()
@@ -412,7 +438,7 @@ class Pins(commands.Cog):
     @pins.command(name="claim")
     @app_commands.describe(name="Name of the pin. Aliases are supported")
     async def claim(
-        self, ctx: commands.Context, *, name: Annotated[PinName, commands.clean_content]
+        self, ctx: GuildContext, *, name: Annotated[PinName, commands.clean_content]
     ) -> None:
         """Claims a pin that you do not own. Aliases will be retained"""
         query = """
@@ -421,12 +447,12 @@ class Pins(commands.Cog):
         INNER JOIN pin ON pin.id = pin_lookup.pin_id
         WHERE pin_lookup.guild_id = $1 AND LOWER(pin.name) = $2;
         """
-        row = await self.pool.fetchrow(query, ctx.guild.id, name)  # type: ignore
+        row = await self.pool.fetchrow(query, ctx.guild.id, name)
         if row is None:
             await ctx.send("Could not find a pin with that name or alias")
             return
 
-        member = await get_or_fetch_member(ctx.guild, dict(row)["author_id"])  # type: ignore
+        member = await ctx.get_or_fetch_member(ctx.guild, dict(row)["author_id"])
 
         if member is not None:
             await ctx.send("The pin is already owned by someone else")
@@ -445,7 +471,7 @@ class Pins(commands.Cog):
         """
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute(query, ctx.guild.id, name, ctx.author.id)  # type: ignore
+                await conn.execute(query, ctx.guild.id, name, ctx.author.id)
 
         await ctx.send("Successfully claimed the pin")
 
@@ -456,7 +482,7 @@ class Pins(commands.Cog):
         member="The member to transfer the pin to", pin="The pin's name to transfer"
     )
     async def transfer(
-        self, ctx: commands.Context, member: Member, *, pin: Annotated[str, PinName]
+        self, ctx: GuildContext, member: Member, *, pin: Annotated[str, PinName]
     ) -> None:
         """Transfers a pin to another member. Once transferred, you can't get it back."""
         if member.bot:
@@ -468,7 +494,7 @@ class Pins(commands.Cog):
         INNER JOIN pin ON pin.id = pin_lookup.pin_id
         WHERE pin_lookup.guild_id = $1 AND LOWER(pin.name) = $2;
         """
-        row = await self.pool.fetchrow(query, ctx.guild.id, pin)  # type: ignore
+        row = await self.pool.fetchrow(query, ctx.guild.id, pin)
         if row is None:
             await ctx.send("Could not find a pin with that name or alias")
             return
@@ -490,8 +516,8 @@ class Pins(commands.Cog):
         """
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute(query, ctx.guild.id, pin.lower(), member.id)  # type: ignore
-                await conn.execute(lookup_query, ctx.guild.id, pin.lower(), member.id)  # type: ignore
+                await conn.execute(query, ctx.guild.id, pin.lower(), member.id)
+                await conn.execute(lookup_query, ctx.guild.id, pin.lower(), member.id)
 
         await ctx.send(
             f"Successfully transfer the pin `{pin.lower()}` to {member.mention}"

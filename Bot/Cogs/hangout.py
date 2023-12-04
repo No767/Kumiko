@@ -3,7 +3,6 @@ import asyncio
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.hangout import is_help_thread
 from Libs.cog_utils.redirects import can_close_threads, mark_as_resolved
 from Libs.ui.redirects import ConfirmResolvedView
 
@@ -16,11 +15,16 @@ class Hangout(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
+    async def cog_check(self, ctx: commands.Context) -> bool:
+        return (
+            isinstance(ctx.channel, discord.Thread)
+            and ctx.channel.parent_id == NOELLE_HANGOUT_HELP_CHANNEL_ID
+        )
+
     @property
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji.from_str("<:himikocircle:1147399110282969148>")
 
-    @is_help_thread()
     @commands.cooldown(1, 20, commands.BucketType.channel)
     @commands.command(name="solved", aliases=["is_solved"])
     async def solved(self, ctx: commands.Context) -> None:

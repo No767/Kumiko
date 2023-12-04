@@ -1,16 +1,14 @@
+import datetime
+from typing import Dict, Optional
 from urllib.parse import quote_plus
 
 import ciso8601
 import orjson
+from dateutil.parser import parse
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from gql import Client, gql
 from kumikocore import KumikoCore
-from Libs.cog_utils.search import (
-    AIOHTTPTransportExistingSession,
-    ModrinthFlags,
-    parse_anilist_dates,
-)
 from Libs.ui.search import (
     AniListAnime,
     AniListAnimePages,
@@ -20,9 +18,28 @@ from Libs.ui.search import (
     ModrinthPages,
     ModrinthProject,
 )
+from Libs.utils import AIOHTTPTransportExistingSession, GuildContext
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
+
+
+class ModrinthFlags(commands.FlagConverter):
+    query: str = commands.flag(
+        aliases=["q"], description="The Minecraft project to search for"
+    )
+    project_type: str = commands.flag(
+        default="mod",
+        description="The category to filter out. Can be mod, plugin, etc. Defaults to mod",
+    )
+    loader: str = commands.flag(
+        default="fabric",
+        description="The loader to filter out. Examples include fabric, forge, spigot, etc. Defaults to fabric",
+    )
+    version: str = commands.flag(
+        default="1.16.5",
+        description="The version to filter out. Examples include 1.16.5, etc. Defaults to 1.16.5",
+    )
 
 
 class Searches(commands.Cog):
@@ -38,24 +55,30 @@ class Searches(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji.from_str("<a:typing:597589448607399949>")
 
+    def parse_anilist_dates(self, date: Dict[str, str]) -> Optional[datetime.datetime]:
+        if None in date.values():
+            return None
+        formatted_date = f"{date['month']}-{date['day']}-{date['year']}"
+        return parse(formatted_date)
+
     @commands.hybrid_command(name="lmgtfy")
     @app_commands.describe(query="What do you want to search?")
     async def lmgtfy(
-        self, ctx: commands.Context, query: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Let Me Google That For You"""
         url = URL("https://letmegooglethat.com") % {"q": quote_plus(query)}
         await ctx.send(str(url))
 
     @commands.hybrid_group(name="search")
-    async def search(self, ctx: commands.Context) -> None:
+    async def search(self, ctx: GuildContext) -> None:
         """Search for anime, manga, gifs, memes, and much more"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @search.command(name="anime")
     @app_commands.describe(name="The name of the anime to search")
-    async def anime(self, ctx: commands.Context, *, name: str) -> None:
+    async def anime(self, ctx: GuildContext, *, name: str) -> None:
         """Searches up animes"""
         await ctx.defer()
         async with Client(
@@ -131,8 +154,8 @@ class Searches(commands.Cog):
                     status=anime["status"],
                     description=anime["description"],
                     format=anime["format"],
-                    start_date=parse_anilist_dates(anime["startDate"]),
-                    end_date=parse_anilist_dates(anime["endDate"]),
+                    start_date=self.parse_anilist_dates(anime["startDate"]),
+                    end_date=self.parse_anilist_dates(anime["endDate"]),
                     episodes=anime["episodes"],
                     duration=anime["duration"],
                     cover_image=anime["coverImage"]["extraLarge"],
@@ -155,7 +178,7 @@ class Searches(commands.Cog):
 
     @search.command(name="manga")
     @app_commands.describe(name="The name of the manga to search")
-    async def manga(self, ctx: commands.Context, *, name: str):
+    async def manga(self, ctx: GuildContext, *, name: str):
         """Searches for manga on AniList"""
         await ctx.defer()
         async with Client(
@@ -230,8 +253,8 @@ class Searches(commands.Cog):
                     status=manga["status"],
                     description=manga["description"],
                     format=manga["format"],
-                    start_date=parse_anilist_dates(manga["startDate"]),
-                    end_date=parse_anilist_dates(manga["endDate"]),
+                    start_date=self.parse_anilist_dates(manga["startDate"]),
+                    end_date=self.parse_anilist_dates(manga["endDate"]),
                     chapters=manga["chapters"],
                     volumes=manga["volumes"],
                     cover_image=manga["coverImage"]["extraLarge"],
@@ -254,7 +277,7 @@ class Searches(commands.Cog):
 
     @search.command(name="gifs")
     @app_commands.describe(search="The search term to use")
-    async def gifs(self, ctx: commands.Context, *, search: str) -> None:
+    async def gifs(self, ctx: GuildContext, *, search: str) -> None:
         """Searches for gifs on Tenor"""
         url = URL("https://tenor.googleapis.com/v2/search")
         params = {
@@ -282,7 +305,7 @@ class Searches(commands.Cog):
         name="modrinth",
         usage="query: <str> project_type: <str> loader: <str> version: <str>",
     )
-    async def modrinth(self, ctx: commands.Context, *, flags: ModrinthFlags) -> None:
+    async def modrinth(self, ctx: GuildContext, *, flags: ModrinthFlags) -> None:
         """Search for Minecraft projects on Modrinth"""
         url = URL("https://api.modrinth.com/v2/search")
         facets = [

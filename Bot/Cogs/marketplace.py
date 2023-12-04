@@ -9,7 +9,7 @@ from Libs.cog_utils.marketplace import (
     is_payment_valid,
 )
 from Libs.ui.marketplace import ItemPages, SimpleSearchItemPages
-from Libs.utils import Embed, get_or_fetch_member
+from Libs.utils import Embed, GuildContext, KContext
 from typing_extensions import Annotated
 
 
@@ -27,11 +27,11 @@ class Marketplace(commands.Cog):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji.from_str("<:shop:1132982447177478214>")
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
-        return await check_economy_enabled(ctx)
+    async def cog_check(self, ctx: KContext) -> bool:
+        return await check_economy_enabled(ctx) and ctx.guild is not None
 
     @commands.hybrid_group(name="marketplace", fallback="list")
-    async def marketplace(self, ctx: commands.Context) -> None:
+    async def marketplace(self, ctx: GuildContext) -> None:
         """List the items available for purchase"""
         query = """
         SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, eco_item.amount, eco_item.producer_id
@@ -39,7 +39,7 @@ class Marketplace(commands.Cog):
         INNER JOIN eco_item ON eco_item.id = eco_item_lookup.item_id
         WHERE eco_item.guild_id = $1;
         """
-        rows = await self.pool.fetch(query, ctx.guild.id)  # type: ignore
+        rows = await self.pool.fetch(query, ctx.guild.id)
         if len(rows) == 0:
             await ctx.send("No items available")
             return
@@ -51,7 +51,7 @@ class Marketplace(commands.Cog):
     @app_commands.describe(name="The name of the item to buy")
     async def buy(
         self,
-        ctx: commands.Context,
+        ctx: GuildContext,
         name: Annotated[str, commands.clean_content],
         *,
         flags: PurchaseFlags,
@@ -88,7 +88,7 @@ class Marketplace(commands.Cog):
         WHERE id = $1;
         """
         async with self.pool.acquire() as conn:
-            rows = await conn.fetchrow(query, ctx.guild.id, name.lower())  # type: ignore
+            rows = await conn.fetchrow(query, ctx.guild.id, name.lower())
             if rows is None:
                 await ctx.send(
                     "The item you are looking for does not exist, or is already bought. Please try again"
@@ -114,7 +114,14 @@ class Marketplace(commands.Cog):
                     await conn.execute(
                         update_purchaser_query, ctx.author.id, total_price
                     )
-                    await conn.execute(purchase_item, ctx.guild.id, ctx.author.id, name.lower(), records["amount"] - flags.amount, flags.amount)  # type: ignore
+                    await conn.execute(
+                        purchase_item,
+                        ctx.guild.id,
+                        ctx.author.id,
+                        name.lower(),
+                        records["amount"] - flags.amount,
+                        flags.amount,
+                    )
                 await ctx.send(f"Purchased item `{name}` for `{total_price}`")
             else:
                 await ctx.send(
@@ -127,15 +134,15 @@ class Marketplace(commands.Cog):
     @marketplace.command(name="info")
     @app_commands.describe(name="The name of the item to search for")
     async def info(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Provides info about an item listed on the marketplace"""
-        item = await get_item(ctx.guild.id, name, self.bot.pool)  # type: ignore
+        item = await get_item(ctx.guild.id, name, self.bot.pool)
         if isinstance(item, list):
             await ctx.send(format_item_options(item) or ".")
             return
 
-        member = await get_or_fetch_member(ctx.guild, item["producer_id"])  # type: ignore
+        member = await ctx.get_or_fetch_member(ctx.guild, item["producer_id"])  # type: ignore
         if member is None or item is None:
             await ctx.send("There was an issue")
             return
@@ -152,7 +159,7 @@ class Marketplace(commands.Cog):
     @marketplace.command(name="search")
     @app_commands.describe(query="The name of the item to look for")
     async def search(
-        self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
+        self, ctx: GuildContext, *, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Searches for an item in the marketplace"""
         if len(query) < 3:
@@ -166,7 +173,7 @@ class Marketplace(commands.Cog):
         ORDER BY similarity(name, $2) DESC
         LIMIT 100;
         """
-        records = await self.pool.fetch(sql, ctx.guild.id, query)  # type: ignore
+        records = await self.pool.fetch(sql, ctx.guild.id, query)
         if records:
             pages = SimpleSearchItemPages(entries=records, per_page=20, ctx=ctx)
             await pages.start()

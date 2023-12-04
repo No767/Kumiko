@@ -17,6 +17,7 @@ from Libs.ui.config import (
 from Libs.utils import (
     ConfirmEmbed,
     Embed,
+    GuildContext,
     WebhookDispatcher,
     get_prefix,
     is_manager,
@@ -60,7 +61,7 @@ class Config(commands.Cog):
 
     @is_manager()
     @commands.hybrid_group(name="configure", aliases=["config"], fallback="modules")
-    async def config(self, ctx: commands.Context) -> None:
+    async def config(self, ctx: GuildContext) -> None:
         """Configure the settings for the modules on Kumiko"""
         assert ctx.guild is not None
 
@@ -104,7 +105,7 @@ class Config(commands.Cog):
     @is_manager()
     @commands.guild_only()
     @config.group(name="logs", fallback="settings")
-    async def logs(self, ctx: commands.Context) -> None:
+    async def logs(self, ctx: GuildContext) -> None:
         """Configure logging settings"""
         assert ctx.guild is not None
 
@@ -138,7 +139,7 @@ class Config(commands.Cog):
     @app_commands.describe(
         name="The name of the channel. Defaults to kumiko-events-log"
     )
-    async def logs_setup(self, ctx: commands.Context, *, name: Optional[str]) -> None:
+    async def logs_setup(self, ctx: GuildContext, *, name: Optional[str]) -> None:
         """First-time setup command for logging"""
         assert ctx.guild is not None
 
@@ -211,7 +212,7 @@ class Config(commands.Cog):
 
     @commands.cooldown(10, 30, commands.BucketType.guild)
     @logs.command(name="delete")
-    async def logs_delete(self, ctx: commands.Context):
+    async def logs_delete(self, ctx: GuildContext):
         """Deletes logging channels permanently - Does not delete logging configs"""
         assert ctx.guild is not None
         msg = """
@@ -220,11 +221,11 @@ class Config(commands.Cog):
         """
         view = PurgeLGConfirmation(self.bot, ctx, ctx.guild.id, self.pool)
         embed = ConfirmEmbed(description=msg)
-        view.message = await ctx.send(embed=embed, view=view)  # type: ignore
+        view.message = await ctx.send(embed=embed, view=view)
 
     @commands.guild_only()
     @config.group(name="prefix", fallback="info")
-    async def prefix(self, ctx: commands.Context) -> None:
+    async def prefix(self, ctx: GuildContext) -> None:
         """Displays info about the current prefix set on your server"""
         prefixes = await get_prefix(self.bot, ctx.message)
         cleaned_prefixes = ", ".join([f"`{item}`" for item in prefixes]).rstrip(",")
@@ -241,7 +242,7 @@ class Config(commands.Cog):
         old_prefix="The old prefix to replace", new_prefix="The new prefix to use"
     )
     async def update(
-        self, ctx: commands.Context, old_prefix: str, new_prefix: PrefixConverter
+        self, ctx: GuildContext, old_prefix: str, new_prefix: PrefixConverter
     ) -> None:
         """Updates the prefix for your server"""
         query = """
@@ -249,7 +250,7 @@ class Config(commands.Cog):
             SET prefix = ARRAY_REPLACE(prefix, $1, $2)
             WHERE id = $3;
         """
-        guild_id = ctx.guild.id  # type: ignore
+        guild_id = ctx.guild.id
         if old_prefix in self.bot.prefixes[guild_id]:
             await self.pool.execute(query, old_prefix, new_prefix, guild_id)
             prefixes = self.bot.prefixes[guild_id][
@@ -267,7 +268,7 @@ class Config(commands.Cog):
     @commands.guild_only()
     @prefix.command(name="add")
     @app_commands.describe(prefix="The new prefix to add")
-    async def add(self, ctx: commands.Context, prefix: PrefixConverter) -> None:
+    async def add(self, ctx: GuildContext, prefix: PrefixConverter) -> None:
         """Adds new prefixes into your server"""
         prefixes = await get_prefix(self.bot, ctx.message)
         # validatePrefix(self.bot.prefixes, prefix) is False
@@ -275,7 +276,7 @@ class Config(commands.Cog):
             desc = "There was an validation issue. This is because of two reasons:\n- You have more than 10 prefixes for your server\n- Your prefix fails the validation rules"
             raise ValidationError(desc)
 
-        if prefix in self.bot.prefixes[ctx.guild.id]:  # type: ignore
+        if prefix in self.bot.prefixes[ctx.guild.id]:
             await ctx.send("The prefix you want to set already exists")
             return
 
@@ -284,7 +285,7 @@ class Config(commands.Cog):
             SET prefix = ARRAY_APPEND(prefix, $1)
             WHERE id=$2;
         """
-        guild_id = ctx.guild.id  # type: ignore # These are all done in an guild
+        guild_id = ctx.guild.id
         await self.pool.execute(query, prefix, guild_id)
         # the weird solution but it actually works
         if isinstance(self.bot.prefixes[guild_id], list):
@@ -297,7 +298,7 @@ class Config(commands.Cog):
     @commands.guild_only()
     @prefix.command(name="delete")
     @app_commands.describe(prefix="The prefix to delete")
-    async def delete(self, ctx: commands.Context, prefix: str) -> None:
+    async def delete(self, ctx: GuildContext, prefix: str) -> None:
         """Deletes a prefix from your server"""
         view = DeletePrefixView(bot=self.bot, ctx=ctx, prefix=prefix)
         embed = ConfirmEmbed()

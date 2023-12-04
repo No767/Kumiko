@@ -27,7 +27,7 @@ jobs:
           - 6379:6379
 
       postgres:
-        image: postgres:15
+        image: no767/akari-pg:edge
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres

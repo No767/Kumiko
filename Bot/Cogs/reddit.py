@@ -5,8 +5,13 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.reddit import RedditEntry, RedditMemeEntry, RedditMemePages, RedditPages
-from Libs.utils import parse_subreddit
+from Libs.ui.reddit import (
+    RedditEntry,
+    RedditMemeEntry,
+    RedditMemePages,
+    RedditPages,
+)
+from Libs.utils import GuildContext, parse_subreddit
 from yarl import URL
 
 
@@ -24,7 +29,7 @@ class Reddit(commands.Cog):
         return PartialEmoji.from_str("<:reddit:314349923103670272>")
 
     @commands.hybrid_group(name="reddit")
-    async def reddit(self, ctx: commands.Context) -> None:
+    async def reddit(self, ctx: GuildContext) -> None:
         """Reddit search and utility commands"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -35,7 +40,7 @@ class Reddit(commands.Cog):
         subreddit="Which subreddit to use. Defaults to all.",
     )
     async def search(
-        self, ctx: commands.Context, *, search: str, subreddit: Optional[str] = "all"
+        self, ctx: GuildContext, *, search: str, subreddit: Optional[str] = "all"
     ) -> None:
         """Searches for posts on Reddit"""
         await ctx.defer()
@@ -71,7 +76,7 @@ class Reddit(commands.Cog):
     )
     async def feed(
         self,
-        ctx: commands.Context,
+        ctx: GuildContext,
         subreddit: str,
         filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
     ) -> None:
@@ -115,7 +120,7 @@ class Reddit(commands.Cog):
         amount="Amount of memes to return. Defaults to 5",
     )
     async def search_memes(
-        self, ctx: commands.Context, subreddit: str, amount: Optional[int] = 5
+        self, ctx: GuildContext, subreddit: str, amount: Optional[int] = 5
     ) -> None:
         """Searches for memes on Reddit"""
         url = (

@@ -1,3 +1,6 @@
+from typing import Union
+
+import discord
 from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
@@ -6,9 +9,8 @@ from Libs.cog_utils.moderation import (
     KickFlags,
     PunishmentEnum,
     TimeoutFlags,
-    produce_info_embed,
 )
-from Libs.utils import MessageConstants, is_mod
+from Libs.utils import Embed, MessageConstants, is_mod
 
 
 class Moderation(commands.Cog):
@@ -16,6 +18,31 @@ class Moderation(commands.Cog):
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
+
+    def produce_info_embed(
+        self,
+        type: PunishmentEnum,
+        member: Union[discord.Member, discord.User],
+        reason: str,
+    ) -> Embed:
+        type_to_word_list = ["Ban", "Kick", "Timeout"]
+        type_to_lowercase_word = [
+            "banned",
+            "kicked",
+            "issued timeout to user",
+        ]
+        title = f"Issued {type_to_word_list[type.value]}"
+        desc = f"Successfully {type_to_lowercase_word[type.value]} {member.global_name}"
+        if type == PunishmentEnum.KICK:
+            title = "Kicked User(s)"
+        elif type == PunishmentEnum.TIMEOUT:
+            title = "Issued Timeouts to User(s)"
+            desc = f"Successfully {type_to_lowercase_word[3]} ({member.global_name})"
+
+        embed = Embed(title=title)
+        embed.description = desc
+        embed.add_field(name="Reason", value=reason or MessageConstants.NO_REASON.value)
+        return embed
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -41,7 +68,7 @@ class Moderation(commands.Cog):
         """
         del_seconds = 604800 if flags.delete_messages is True else 0  # 7 days
         await flags.member.ban(delete_message_days=del_seconds, reason=flags.reason)
-        embed = produce_info_embed(
+        embed = self.produce_info_embed(
             PunishmentEnum.BAN,
             flags.member,
             flags.reason or MessageConstants.NO_REASON.value,
@@ -62,7 +89,7 @@ class Moderation(commands.Cog):
         Kicks user1 with the reason of "spammer"
         """
         await flags.member.kick(reason=flags.reason)
-        embed = produce_info_embed(
+        embed = self.produce_info_embed(
             PunishmentEnum.KICK,
             flags.member,
             flags.reason or MessageConstants.NO_REASON.value,
@@ -87,7 +114,7 @@ class Moderation(commands.Cog):
             dt, reason=flags.reason or MessageConstants.NO_REASON.value  # type: ignore
         )
 
-        embed = produce_info_embed(
+        embed = self.produce_info_embed(
             PunishmentEnum.TIMEOUT,
             flags.member,
             flags.reason or MessageConstants.NO_REASON.value,

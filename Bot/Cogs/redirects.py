@@ -9,12 +9,11 @@ from Libs.cog_utils.redirects import (
     check_redirects_enabled,
     check_redirects_menu,
     create_redirected_thread,
-    is_redirects_enabled,
     is_thread,
     mark_as_resolved,
 )
 from Libs.ui.redirects import ConfirmResolvedView
-from Libs.utils import ErrorEmbed
+from Libs.utils import ErrorEmbed, GuildContext
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
 # Required Perms (from discord.Permission):
@@ -45,10 +44,9 @@ class Redirects(commands.Cog):
     def configurable(self) -> bool:
         return True
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
+    async def cog_check(self, ctx: GuildContext) -> bool:
         return await check_redirects_enabled(ctx)
 
-    @is_redirects_enabled()
     @app_commands.checks.cooldown(1, 30, key=lambda i: (i.guild_id, i.user.id))
     async def redirects_callback(
         self, interaction: discord.Interaction, message: discord.Message
@@ -92,11 +90,10 @@ class Redirects(commands.Cog):
             "This needs to be sent from a text channel", ephemeral=True
         )
 
-    @is_redirects_enabled()
     @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.command(name="redirect")
     async def redirect(
-        self, ctx: commands.Context, *, thread_name: Optional[str] = None
+        self, ctx: GuildContext, *, thread_name: Optional[str] = None
     ) -> None:
         """Redirects a conversation into a separate thread"""
         msg = ctx.message.reference
@@ -133,10 +130,9 @@ class Redirects(commands.Cog):
             )
 
     @is_thread()
-    @is_redirects_enabled()
     @commands.cooldown(1, 20, commands.BucketType.channel)
     @commands.hybrid_command(name="resolved", aliases=["completed"])
-    async def resolved(self, ctx: commands.Context) -> None:
+    async def resolved(self, ctx: GuildContext) -> None:
         """Marks a thread as completed"""
         channel = ctx.channel
         if not isinstance(channel, discord.Thread):
@@ -168,7 +164,7 @@ class Redirects(commands.Cog):
             pass
 
     @resolved.error
-    async def on_resolved_error(self, ctx: commands.Context, error: Exception):
+    async def on_resolved_error(self, ctx: GuildContext, error: Exception):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"This command is on cooldown. Try again in {error.retry_after:.2f}s"
