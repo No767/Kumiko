@@ -16,3 +16,8 @@ ignore:
   - "Bot/Libs/config/**"
   - "Bot/Libs/utils/webhooks.py" # Probably can be tested but eh
   - "Bot/Libs/utils/context.py" # Impossible to unit test and mock
+  - "Bot/Libs/utils/help.py"
+  - "Bot/Libs/utils/modal.py"
+  - "Bot/Libs/utils/view.py"
+  - "Bot/Libs/utils/transport.py"
+  - "Bot/Libs/utils/tree.py"
