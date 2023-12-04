@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
 
 import asyncpg
 from async_lru import alru_cache
-
-if TYPE_CHECKING:
-    pass
 
 
 class BlacklistEntity:
