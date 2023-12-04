@@ -45,10 +45,3 @@ async def check_redirects_menu(interaction: discord.Interaction):
     if not isinstance(status, bool) or status is False:
         return False
     return status
-
-
-def is_redirects_enabled():
-    async def pred(ctx: commands.Context):
-        return await check_redirects_enabled(ctx)
-
-    return commands.check(pred)
