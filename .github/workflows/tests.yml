@@ -12,6 +12,7 @@ on:
 env:
   POSTGRES_URI: postgresql://postgres:postgres@localhost:5432/postgres
   REDIS_URI: redis://localhost:6379/0
+  TARGET_REVISION: rev5
 
   
 jobs: 
