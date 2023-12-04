@@ -21,3 +21,7 @@ ignore:
   - "Bot/Libs/utils/view.py"
   - "Bot/Libs/utils/transport.py"
   - "Bot/Libs/utils/tree.py"
+  - "Bot/kumikocore.py"
+  - "Bot/kumikobot.py"
+  - "Bot/migrations.py"
+  - "Bot/events_log.py"
