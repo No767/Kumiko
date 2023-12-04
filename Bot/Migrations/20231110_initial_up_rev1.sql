@@ -20,5 +20,4 @@ CREATE TABLE IF NOT EXISTS blacklist (
     blacklist_status BOOLEAN DEFAULT FALSE
 );
 
-CREATE INDEX IF NOT EXISTS logging_config_channel_id_uniq_idx ON logging_config (channel_id);
 CREATE UNIQUE INDEX IF NOT EXISTS logging_config_guild_id_uniq_idx ON logging_config (guild_id);
