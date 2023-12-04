@@ -8,7 +8,6 @@ import discord
 from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
 from discord.ext import commands, ipcx
-from Libs.cog_utils.antiping import AntiPingSession
 from Libs.errors import send_error_embed
 from Libs.utils import (
     KContext,
@@ -66,7 +65,6 @@ class KumikoCore(commands.Bot):
         self._pool = pool
         self._redis_pool = redis_pool
         self._prefixes: LRU = LRU(self.lru_size)
-        self.antiping_cache: Dict[int, AntiPingSession] = {}
         self.default_prefix = ">"
         self.ipc = ipcx.Server(
             self, host=self._ipc_host, secret_key=self._ipc_secret_key
@@ -204,26 +202,6 @@ class KumikoCore(commands.Bot):
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
             self.loop.create_task(self._fs_watcher())
-
-    # Chances are that Kumiko may not get even popular to need this feature for message contents
-    # async def on_message(self, message: discord.Message) -> None:
-    #     if message.author.bot:
-    #         return
-
-    #     # Might be the most sus way I have done this...
-    #     # There isn't really I can do to optimize this
-    #     antiping_users = list(self.antiping_cache.keys())
-    #     mentioned_users = [user.id for user in message.mentions]
-    #     ap_active_found = any(user in antiping_users for user in mentioned_users)
-
-    #     if ap_active_found:
-    #         await message.delete()
-    #         await message.channel.send(
-    #             "Antiping enabled"
-    #         )
-
-    #     # There is no need to override the process_commands method here.... bc unlike rdanny, we aren't checking for spam
-    #     await self.process_commands(message)
 
     async def on_ready(self):
         if not hasattr(self, "uptime"):
