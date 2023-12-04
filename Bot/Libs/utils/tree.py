@@ -22,7 +22,7 @@ class KumikoCommandTree(CommandTree):
 
         blacklist = await get_blacklist(user.id)
 
-        if blacklist.blacklist_status is True and blacklist.unknown_entity is False:
+        if blacklist.blacklist_status is not None or blacklist.blacklist_status is True:
             await interaction.response.send_message(
                 f"My fellow user, {user.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
                 suppress_embeds=True,

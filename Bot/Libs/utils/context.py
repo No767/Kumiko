@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional
 import discord
 from discord.ext import commands
 
-from .error_preset import produce_error_embed
+from .utils import produce_error_embed
 
 if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
@@ -115,7 +115,29 @@ class KContext(commands.Context):
         await view.wait()
         return view.value
 
+    async def get_or_fetch_member(
+        self, guild: discord.Guild, member_id: int
+    ) -> Optional[discord.Member]:
+        """Gets or fetches a member from the guild
+
+        Args:
+            guild (discord.Guild): Guild Object
+            member_id (int): The ID of the member
+
+        Returns:
+            Optional[discord.Member]: An `discord.Member` if found, `None` if not found.
+        """
+        member = guild.get_member(member_id)
+        if member is not None:
+            return member
+        members = await guild.query_members(limit=1, user_ids=[member_id], cache=True)
+        if not members:
+            return None
+        return members[0]
+
 
 class GuildContext(KContext):
+    """An `KContext` that represents a context found in a guild command"""
+
     author: discord.Member
     guild: discord.Guild

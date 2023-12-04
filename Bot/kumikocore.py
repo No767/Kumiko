@@ -14,9 +14,10 @@ from Libs.utils import (
     KContext,
     KumikoCommandTree,
     KumikoHelpPaginated,
-    check_blacklist,
+    MessageConstants,
     ensure_postgres_conn,
     ensure_redis_conn,
+    get_blacklist,
     get_prefix,
 )
 from lru import LRU
@@ -142,7 +143,7 @@ class KumikoCore(commands.Bot):
         """
         return self._prefixes
 
-    async def fs_watcher(self) -> None:
+    async def _fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
         async for changes in awatch(cogs_path):
             changes_list = list(changes)[0]
@@ -163,6 +164,23 @@ class KumikoCore(commands.Bot):
     ) -> KContext:
         return await super().get_context(origin, cls=cls)
 
+    async def check_blacklist(self, ctx: KContext) -> bool:
+        bot = ctx.bot  # Pretty much returns the subclass anyways. I checked - Noelle
+        if bot.owner_id == ctx.author.id or bot.application_id == ctx.author.id:
+            return True
+
+        blacklist = await get_blacklist(ctx.author.id, bot.pool)
+
+        if blacklist.blacklist_status is not None or blacklist.blacklist_status is True:
+            # Get RickRolled lol
+            # While implementing this, I was listening to Rick Astley
+            await ctx.send(
+                f"My fellow user, {ctx.author.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
+                suppress_embeds=True,
+            )
+            return False
+        return True
+
     async def setup_hook(self) -> None:
         def stop():
             self.loop.create_task(self.close())
@@ -171,7 +189,7 @@ class KumikoCore(commands.Bot):
         self.loop.add_signal_handler(signal.SIGINT, stop)
 
         # The blacklist checks
-        self.add_check(check_blacklist)
+        self.add_check(self.check_blacklist)
 
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
@@ -185,7 +203,7 @@ class KumikoCore(commands.Bot):
 
         if self.dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
-            self.loop.create_task(self.fs_watcher())
+            self.loop.create_task(self._fs_watcher())
 
     # Chances are that Kumiko may not get even popular to need this feature for message contents
     # async def on_message(self, message: discord.Message) -> None:

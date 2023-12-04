@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional
 import discord
 
 from .embeds import ErrorEmbed
-from .error_preset import produce_error_embed
+from .utils import produce_error_embed
 
 if TYPE_CHECKING:
     from .context import KContext
