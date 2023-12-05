@@ -1,17 +1,14 @@
+import datetime
+import itertools
 import platform
-from typing import Union
+from typing import Optional, Union
 
 import discord
 import psutil
+import pygit2
 from discord.ext import commands
-from discord.utils import oauth_url
+from discord.utils import format_dt, oauth_url
 from kumikocore import KumikoCore
-from Libs.cog_utils.meta import (
-    format_badges,
-    format_date,
-    get_current_branch,
-    get_last_commits,
-)
 from Libs.utils import Embed, human_timedelta, is_docker
 from psutil._common import bytes2human
 
@@ -26,6 +23,40 @@ class Meta(commands.Cog):
     @property
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U00002754")
+
+    def format_date(self, dt: Optional[datetime.datetime]):
+        if dt is None:
+            return "N/A"
+        return f'{format_dt(dt, "F")} ({format_dt(dt, "R")})'
+
+    def format_commit(self, commit: pygit2.Commit) -> str:
+        short, _, _ = commit.message.partition("\n")
+        short_sha2 = commit.hex[0:6]
+        commit_tz = datetime.timezone(
+            datetime.timedelta(minutes=commit.commit_time_offset)
+        )
+        commit_time = datetime.datetime.fromtimestamp(commit.commit_time).astimezone(
+            commit_tz
+        )
+
+        # [`hash`](url) message (offset)
+        offset = format_dt(commit_time.astimezone(datetime.timezone.utc), "R")
+        return f"[`{short_sha2}`](https://github.com/No767/Catherine-Chan/commit/{commit.hex}) {short} ({offset})"
+
+    def get_last_commits(self, count: int = 10):
+        repo = pygit2.Repository(".git")
+        commits = list(
+            itertools.islice(
+                repo.walk(repo.head.target, pygit2.GIT_SORT_TOPOLOGICAL), count
+            )
+        )
+        return "\n".join(self.format_commit(c) for c in commits)
+
+    def get_current_branch(
+        self,
+    ) -> str:
+        repo = pygit2.Repository(".git")
+        return repo.head.shorthand
 
     def get_bot_uptime(self, *, brief: bool = False) -> str:
         return human_timedelta(
@@ -65,13 +96,9 @@ class Meta(commands.Cog):
         if ctx.guild is not None and isinstance(user, discord.Member):
             roles = [role.name.replace("@", "@\u200b") for role in user.roles]
 
-        desc = f"{format_badges(ctx, user)}"
-
         desc = f"""
-        {format_badges(ctx, user)}
-        
         **Name/ID**: {user.global_name} / {user.id}
-        **Created**: {format_date(user.created_at)}
+        **Created**: {self.format_date(user.created_at)}
         **Status**: {user.status if isinstance(user, discord.Member) else 'Unknown'}
         {platform_status}
         **Mutual Guilds**: {len(user.mutual_guilds)}
@@ -109,8 +136,8 @@ class Meta(commands.Cog):
         proc_mem = bytes2human(self.process.memory_info().rss)
         cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
 
-        revisions = get_last_commits(5)
-        working_branch = get_current_branch().title()
+        revisions = self.get_last_commits(5)
+        working_branch = self.get_current_branch().title()
 
         if is_docker():
             revisions = "See [GitHub](https://github.com/No767/Kumiko)"
