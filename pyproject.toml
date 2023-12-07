@@ -32,6 +32,7 @@ discord-ext-ipcx = "^0.2.1"
 dateparser = "^1.2.0"
 pygit2 = "^1.13.3"
 async-lru = "^2.0.4"
+aiohttp = "3.9.1"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"
