@@ -108,6 +108,6 @@ def test_japanese_dict_entry():
         (entry.definitions == [entry_es])
         and (entry.tags == tags)
         and (entry.jlpt == ["N5"])
-        and (entry.is_common == False)
+        and (entry.is_common is False)
         and (entry.word == [word_entry])
     )

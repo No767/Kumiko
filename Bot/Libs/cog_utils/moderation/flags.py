@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from typing_extensions import Annotated
 
-from .converters import TimeoutDTConverter
+from .utils import TimeoutDTConverter
 
 
 class BanFlags(commands.FlagConverter):

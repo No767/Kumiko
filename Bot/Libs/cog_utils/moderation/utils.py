@@ -3,10 +3,13 @@ import datetime
 from discord.ext import commands
 from discord.utils import utcnow
 from Libs.utils import parse_dt
+from Libs.utils.context import GuildContext
+
+# from typing import TYPE_CHECKING
 
 
 class TimeoutDTConverter(commands.Converter):
-    async def convert(self, ctx: commands.Context, argument: str):
+    async def convert(self, ctx: GuildContext, argument: str):
         parsed_arg = parse_dt(argument)
         now = utcnow()
 

@@ -1,16 +1,17 @@
 from typing import Union
 
 import discord
-from discord import PartialEmoji
+from discord import Enum, PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.moderation import (
-    BanFlags,
-    KickFlags,
-    PunishmentEnum,
-    TimeoutFlags,
-)
+from Libs.cog_utils.moderation.flags import BanFlags, KickFlags, TimeoutFlags
 from Libs.utils import Embed, MessageConstants, is_mod
+
+
+class PunishmentEnum(Enum):
+    BAN = 0
+    KICK = 2
+    TIMEOUT = 3
 
 
 class Moderation(commands.Cog):
