@@ -38,6 +38,6 @@ from .utils import (
 )
 from .view import KumikoView as KumikoView
 from .webhooks import (
-    WebhookConfig as WebhookConfig,
+    GuildWebhookConfig as GuildWebhookConfig,
     WebhookDispatcher as WebhookDispatcher,
 )

@@ -3,9 +3,32 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Union
 
 import discord
+from async_lru import alru_cache
 
 if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
+
+
+@alru_cache(maxsize=256)
+async def get_cached_prefix(
+    bot: KumikoCore, message: discord.Message
+) -> Union[str, List[str]]:
+    base = [bot.default_prefix]
+    if message.guild is None:
+        get_cached_prefix.cache_invalidate(bot, message)
+        return bot.default_prefix
+
+    query = """
+    SELECT prefix
+    FROM guild
+    WHERE id = $1;
+    """
+    prefixes = await bot.pool.fetchval(query, message.guild.id)
+    if prefixes is None:
+        get_cached_prefix.cache_invalidate(bot, message)
+        return bot.default_prefix
+    base.extend(item for item in prefixes)
+    return base
 
 
 async def get_prefix(bot: KumikoCore, msg: discord.Message) -> Union[str, List[str]]:

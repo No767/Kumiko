@@ -5,23 +5,28 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.config import PrefixConverter, ReservedConfig, ReservedLGC
+from Libs.cog_utils.config import ReservedConfig, ReservedLGC
 from Libs.config import handle_guild_data
-from Libs.errors import ValidationError
-from Libs.ui.config import (
-    ConfigMenuView,
-    DeletePrefixView,
-    LGCView,
-    PurgeLGConfirmation,
-)
+from Libs.ui.config import ConfigMenuView, LGCView, PurgeLGConfirmation
 from Libs.utils import (
     ConfirmEmbed,
     Embed,
     GuildContext,
     WebhookDispatcher,
-    get_prefix,
     is_manager,
 )
+from Libs.utils.prefix import get_cached_prefix
+from typing_extensions import Annotated
+
+
+class PrefixConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, argument: str):
+        user_id = ctx.bot.user.id
+        if argument.startswith((f"<@{user_id}>", f"<@!{user_id}>")):
+            raise commands.BadArgument("That is a reserved prefix already in use.")
+        if len(argument) > 100:
+            raise commands.BadArgument("That prefix is too long.")
+        return argument
 
 
 class Config(commands.Cog):
@@ -151,12 +156,11 @@ class Config(commands.Cog):
         """
 
         webhook_dispatcher = WebhookDispatcher(self.bot, guild_id)
-        conf = await webhook_dispatcher.get_webhook_config()
-        possible_channel = await webhook_dispatcher.get_channel()
-        if conf is not None and possible_channel is not None:
+        config = await webhook_dispatcher.get_webhook_config()
+        if config is not None and config.logging_channel is not None:
             msg = (
-                f"It seems like there is a channel set up at {possible_channel.mention}\n"
-                f"If you want to delete it, please run the command `config logs delete`"
+                f"It seems like there is a channel set up at {config.logging_channel.mention}\n"
+                f"If you want to delete it, please run the command `{ctx.prefix}config logs delete`"
             )
             await ctx.send(msg)
             return
@@ -227,7 +231,7 @@ class Config(commands.Cog):
     @config.group(name="prefix", fallback="info")
     async def prefix(self, ctx: GuildContext) -> None:
         """Displays info about the current prefix set on your server"""
-        prefixes = await get_prefix(self.bot, ctx.message)
+        prefixes = await get_cached_prefix(self.bot, ctx.message)
         cleaned_prefixes = ", ".join([f"`{item}`" for item in prefixes]).rstrip(",")
         embed = Embed()
         embed.description = f"**Current prefixes**\n{cleaned_prefixes}"
@@ -236,13 +240,14 @@ class Config(commands.Cog):
         await ctx.send(embed=embed)
 
     @is_manager()
-    @commands.guild_only()
     @prefix.command(name="update")
-    @app_commands.describe(
-        old_prefix="The old prefix to replace", new_prefix="The new prefix to use"
-    )
+    @app_commands.describe(old="The old prefix to replace", new="The new prefix to use")
+    @app_commands.rename(old="old_prefix", new="new_prefix")
     async def update(
-        self, ctx: GuildContext, old_prefix: str, new_prefix: PrefixConverter
+        self,
+        ctx: GuildContext,
+        old: Annotated[str, PrefixConverter],
+        new: Annotated[str, PrefixConverter],
     ) -> None:
         """Updates the prefix for your server"""
         query = """
@@ -250,33 +255,35 @@ class Config(commands.Cog):
             SET prefix = ARRAY_REPLACE(prefix, $1, $2)
             WHERE id = $3;
         """
+        prefixes = await get_cached_prefix(self.bot, ctx.message)
+
         guild_id = ctx.guild.id
-        if old_prefix in self.bot.prefixes[guild_id]:
-            await self.pool.execute(query, old_prefix, new_prefix, guild_id)
-            prefixes = self.bot.prefixes[guild_id][
-                :
-            ]  # Shallow copy the list so we can safely perform operations on it
-            for idx, item in enumerate(prefixes):
-                if item == old_prefix:
-                    prefixes[idx] = new_prefix
-            self.bot.prefixes[guild_id] = prefixes
-            await ctx.send(f"Prefix updated to `{new_prefix}`")
+        if old in prefixes:
+            await self.pool.execute(query, old, new, guild_id)
+            get_cached_prefix.cache_invalidate(self.bot, ctx.message)
+            await ctx.send(f"Prefix updated to `{new}`")
         else:
             await ctx.send("The prefix is not in the list of prefixes for your server")
 
     @is_manager()
-    @commands.guild_only()
     @prefix.command(name="add")
     @app_commands.describe(prefix="The new prefix to add")
-    async def add(self, ctx: GuildContext, prefix: PrefixConverter) -> None:
+    async def add(
+        self, ctx: GuildContext, prefix: Annotated[str, PrefixConverter]
+    ) -> None:
         """Adds new prefixes into your server"""
-        prefixes = await get_prefix(self.bot, ctx.message)
-        # validatePrefix(self.bot.prefixes, prefix) is False
-        if len(prefixes) > 10:
-            desc = "There was an validation issue. This is because of two reasons:\n- You have more than 10 prefixes for your server\n- Your prefix fails the validation rules"
-            raise ValidationError(desc)
+        prefixes = await get_cached_prefix(self.bot, ctx.message)
+        if isinstance(prefixes, list) and len(prefixes) > 10:
+            desc = (
+                "There was a validation issue. "
+                "This is caused by these reasons: \n"
+                "- You have more than 10 prefixes for your server\n"
+                "- Your prefix fails the validation rules"
+            )
+            await ctx.send(desc)
+            return
 
-        if prefix in self.bot.prefixes[ctx.guild.id]:
+        if prefix in prefixes:
             await ctx.send("The prefix you want to set already exists")
             return
 
@@ -285,47 +292,49 @@ class Config(commands.Cog):
             SET prefix = ARRAY_APPEND(prefix, $1)
             WHERE id=$2;
         """
-        guild_id = ctx.guild.id
-        await self.pool.execute(query, prefix, guild_id)
-        # the weird solution but it actually works
-        if isinstance(self.bot.prefixes[guild_id], list):
-            self.bot.prefixes[guild_id].append(prefix)
-        else:
-            self.bot.prefixes[guild_id] = [self.bot.default_prefix, prefix]
+        await self.pool.execute(query, prefix, ctx.guild.id)
+        get_cached_prefix.cache_invalidate(self.bot, ctx.message)
         await ctx.send(f"Added prefix: {prefix}")
 
     @is_manager()
-    @commands.guild_only()
     @prefix.command(name="delete")
     @app_commands.describe(prefix="The prefix to delete")
-    async def delete(self, ctx: GuildContext, prefix: str) -> None:
+    async def delete(
+        self, ctx: GuildContext, prefix: Annotated[str, PrefixConverter]
+    ) -> None:
         """Deletes a prefix from your server"""
-        view = DeletePrefixView(bot=self.bot, ctx=ctx, prefix=prefix)
-        embed = ConfirmEmbed()
-        embed.description = f"Do you want to delete the following prefix: {prefix}"
-        await ctx.send(embed=embed, view=view)
+        query = """
+        UPDATE guild
+        SET prefix = ARRAY_REMOVE(prefix, $1)
+        WHERE id=$2;
+        """
+        msg = f"Do you want to delete the following prefix: {prefix}"
+        confirm = await ctx.prompt(msg, timeout=120.0)
+        if confirm:
+            await self.pool.execute(query, prefix, ctx.guild.id)
+            get_cached_prefix.cache_invalidate(self.bot, ctx.message)
+            await ctx.send(f"The prefix `{prefix}` has been successfully deleted")
+            return
+        await ctx.send("Confirmation cancelled. Please try again")
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
         insert_query = """
         WITH guild_insert AS (
-            INSERT INTO guild (id) VALUES ($1)
+            INSERT INTO guild (id, prefix) VALUES ($1, $2)
             ON CONFLICT (id) DO NOTHING
         )
         INSERT INTO logging_config (guild_id) VALUES ($1)
         ON CONFLICT (guild_id) DO NOTHING;
         """
         async with self.pool.acquire() as conn:
-            async with conn.transaction():
-                await conn.execute(insert_query, guild.id)
-                await handle_guild_data(guild, conn, self.redis_pool)
-                self.bot.prefixes[guild.id] = None
+            await conn.execute(insert_query, guild.id, [])
+            await handle_guild_data(guild, conn, self.redis_pool)
+            # self.bot.prefixes[guild.id] = None
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
         await self.pool.execute("DELETE FROM guild WHERE id = $1", guild.id)
-        if guild.id in self.bot.prefixes:
-            del self.bot.prefixes[guild.id]
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
@@ -334,18 +343,20 @@ class Config(commands.Cog):
 
         webhook_dispatcher = WebhookDispatcher(self.bot, channel.guild.id)
         webhook_config = await webhook_dispatcher.get_webhook_config()
-        webhook_channel = await webhook_dispatcher.get_channel()
+
+        if webhook_config is None:
+            return
 
         if (
-            webhook_channel is None
-            or webhook_config is None
-            or webhook_config["channel_id"] != channel.id
+            webhook_config.logging_channel is None
+            or webhook_config.channel_id != channel.id
         ):
             return
 
         # Delete the unused entries
         delete_query = "DELETE FROM logging_webhooks WHERE id = $1;"
         await self.pool.execute(delete_query, channel.guild.id)
+        webhook_dispatcher.get_webhook_config.cache_invalidate()
 
 
 async def setup(bot: KumikoCore) -> None:

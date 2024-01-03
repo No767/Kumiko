@@ -17,8 +17,8 @@ from Libs.utils import (
     ensure_postgres_conn,
     ensure_redis_conn,
     get_blacklist,
-    get_prefix,
 )
+from Libs.utils.prefix import get_cached_prefix
 from lru import LRU
 from redis.asyncio.connection import ConnectionPool
 
@@ -49,7 +49,7 @@ class KumikoCore(commands.Bot):
     ):
         super().__init__(
             intents=intents,
-            command_prefix=get_prefix,
+            command_prefix=get_cached_prefix,
             help_command=KumikoHelpPaginated(),
             activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
             tree_cls=KumikoCommandTree,
@@ -167,11 +167,9 @@ class KumikoCore(commands.Bot):
         if bot.owner_id == ctx.author.id or bot.application_id == ctx.author.id:
             return True
 
-        blacklist = await get_blacklist(ctx.author.id, bot.pool)
+        blacklist = await get_blacklist(ctx.author, ctx.guild, bot.pool)
 
-        if blacklist.blacklist_status is not None or blacklist.blacklist_status is True:
-            # Get RickRolled lol
-            # While implementing this, I was listening to Rick Astley
+        if blacklist is not None:
             await ctx.send(
                 f"My fellow user, {ctx.author.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
                 suppress_embeds=True,

@@ -1,3 +1,4 @@
+from time import perf_counter_ns
 from typing import Literal, Optional
 
 import discord
@@ -6,6 +7,7 @@ from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore
 from Libs.utils import KContext, WebhookDispatcher
+from Libs.utils.prefix import get_cached_prefix
 
 TESTING_GUILD_ID = discord.Object(id=970159505390325842)
 HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
@@ -97,6 +99,15 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
             return
         await wb.send(content=content)
         await ctx.send(f"Webhook dispatched with message: {content}")
+
+    @commands.command(name="test-prefix")
+    async def test_prefix(self, ctx: KContext) -> None:
+        start = perf_counter_ns()
+        prefix = await get_cached_prefix(self.bot, ctx.message)
+        end = perf_counter_ns()
+        total = (end - start) / 1000000
+        self.bot.logger.info(f"Called prefix `{prefix}` w/ speed of `{total}` ms")
+        await ctx.send(f"Called prefix `{prefix}` w/ speed of `{total}` ms")
 
 
 async def setup(bot: KumikoCore):

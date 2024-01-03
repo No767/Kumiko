@@ -1,8 +1,10 @@
+from typing import Literal
+
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.ui.blacklist import BlacklistPages
-from Libs.utils.blacklist import get_blacklist
+from Libs.utils.blacklist import BlacklistEntityType, get_blacklist
 
 DONE_MSG = "Done."
 NO_HANGOUT_BLOCK = "Can't block these servers"
@@ -23,6 +25,11 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
         }
         return id in servers
 
+    def determine_type(self, type: Literal["user", "guild"]) -> BlacklistEntityType:
+        if type == "user":
+            return BlacklistEntityType.user
+        return BlacklistEntityType.guild
+
     @commands.group(name="blacklist", invoke_without_command=True, hidden=True)
     @commands.is_owner()
     @commands.guild_only()
@@ -38,24 +45,27 @@ class Blacklist(commands.Cog, command_attrs=dict(hidden=True)):
             return
 
         cache_to_list = [
-            {record["id"]: record["blacklist_status"]} for record in records
+            {record["entity_id"]: record["blacklist_status"]} for record in records
         ]
 
         pages = BlacklistPages(entries=cache_to_list, ctx=ctx)
         await pages.start()
 
     @blacklist.command(name="add", hidden=True)
-    async def add(self, ctx: commands.Context, id: discord.Object) -> None:
+    async def add(
+        self, ctx: commands.Context, id: discord.Object, type: Literal["user", "guild"]
+    ) -> None:
         """Blacklists the given user or guild ID"""
         gid = id.id
+        entity_type = self.determine_type(type)
         if not self.server_check(gid):
             query = """
-            INSERT INTO blacklist (id, blacklist_status)
+            INSERT INTO blacklist (id, entity_id, entity_type)
             VALUES ($1, $2) ON CONFLICT (id) DO NOTHING;
             """
-            await self.pool.execute(query, gid, True)
+            await self.pool.execute(query, gid, entity_type)
             get_blacklist.cache_invalidate(gid, self.pool)
-            await ctx.send(f"Done. Added ID {gid} to the blacklist")
+            await ctx.send(f"Done. Added ID {gid} (type: {type}) to the blacklist")
             return
 
         await ctx.send(NO_HANGOUT_BLOCK)
