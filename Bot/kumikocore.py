@@ -18,8 +18,7 @@ from Libs.utils import (
     ensure_redis_conn,
     get_blacklist,
 )
-from Libs.utils.prefix import get_cached_prefix
-from lru import LRU
+from Libs.utils.prefix import get_prefix
 from redis.asyncio.connection import ConnectionPool
 
 # Some weird import logic to ensure that watchfiles is there
@@ -42,14 +41,13 @@ class KumikoCore(commands.Bot):
         redis_pool: ConnectionPool,
         ipc_secret_key: str,
         ipc_host: str,
-        lru_size: int = 1024,
         dev_mode: bool = False,
         *args,
         **kwargs,
     ):
         super().__init__(
             intents=intents,
-            command_prefix=get_cached_prefix,
+            command_prefix=get_prefix,
             help_command=KumikoHelpPaginated(),
             activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
             tree_cls=KumikoCommandTree,
@@ -57,14 +55,12 @@ class KumikoCore(commands.Bot):
             **kwargs,
         )
         self.dev_mode = dev_mode
-        self.lru_size = lru_size
         self._config = config
         self._session = session
         self._ipc_secret_key = ipc_secret_key
         self._ipc_host = ipc_host
         self._pool = pool
         self._redis_pool = redis_pool
-        self._prefixes: LRU = LRU(self.lru_size)
         self.default_prefix = ">"
         self.ipc = ipcx.Server(
             self, host=self._ipc_host, secret_key=self._ipc_secret_key
@@ -119,27 +115,6 @@ class KumikoCore(commands.Bot):
             str: The version of Kumiko
         """
         return str(VERSION)
-
-    # It is preferred in this case to keep an LRU cache instead of a regular Dict cache
-    # For example, if an running instance keeps 100 entries ({guild_id: [prefix]})
-    # then this would take up too much memory.
-    #
-    # By instead using an LRU cache, if we reach the max, then we evict the prefix from the guild that has been used the least recently
-    # The limit for the LRU cache is set to 1024
-    #
-    # The primary goal of Kumiko is to keep the footprint of the RAM usage as low as possible
-    # We don't need to have the bot consuming 250-300MB of RAM like when Prisma was used.
-    @property
-    def prefixes(self) -> LRU:
-        """A LRU cache of the guild prefixes
-
-        The LRU cache's implementation is built in C,
-        so we natively can keep the performance the same as if it was a regular dict
-
-        Returns:
-            LRU: LRU cache of the guild prefixes
-        """
-        return self._prefixes
 
     async def _fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("Cogs")

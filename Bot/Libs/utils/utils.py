@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import os
 import re
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 import ciso8601
 import dateparser
@@ -11,6 +13,9 @@ import discord
 from dotenv import dotenv_values
 
 from .embeds import ErrorEmbed
+
+if TYPE_CHECKING:
+    pass
 
 
 def parse_datetime(datetime: Union[datetime, str]) -> datetime:
