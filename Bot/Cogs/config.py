@@ -6,7 +6,6 @@ from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.cog_utils.config import ReservedConfig, ReservedLGC
-from Libs.config import handle_guild_data
 from Libs.ui.config import ConfigMenuView, LGCView, PurgeLGConfirmation
 from Libs.utils import (
     ConfirmEmbed,
@@ -15,7 +14,7 @@ from Libs.utils import (
     WebhookDispatcher,
     is_manager,
 )
-from Libs.utils.prefix import get_cached_prefix
+from Libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
 
 
@@ -231,7 +230,7 @@ class Config(commands.Cog):
     @config.group(name="prefix", fallback="info")
     async def prefix(self, ctx: GuildContext) -> None:
         """Displays info about the current prefix set on your server"""
-        prefixes = await get_cached_prefix(self.bot, ctx.message)
+        prefixes = await get_prefix(self.bot, ctx.message)
         cleaned_prefixes = ", ".join([f"`{item}`" for item in prefixes]).rstrip(",")
         embed = Embed()
         embed.description = f"**Current prefixes**\n{cleaned_prefixes}"
@@ -255,12 +254,12 @@ class Config(commands.Cog):
             SET prefix = ARRAY_REPLACE(prefix, $1, $2)
             WHERE id = $3;
         """
-        prefixes = await get_cached_prefix(self.bot, ctx.message)
+        prefixes = await get_prefix(self.bot, ctx.message)
 
         guild_id = ctx.guild.id
         if old in prefixes:
             await self.pool.execute(query, old, new, guild_id)
-            get_cached_prefix.cache_invalidate(self.bot, ctx.message)
+            get_prefix.cache_invalidate(self.bot, ctx.message)
             await ctx.send(f"Prefix updated to `{new}`")
         else:
             await ctx.send("The prefix is not in the list of prefixes for your server")
@@ -272,7 +271,7 @@ class Config(commands.Cog):
         self, ctx: GuildContext, prefix: Annotated[str, PrefixConverter]
     ) -> None:
         """Adds new prefixes into your server"""
-        prefixes = await get_cached_prefix(self.bot, ctx.message)
+        prefixes = await get_prefix(self.bot, ctx.message)
         if isinstance(prefixes, list) and len(prefixes) > 10:
             desc = (
                 "There was a validation issue. "
@@ -293,7 +292,7 @@ class Config(commands.Cog):
             WHERE id=$2;
         """
         await self.pool.execute(query, prefix, ctx.guild.id)
-        get_cached_prefix.cache_invalidate(self.bot, ctx.message)
+        get_prefix.cache_invalidate(self.bot, ctx.message)
         await ctx.send(f"Added prefix: {prefix}")
 
     @is_manager()
@@ -312,7 +311,7 @@ class Config(commands.Cog):
         confirm = await ctx.prompt(msg, timeout=120.0)
         if confirm:
             await self.pool.execute(query, prefix, ctx.guild.id)
-            get_cached_prefix.cache_invalidate(self.bot, ctx.message)
+            get_prefix.cache_invalidate(self.bot, ctx.message)
             await ctx.send(f"The prefix `{prefix}` has been successfully deleted")
             return
         await ctx.send("Confirmation cancelled. Please try again")
@@ -327,10 +326,7 @@ class Config(commands.Cog):
         INSERT INTO logging_config (guild_id) VALUES ($1)
         ON CONFLICT (guild_id) DO NOTHING;
         """
-        async with self.pool.acquire() as conn:
-            await conn.execute(insert_query, guild.id, [])
-            await handle_guild_data(guild, conn, self.redis_pool)
-            # self.bot.prefixes[guild.id] = None
+        await self.pool.execute(insert_query, guild.id, [])
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
