@@ -23,9 +23,6 @@ from .pg_init_codecs import init_codecs as init_codecs
 from .prefix import get_prefix as get_prefix
 from .rank_utils import calc_petals as calc_petals, calc_rank as calc_rank
 from .time import format_dt as format_dt, human_timedelta as human_timedelta
-from .transport import (
-    AIOHTTPTransportExistingSession as AIOHTTPTransportExistingSession,
-)
 from .tree import KumikoCommandTree as KumikoCommandTree
 from .utils import (
     format_greedy as format_greedy,
