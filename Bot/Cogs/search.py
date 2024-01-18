@@ -4,10 +4,12 @@ from urllib.parse import quote_plus
 
 import ciso8601
 import orjson
+from aiohttp import ClientSession
 from dateutil.parser import parse
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from gql import Client, gql
+from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
 from Libs.ui.search import (
     AniListAnime,
@@ -18,10 +20,22 @@ from Libs.ui.search import (
     ModrinthPages,
     ModrinthProject,
 )
-from Libs.utils import AIOHTTPTransportExistingSession, GuildContext
+from Libs.utils import GuildContext
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
+
+
+class AIOHTTPTransportExistingSession(AIOHTTPTransport):
+    def __init__(self, *args, client_session: ClientSession, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.session = client_session
+
+    async def connect(self) -> None:
+        pass
+
+    async def close(self) -> None:
+        pass
 
 
 class ModrinthFlags(commands.FlagConverter):
