@@ -32,7 +32,6 @@ from .utils import (
     parse_dt as parse_dt,
     parse_subreddit as parse_subreddit,
     produce_error_embed as produce_error_embed,
-    read_env as read_env,
 )
 from .view import KumikoView as KumikoView
 from .webhooks import (

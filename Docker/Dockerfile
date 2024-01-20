@@ -1,56 +1,25 @@
 ####################################################################################################
-## Builder image
-####################################################################################################
-FROM python:3.11-slim-bookworm AS builder
-
-ENV DEBIAN_FRONTEND=noninteractive 
-
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-  curl \
-  git \
-  && apt-get clean
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-RUN curl -sSL https://install.python-poetry.org | python -
-ENV PATH="${PATH}:/root/.local/bin"
-
-WORKDIR /Kumiko
-
-COPY /pyproject.toml /Kumiko/
-COPY /poetry.lock /Kumiko/
-
-RUN poetry export --output requirements.txt --without-hashes --only main
-
-####################################################################################################
 ## Final image
 ####################################################################################################
-FROM python:3.11-slim-bookworm
+FROM python:3.12-slim-bookworm
 
 RUN apt update \
   && apt install -y --no-install-recommends \
   tini \
   bash \
   netcat-traditional \
-  libopus-dev \
   libffi-dev \
-  libsodium-dev \
+  libnacl-dev \
   git \
+  gcc \
+  libc6-dev \
   && apt-get clean
 
 WORKDIR /Kumiko
 COPY /Bot/ /Kumiko/Bot/
-# COPY /Bot/kumikobot.py /Kumiko/Bot/
-# COPY /Bot/kumikocore.py /Kumiko/Bot/
-COPY /Migrations /Kumiko/Migrations
-# COPY /Bot/Cogs /Kumiko/Bot/Cogs
-# COPY /Bot/Libs /Kumiko/Bot/Libs/
-COPY /migrations-runner.py /Kumiko/migrations-runner.py
 COPY /Docker/start.sh /Kumiko/start.sh
 COPY /Docker/wait-for /Kumiko/wait-for
-
-COPY --from=builder /Kumiko/requirements.txt /Kumiko/requirements.txt
+COPY /requirements.txt /Kumiko/requirements.txt
 
 RUN adduser --disabled-password --gecos "" kumiko \
   && chown -R kumiko:kumiko /Kumiko \
