@@ -62,7 +62,7 @@ class Searches(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
-        self._TENOR_KEY = self.bot.config["TENOR_API_KEY"]
+        self.tenor_key = self.bot.config["apis"]["tenor"]
         self.api_url = "https://graphql.anilist.co/"
 
     @property
@@ -296,7 +296,7 @@ class Searches(commands.Cog):
         url = URL("https://tenor.googleapis.com/v2/search")
         params = {
             "q": search,
-            "key": self._TENOR_KEY,
+            "key": self.tenor_key,
             "contentfilter": "medium",
             "limit": 25,
             "media_filter": "minimal",
