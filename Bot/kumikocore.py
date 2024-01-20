@@ -1,7 +1,7 @@
 import logging
 import signal
 from pathlib import Path as SyncPath
-from typing import Dict, Optional, Union
+from typing import Union
 
 import asyncpg
 import discord
@@ -14,10 +14,9 @@ from Libs.utils import (
     KumikoCommandTree,
     KumikoHelpPaginated,
     MessageConstants,
-    ensure_postgres_conn,
-    ensure_redis_conn,
     get_blacklist,
 )
+from Libs.utils.config import KumikoConfig
 from Libs.utils.prefix import get_prefix
 from redis.asyncio.connection import ConnectionPool
 
@@ -35,13 +34,10 @@ class KumikoCore(commands.Bot):
     def __init__(
         self,
         intents: discord.Intents,
-        config: Dict[str, Optional[str]],
+        config: KumikoConfig,
         session: ClientSession,
         pool: asyncpg.Pool,
         redis_pool: ConnectionPool,
-        ipc_secret_key: str,
-        ipc_host: str,
-        dev_mode: bool = False,
         *args,
         **kwargs,
     ):
@@ -54,67 +50,19 @@ class KumikoCore(commands.Bot):
             *args,
             **kwargs,
         )
-        self.dev_mode = dev_mode
-        self._config = config
-        self._session = session
-        self._ipc_secret_key = ipc_secret_key
-        self._ipc_host = ipc_host
-        self._pool = pool
-        self._redis_pool = redis_pool
+        self.config = config
         self.default_prefix = ">"
         self.ipc = ipcx.Server(
-            self, host=self._ipc_host, secret_key=self._ipc_secret_key
+            self,
+            host=config["kumiko"]["ipc"]["host"],
+            secret_key=config["kumiko"]["ipc"]["secret"],
         )
         self.logger: logging.Logger = logging.getLogger("kumiko")
-
-    @property
-    def config(self) -> Dict[str, Optional[str]]:
-        """Global configuration dictionary read from .env files
-
-        This is used to access API keys, and many others from the bot.
-
-        Returns:
-            Dict[str, Optional[str]]: A dictionary of configuration values
-        """
-        return self._config
-
-    @property
-    def session(self) -> ClientSession:
-        """A global web session used throughout the lifetime of the bot
-
-        Returns:
-            ClientSession: AIOHTTP's ClientSession
-        """
-        return self._session
-
-    @property
-    def pool(self) -> asyncpg.Pool:
-        """A global object managed throughout the lifetime of Kumiko
-
-        Holds the asyncpg pool for connections
-
-        Returns:
-            asyncpg.Pool: asyncpg connection pool
-        """
-        return self._pool
-
-    @property
-    def redis_pool(self) -> ConnectionPool:
-        """A global object managed throughout the lifetime of Kumiko
-
-        Returns:
-            ConnectionPool: Redis connection pool
-        """
-        return self._redis_pool
-
-    @property
-    def version(self) -> str:
-        """The version of Kumiko
-
-        Returns:
-            str: The version of Kumiko
-        """
-        return str(VERSION)
+        self.pool = pool
+        self.redis_pool = redis_pool
+        self.session = session
+        self.version = str(VERSION)
+        self._dev_mode = config["kumiko"].get("dev_mode", False)
 
     async def _fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
@@ -160,7 +108,6 @@ class KumikoCore(commands.Bot):
         self.loop.add_signal_handler(signal.SIGINT, stop)
 
         # The blacklist checks
-        self.add_check(self.check_blacklist)
 
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
@@ -169,10 +116,7 @@ class KumikoCore(commands.Bot):
         await self.load_extension("jishaku")
         await self.ipc.start()
 
-        await ensure_postgres_conn(self._pool)
-        await ensure_redis_conn(self._redis_pool)
-
-        if self.dev_mode is True and _fsw is True:
+        if self._dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
             self.loop.create_task(self._fs_watcher())
 

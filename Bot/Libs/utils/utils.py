@@ -4,13 +4,11 @@ import os
 import re
 import traceback
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import List, Optional, Union
 
 import ciso8601
 import dateparser
 import discord
-from dotenv import dotenv_values
 
 from .embeds import ErrorEmbed
 
@@ -54,21 +52,6 @@ def is_docker() -> bool:
     return os.path.exists("/.dockerenv") or (
         os.path.isfile(path) and any("docker" in line for line in open(path))
     )
-
-
-def read_env(path: Path, read_from_file: bool = True) -> Dict[str, Optional[str]]:
-    """Read the ENV
-
-    Args:
-        path (Path): Path for `.env`
-        read_from_file (bool): Force reading from `.env` file
-
-    Returns:
-        Dict[str, Optional[str]]: Parsed ENV
-    """
-    if is_docker() or read_from_file is False:
-        return {**os.environ}
-    return {**dotenv_values(path)}
 
 
 def parse_dt(dt: str) -> Optional[datetime]:

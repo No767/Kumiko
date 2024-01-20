@@ -21,8 +21,8 @@ class Reddit(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
-        self._REDDIT_ID = self.bot.config["REDDIT_ID"]
-        self._REDDIT_SECRET = self.bot.config["REDDIT_SECRET"]
+        self.reddit_id = self.bot.config["apis"]["reddit"]["client_id"]
+        self.reddit_secret = self.bot.config["apis"]["reddit"]["client_secret"]
 
     @property
     def display_emoji(self) -> PartialEmoji:
@@ -45,8 +45,8 @@ class Reddit(commands.Cog):
         """Searches for posts on Reddit"""
         await ctx.defer()
         reddit = asyncpraw.Reddit(
-            client_id=self._REDDIT_ID,
-            client_secret=self._REDDIT_SECRET,
+            client_id=self.reddit_id,
+            client_secret=self.reddit_secret,
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         )
@@ -83,8 +83,8 @@ class Reddit(commands.Cog):
         """Gets a feed of posts from a subreddit"""
         await ctx.defer()
         reddit = asyncpraw.Reddit(
-            client_id=self._REDDIT_ID,
-            client_secret=self._REDDIT_SECRET,
+            client_id=self.reddit_id,
+            client_secret=self.reddit_secret,
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         )

@@ -7,15 +7,7 @@ import pytest
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-ENV_PATH = path / ".env"
-
-from Libs.utils import (
-    is_docker,
-    parse_datetime,
-    parse_dt,
-    produce_error_embed,
-    read_env,
-)
+from Libs.utils import is_docker, parse_datetime, parse_dt, produce_error_embed
 
 
 def test_is_docker():
@@ -23,15 +15,6 @@ def test_is_docker():
         assert is_docker() is False
         return
     assert is_docker() is True
-
-
-def test_read_env():
-    read_from_file = False
-    if is_docker() or read_from_file is False:
-        config = read_env(ENV_PATH, False)
-        assert "POSTGRES_URI" or "SHELL" in config
-    config = read_env(ENV_PATH)
-    assert isinstance(config, dict)
 
 
 def test_parse_dt():

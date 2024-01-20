@@ -4,9 +4,6 @@ from types import TracebackType
 from typing import Optional, Type, TypeVar
 
 import discord
-from cysystemd import journal
-
-from .utils import is_docker
 
 BE = TypeVar("BE", bound=BaseException)
 
@@ -34,8 +31,6 @@ class KumikoLogger:
         )
         handler.setFormatter(fmt)
         self.log.addHandler(handler)
-        if not is_docker():
-            self.log.addHandler(journal.JournaldLogHandler())
         discord.utils.setup_logging(formatter=fmt)
 
     def __exit__(

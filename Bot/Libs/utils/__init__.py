@@ -4,6 +4,7 @@ from .checks import (
     is_manager as is_manager,
     is_mod as is_mod,
 )
+from .config import KumikoConfig as KumikoConfig
 from .connection_checks import (
     ensure_postgres_conn as ensure_postgres_conn,
     ensure_redis_conn as ensure_redis_conn,
@@ -31,7 +32,6 @@ from .utils import (
     parse_dt as parse_dt,
     parse_subreddit as parse_subreddit,
     produce_error_embed as produce_error_embed,
-    read_env as read_env,
 )
 from .view import KumikoView as KumikoView
 from .webhooks import (

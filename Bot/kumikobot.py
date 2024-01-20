@@ -5,26 +5,21 @@ from pathlib import Path
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
-from Libs.utils import KumikoLogger, init_codecs, read_env
+from Libs.utils import KumikoConfig, KumikoLogger, init_codecs
 
 if os.name == "nt":
     from winloop import install
 else:
     from uvloop import install
 
-load_dotenv()
+CONFIG_PATH = Path(__file__).parent / "config.yml"
+config = KumikoConfig(CONFIG_PATH)
 
-ENV_PATH = Path(__file__).parent / ".env"
-
-KUMIKO_TOKEN = os.environ["KUMIKO_TOKEN"]
-DEV_MODE = os.getenv("DEV_MODE") in ("True", "TRUE")
-IPC_SECRET_KEY = os.environ["IPC_SECRET_KEY"]
-IPC_HOST = os.environ["IPC_HOST"]
-POSTGRES_URI = os.environ["POSTGRES_URI"]
-REDIS_URI = os.environ["REDIS_URI"]
+TOKEN: str = config["kumiko"]["token"]
+POSTGRES_URI = config["postgres_uri"]
+REDIS_URI = config["redis_uri"]
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -39,16 +34,13 @@ async def main() -> None:
         init=init_codecs,
     ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
         async with KumikoCore(
+            config=config,
             intents=intents,
-            config=read_env(ENV_PATH),
             session=session,
             pool=pool,
             redis_pool=redis_pool,
-            ipc_secret_key=IPC_SECRET_KEY,
-            ipc_host=IPC_HOST,
-            dev_mode=DEV_MODE,
         ) as bot:
-            await bot.start(KUMIKO_TOKEN)
+            await bot.start(TOKEN)
 
 
 def launch() -> None:
