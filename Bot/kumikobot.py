@@ -5,7 +5,6 @@ from pathlib import Path
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from dotenv import load_dotenv
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
 from Libs.utils import KumikoConfig, KumikoLogger, init_codecs
@@ -15,12 +14,10 @@ if os.name == "nt":
 else:
     from uvloop import install
 
-load_dotenv()
-
 CONFIG_PATH = Path(__file__).parent / "config.yml"
 config = KumikoConfig(CONFIG_PATH)
 
-TOKEN = config["kumiko"]["token"]
+TOKEN: str = config["kumiko"]["token"]
 POSTGRES_URI = config["postgres_uri"]
 REDIS_URI = config["redis_uri"]
 
