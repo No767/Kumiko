@@ -1,27 +1,85 @@
-from typing import Dict, Optional, TypedDict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Dict, Optional, TypedDict
 
 import asyncpg
 import discord
+import msgspec
+from async_lru import alru_cache
 from discord import app_commands
 from discord.ext import commands
-from kumikocore import KumikoCore
-from Libs.ui.config import ConfigMenuView, LGCView
-from Libs.utils import Embed, GuildContext, WebhookDispatcher, is_manager
+from Libs.ui.config import ConfigMenuView
+from Libs.utils import Embed, GuildContext, is_manager
 from Libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
 
+if TYPE_CHECKING:
+    from kumikocore import KumikoCore
+
 
 class ReservedConfig(TypedDict):
-    logs: bool
-    local_economy: bool
+    economy: bool
     redirects: bool
-    pins: bool
+    voice_summary: bool
 
 
 class ReservedLGC(TypedDict):
     mod: bool
     eco: bool
     redirects: bool
+
+
+class GuildConfig(msgspec.Struct):
+    economy: bool = False
+    redirects: bool = True
+    voice_summary: bool = False
+
+
+class GuildLogsConfig(msgspec.Struct):
+    bot: KumikoCore
+    guild_id: int
+    category_id: int
+    channel_id: int
+    broadcast_url: str
+
+    @property
+    def category_channel(self) -> Optional[discord.CategoryChannel]:
+        guild = self.bot.get_guild(self.guild_id)
+        return guild and guild.get_channel(self.category_id)  # type: ignore
+
+    @property
+    def logging_channel(self) -> Optional[discord.TextChannel]:
+        guild = self.bot.get_guild(self.guild_id)
+        return guild and guild.get_channel(self.channel_id)  # type: ignore
+
+
+class GuildLogsWebhookDispatcher:
+    def __init__(self, bot: KumikoCore, guild_id: int):
+        self.bot = bot
+        self.guild_id = guild_id
+        self.session = self.bot.session
+        self.pool = self.bot.pool
+
+    async def get_logging_webhook(self) -> Optional[discord.Webhook]:
+        config = await self.get_logs_config()
+        if config is None:
+            return None
+        return discord.Webhook.from_url(url=config.broadcast_url, session=self.session)
+
+    @alru_cache()
+    async def get_logs_config(self) -> Optional[GuildLogsConfig]:
+        query = """
+        SELECT category_id, channel_id, broadcast_url
+        FROM guild_logs_config
+        WHERE guild_id = $1;
+        """
+        rows = await self.pool.fetchrow(query, self.guild_id)
+        if rows is None:
+            self.get_logs_config.cache_invalidate()
+            return None
+
+        config = GuildLogsConfig(bot=self.bot, guild_id=self.guild_id, **dict(rows))
+        return config
 
 
 class PrefixConverter(commands.Converter):
@@ -76,14 +134,13 @@ class Config(commands.Cog):
         assert ctx.guild is not None
 
         value_map = {
-            "local_economy": "Economy",
+            "economy": "Economy",
             "redirects": "Redirects",
-            "logs": "Logs",
-            "pins": "Pins",
+            "voice_summary": "VoiceSummary",
         }
         query = """
-        SELECT logs, local_economy, redirects, pins
-        FROM guild
+        SELECT economy, redirects, voice_summary
+        FROM guild_config
         WHERE id = $1;
         """
         rows = await self.pool.fetchrow(query, ctx.guild.id)
@@ -117,51 +174,49 @@ class Config(commands.Cog):
     @config.group(name="logs", fallback="settings")
     async def logs(self, ctx: GuildContext) -> None:
         """Configure logging settings"""
-        assert ctx.guild is not None
+        # assert ctx.guild is not None
 
-        query = """
-        SELECT mod, eco, redirects
-        FROM logging_config
-        WHERE guild_id = $1;
-        """
-        rows = await self.pool.fetchrow(query, ctx.guild.id)
-        if rows is None:
-            await ctx.send("Apparently guild is not in db")
-            return
+        # query = """
+        # SELECT mod, eco, redirects
+        # FROM logging_config
+        # WHERE guild_id = $1;
+        # """
+        # rows = await self.pool.fetchrow(query, ctx.guild.id)
+        # if rows is None:
+        #     await ctx.send("Apparently guild is not in db")
+        #     return
 
-        lgc_conf = ReservedLGC(**dict(rows))
-        self.reserved_lgc.setdefault(ctx.guild.id, lgc_conf)
-        view = LGCView(self.bot, self, ctx)
-        embed = Embed()
-        embed.description = """
-        If you are the owner or a server mod, this is logging panel!
-        This menu is meant for enabling/disabling the different types of logging.
-        """
-        embed.add_field(
-            name="How to use",
-            value="Click on the select menu, and enable/disable the selected feature. Once finished, just click the 'Finish' button",
-            inline=False,
-        )
-        await ctx.send(embed=embed, view=view)
+        # lgc_conf = ReservedLGC(**dict(rows))
+        # self.reserved_lgc.setdefault(ctx.guild.id, lgc_conf)
+        # view = LGCView(self.bot, self, ctx)
+        # embed = Embed()
+        # embed.description = """
+        # If you are the owner or a server mod, this is logging panel!
+        # This menu is meant for enabling/disabling the different types of logging.
+        # """
+        # embed.add_field(
+        #     name="How to use",
+        #     value="Click on the select menu, and enable/disable the selected feature. Once finished, just click the 'Finish' button",
+        #     inline=False,
+        # )
+        await ctx.send("yes")
 
     @commands.cooldown(10, 30, commands.BucketType.guild)
     @logs.command(name="setup")
-    @app_commands.describe(
-        name="The name of the channel. Defaults to kumiko-events-log"
-    )
+    @app_commands.describe(name="The name of the channel. Defaults to kumiko-logs")
     async def logs_setup(self, ctx: GuildContext, *, name: Optional[str]) -> None:
         """First-time setup command for logging"""
-        assert ctx.guild is not None
-
-        name = name or "kumiko-events-log"
+        await ctx.defer()
+        name = name or "kumiko-logs"
         guild_id = ctx.guild.id
         query = """
-        INSERT INTO logging_webhooks (id, channel_id, broadcast_url)
-        VALUES ($1, $2, $3);
+        INSERT INTO guild_logs_config (guild_id, category_id, channel_id, broadcast_url)
+        VALUES ($1, $2, $3, $4);
         """
 
-        webhook_dispatcher = WebhookDispatcher(self.bot, guild_id)
-        config = await webhook_dispatcher.get_webhook_config()
+        webhook_dispatcher = GuildLogsWebhookDispatcher(self.bot, guild_id)
+        config = await webhook_dispatcher.get_logs_config()
+
         if config is not None and config.logging_channel is not None:
             msg = (
                 f"It seems like there is a channel set up at {config.logging_channel.mention}\n"
@@ -181,22 +236,31 @@ class Config(commands.Cog):
         avatar_bytes = await self.bot.user.display_avatar.read()  # type: ignore # The bot should be logged in order to run this command
         overwrites = {
             ctx.guild.default_role: discord.PermissionOverwrite(
-                read_messages=False, send_messages=False
+                read_messages=False,
+                send_messages=False,
+                create_public_threads=False,
             ),
             ctx.guild.me: discord.PermissionOverwrite(
-                read_messages=True, send_messages=True, manage_webhooks=True
+                read_messages=True,
+                send_messages=True,
+                manage_webhooks=True,
+                create_public_threads=True,
+                manage_threads=True,
             ),
         }
         reason = (
             f"{ctx.author} (ID: {ctx.author.id}) has created the event logs channel"
         )
-
+        delete_reason = "Failed to create logs category and/or channel"
         try:
-            channel = await ctx.guild.create_text_channel(
-                name=name, overwrites=overwrites, reason=reason
+            kumiko_category = await ctx.guild.create_category(
+                name="kumiko", overwrites=overwrites, position=0
+            )
+            channel = await kumiko_category.create_text_channel(
+                name=name, reason=reason, position=0
             )
             broadcast_webhook = await channel.create_webhook(
-                name="Kumiko Event Logs", avatar=avatar_bytes
+                name="Kumiko Logs", avatar=avatar_bytes
             )
         except discord.Forbidden:
             await ctx.send(
@@ -211,36 +275,38 @@ class Config(commands.Cog):
 
         try:
             await self.pool.execute(
-                query, guild_id, broadcast_webhook.channel_id, broadcast_webhook.url
+                query,
+                guild_id,
+                kumiko_category.id,
+                broadcast_webhook.channel_id,
+                broadcast_webhook.url,
             )
-            webhook_dispatcher.get_webhook_config.cache_invalidate(guild_id=guild_id)
-            await ctx.send(f"EventLogs Channel created at {channel.mention}")
         except asyncpg.UniqueViolationError:
-            await channel.delete(reason="Failed to create logs")
+            await kumiko_category.delete(reason=delete_reason)
+            await channel.delete(reason=delete_reason)
             await ctx.send("Failed to create the channel due to an internal error")
+        else:
+            webhook_dispatcher.get_logs_config.cache_invalidate()
+            await ctx.send(
+                f"Event Logs channel created successfully! Logs created at {channel.mention}"
+            )
 
     @commands.cooldown(10, 30, commands.BucketType.guild)
     @logs.command(name="delete")
     async def logs_delete(self, ctx: GuildContext):
         """Deletes logging channels permanently"""
+        await ctx.defer()
         query = """
-        WITH delete_webhooks AS (
-            DELETE FROM logging_webhooks
-            WHERE id = $1
-            RETURNING id
-        )
-        DELETE FROM logging_config
-        WHERE guild_id = (SELECT id FROM delete_webhooks);
+        DELETE FROM guild_logs_config WHERE guild_id = $1;
         """
         msg = "Are you sure you want to delete the logging channels permanently?"
-        dispatcher = WebhookDispatcher(self.bot, ctx.guild.id)
+        dispatcher = GuildLogsWebhookDispatcher(self.bot, ctx.guild.id)
+        logs_config = await dispatcher.get_logs_config()
         confirm = await ctx.prompt(msg)
         if confirm:
-            webhook_config = await dispatcher.get_webhook_config()
-            if webhook_config is None or webhook_config.logging_channel is None:
+            if logs_config is None:
                 msg = (
-                    "Apparently you don't have a channel to begin with... "
-                    f"Please run `{ctx.prefix}config logs setup` to make one"
+                    "Could not find guild logs config. Perhaps you didn't set this up?"
                 )
                 await ctx.send(msg)
                 return
@@ -248,20 +314,24 @@ class Config(commands.Cog):
             author = ctx.author
             reason = f"{author.name} (ID: {author.name}) has requested to delete the logging channel"
 
-            try:
-                await webhook_config.logging_channel.delete(reason=reason)
-            except discord.Forbidden:
-                await ctx.send(
-                    "\N{NO ENTRY SIGN} I do not have permissions to delete channels and/or webhooks."
-                )
-                return
-            except discord.HTTPException:
-                await ctx.send("\N{NO ENTRY SIGN} Unknown error happened")
-                return
+            if (
+                logs_config.category_channel is not None
+                and logs_config.logging_channel is not None
+            ):
+                try:
+                    await logs_config.category_channel.delete(reason=reason)
+                    await logs_config.logging_channel.delete(reason=reason)
+                except discord.Forbidden:
+                    await ctx.send(
+                        "\N{NO ENTRY SIGN} I do not have permissions to delete channels and/or webhooks."
+                    )
+                    return
+                except discord.HTTPException:
+                    await ctx.send("\N{NO ENTRY SIGN} Unknown error happened")
+                    return
 
-            dispatcher.get_webhook_config.cache_invalidate()
             await self.pool.execute(query, ctx.guild.id)
-
+            dispatcher.get_logs_config.cache_invalidate()
             await ctx.send("Logging channels have been successfully deleted")
         elif confirm is None:
             await ctx.send("Not removing logging channels. Cancelling")
@@ -292,7 +362,7 @@ class Config(commands.Cog):
     ) -> None:
         """Updates the prefix for your server"""
         query = """
-            UPDATE guild
+            UPDATE guild_config
             SET prefix = ARRAY_REPLACE(prefix, $1, $2)
             WHERE id = $3;
         """
@@ -329,7 +399,7 @@ class Config(commands.Cog):
             return
 
         query = """
-            UPDATE guild
+            UPDATE guild_config
             SET prefix = ARRAY_APPEND(prefix, $1)
             WHERE id=$2;
         """
@@ -345,7 +415,7 @@ class Config(commands.Cog):
     ) -> None:
         """Deletes a prefix from your server"""
         query = """
-        UPDATE guild
+        UPDATE guild_config
         SET prefix = ARRAY_REMOVE(prefix, $1)
         WHERE id=$2;
         """
@@ -361,22 +431,22 @@ class Config(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
         insert_query = """
-        INSERT INTO guild (id, prefix) VALUES ($1, $2)
+        INSERT INTO guild_config (id, prefix) VALUES ($1, $2)
         ON CONFLICT (id) DO NOTHING;
         """
         await self.pool.execute(insert_query, guild.id, [])
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild: discord.Guild) -> None:
-        await self.pool.execute("DELETE FROM guild WHERE id = $1", guild.id)
+        await self.pool.execute("DELETE FROM guild_config WHERE id = $1", guild.id)
 
     @commands.Cog.listener()
     async def on_guild_channel_delete(self, channel: discord.abc.GuildChannel) -> None:
         if not isinstance(channel, discord.TextChannel):
             return
 
-        webhook_dispatcher = WebhookDispatcher(self.bot, channel.guild.id)
-        webhook_config = await webhook_dispatcher.get_webhook_config()
+        webhook_dispatcher = GuildLogsWebhookDispatcher(self.bot, channel.guild.id)
+        webhook_config = await webhook_dispatcher.get_logs_config()
 
         if webhook_config is None:
             return
@@ -388,9 +458,9 @@ class Config(commands.Cog):
             return
 
         # Delete the unused entries
-        delete_query = "DELETE FROM logging_webhooks WHERE id = $1;"
+        delete_query = "DELETE FROM guild_logs_config WHERE guild_id = $1;"
         await self.pool.execute(delete_query, channel.guild.id)
-        webhook_dispatcher.get_webhook_config.cache_invalidate()
+        webhook_dispatcher.get_logs_config.cache_invalidate()
 
 
 async def setup(bot: KumikoCore) -> None:

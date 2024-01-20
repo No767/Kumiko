@@ -84,9 +84,9 @@ class Pins(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji(name="\U0001f4cc")
 
-    @property
-    def configurable(self) -> bool:
-        return True
+    # @property
+    # def configurable(self) -> bool:
+    #     return True
 
     @is_pins_enabled()
     @commands.guild_only()

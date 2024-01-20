@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from typing import TYPE_CHECKING, Any, Optional
 
 import discord
@@ -20,7 +21,14 @@ class KumikoView(discord.ui.View):
         super().__init__(*args, **kwargs)
         self.ctx = ctx
         self.message: Optional[discord.Message] = None
+        self.triggered = asyncio.Event()
         self.display_message = display_message
+
+    def build_timeout_embed(self) -> ErrorEmbed:
+        embed = ErrorEmbed()
+        embed.title = "\U00002757 Timed Out"
+        embed.description = "Timed out waiting for a response. Cancelling action..."
+        return embed
 
     async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
         if interaction.user and interaction.user.id in (
@@ -34,16 +42,7 @@ class KumikoView(discord.ui.View):
 
     async def on_timeout(self) -> None:
         if self.message:
-            if self.display_message:
-                embed = ErrorEmbed()
-                embed.title = "\U00002757 Timed Out"
-                embed.description = (
-                    "Timed out waiting for a response. Cancelling action..."
-                )
-                await self.message.edit(embed=embed, view=None)
-                return
-
-            await self.message.edit(view=None)
+            await self.message.edit(embed=self.build_timeout_embed(), view=None)
 
     async def on_error(
         self,

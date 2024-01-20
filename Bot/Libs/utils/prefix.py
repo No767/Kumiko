@@ -34,7 +34,7 @@ async def get_prefix(
 
     query = """
     SELECT prefix
-    FROM guild
+    FROM guild_config
     WHERE id = $1;
     """
     prefixes = await bot.pool.fetchval(query, message.guild.id)

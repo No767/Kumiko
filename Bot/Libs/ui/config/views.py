@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, TypedDict
 
 import discord
-from discord.ext import commands
-from Libs.config import GuildCacheHandler, GuildConfig
-from Libs.utils import Embed, KumikoView
+from Libs.utils import Embed, KContext, KumikoView
 
 from .utils import determine_status, format_conf_desc
 
@@ -14,10 +12,95 @@ if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
 
 
+class ReservedConfig(TypedDict):
+    economy: bool
+    redirects: bool
+    voice_summary: bool
+
+
+class NewConfigMenu(discord.ui.Select):
+    def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
+        self.bot = bot
+        self.ctx = ctx
+        self.config_cog = config_cog
+        self.value_to_key = {
+            "Economy": "economy",
+            "Redirects": "redirects",
+            "VoiceSummary": "voice_summary",
+        }
+        options = [
+            discord.SelectOption(
+                emoji=getattr(cog, "display_emoji", None),
+                label=cog_name,
+                description=cog.__doc__.split("\n")[0]
+                if cog.__doc__ is not None
+                else None,
+                value=self.value_to_key[cog_name],
+            )
+            for cog_name, cog in self.bot.cogs.items()
+            if getattr(cog, "configurable", None) is not None
+        ]
+        super().__init__(
+            placeholder="Select a category...",
+            min_values=1,
+            max_values=3,
+            options=options,
+            row=0,
+        )
+        self.prev_selected: Optional[set] = None
+
+    def tick(self, status) -> str:
+        if status is True:
+            return "\U00002705"
+        return "\U0000274c"
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        if interaction.guild is None:
+            raise RuntimeError("Wrong...")
+
+        values = self.values
+        current_selection = self.config_cog.reserved_configs.get(interaction.guild.id)
+        if current_selection is None:
+            await interaction.response.send_message(
+                "No selection cached?", ephemeral=True
+            )
+            return
+
+        output_selection = ReservedConfig(
+            economy=False, redirects=False, voice_summary=False
+        )
+        if interaction.guild.id in self.config_cog.reserved_configs:
+            output_selection = current_selection
+
+        current_selected = set(self.values)
+
+        if self.prev_selected is not None:
+            missing = self.prev_selected - current_selected
+            added = current_selected - self.prev_selected
+
+            combined = missing.union(added)
+
+            for tag in combined:
+                output_selection[tag] = not current_selection[tag]
+        else:
+            for tag in values:
+                output_selection[tag] = not current_selection[tag]
+
+        self.config_cog.reserved_configs[interaction.guild.id] = output_selection
+        self.prev_selected = set(self.values)
+        formatted_str = "\n".join(
+            f"{self.tick(v)} - {k.title()}" for k, v in output_selection.items()
+        )
+        result = f"The following have been modified:\n\n{formatted_str}"
+
+        embed = Embed(title="Modified Tags")
+        embed.description = result
+        embed.set_footer(text="\U00002705 = Selected | \U0000274c = Unselected")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
 class ConfigMenu(discord.ui.Select):
-    def __init__(
-        self, bot: KumikoCore, ctx: commands.Context, config_cog: Config
-    ) -> None:
+    def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
         self.bot = bot
         self.ctx = ctx
         self.config_cog = config_cog
@@ -42,10 +125,9 @@ class ConfigMenu(discord.ui.Select):
         assert interaction.guild is not None
         value = self.values[0]
         value_to_key = {
-            "Economy": "local_economy",
+            "Economy": "economy",
             "Redirects": "redirects",
-            "EventsLog": "logs",
-            "Pins": "pins",
+            "VoiceSummary": "voice_summary",
         }
         key = value_to_key[value]
         current_status = self.config_cog.reserved_configs[interaction.guild.id][key]
@@ -58,7 +140,7 @@ class ConfigMenu(discord.ui.Select):
 
 
 class ToggleCacheView(KumikoView):
-    def __init__(self, ctx: commands.Context, config_cog: Config, value: str):
+    def __init__(self, ctx: KContext, config_cog: Config, value: str):
         super().__init__(ctx)
         self.ctx = ctx
         self.config_cog = config_cog
@@ -71,10 +153,9 @@ class ToggleCacheView(KumikoView):
         status: bool,
     ) -> None:
         value_to_key = {
-            "Economy": "local_economy",
+            "Economy": "economy",
             "Redirects": "redirects",
-            "EventsLog": "logs",
-            "Pins": "pins",
+            "VoiceSummary": "voice_summary",
         }
         key = value_to_key[self.value]
         str_status = determine_status(status)
@@ -140,38 +221,37 @@ class ToggleCacheView(KumikoView):
 
 
 class ConfigMenuView(KumikoView):
-    def __init__(
-        self, bot: KumikoCore, ctx: commands.Context, config_cog: Config
-    ) -> None:
+    def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
         super().__init__(ctx)
         self.config_cog = config_cog
         self.pool = bot.pool
         self.redis_pool = bot.redis_pool
-        self.add_item(ConfigMenu(bot, ctx, config_cog))
+        self.add_item(NewConfigMenu(bot, ctx, config_cog))
+
+    async def on_timeout(self) -> None:
+        if self.message and not self.triggered.is_set():
+            await self.message.edit(embed=self.build_timeout_embed(), view=None)
 
     @discord.ui.button(label="Save and Finish", style=discord.ButtonStyle.green, row=1)
     async def save(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         value_map = {
-            "local_economy": "Economy",
+            "economy": "Economy",
             "redirects": "Redirects",
-            "logs": "Logs",
-            "pins": "Pins",
+            "voice_summary": "VoiceSummary",
         }
         query = """
-        UPDATE guild
-        SET logs = $2,
-            local_economy = $3,
-            redirects = $4,
-            pins = $5
+        UPDATE guild_config
+        SET economy = $2,
+            redirects = $3,
+            voice_summary = $4
         WHERE id = $1;
         """
         if interaction.guild is None:
             return
 
         guild_id = interaction.guild.id
-        cache = GuildCacheHandler(guild_id, self.redis_pool)
         cached_status = self.config_cog.reserved_configs.get(guild_id)
 
         if cached_status is None:
@@ -182,14 +262,13 @@ class ConfigMenuView(KumikoView):
         )
         desc = f"The following changes were made:\n{change_desc}"
 
-        new_config = GuildConfig(**cached_status)
         status_values = [v for v in cached_status.values()]
 
         await self.pool.execute(query, guild_id, *status_values)
-        await cache.replace_config(".config", new_config)
         if guild_id in self.config_cog.reserved_configs:
             self.config_cog.reserved_configs.pop(guild_id)
 
-        await interaction.response.defer()
-        await interaction.edit_original_response(content=desc, embed=None, view=None)
-        self.stop()
+        if self.message:
+            self.triggered.set()
+            await self.message.edit(content=desc, embed=None, view=None)
+            self.stop()
