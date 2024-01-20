@@ -108,7 +108,6 @@ class KumikoCore(commands.Bot):
         self.loop.add_signal_handler(signal.SIGINT, stop)
 
         # The blacklist checks
-        self.add_check(self.check_blacklist)
 
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
