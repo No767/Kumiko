@@ -2,11 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import asyncpg
 import discord
-from discord.ext import commands
 from Libs.config.cache import GuildCacheHandler, LoggingGuildConfig
-from Libs.utils import KumikoView, WebhookDispatcher
+from Libs.utils import KContext, KumikoView
 
 from .utils import determine_status, format_desc
 
@@ -16,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class LoggingConfigMenu(discord.ui.Select):
-    def __init__(self, cog: Config, ctx: commands.Context) -> None:
+    def __init__(self, cog: Config, ctx: KContext) -> None:
         options = [
             discord.SelectOption(
                 emoji=discord.PartialEmoji.from_str("<:blobban:759935431847968788>"),
@@ -57,7 +55,7 @@ class LoggingConfigMenu(discord.ui.Select):
 
 
 class LGCView(KumikoView):
-    def __init__(self, bot: KumikoCore, cog: Config, ctx: commands.Context) -> None:
+    def __init__(self, bot: KumikoCore, cog: Config, ctx: KContext) -> None:
         super().__init__(ctx)
         self.conf_cog = cog
         self.bot = bot
@@ -104,7 +102,7 @@ class LGCView(KumikoView):
 
 
 class LGCToggleView(KumikoView):
-    def __init__(self, cog: Config, ctx: commands.Context, value: str) -> None:
+    def __init__(self, cog: Config, ctx: KContext, value: str) -> None:
         super().__init__(ctx)
         self.ctx = ctx
         self.conf_cog = cog
@@ -168,79 +166,6 @@ class LGCToggleView(KumikoView):
         style=discord.ButtonStyle.grey,
     )
     async def finish(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
-        await interaction.response.defer()
-        await interaction.delete_original_response()
-        self.stop()
-
-
-class PurgeLGConfirmation(KumikoView):
-    def __init__(
-        self,
-        bot: KumikoCore,
-        ctx: commands.Context[KumikoCore],
-        guild_id: int,
-        pool: asyncpg.Pool,
-    ) -> None:
-        super().__init__(ctx)
-        self.guild_id = guild_id
-        self.dispatcher = WebhookDispatcher(bot, self.guild_id)
-        self.pool = pool
-
-    async def on_timeout(self) -> None:
-        if self.message:  # type: ignore
-            self.message.delete()  # type: ignore
-
-    @discord.ui.button(
-        label="Confirm",
-        style=discord.ButtonStyle.green,
-        emoji="<:greenTick:596576670815879169>",
-        row=0,
-    )
-    async def confirm(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
-        delete_query = "DELETE FROM logging_webhooks WHERE id = $1;"
-        logging_channel = await self.dispatcher.get_channel()
-
-        if logging_channel is None:
-            await interaction.response.send_message(
-                "Apparently you don't have a channel to begin with... Please run `config logs setup` to make one.",
-                ephemeral=True,
-            )
-            return
-
-        requested_user = interaction.user
-        reason = f"{requested_user.name} (ID: {requested_user.id}) has requested to delete the logging chanel {logging_channel.name}"
-
-        try:
-            await logging_channel.delete(reason=reason)
-        except discord.Forbidden:
-            await interaction.response.send_message(
-                "\N{NO ENTRY SIGN} I do not have permissions to delete channels and/or webhooks."
-            )
-            return
-        except discord.HTTPException:
-            await interaction.response.send_message(
-                "\N{NO ENTRY SIGN} Unknown error happened"
-            )
-            return
-
-        # Invalidate the cache so we can safely delete it
-        self.dispatcher.get_webhook_config.cache_invalidate()
-        await self.pool.execute(delete_query, self.guild_id)
-
-        await self.message.edit(content="Logging channels have been successfully deleted", embed=None, view=None, delete_after=15.0)  # type: ignore
-        self.stop()
-
-    @discord.ui.button(
-        label="Cancel",
-        style=discord.ButtonStyle.red,
-        emoji="<:redTick:596576672149667840>",
-        row=0,
-    )
-    async def cancel(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
         await interaction.response.defer()

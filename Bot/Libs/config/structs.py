@@ -10,8 +10,8 @@ class LoggingGuildConfig(msgspec.Struct):
 class GuildConfig(msgspec.Struct):
     logs: bool = True
     local_economy: bool = False
-    redirects: bool = True
     pins: bool = True
+    voice_summary: bool = False
 
 
 class FullGuildConfig(msgspec.Struct):

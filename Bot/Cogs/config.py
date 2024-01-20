@@ -1,21 +1,27 @@
-from typing import Dict, Optional
+from typing import Dict, Optional, TypedDict
 
 import asyncpg
 import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.config import ReservedConfig, ReservedLGC
-from Libs.ui.config import ConfigMenuView, LGCView, PurgeLGConfirmation
-from Libs.utils import (
-    ConfirmEmbed,
-    Embed,
-    GuildContext,
-    WebhookDispatcher,
-    is_manager,
-)
+from Libs.ui.config import ConfigMenuView, LGCView
+from Libs.utils import Embed, GuildContext, WebhookDispatcher, is_manager
 from Libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
+
+
+class ReservedConfig(TypedDict):
+    logs: bool
+    local_economy: bool
+    redirects: bool
+    pins: bool
+
+
+class ReservedLGC(TypedDict):
+    mod: bool
+    eco: bool
+    redirects: bool
 
 
 class PrefixConverter(commands.Converter):
@@ -216,15 +222,51 @@ class Config(commands.Cog):
     @commands.cooldown(10, 30, commands.BucketType.guild)
     @logs.command(name="delete")
     async def logs_delete(self, ctx: GuildContext):
-        """Deletes logging channels permanently - Does not delete logging configs"""
-        assert ctx.guild is not None
-        msg = """
-        Are you sure you want to delete the logging channels permanently?
-        This **does not** delete your logging configs.
+        """Deletes logging channels permanently"""
+        query = """
+        WITH delete_webhooks AS (
+            DELETE FROM logging_webhooks
+            WHERE id = $1
+            RETURNING id
+        )
+        DELETE FROM logging_config
+        WHERE guild_id = (SELECT id FROM delete_webhooks);
         """
-        view = PurgeLGConfirmation(self.bot, ctx, ctx.guild.id, self.pool)
-        embed = ConfirmEmbed(description=msg)
-        view.message = await ctx.send(embed=embed, view=view)
+        msg = "Are you sure you want to delete the logging channels permanently?"
+        dispatcher = WebhookDispatcher(self.bot, ctx.guild.id)
+        confirm = await ctx.prompt(msg)
+        if confirm:
+            webhook_config = await dispatcher.get_webhook_config()
+            if webhook_config is None or webhook_config.logging_channel is None:
+                msg = (
+                    "Apparently you don't have a channel to begin with... "
+                    f"Please run `{ctx.prefix}config logs setup` to make one"
+                )
+                await ctx.send(msg)
+                return
+
+            author = ctx.author
+            reason = f"{author.name} (ID: {author.name}) has requested to delete the logging channel"
+
+            try:
+                await webhook_config.logging_channel.delete(reason=reason)
+            except discord.Forbidden:
+                await ctx.send(
+                    "\N{NO ENTRY SIGN} I do not have permissions to delete channels and/or webhooks."
+                )
+                return
+            except discord.HTTPException:
+                await ctx.send("\N{NO ENTRY SIGN} Unknown error happened")
+                return
+
+            dispatcher.get_webhook_config.cache_invalidate()
+            await self.pool.execute(query, ctx.guild.id)
+
+            await ctx.send("Logging channels have been successfully deleted")
+        elif confirm is None:
+            await ctx.send("Not removing logging channels. Cancelling")
+        else:
+            await ctx.send("Cancelling")
 
     @commands.guild_only()
     @config.group(name="prefix", fallback="info")
@@ -319,12 +361,8 @@ class Config(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(self, guild: discord.Guild) -> None:
         insert_query = """
-        WITH guild_insert AS (
-            INSERT INTO guild (id, prefix) VALUES ($1, $2)
-            ON CONFLICT (id) DO NOTHING
-        )
-        INSERT INTO logging_config (guild_id) VALUES ($1)
-        ON CONFLICT (guild_id) DO NOTHING;
+        INSERT INTO guild (id, prefix) VALUES ($1, $2)
+        ON CONFLICT (id) DO NOTHING;
         """
         await self.pool.execute(insert_query, guild.id, [])
 
