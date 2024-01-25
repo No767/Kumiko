@@ -5,10 +5,6 @@ from .checks import (
     is_mod as is_mod,
 )
 from .config import KumikoConfig as KumikoConfig
-from .connection_checks import (
-    ensure_postgres_conn as ensure_postgres_conn,
-    ensure_redis_conn as ensure_redis_conn,
-)
 from .context import GuildContext as GuildContext, KContext as KContext
 from .embeds import (
     ConfirmEmbed as ConfirmEmbed,
@@ -17,7 +13,7 @@ from .embeds import (
     SuccessEmbed as SuccessEmbed,
 )
 from .help import KumikoHelpPaginated as KumikoHelpPaginated
-from .kumiko_logger import KumikoLogger as KumikoLogger
+from .logger import KumikoLogger as KumikoLogger
 from .message_constants import MessageConstants as MessageConstants
 from .modal import KumikoModal as KumikoModal
 from .pg_init_codecs import init_codecs as init_codecs
