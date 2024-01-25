@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 import discord
 from Libs.utils import Embed, KContext, KumikoView
@@ -18,87 +18,8 @@ class ReservedConfig(TypedDict):
     voice_summary: bool
 
 
-class NewConfigMenu(discord.ui.Select):
-    def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
-        self.bot = bot
-        self.ctx = ctx
-        self.config_cog = config_cog
-        self.value_to_key = {
-            "Economy": "economy",
-            "Redirects": "redirects",
-            "VoiceSummary": "voice_summary",
-        }
-        options = [
-            discord.SelectOption(
-                emoji=getattr(cog, "display_emoji", None),
-                label=cog_name,
-                description=cog.__doc__.split("\n")[0]
-                if cog.__doc__ is not None
-                else None,
-                value=self.value_to_key[cog_name],
-            )
-            for cog_name, cog in self.bot.cogs.items()
-            if getattr(cog, "configurable", None) is not None
-        ]
-        super().__init__(
-            placeholder="Select a category...",
-            min_values=1,
-            max_values=3,
-            options=options,
-            row=0,
-        )
-        self.prev_selected: Optional[set] = None
-
-    def tick(self, status) -> str:
-        if status is True:
-            return "\U00002705"
-        return "\U0000274c"
-
-    async def callback(self, interaction: discord.Interaction) -> None:
-        if interaction.guild is None:
-            raise RuntimeError("Wrong...")
-
-        values = self.values
-        current_selection = self.config_cog.reserved_configs.get(interaction.guild.id)
-        if current_selection is None:
-            await interaction.response.send_message(
-                "No selection cached?", ephemeral=True
-            )
-            return
-
-        output_selection = ReservedConfig(
-            economy=False, redirects=False, voice_summary=False
-        )
-        if interaction.guild.id in self.config_cog.reserved_configs:
-            output_selection = current_selection
-
-        current_selected = set(self.values)
-
-        if self.prev_selected is not None:
-            missing = self.prev_selected - current_selected
-            added = current_selected - self.prev_selected
-
-            combined = missing.union(added)
-
-            for tag in combined:
-                output_selection[tag] = not current_selection[tag]
-        else:
-            for tag in values:
-                output_selection[tag] = not current_selection[tag]
-
-        self.config_cog.reserved_configs[interaction.guild.id] = output_selection
-        self.prev_selected = set(self.values)
-        formatted_str = "\n".join(
-            f"{self.tick(v)} - {k.title()}" for k, v in output_selection.items()
-        )
-        result = f"The following have been modified:\n\n{formatted_str}"
-
-        embed = Embed(title="Modified Tags")
-        embed.description = result
-        embed.set_footer(text="\U00002705 = Selected | \U0000274c = Unselected")
-        await interaction.response.send_message(embed=embed, ephemeral=True)
-
-
+# Probably use something like this
+# But instead offer an button to go back
 class ConfigMenu(discord.ui.Select):
     def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
         self.bot = bot
@@ -124,6 +45,7 @@ class ConfigMenu(discord.ui.Select):
         # See https://github.com/MagicStack/asyncpg/issues/208#issuecomment-335498184
         assert interaction.guild is not None
         value = self.values[0]
+        self.bot.logger.info(f"Selected Value: {value}")
         value_to_key = {
             "Economy": "economy",
             "Redirects": "redirects",
@@ -226,7 +148,7 @@ class ConfigMenuView(KumikoView):
         self.config_cog = config_cog
         self.pool = bot.pool
         self.redis_pool = bot.redis_pool
-        self.add_item(NewConfigMenu(bot, ctx, config_cog))
+        self.add_item(ConfigMenu(bot, ctx, config_cog))
 
     async def on_timeout(self) -> None:
         if self.message and not self.triggered.is_set():

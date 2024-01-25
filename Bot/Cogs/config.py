@@ -152,6 +152,9 @@ class Config(commands.Cog):
         current_status = "\n".join(
             [f"{value_map[k]}: {v}" for k, v in reserved_conf.items()]
         )
+        self.bot.logger.info(
+            f"Current Values: {[(k, v) for k, v, in reserved_conf.items()]}"
+        )
         view = ConfigMenuView(self.bot, ctx, self)
         embed = Embed()
         embed.description = """
