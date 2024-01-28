@@ -28,7 +28,7 @@ class Github(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
-        self.gh_key = self.bot.config["apis"]["github"]
+        self.gh_key = self.bot.config["github"]
         self.base_url = URL("https://api.github.com/repos/")
         self.headers = {
             "Authorization": f"Bearer: {self.gh_key}",

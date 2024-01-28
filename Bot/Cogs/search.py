@@ -62,7 +62,7 @@ class Searches(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
-        self.tenor_key = self.bot.config["apis"]["tenor"]
+        self.tenor_key = self.bot.config["tenor"]
         self.api_url = "https://graphql.anilist.co/"
 
     @property

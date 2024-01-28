@@ -21,8 +21,8 @@ class Reddit(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
         self.session = self.bot.session
-        self.reddit_id = self.bot.config["apis"]["reddit"]["client_id"]
-        self.reddit_secret = self.bot.config["apis"]["reddit"]["client_secret"]
+        self.reddit_id = self.bot.config["reddit"]["client_id"]
+        self.reddit_secret = self.bot.config["reddit"]["client_secret"]
 
     @property
     def display_emoji(self) -> PartialEmoji:
