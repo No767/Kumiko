@@ -76,7 +76,7 @@ class Meta(commands.Cog):
         self, ctx: KContext, *, user: Union[discord.Member, discord.User]
     ) -> None:
         """Shows info about a user"""
-        user = user or ctx.author
+        user = self.bot.get_user(user.id) or (await self.bot.fetch_user(user.id))
 
         status_str = ""
         if isinstance(user, discord.Member):
