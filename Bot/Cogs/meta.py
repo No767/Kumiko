@@ -10,6 +10,7 @@ from discord.ext import commands
 from discord.utils import format_dt, oauth_url
 from kumikocore import KumikoCore
 from Libs.utils import Embed, human_timedelta, is_docker
+from Libs.utils.context import KContext
 from psutil._common import bytes2human
 
 
@@ -64,7 +65,7 @@ class Meta(commands.Cog):
         )
 
     @commands.hybrid_command(name="uptime")
-    async def uptime(self, ctx: commands.Context) -> None:
+    async def uptime(self, ctx: KContext) -> None:
         """Returns uptime for Kumiko"""
         embed = Embed()
         embed.description = f"Kumiko's Uptime: **{self.get_bot_uptime()}**"
@@ -72,7 +73,7 @@ class Meta(commands.Cog):
 
     @commands.hybrid_command(name="info")
     async def info(
-        self, ctx: commands.Context, *, user: Union[discord.Member, discord.User]
+        self, ctx: KContext, *, user: Union[discord.Member, discord.User]
     ) -> None:
         """Shows info about a user"""
         user = user or ctx.author
@@ -113,7 +114,7 @@ class Meta(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="about")
-    async def about(self, ctx: commands.Context) -> None:
+    async def about(self, ctx: KContext) -> None:
         """Shows info and stats about Kumiko"""
         total_members = 0
         total_unique = len(self.bot.users)
@@ -163,21 +164,21 @@ class Meta(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="version")
-    async def version(self, ctx: commands.Context) -> None:
+    async def version(self, ctx: KContext) -> None:
         """Returns the current version of Kumiko"""
         embed = Embed()
         embed.description = f"Build Version: {str(self.bot.version)}"
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="ping")
-    async def ping(self, ctx: commands.Context) -> None:
+    async def ping(self, ctx: KContext) -> None:
         """Returns the current latency of Kumiko"""
         embed = Embed()
         embed.description = f"Pong! {round(self.bot.latency * 1000)}ms"
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="invite")
-    async def invite(self, ctx: commands.Context) -> None:
+    async def invite(self, ctx: KContext) -> None:
         """Invite Kumiko to your server!"""
         if self.bot.application_id is None:
             return None
@@ -202,7 +203,7 @@ class Meta(commands.Cog):
         aliases=["sysmetrics"],
         hidden=True,
     )
-    async def sys_metrics(self, ctx: commands.Context) -> None:
+    async def sys_metrics(self, ctx: KContext) -> None:
         """Tells you the current system metrics along with other information"""
         await ctx.defer()
         mem = psutil.virtual_memory()

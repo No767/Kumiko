@@ -20,7 +20,7 @@ from Libs.ui.search import (
     ModrinthPages,
     ModrinthProject,
 )
-from Libs.utils import GuildContext
+from Libs.utils.context import KContext
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
@@ -78,21 +78,21 @@ class Searches(commands.Cog):
     @commands.hybrid_command(name="lmgtfy")
     @app_commands.describe(query="What do you want to search?")
     async def lmgtfy(
-        self, ctx: GuildContext, query: Annotated[str, commands.clean_content]
+        self, ctx: KContext, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Let Me Google That For You"""
         url = URL("https://letmegooglethat.com") % {"q": quote_plus(query)}
         await ctx.send(str(url))
 
     @commands.hybrid_group(name="search")
-    async def search(self, ctx: GuildContext) -> None:
+    async def search(self, ctx: KContext) -> None:
         """Search for anime, manga, gifs, memes, and much more"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @search.command(name="anime")
     @app_commands.describe(name="The name of the anime to search")
-    async def anime(self, ctx: GuildContext, *, name: str) -> None:
+    async def anime(self, ctx: KContext, *, name: str) -> None:
         """Searches up animes"""
         await ctx.defer()
         async with Client(
@@ -192,7 +192,7 @@ class Searches(commands.Cog):
 
     @search.command(name="manga")
     @app_commands.describe(name="The name of the manga to search")
-    async def manga(self, ctx: GuildContext, *, name: str):
+    async def manga(self, ctx: KContext, *, name: str):
         """Searches for manga on AniList"""
         await ctx.defer()
         async with Client(
@@ -291,7 +291,7 @@ class Searches(commands.Cog):
 
     @search.command(name="gifs")
     @app_commands.describe(search="The search term to use")
-    async def gifs(self, ctx: GuildContext, *, search: str) -> None:
+    async def gifs(self, ctx: KContext, *, search: str) -> None:
         """Searches for gifs on Tenor"""
         url = URL("https://tenor.googleapis.com/v2/search")
         params = {
@@ -319,7 +319,7 @@ class Searches(commands.Cog):
         name="modrinth",
         usage="query: <str> project_type: <str> loader: <str> version: <str>",
     )
-    async def modrinth(self, ctx: GuildContext, *, flags: ModrinthFlags) -> None:
+    async def modrinth(self, ctx: KContext, *, flags: ModrinthFlags) -> None:
         """Search for Minecraft projects on Modrinth"""
         url = URL("https://api.modrinth.com/v2/search")
         facets = [

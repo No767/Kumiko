@@ -3,7 +3,7 @@ from typing import Literal, Optional
 import discord
 from Cogs import EXTENSIONS
 from discord.ext import commands
-from discord.ext.commands import Context, Greedy
+from discord.ext.commands import Greedy
 from kumikocore import KumikoCore
 from Libs.utils import KContext, WebhookDispatcher
 
@@ -27,7 +27,7 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.command(name="sync", hidden=True)
     async def sync(
         self,
-        ctx: Context,
+        ctx: KContext,
         guilds: Greedy[discord.Object],
         spec: Optional[Literal["~", "*", "^"]] = None,
     ) -> None:

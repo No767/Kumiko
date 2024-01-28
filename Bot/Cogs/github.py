@@ -19,6 +19,7 @@ from Libs.ui.github import (
     GitHubRepoReleases,
     GitHubUser,
 )
+from Libs.utils.context import KContext
 from yarl import URL
 
 
@@ -41,7 +42,7 @@ class Github(commands.Cog):
         return PartialEmoji.from_str("<:githubmarkwhite:1127906278509912185>")
 
     @commands.hybrid_group(name="github")
-    async def github(self, ctx: commands.Context) -> None:
+    async def github(self, ctx: KContext) -> None:
         """Github search and utility commands"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -52,9 +53,7 @@ class Github(commands.Cog):
         repo="The repo name",
         issue="The issue number",
     )
-    async def issues(
-        self, ctx: commands.Context, owner: str, repo: str, issue: int
-    ) -> None:
+    async def issues(self, ctx: KContext, owner: str, repo: str, issue: int) -> None:
         """Obtains detailed information about the given issue"""
         issues_url = self.base_url / str(issue)
         comments_url = self.base_url / str(issue) / "comments"
@@ -135,7 +134,7 @@ class Github(commands.Cog):
     @app_commands.describe(
         owner="The owner of the repo (eg. No767)", repo="The repo name (eg. Kumiko)"
     )
-    async def repo(self, ctx: commands.Context, owner: str, repo: str) -> None:
+    async def repo(self, ctx: KContext, owner: str, repo: str) -> None:
         """Provides detailed information about the given repo"""
         repo_url = self.base_url / owner / repo
         releases_url = self.base_url / owner / repo / "releases"
@@ -223,7 +222,7 @@ class Github(commands.Cog):
     @app_commands.describe(
         owner="The owner of the repo (eg. No767)", repo="The repo name (eg. Kumiko)"
     )
-    async def commits(self, ctx: commands.Context, owner: str, repo: str) -> None:
+    async def commits(self, ctx: KContext, owner: str, repo: str) -> None:
         """Get all of the latest commits from a given repo"""
         params = {"per_page": 75}
         url = self.base_url / owner / repo / "commits"

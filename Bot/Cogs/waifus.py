@@ -7,6 +7,7 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from Libs.ui.waifus import NekoImagesPages, NekosImages
 from Libs.utils import Embed
+from Libs.utils.context import KContext
 from Libs.utils.pages import EmbedListSource, KumikoPages
 from yarl import URL
 
@@ -23,7 +24,7 @@ class Waifu(commands.Cog):
         return PartialEmoji.from_str("<:UwU:1013221555003719772>")
 
     @commands.hybrid_group(name="waifu", fallback="one")
-    async def waifu(self, ctx: commands.Context) -> None:
+    async def waifu(self, ctx: KContext) -> None:
         """Gives you a waifu"""
         waifu_list = [
             "uniform",
@@ -45,7 +46,7 @@ class Waifu(commands.Cog):
             await ctx.send(embed=embed)
 
     @waifu.command(name="many")
-    async def many_random_waifus(self, ctx: commands.Context) -> None:
+    async def many_random_waifus(self, ctx: KContext) -> None:
         """Returns up to 30 random waifu pics"""
         waifu_list = [
             "uniform",
@@ -73,7 +74,7 @@ class Waifu(commands.Cog):
     @app_commands.describe(count="How much neko images do you want?")
     async def neko(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         count: Optional[app_commands.Range[int, 1, 100]] = 1,
     ) -> None:
         """Random images of anime waifu cats"""
@@ -96,7 +97,7 @@ class Waifu(commands.Cog):
 
     @neko.command(name="lookup")
     @app_commands.describe(tags="A comma separated list of tags (Eg catgirl, maid)")
-    async def lookup(self, ctx: commands.Context, *, tags: str) -> None:
+    async def lookup(self, ctx: KContext, *, tags: str) -> None:
         """Looks up for some nekos"""
         tag_list = tags.split(",")
         url = URL("https://nekos.moe/api/v1/images/search")

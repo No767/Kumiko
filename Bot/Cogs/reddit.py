@@ -11,7 +11,7 @@ from Libs.ui.reddit import (
     RedditMemePages,
     RedditPages,
 )
-from Libs.utils import GuildContext, parse_subreddit
+from Libs.utils import KContext, parse_subreddit
 from yarl import URL
 
 
@@ -29,7 +29,7 @@ class Reddit(commands.Cog):
         return PartialEmoji.from_str("<:reddit:314349923103670272>")
 
     @commands.hybrid_group(name="reddit")
-    async def reddit(self, ctx: GuildContext) -> None:
+    async def reddit(self, ctx: KContext) -> None:
         """Reddit search and utility commands"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -40,7 +40,7 @@ class Reddit(commands.Cog):
         subreddit="Which subreddit to use. Defaults to all.",
     )
     async def search(
-        self, ctx: GuildContext, *, search: str, subreddit: Optional[str] = "all"
+        self, ctx: KContext, *, search: str, subreddit: Optional[str] = "all"
     ) -> None:
         """Searches for posts on Reddit"""
         await ctx.defer()
@@ -76,7 +76,7 @@ class Reddit(commands.Cog):
     )
     async def feed(
         self,
-        ctx: GuildContext,
+        ctx: KContext,
         subreddit: str,
         filter: Optional[Literal["New", "Hot", "Rising"]] = "New",
     ) -> None:
@@ -120,7 +120,7 @@ class Reddit(commands.Cog):
         amount="Amount of memes to return. Defaults to 5",
     )
     async def search_memes(
-        self, ctx: GuildContext, subreddit: str, amount: Optional[int] = 5
+        self, ctx: KContext, subreddit: str, amount: Optional[int] = 5
     ) -> None:
         """Searches for memes on Reddit"""
         url = (
