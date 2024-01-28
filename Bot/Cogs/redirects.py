@@ -1,21 +1,23 @@
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.redirects import (
-    can_close_threads,
-    check_redirects_enabled,
-    check_redirects_menu,
-    create_redirected_thread,
-    is_thread,
-    mark_as_resolved,
-)
-from Libs.ui.redirects import ConfirmResolvedView
-from Libs.utils import ErrorEmbed, GuildContext
+from Libs.utils import GuildContext
+
+
+def is_thread():
+    def pred(ctx: GuildContext) -> bool:
+        return isinstance(ctx.channel, discord.Thread) and not isinstance(
+            ctx.channel, discord.ForumChannel
+        )
+
+    return commands.check(pred)
+
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
+
 # Required Perms (from discord.Permission):
 # send_message_in_threads, manage_threads, create_public_threads, manage_messages
 class Redirects(commands.Cog):
@@ -27,9 +29,6 @@ class Redirects(commands.Cog):
 
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
-        self.pool = self.bot.pool
-        self.redis_pool = self.bot.redis_pool
-        self.redirects_path = ".redirects"
         self.redirects_ctx_menu = app_commands.ContextMenu(
             name="Redirect Conversation",
             callback=self.redirects_callback,
@@ -44,22 +43,53 @@ class Redirects(commands.Cog):
     def configurable(self) -> bool:
         return True
 
-    async def cog_check(self, ctx: GuildContext) -> bool:
-        return await check_redirects_enabled(ctx)
+    def can_close_threads(self, ctx: GuildContext):
+        if not isinstance(ctx.channel, discord.Thread):
+            return False
+
+        permissions = ctx.channel.permissions_for(ctx.author)
+        return permissions.manage_threads or ctx.channel.owner_id == ctx.author.id
+
+    async def mark_as_resolved(
+        self, thread: discord.Thread, user: discord.Member
+    ) -> None:
+        await thread.edit(
+            locked=True,
+            archived=True,
+            reason=f"Marked as resolved by {user.global_name} (ID: {user.id})",
+        )
+
+    async def create_redirected_thread(
+        self,
+        channel: discord.TextChannel,
+        thread_name: str,
+        reason: str,
+        msg: discord.Message,
+        author: Union[discord.User, discord.Member],
+        reference_author: Union[discord.User, discord.Member],
+    ) -> str:
+        thread_name = (
+            thread_name
+            or f"{author.display_name} and {reference_author.display_name}'s conversation"
+        )
+        starter_message = (
+            f"Hey, {author.mention} has requested that {reference_author.mention} redirect the conversation to this thread instead. "
+            "You can mark this conversation as completed by using the command `>resolved` within this thread. "
+            f"A reference message is provided from the earlier conversation here ({msg.jump_url}):\n\n"
+            f"{msg.clean_content}"
+        )
+        created_thread = await channel.create_thread(
+            name=thread_name, reason=reason, type=discord.ChannelType.public_thread
+        )
+        await created_thread.join()
+        await created_thread.send(starter_message, suppress_embeds=True)
+        return created_thread.jump_url
 
     @app_commands.checks.cooldown(1, 30, key=lambda i: (i.guild_id, i.user.id))
     async def redirects_callback(
         self, interaction: discord.Interaction, message: discord.Message
     ) -> None:
         """Redirects a conversation into a separate thread"""
-        module_status = await check_redirects_menu(interaction)
-
-        if module_status is False:
-            e = ErrorEmbed(title="Redirects Disabled")
-            e.description = "The redirects module is disabled in this server. Please ask your server admin to enable it."
-            await interaction.response.send_message(embed=e)
-            return
-
         channel = interaction.channel
 
         if isinstance(channel, discord.TextChannel):
@@ -73,7 +103,7 @@ class Redirects(commands.Cog):
             author = interaction.user
 
             default_thread_name = f"{author.display_name} and {reference_author.display_name}'s conversation"
-            redirected_thread = await create_redirected_thread(
+            redirected_thread = await self.create_redirected_thread(
                 channel=channel,
                 thread_name=default_thread_name,
                 reason=f"Conversation redirected by {author.global_name}",
@@ -113,7 +143,7 @@ class Redirects(commands.Cog):
                     return
 
                 default_thread_name = f"{ctx.author.display_name} and {reference_author.display_name}'s conversation"
-                redirected_thread = await create_redirected_thread(
+                redirected_thread = await self.create_redirected_thread(
                     channel=ctx.channel,
                     thread_name=thread_name or default_thread_name,
                     reason=f"Conversation redirected by {ctx.author.name}",
@@ -138,20 +168,29 @@ class Redirects(commands.Cog):
         if not isinstance(channel, discord.Thread):
             raise RuntimeError("This only works in threads")
 
-        if can_close_threads(ctx) and ctx.invoked_with in [
+        if self.can_close_threads(ctx) and ctx.invoked_with in [
             "resolved",
             "completed",
         ]:
             # Permissions.add_reaction and Permissions.read_message_history is required
             await ctx.message.add_reaction(discord.PartialEmoji(name="\U00002705"))
-            await mark_as_resolved(channel, ctx.author)
-            return
+            await self.mark_as_resolved(channel, ctx.author)
         else:
             prompt_message = f"<@!{channel.owner_id}>, would you like to mark this thread as solved? If this thread is not marked as resolved, then it will not be resolved. This has been requested by {ctx.author.mention}."
-            view = ConfirmResolvedView(
-                ctx=ctx, thread=channel, author=ctx.author, timeout=300.0
-            )
-            await ctx.send(content=prompt_message, view=view)
+            confirm = await ctx.prompt(prompt_message, timeout=300.0)
+            if confirm:
+                if channel.locked:
+                    return
+
+                await ctx.send(
+                    "Marking this as solved. Next time you can mark it resolved yourself by using the command `>resolved`"
+                )
+                await ctx.message.add_reaction(discord.PartialEmoji(name="\U00002705"))
+                await self.mark_as_resolved(channel, ctx.author)
+            elif confirm is None:
+                await ctx.send("Confirmation timed out. Canceling...")
+            else:
+                await ctx.send("Cancelled")
 
     @commands.Cog.listener()
     async def on_thread_create(self, thread: discord.Thread) -> None:
