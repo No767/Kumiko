@@ -1,15 +1,19 @@
-from typing import Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Union
 
 import discord
-from discord.ext import commands
 from Libs.cog_utils.redirects import mark_as_resolved
 from Libs.utils import KumikoView
+
+if TYPE_CHECKING:
+    from Libs.utils.context import KContext
 
 
 class ConfirmResolvedView(KumikoView):
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         thread: discord.Thread,
         author: Union[discord.User, discord.Member],
         *args,
