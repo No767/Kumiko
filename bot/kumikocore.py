@@ -12,7 +12,6 @@ from libs.errors import send_error_embed
 from libs.utils import KContext, KumikoHelpPaginated
 from libs.utils.config import KumikoConfig
 from libs.utils.prefix import get_prefix
-from redis.asyncio.connection import ConnectionPool
 
 # Some weird import logic to ensure that watchfiles is there
 _fsw = True
@@ -27,11 +26,10 @@ class KumikoCore(commands.Bot):
 
     def __init__(
         self,
-        intents: discord.Intents,
         config: KumikoConfig,
+        intents: discord.Intents,
         session: ClientSession,
         pool: asyncpg.Pool,
-        redis_pool: ConnectionPool,
         *args,
         **kwargs,
     ):
@@ -52,7 +50,6 @@ class KumikoCore(commands.Bot):
         )
         self.logger: logging.Logger = logging.getLogger("kumiko")
         self.pool = pool
-        self.redis_pool = redis_pool
         self.session = session
         self.version = str(VERSION)
         self._dev_mode = config["kumiko"].get("dev_mode", False)

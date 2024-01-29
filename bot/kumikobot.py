@@ -6,7 +6,6 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from kumikocore import KumikoCore
-from libs.cache import KumikoCPManager
 from libs.utils import KumikoConfig, KumikoLogger
 
 if os.name == "nt":
@@ -31,13 +30,12 @@ async def main() -> None:
         command_timeout=30,
         max_size=25,
         min_size=25,
-    ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
+    ) as pool:
         async with KumikoCore(
             config=config,
             intents=intents,
             session=session,
             pool=pool,
-            redis_pool=redis_pool,
         ) as bot:
             await bot.start(TOKEN)
 

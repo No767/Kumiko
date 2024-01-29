@@ -88,7 +88,6 @@ class Config(commands.Cog):
         self.bot = bot
         self.session = self.bot.session
         self.pool = self.bot.pool
-        self.redis_pool = self.bot.redis_pool
         self.reserved_configs: Dict[int, ReservedConfig] = {}
         self.reserved_lgc: Dict[int, ReservedLGC] = {}
 

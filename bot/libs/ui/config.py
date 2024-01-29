@@ -165,7 +165,6 @@ class ConfigMenuView(KumikoView):
         super().__init__(ctx)
         self.config_cog = config_cog
         self.pool = bot.pool
-        self.redis_pool = bot.redis_pool
         self.add_item(ConfigMenu(bot, ctx, config_cog))
 
     async def on_timeout(self) -> None:

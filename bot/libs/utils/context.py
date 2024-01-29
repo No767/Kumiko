@@ -65,7 +65,6 @@ class KContext(commands.Context):
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
         self.pool = self.bot.pool
-        self.redis_pool = self.bot.redis_pool
         self.session = self.bot.session
 
     async def prompt(
