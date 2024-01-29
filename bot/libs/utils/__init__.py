@@ -18,11 +18,9 @@ from .prefix import get_prefix as get_prefix
 from .time import format_dt as format_dt, human_timedelta as human_timedelta
 from .utils import (
     format_greedy as format_greedy,
-    is_docker as is_docker,
     parse_datetime as parse_datetime,
     parse_dt as parse_dt,
     parse_subreddit as parse_subreddit,
-    produce_error_embed as produce_error_embed,
 )
 from .view import KumikoView as KumikoView
 from .webhooks import (
