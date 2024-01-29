@@ -3,7 +3,6 @@ from typing import Any, List, Optional
 import discord
 from discord.ext import commands, menus
 from discord.utils import format_dt, utcnow
-from Libs.utils import MessageConstants
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
 from .page_entries import (
@@ -20,6 +19,9 @@ from .structs import (
     GitHubRepoReleases,
 )
 from .utils import parse_state, truncate_excess_string
+
+NO_COMMENTS = "This issue has no comments"
+NO_ASSIGNEES = "This issue has no assignees"
 
 
 class GitHubIssuesPageSource(menus.PageSource):
@@ -192,9 +194,7 @@ class GitHubIssuesMenu(discord.ui.Select["GithubIssuesPages"]):
                 await self.view.rebind(
                     GitHubIssuesPageSource(self.issue_entry), interaction
                 )
-                await self._send_message(
-                    MessageConstants.NO_COMMENTS.value, interaction
-                )
+                await self._send_message(NO_COMMENTS, interaction)
                 return
             await self.view.rebind(
                 EmbedListSource(
@@ -211,9 +211,7 @@ class GitHubIssuesMenu(discord.ui.Select["GithubIssuesPages"]):
                 await self.view.rebind(
                     GitHubIssuesPageSource(self.issue_entry), interaction
                 )
-                await self._send_message(
-                    MessageConstants.NO_ASSIGNEES.value, interaction
-                )
+                await self._send_message(NO_ASSIGNEES, interaction)
                 return
             await self.view.rebind(
                 EmbedListSource(

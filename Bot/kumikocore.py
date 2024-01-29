@@ -9,13 +9,7 @@ from aiohttp import ClientSession
 from Cogs import EXTENSIONS, VERSION
 from discord.ext import commands, ipcx
 from Libs.errors import send_error_embed
-from Libs.utils import (
-    KContext,
-    KumikoCommandTree,
-    KumikoHelpPaginated,
-    MessageConstants,
-    get_blacklist,
-)
+from Libs.utils import KContext, KumikoHelpPaginated
 from Libs.utils.config import KumikoConfig
 from Libs.utils.prefix import get_prefix
 from redis.asyncio.connection import ConnectionPool
@@ -46,7 +40,6 @@ class KumikoCore(commands.Bot):
             command_prefix=get_prefix,
             help_command=KumikoHelpPaginated(),
             activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
-            tree_cls=KumikoCommandTree,
             *args,
             **kwargs,
         )
@@ -84,21 +77,6 @@ class KumikoCore(commands.Bot):
         self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KContext
     ) -> KContext:
         return await super().get_context(origin, cls=cls)
-
-    async def check_blacklist(self, ctx: KContext) -> bool:
-        bot = ctx.bot  # Pretty much returns the subclass anyways. I checked - Noelle
-        if bot.owner_id == ctx.author.id or bot.application_id == ctx.author.id:
-            return True
-
-        blacklist = await get_blacklist(ctx.author, ctx.guild, bot.pool)
-
-        if blacklist is not None:
-            await ctx.send(
-                f"My fellow user, {ctx.author.mention}, you just got the L. {MessageConstants.BLACKLIST_APPEAL_MSG.value}",
-                suppress_embeds=True,
-            )
-            return False
-        return True
 
     async def setup_hook(self) -> None:
         def stop():

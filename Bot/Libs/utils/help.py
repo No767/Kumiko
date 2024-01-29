@@ -6,12 +6,12 @@ import discord
 from discord.ext import commands, menus
 from Libs.utils.pages import KumikoPages
 
-from .message_constants import MessageConstants
-
 # RGB Colors:
 # Pink (255, 161, 231) - Used for the main bot page
 # Lavender (197, 184, 255) - Used for cog and group pages
 # Light Orange (255, 199, 184) - Used for command pages
+
+NO_HELP_FOUND = "No help found.."
 
 
 class GroupHelpPageSource(menus.ListPageSource):
@@ -282,9 +282,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
         if command.description:
             embed_like.description = f"{command.description}\n\n{command.help}"
         else:
-            embed_like.description = (
-                command.help or MessageConstants.NO_HELP_FOUND.value
-            )
+            embed_like.description = command.help or NO_HELP_FOUND
 
     async def send_command_help(self, command):
         # No pagination necessary for a single command.

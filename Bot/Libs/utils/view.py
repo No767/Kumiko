@@ -17,12 +17,11 @@ NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 class KumikoView(discord.ui.View):
     """Subclassed `discord.ui.View` that includes sane default functionality"""
 
-    def __init__(self, ctx: KContext, display_message: bool = True, *args, **kwargs):
+    def __init__(self, ctx: KContext, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ctx = ctx
         self.message: Optional[discord.Message] = None
         self.triggered = asyncio.Event()
-        self.display_message = display_message
 
     def build_timeout_embed(self) -> ErrorEmbed:
         embed = ErrorEmbed()

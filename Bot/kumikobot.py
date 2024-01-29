@@ -7,7 +7,7 @@ import discord
 from aiohttp import ClientSession
 from kumikocore import KumikoCore
 from Libs.cache import KumikoCPManager
-from Libs.utils import KumikoConfig, KumikoLogger, init_codecs
+from Libs.utils import KumikoConfig, KumikoLogger
 
 if os.name == "nt":
     from winloop import install
@@ -31,7 +31,6 @@ async def main() -> None:
         command_timeout=30,
         max_size=25,
         min_size=25,
-        init=init_codecs,
     ) as pool, KumikoCPManager(uri=REDIS_URI, max_size=25) as redis_pool:
         async with KumikoCore(
             config=config,

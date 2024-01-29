@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Optional
 
 import discord
 from discord.ext import commands
 
-from .utils import produce_error_embed
+from .view import KumikoView
 
 if TYPE_CHECKING:
     from Bot.kumikocore import KumikoCore
@@ -15,35 +15,13 @@ NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 # Why not subclass KumikoView?
 # It results in a circular logic, so instead
 # we subclassed discord.ui.View and pretty much implement what KumikoView does anyways
-class ConfirmationView(discord.ui.View):
+class ConfirmationView(KumikoView):
     def __init__(self, ctx: KContext, timeout: float, delete_after: bool) -> None:
-        super().__init__(timeout=timeout)
+        super().__init__(ctx=ctx, timeout=timeout)
         self.ctx = ctx
         self.value: Optional[bool] = None
         self.delete_after: bool = delete_after
         self.message: Optional[discord.Message] = None
-
-    async def interaction_check(self, interaction: discord.Interaction, /) -> bool:
-        if interaction.user and interaction.user.id in (
-            self.ctx.bot.application.owner.id,  # type: ignore
-            self.ctx.author.id,
-        ):
-            return True
-
-        await interaction.response.send_message(NO_CONTROL_MSG, ephemeral=True)
-        return False
-
-    async def on_error(
-        self,
-        interaction: discord.Interaction,
-        error: Exception,
-        item: discord.ui.Item[Any],
-        /,
-    ) -> None:
-        await interaction.response.send_message(
-            embed=produce_error_embed(error), ephemeral=True
-        )
-        self.stop()
 
     async def on_timeout(self) -> None:
         if self.message:
