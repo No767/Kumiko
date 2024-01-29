@@ -9,7 +9,7 @@ from typing import Optional, TypeVar
 
 import asyncpg
 import click
-from Libs.utils.config import KumikoConfig
+from libs.utils.config import KumikoConfig
 from typing_extensions import Self
 
 BE = TypeVar("BE", bound=BaseException)
