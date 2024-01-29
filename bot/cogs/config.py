@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional, TypedDict
+from typing import TYPE_CHECKING, Dict, Optional
 
 import asyncpg
 import discord
@@ -8,6 +8,7 @@ import msgspec
 from async_lru import alru_cache
 from discord import app_commands
 from discord.ext import commands
+from libs.types.config import ReservedConfig, ReservedLGC
 from libs.ui.config import ConfigMenuView
 from libs.utils import Embed, GuildContext, is_manager
 from libs.utils.prefix import get_prefix
@@ -15,18 +16,6 @@ from typing_extensions import Annotated
 
 if TYPE_CHECKING:
     from kumikocore import KumikoCore
-
-
-class ReservedConfig(TypedDict):
-    economy: bool
-    redirects: bool
-    voice_summary: bool
-
-
-class ReservedLGC(TypedDict):
-    mod: bool
-    eco: bool
-    redirects: bool
 
 
 class GuildConfig(msgspec.Struct):
