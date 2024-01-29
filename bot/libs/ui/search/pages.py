@@ -3,7 +3,11 @@ from typing import List
 from discord.ext import commands
 from Libs.utils.pages import EmbedListSource, KumikoPages
 
-from .page_entries import AniListAnimeEntry, AniListMangaEntry, ModrinthProjectEntry
+from .page_entries import (
+    AniListAnimeEntry,
+    AniListMangaEntry,
+    ModrinthProjectEntry,
+)
 from .structs import AniListAnime, AniListManga, ModrinthProject
 
 

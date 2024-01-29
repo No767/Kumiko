@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import discord
 from discord.ext import commands, menus
-from Libs.utils.pages import KumikoPages
+from libs.utils.pages import KumikoPages
 
 # RGB Colors:
 # Pink (255, 161, 231) - Used for the main bot page

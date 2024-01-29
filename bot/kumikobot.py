@@ -6,8 +6,8 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from kumikocore import KumikoCore
-from Libs.cache import KumikoCPManager
-from Libs.utils import KumikoConfig, KumikoLogger
+from libs.cache import KumikoCPManager
+from libs.utils import KumikoConfig, KumikoLogger
 
 if os.name == "nt":
     from winloop import install

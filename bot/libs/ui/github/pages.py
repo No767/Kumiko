@@ -3,7 +3,7 @@ from typing import Any, List, Optional
 import discord
 from discord.ext import commands, menus
 from discord.utils import format_dt, utcnow
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils.pages import EmbedListSource, KumikoPages
 
 from .page_entries import (
     GitHubCommitPageEntry,

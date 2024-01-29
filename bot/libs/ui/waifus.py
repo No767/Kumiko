@@ -6,12 +6,12 @@ import ciso8601
 import discord
 import msgspec
 from discord.utils import format_dt
-from Libs.utils.pages.paginator import KumikoPages
-from Libs.utils.pages.sources import EmbedListSource
+from libs.utils.pages.paginator import KumikoPages
+from libs.utils.pages.sources import EmbedListSource
 from yarl import URL
 
 if TYPE_CHECKING:
-    from Libs.utils.context import KContext
+    from libs.utils.context import KContext
 
 
 class NekosImages(msgspec.Struct):

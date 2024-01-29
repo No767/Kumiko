@@ -3,12 +3,12 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from Libs.utils import Embed, KContext
-from Libs.utils.view import KumikoView
+from libs.utils import Embed, KContext
+from libs.utils.view import KumikoView
 
 if TYPE_CHECKING:
-    from Bot.Cogs.config import Config
-    from Bot.kumikocore import KumikoCore
+    from bot.cogs.config import Config
+    from bot.kumikocore import KumikoCore
 
 
 def determine_status(status: bool):

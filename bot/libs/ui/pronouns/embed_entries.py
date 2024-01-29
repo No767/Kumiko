@@ -1,4 +1,8 @@
-from .structs import PronounsInclusiveEntry, PronounsNounsEntry, PronounsTermsEntry
+from .structs import (
+    PronounsInclusiveEntry,
+    PronounsNounsEntry,
+    PronounsTermsEntry,
+)
 
 
 class PronounsTermsEmbedEntry:

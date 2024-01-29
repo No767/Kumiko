@@ -9,7 +9,11 @@ from .embed_entries import (
     PronounsNounsEmbedEntry,
     PronounsTermsEmbedEntry,
 )
-from .structs import PronounsInclusiveEntry, PronounsNounsEntry, PronounsTermsEntry
+from .structs import (
+    PronounsInclusiveEntry,
+    PronounsNounsEntry,
+    PronounsTermsEntry,
+)
 
 
 class PronounsTermsPages(KumikoPages):

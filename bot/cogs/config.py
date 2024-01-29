@@ -8,9 +8,9 @@ import msgspec
 from async_lru import alru_cache
 from discord import app_commands
 from discord.ext import commands
-from Libs.ui.config import ConfigMenuView
-from Libs.utils import Embed, GuildContext, is_manager
-from Libs.utils.prefix import get_prefix
+from libs.ui.config import ConfigMenuView
+from libs.utils import Embed, GuildContext, is_manager
+from libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
 
 if TYPE_CHECKING:

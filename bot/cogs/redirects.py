@@ -4,7 +4,7 @@ import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.utils import GuildContext
+from libs.utils import GuildContext
 
 
 def is_thread():

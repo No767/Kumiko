@@ -1,11 +1,11 @@
 from typing import Literal, Optional
 
 import discord
-from Cogs import EXTENSIONS
+from cogs import EXTENSIONS
 from discord.ext import commands
 from discord.ext.commands import Greedy
 from kumikocore import KumikoCore
-from Libs.utils import KContext, WebhookDispatcher
+from libs.utils import KContext, WebhookDispatcher
 
 TESTING_GUILD_ID = discord.Object(id=970159505390325842)
 HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)

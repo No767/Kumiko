@@ -3,7 +3,7 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.github import (
+from libs.ui.github import (
     GitHubCommentReactions,
     GitHubCommit,
     GitHubCommitPages,
@@ -19,7 +19,7 @@ from Libs.ui.github import (
     GitHubRepoReleases,
     GitHubUser,
 )
-from Libs.utils.context import KContext
+from libs.utils.context import KContext
 from yarl import URL
 
 

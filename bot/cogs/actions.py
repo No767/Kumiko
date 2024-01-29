@@ -4,8 +4,8 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Greedy
 from kumikocore import KumikoCore
-from Libs.utils import Embed, format_greedy
-from Libs.utils.context import KContext
+from libs.utils import Embed, format_greedy
+from libs.utils.context import KContext
 
 
 class Actions(commands.Cog):

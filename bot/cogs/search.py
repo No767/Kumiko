@@ -11,7 +11,7 @@ from discord.ext import commands
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 from kumikocore import KumikoCore
-from Libs.ui.search import (
+from libs.ui.search import (
     AniListAnime,
     AniListAnimePages,
     AniListManga,
@@ -20,8 +20,8 @@ from Libs.ui.search import (
     ModrinthPages,
     ModrinthProject,
 )
-from Libs.utils.context import KContext
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils.context import KContext
+from libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
 

@@ -6,12 +6,12 @@ from typing import Union
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from Cogs import EXTENSIONS, VERSION
+from cogs import EXTENSIONS, VERSION
 from discord.ext import commands, ipcx
-from Libs.errors import send_error_embed
-from Libs.utils import KContext, KumikoHelpPaginated
-from Libs.utils.config import KumikoConfig
-from Libs.utils.prefix import get_prefix
+from libs.errors import send_error_embed
+from libs.utils import KContext, KumikoHelpPaginated
+from libs.utils.config import KumikoConfig
+from libs.utils.prefix import get_prefix
 from redis.asyncio.connection import ConnectionPool
 
 # Some weird import logic to ensure that watchfiles is there
