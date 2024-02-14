@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import logging
-import signal
-from pathlib import Path as SyncPath
+from pathlib import Path
 from typing import TYPE_CHECKING, Optional, Union
 
 import asyncpg
@@ -14,13 +13,7 @@ from libs.utils import KContext, KumikoHelpPaginated
 from libs.utils.config import KumikoConfig
 from libs.utils.errors import send_error_embed
 from libs.utils.prefix import get_prefix
-
-# Some weird import logic to ensure that watchfiles is there
-_fsw = True
-try:
-    from watchfiles import awatch
-except ImportError:
-    _fsw = False
+from libs.utils.reloader import Reloader
 
 if TYPE_CHECKING:
     from cogs.config import Config as ConfigCog
@@ -58,19 +51,11 @@ class KumikoCore(commands.Bot):
         self.session = session
         self.version = str(VERSION)
         self._dev_mode = config["kumiko"].get("dev_mode", False)
+        self._reloader = Reloader(self, Path(__file__).parent)
 
     @property
     def config_cog(self) -> Optional[ConfigCog]:
         return self.get_cog("Config")  # type: ignore
-
-    async def _fs_watcher(self) -> None:
-        cogs_path = SyncPath(__file__).parent.joinpath("cogs")
-        async for changes in awatch(cogs_path):
-            changes_list = list(changes)[0]
-            if changes_list[0].modified == 2:
-                reload_file = SyncPath(changes_list[1])
-                self.logger.info(f"Reloading extension: {reload_file.name[:-3]}")
-                await self.reload_extension(f"Cogs.{reload_file.name[:-3]}")
 
     async def on_command_error(
         self, ctx: commands.Context, error: commands.CommandError
@@ -85,14 +70,6 @@ class KumikoCore(commands.Bot):
         return await super().get_context(origin, cls=cls)
 
     async def setup_hook(self) -> None:
-        def stop():
-            self.loop.create_task(self.close())
-
-        self.loop.add_signal_handler(signal.SIGTERM, stop)
-        self.loop.add_signal_handler(signal.SIGINT, stop)
-
-        # The blacklist checks
-
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
@@ -100,9 +77,9 @@ class KumikoCore(commands.Bot):
         await self.load_extension("jishaku")
         await self.ipc.start()
 
-        if self._dev_mode is True and _fsw is True:
-            self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
-            self.loop.create_task(self._fs_watcher())
+        if self._dev_mode is True:
+            self.logger.info("Dev mode is enabled. Loading Reloader")
+            self._reloader.start()
 
     async def on_ready(self):
         if not hasattr(self, "uptime"):

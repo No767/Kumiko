@@ -22,7 +22,3 @@ from .parse import (
 from .prefix import get_prefix as get_prefix
 from .time import format_dt as format_dt, human_timedelta as human_timedelta
 from .view import KumikoView as KumikoView
-from .webhooks import (
-    GuildWebhookConfig as GuildWebhookConfig,
-    WebhookDispatcher as WebhookDispatcher,
-)

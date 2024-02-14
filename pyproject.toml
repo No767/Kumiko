@@ -33,6 +33,8 @@ dateparser = "^1.2.0"
 pygit2 = "^1.13.3"
 async-lru = "^2.0.4"
 aiohttp = "3.9.1"
+jishaku = "^2.5.2"
+watchfiles = "^0.21.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"
@@ -46,8 +48,6 @@ dpytest = "^0.7.0"
 pre-commit = "^3.5.0"
 pyinstrument = "^4.6.1"
 pyright = "^1.1.337"
-watchfiles = "^0.21.0"
-jishaku = "^2.5.2"
 ruff = "^0.1.6"
 objgraph = "^3.6.0"
 
