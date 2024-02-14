@@ -28,7 +28,6 @@ msgspec = "^0.18.4"
 langcodes = {extras = ["data"], version = "^3.3.0"}
 discord-py = {extras = ["speed"], version = "^2.3.2"}
 pynacl = "^1.5.0"
-discord-ext-ipcx = "^0.2.1"
 dateparser = "^1.2.0"
 pygit2 = "^1.13.3"
 async-lru = "^2.0.4"

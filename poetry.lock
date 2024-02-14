@@ -1054,24 +1054,6 @@ fasttext = ["fasttext"]
 langdetect = ["langdetect"]
 
 [[package]]
-name = "discord-ext-ipcx"
-version = "0.2.1"
-description = "Maintained and updated version of discord-ext-ipc for discord.py v2"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "discord-ext-ipcx-0.2.1.tar.gz", hash = "sha256:56d2f1cb0cce273a7946892cd7509e2030351608394191317951aac25dabdbd3"},
-    {file = "discord_ext_ipcx-0.2.1-py3-none-any.whl", hash = "sha256:3fb7ddfdc836b8d99474915dfd7d6fe2bbcd5cc117748c94ee0a2b50ba264a40"},
-]
-
-[package.dependencies]
-"discord.py" = ">=2,<3"
-
-[package.extras]
-dev = ["pre-commit", "pyright", "python-dotenv", "quart (>=0.18.4,<0.20.0)", "ruff"]
-docs = ["furo (>=2023.8.19)", "sphinx (==7.2.6)", "sphinx-autobuild (>=2021.3.14)", "sphinx-copybutton (>=0.5.2)"]
-
-[[package]]
 name = "discord-ext-menus"
 version = "1.0.0a32+g8686b5d"
 description = "An extension module to make reaction based menus with discord.py"
@@ -3396,4 +3378,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "b5132d967749219ddd4d487c7225e8062f47e4c7bb4dfddb75c2b41b29938f92"
+content-hash = "62f4aa344e01ae0076c2c6fb89aa0f589939e61714e5d82db5a9e5c8173444ab"

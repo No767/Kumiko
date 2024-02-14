@@ -8,7 +8,7 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from cogs import EXTENSIONS, VERSION
-from discord.ext import commands, ipcx
+from discord.ext import commands
 from libs.utils import KContext, KumikoHelpPaginated
 from libs.utils.config import KumikoConfig
 from libs.utils.errors import send_error_embed
@@ -41,11 +41,6 @@ class KumikoCore(commands.Bot):
         )
         self.config = config
         self.default_prefix = ">"
-        self.ipc = ipcx.Server(
-            self,
-            host=config.kumiko["ipc"]["host"],
-            secret_key=config.kumiko["ipc"]["secret"],
-        )
         self.logger: logging.Logger = logging.getLogger("kumiko")
         self.pool = pool
         self.session = session
@@ -75,7 +70,6 @@ class KumikoCore(commands.Bot):
             await self.load_extension(cog)
 
         await self.load_extension("jishaku")
-        await self.ipc.start()
 
         if self._dev_mode is True:
             self.logger.info("Dev mode is enabled. Loading Reloader")
@@ -86,13 +80,3 @@ class KumikoCore(commands.Bot):
             self.uptime = discord.utils.utcnow()
         curr_user = None if self.user is None else self.user.name
         self.logger.info(f"{curr_user} is fully ready!")
-
-    async def on_ipc_ready(self):
-        self.logger.info(
-            "Standard IPC Server started on %s:%s", self.ipc.host, self.ipc.port
-        )
-        self.logger.info(
-            "Multicast IPC server started on %s:%s",
-            self.ipc.host,
-            self.ipc.multicast_port,
-        )
