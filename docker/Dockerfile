@@ -8,23 +8,19 @@ RUN apt update \
   tini \
   bash \
   netcat-traditional \
-  libffi-dev \
-  libnacl-dev \
   git \
-  gcc \
-  libc6-dev \
   && apt-get clean
 
-WORKDIR /Kumiko
-COPY /Bot/ /Kumiko/Bot/
-COPY /Docker/start.sh /Kumiko/start.sh
-COPY /Docker/wait-for /Kumiko/wait-for
-COPY /requirements.txt /Kumiko/requirements.txt
+WORKDIR /kumiko
+COPY /bot/ /kumiko/bot/
+COPY /docker/start.sh /kumiko/start.sh
+COPY /docker/wait-for /kumiko/wait-for
+COPY /requirements.txt /kumiko/requirements.txt
 
 RUN adduser --disabled-password --gecos "" kumiko \
-  && chown -R kumiko:kumiko /Kumiko \
-  && chmod +x /Kumiko/start.sh \
-  && chmod +x /Kumiko/wait-for
+  && chown -R kumiko:kumiko /kumiko \
+  && chmod +x /kumiko/start.sh \
+  && chmod +x /kumiko/wait-for
 
 USER kumiko
 
@@ -34,7 +30,7 @@ RUN pip install --user -r requirements.txt
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
-CMD ["/Kumiko/start.sh"]
+CMD ["/kumiko/start.sh"]
 
 STOPSIGNAL SIGTERM
 
