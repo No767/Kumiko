@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from typing import Callable, TypeVar
 
 from discord import app_commands
@@ -50,10 +49,3 @@ def is_mod():
 
 def is_admin():
     return hybrid_permissions_check(administrator=True)
-
-
-def is_docker() -> bool:
-    path = "/proc/self/cgroup"
-    return os.path.exists("/.dockerenv") or (
-        os.path.isfile(path) and any("docker" in line for line in open(path))
-    )
