@@ -1,5 +1,5 @@
-import asyncio
 import os
+import signal
 from pathlib import Path
 
 import asyncpg
@@ -7,11 +7,12 @@ import discord
 from aiohttp import ClientSession
 from kumikocore import KumikoCore
 from libs.utils import KumikoConfig, KumikoLogger
+from libs.utils.handler import KeyboardInterruptHandler
 
 if os.name == "nt":
-    from winloop import install
+    from winloop import run
 else:
-    from uvloop import install
+    from uvloop import run
 
 CONFIG_PATH = Path(__file__).parent / "config.yml"
 config = KumikoConfig(CONFIG_PATH)
@@ -37,13 +38,14 @@ async def main() -> None:
             session=session,
             pool=pool,
         ) as bot:
+            bot.loop.add_signal_handler(signal.SIGTERM, KeyboardInterruptHandler(bot))
+            bot.loop.add_signal_handler(signal.SIGINT, KeyboardInterruptHandler(bot))
             await bot.start(TOKEN)
 
 
 def launch() -> None:
     with KumikoLogger():
-        install()
-        asyncio.run(main())
+        run(main())
 
 
 if __name__ == "__main__":
