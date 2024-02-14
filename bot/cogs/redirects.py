@@ -13,11 +13,8 @@ if TYPE_CHECKING:
 
 def interactions_enabled():
     async def pred(interaction: discord.Interaction) -> bool:
-        if interaction.guild is None:
-            return False
         bot: KumikoCore = interaction.client  # type: ignore
-
-        if not bot.config_cog:
+        if interaction.guild is None or not bot.config_cog:
             return False
 
         guild_config = await bot.config_cog.get_guild_config(
@@ -31,7 +28,7 @@ def interactions_enabled():
 def is_enabled():
     async def pred(ctx: GuildContext) -> bool:
         bot = ctx.bot
-        if not bot.config_cog:
+        if ctx.guild is None or not bot.config_cog:
             return False
 
         guild_config = await bot.config_cog.get_guild_config(ctx.guild.id, ctx.bot.pool)
