@@ -8,9 +8,9 @@ import discord
 from aiohttp import ClientSession
 from cogs import EXTENSIONS, VERSION
 from discord.ext import commands, ipcx
-from libs.errors import send_error_embed
 from libs.utils import KContext, KumikoHelpPaginated
 from libs.utils.config import KumikoConfig
+from libs.utils.errors import send_error_embed
 from libs.utils.prefix import get_prefix
 
 # Some weird import logic to ensure that watchfiles is there
@@ -55,7 +55,7 @@ class KumikoCore(commands.Bot):
         self._dev_mode = config["kumiko"].get("dev_mode", False)
 
     async def _fs_watcher(self) -> None:
-        cogs_path = SyncPath(__file__).parent.joinpath("Cogs")
+        cogs_path = SyncPath(__file__).parent.joinpath("cogs")
         async for changes in awatch(cogs_path):
             changes_list = list(changes)[0]
             if changes_list[0].modified == 2:

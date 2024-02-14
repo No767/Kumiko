@@ -1,6 +1,7 @@
 from discord.ext import commands
+from libs.utils import ErrorEmbed
+from libs.utils.errors import produce_error_embed
 
-from ..utils import ErrorEmbed, produce_error_embed
 from .exceptions import (
     EconomyDisabledError,
     PinsDisabledError,

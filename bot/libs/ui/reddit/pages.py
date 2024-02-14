@@ -2,7 +2,7 @@ from typing import List
 
 import discord
 from discord.ext.commands import Context
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils.pages import EmbedListSource, KumikoPages
 
 from .structs import RedditEntry, RedditMemeEntry
 from .utils import RedditMemePageEntry, RedditPageEntry

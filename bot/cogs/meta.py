@@ -1,5 +1,6 @@
 import datetime
 import itertools
+import os
 import platform
 from typing import Optional, Union
 
@@ -9,7 +10,7 @@ import pygit2
 from discord.ext import commands
 from discord.utils import format_dt, oauth_url
 from kumikocore import KumikoCore
-from libs.utils import Embed, human_timedelta, is_docker
+from libs.utils import Embed, human_timedelta
 from libs.utils.context import KContext
 from psutil._common import bytes2human
 
@@ -24,6 +25,18 @@ class Meta(commands.Cog):
     @property
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U00002754")
+
+    def is_docker(self) -> bool:
+        """Checks if the current environment is running in Docker
+
+        Returns:
+            bool: Returns `True` if in fact it is an Docker environment,
+            `False` if not
+        """
+        path = "/proc/self/cgroup"
+        return os.path.exists("/.dockerenv") or (
+            os.path.isfile(path) and any("docker" in line for line in open(path))
+        )
 
     def format_date(self, dt: Optional[datetime.datetime]):
         if dt is None:
@@ -140,7 +153,7 @@ class Meta(commands.Cog):
         revisions = self.get_last_commits(5)
         working_branch = self.get_current_branch().title()
 
-        if is_docker():
+        if self.is_docker():
             revisions = "See [GitHub](https://github.com/No767/Kumiko)"
             working_branch = "Docker"
 
@@ -183,9 +196,6 @@ class Meta(commands.Cog):
         if self.bot.application_id is None:
             return None
         perms = discord.Permissions()
-        perms.kick_members = True
-        perms.ban_members = True
-        perms.moderate_members = True
         perms.manage_messages = True
         perms.send_messages_in_threads = True
         perms.manage_threads = True

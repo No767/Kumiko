@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-
-from .utils import produce_error_embed
+from libs.utils.errors import produce_error_embed
 
 if TYPE_CHECKING:
     from .context import KContext
