@@ -19,35 +19,6 @@ if TYPE_CHECKING:
     from kumikocore import KumikoCore
 
 
-@alru_cache(maxsize=1024)
-async def get_guild_config(
-    guild_id: int, connection: Union[asyncpg.Pool, asyncpg.Connection]
-) -> Optional[GuildConfig]:
-    """Obtains the config of the guild.
-
-    This does not obtain the configuration of the logs,
-    but merely only the guild configuration itself. This
-    corountine is cached heavily
-
-    Args:
-        guild_id (int): Guild ID to use for config
-        connection (Union[asyncpg.Pool, asyncpg.Connection]): The connection to use. Will use an pool if needed as well
-
-    Returns:
-        Optional[GuildConfig]: Returns the existing cached config. `None` if not found.
-    """
-    query = """
-    SELECT prefix, economy, redirects, voice_summary
-    FROM guild_config
-    WHERE id = $1;
-    """
-    rows = await connection.fetchrow(query, guild_id)
-    if rows is None:
-        get_guild_config.cache_invalidate(guild_id, connection)
-        return None
-    return GuildConfig(**dict(rows))
-
-
 class GuildConfig(msgspec.Struct):
     prefix: list[str]
     economy: bool = False
@@ -174,29 +145,37 @@ class Config(commands.Cog):
         self.reserved_configs: Dict[int, ReservedConfig] = {}
         self.reserved_lgc: Dict[int, ReservedLGC] = {}
 
-    def is_lgc_already_enabled(self, guild_id: int, type: str):
-        conf = self.reserved_lgc.get(guild_id)
-        if conf is None:
-            return
-
-        return conf[type]
-
-    def is_config_already_enabled(self, guild_id: int, type: str):
-        value_to_key = {
-            "Economy": "local_economy",
-            "Redirects": "redirects",
-            "EventsLog": "logs",
-            "Pins": "pins",
-        }
-        conf = self.reserved_configs.get(guild_id)
-        if conf is None:
-            return
-        key = value_to_key[type]
-        return conf[key]
-
     @property
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f6e0")
+
+    @alru_cache(maxsize=1024)
+    async def get_guild_config(
+        self, guild_id: int, connection: Union[asyncpg.Pool, asyncpg.Connection]
+    ) -> Optional[GuildConfig]:
+        """Obtains the config of the guild.
+
+        This does not obtain the configuration of the logs,
+        but merely only the guild configuration itself. This
+        corountine is cached heavily
+
+        Args:
+            guild_id (int): Guild ID to use for config
+            connection (Union[asyncpg.Pool, asyncpg.Connection]): The connection to use. Will use an pool if needed as well
+
+        Returns:
+            Optional[GuildConfig]: Returns the existing cached config. `None` if not found.
+        """
+        query = """
+        SELECT prefix, economy, redirects, voice_summary
+        FROM guild_config
+        WHERE id = $1;
+        """
+        rows = await connection.fetchrow(query, guild_id)
+        if rows is None:
+            self.get_guild_config.cache_invalidate(guild_id, connection)
+            return None
+        return GuildConfig(**dict(rows))
 
     @is_manager()
     @commands.hybrid_group(name="configure", aliases=["config"], fallback="modules")

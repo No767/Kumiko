@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import logging
 import signal
 from pathlib import Path as SyncPath
-from typing import Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import asyncpg
 import discord
@@ -19,6 +21,9 @@ try:
     from watchfiles import awatch
 except ImportError:
     _fsw = False
+
+if TYPE_CHECKING:
+    from cogs.config import Config as ConfigCog
 
 
 class KumikoCore(commands.Bot):
@@ -53,6 +58,10 @@ class KumikoCore(commands.Bot):
         self.session = session
         self.version = str(VERSION)
         self._dev_mode = config["kumiko"].get("dev_mode", False)
+
+    @property
+    def config_cog(self) -> Optional[ConfigCog]:
+        return self.get_cog("Config")  # type: ignore
 
     async def _fs_watcher(self) -> None:
         cogs_path = SyncPath(__file__).parent.joinpath("cogs")

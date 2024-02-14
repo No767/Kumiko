@@ -1,20 +1,28 @@
-from typing import Optional, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional, Union
 
 import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
-from kumikocore import KumikoCore
 from libs.utils import GuildContext
 
-from .config import get_guild_config
+if TYPE_CHECKING:
+    from bot.kumikocore import KumikoCore
 
 
 def interactions_enabled():
     async def pred(interaction: discord.Interaction) -> bool:
         if interaction.guild is None:
             return False
-        pool = interaction.client.pool  # type: ignore
-        guild_config = await get_guild_config(interaction.guild.id, pool)
+        bot: KumikoCore = interaction.client  # type: ignore
+
+        if not bot.config_cog:
+            return False
+
+        guild_config = await bot.config_cog.get_guild_config(
+            interaction.guild.id, bot.pool
+        )
         return guild_config is not None and guild_config.redirects is True
 
     return app_commands.check(pred)
@@ -22,7 +30,11 @@ def interactions_enabled():
 
 def is_enabled():
     async def pred(ctx: GuildContext) -> bool:
-        guild_config = await get_guild_config(ctx.guild.id, ctx.bot.pool)
+        bot = ctx.bot
+        if not bot.config_cog:
+            return False
+
+        guild_config = await bot.config_cog.get_guild_config(ctx.guild.id, ctx.bot.pool)
         return guild_config is not None and guild_config.redirects is True
 
     return commands.check(pred)
