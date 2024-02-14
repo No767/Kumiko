@@ -6,6 +6,27 @@ from discord.ext import commands
 from kumikocore import KumikoCore
 from libs.utils import GuildContext
 
+from .config import get_guild_config
+
+
+def interactions_enabled():
+    async def pred(interaction: discord.Interaction) -> bool:
+        if interaction.guild is None:
+            return False
+        pool = interaction.client.pool  # type: ignore
+        guild_config = await get_guild_config(interaction.guild.id, pool)
+        return guild_config is not None and guild_config.redirects is True
+
+    return app_commands.check(pred)
+
+
+def is_enabled():
+    async def pred(ctx: GuildContext) -> bool:
+        guild_config = await get_guild_config(ctx.guild.id, ctx.bot.pool)
+        return guild_config is not None and guild_config.redirects is True
+
+    return commands.check(pred)
+
 
 def is_thread():
     def pred(ctx: GuildContext) -> bool:
@@ -85,13 +106,13 @@ class Redirects(commands.Cog):
         await created_thread.send(starter_message, suppress_embeds=True)
         return created_thread.jump_url
 
+    @interactions_enabled()
     @app_commands.checks.cooldown(1, 30, key=lambda i: (i.guild_id, i.user.id))
     async def redirects_callback(
         self, interaction: discord.Interaction, message: discord.Message
     ) -> None:
         """Redirects a conversation into a separate thread"""
         channel = interaction.channel
-
         if isinstance(channel, discord.TextChannel):
             if interaction.user.id == message.author.id:
                 await interaction.response.send_message(
@@ -120,6 +141,7 @@ class Redirects(commands.Cog):
             "This needs to be sent from a text channel", ephemeral=True
         )
 
+    @is_enabled()
     @commands.cooldown(1, 30, commands.BucketType.user)
     @commands.command(name="redirect")
     async def redirect(
@@ -159,9 +181,10 @@ class Redirects(commands.Cog):
                 "You can't use this on other types of channels. Only text channels are able to redirect messages."
             )
 
+    @is_enabled()
     @is_thread()
     @commands.cooldown(1, 20, commands.BucketType.channel)
-    @commands.hybrid_command(name="resolved", aliases=["completed"])
+    @commands.command(name="resolved", aliases=["completed"])
     async def resolved(self, ctx: GuildContext) -> None:
         """Marks a thread as completed"""
         channel = ctx.channel

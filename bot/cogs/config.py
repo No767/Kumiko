@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 import asyncpg
 import discord
 import msgspec
 from async_lru import alru_cache
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, menus
 from libs.types.config import ReservedConfig, ReservedLGC
 from libs.ui.config import ConfigMenuView
-from libs.utils import Embed, GuildContext, is_manager
+from libs.utils import Embed, GuildContext, KContext, is_manager
+from libs.utils.pages import KumikoPages
 from libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
 
@@ -18,7 +19,37 @@ if TYPE_CHECKING:
     from kumikocore import KumikoCore
 
 
+@alru_cache(maxsize=1024)
+async def get_guild_config(
+    guild_id: int, connection: Union[asyncpg.Pool, asyncpg.Connection]
+) -> Optional[GuildConfig]:
+    """Obtains the config of the guild.
+
+    This does not obtain the configuration of the logs,
+    but merely only the guild configuration itself. This
+    corountine is cached heavily
+
+    Args:
+        guild_id (int): Guild ID to use for config
+        connection (Union[asyncpg.Pool, asyncpg.Connection]): The connection to use. Will use an pool if needed as well
+
+    Returns:
+        Optional[GuildConfig]: Returns the existing cached config. `None` if not found.
+    """
+    query = """
+    SELECT prefix, economy, redirects, voice_summary
+    FROM guild_config
+    WHERE id = $1;
+    """
+    rows = await connection.fetchrow(query, guild_id)
+    if rows is None:
+        get_guild_config.cache_invalidate(guild_id, connection)
+        return None
+    return GuildConfig(**dict(rows))
+
+
 class GuildConfig(msgspec.Struct):
+    prefix: list[str]
     economy: bool = False
     redirects: bool = True
     voice_summary: bool = False
@@ -79,6 +110,58 @@ class PrefixConverter(commands.Converter):
         if len(argument) > 100:
             raise commands.BadArgument("That prefix is too long.")
         return argument
+
+
+class ConfigSelectMenu(discord.ui.Select["ConfigMenu"]):
+    def __init__(self, cogs: List[commands.Cog], bot: KumikoCore):
+        super().__init__(
+            placeholder="Select a category...", min_values=1, max_values=1, row=0
+        )
+        self.cogs = cogs
+        self.__fill_options()
+
+    def __fill_options(self) -> None:
+        self.add_option(
+            label="Index",
+            emoji="\N{WAVING HAND SIGN}",
+            value="__index",
+            description="The help page showing how to use the bot.",
+        )
+        for cog in self.cogs:
+            description = cog.description.split("\n", 1)[0] or None
+            emoji = getattr(cog, "display_emoji", None)
+            self.add_option(
+                label=cog.qualified_name,
+                value=cog.qualified_name,
+                description=description,
+                emoji=emoji,
+            )
+
+    async def callback(self, interaction: discord.Interaction) -> None:
+        assert self.view is not None
+        value = self.values[0]
+        if value == "__index":
+            # await self.view.rebind(FrontPageSource(), interaction)
+            ...
+        else:
+            ...
+
+
+class ConfigMenu(KumikoPages):
+    def __init__(self, source: menus.PageSource, ctx: KContext):
+        super().__init__(source, ctx=ctx, compact=True)
+
+    async def rebind(
+        self, source: menus.PageSource, interaction: discord.Interaction
+    ) -> None:
+        self.source = source
+        self.current_page = 0
+
+        await self.source._prepare_once()
+        page = await self.source.get_page(0)
+        kwargs = await self.get_kwargs_from_page(page)
+        self._update_labels(0)
+        await interaction.response.edit_message(**kwargs, view=self)
 
 
 class Config(commands.Cog):
