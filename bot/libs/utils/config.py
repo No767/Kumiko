@@ -19,6 +19,10 @@ class KumikoConfig(Generic[_T]):
         except FileNotFoundError:
             self._config = {}
 
+    @property
+    def kumiko(self) -> _T:
+        return self._config.get("kumiko", {})
+
     @overload
     def get(self, key: Any) -> Optional[Union[_T, Any]]:
         ...

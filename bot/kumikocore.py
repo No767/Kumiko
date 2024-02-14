@@ -43,14 +43,14 @@ class KumikoCore(commands.Bot):
         self.default_prefix = ">"
         self.ipc = ipcx.Server(
             self,
-            host=config["kumiko"]["ipc"]["host"],
-            secret_key=config["kumiko"]["ipc"]["secret"],
+            host=config.kumiko["ipc"]["host"],
+            secret_key=config.kumiko["ipc"]["secret"],
         )
         self.logger: logging.Logger = logging.getLogger("kumiko")
         self.pool = pool
         self.session = session
         self.version = str(VERSION)
-        self._dev_mode = config["kumiko"].get("dev_mode", False)
+        self._dev_mode = config.kumiko.get("dev_mode", False)
         self._reloader = Reloader(self, Path(__file__).parent)
 
     @property
