@@ -16,7 +16,6 @@ from .logger import KumikoLogger as KumikoLogger
 from .modal import KumikoModal as KumikoModal
 from .parse import (
     parse_datetime as parse_datetime,
-    parse_dt as parse_dt,
     parse_subreddit as parse_subreddit,
 )
 from .prefix import get_prefix as get_prefix
