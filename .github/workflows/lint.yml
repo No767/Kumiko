@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [3.8, 3.9, '3.10', '3.11']
+        version: [3.9, '3.10', '3.11', '3.12']
 
     steps:
       - name: Checkout Repository  
@@ -27,26 +27,25 @@ jobs:
         with:
           python-version: ${{ matrix.version }}
 
-      - name: Set up Poetry
-        uses: Gr1N/setup-poetry@v8
+      # - name: Set up Poetry
+      #   uses: Gr1N/setup-poetry@v8
+      #
+      # - name: Cache Poetry
+      #   id: cache-poetry
+      #   uses: actions/cache@v4.0.0
+      #   with:
+      #     path: ~/.cache/pypoetry/virtualenvs
+      #     key: ${{ runner.os }}-poetry-lint-${{ matrix.version }}-${{ hashFiles('**/poetry.lock') }}
+      #
+      # - name: Install Poetry Dependencies
+      #   if: steps.cache-poetry.outputs.cache-hit != 'true'
+      #   run: |
+      #     poetry install --with dev
 
-      - name: Cache Poetry
-        id: cache-poetry
-        uses: actions/cache@v4.0.0
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-lint-${{ matrix.version }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install Poetry Dependencies
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
+      - name: Install Tox
         run: |
-          poetry install --with dev
-          
-      - name: Run Pyright
+            pip install --upgrade tox>=4.13.1,<5
+    
+      - name: Lint
         run: |
-          poetry run pyright Bot
-
-      - name: Run Ruff
-        # the rewrite for using PEP8 standards will come later
-        run: |
-          poetry run ruff Bot
+            tox run -e lint
