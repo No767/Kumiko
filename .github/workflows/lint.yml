@@ -44,7 +44,7 @@ jobs:
 
       - name: Install Tox
         run: |
-            pip install --upgrade tox>=4.13.1,<5
+            python -m pip install --upgrade tox>=4.13.1,<5
     
       - name: Lint
         run: |
