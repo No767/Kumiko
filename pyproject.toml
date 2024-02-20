@@ -34,6 +34,7 @@ async-lru = "^2.0.4"
 aiohttp = "3.9.1"
 jishaku = "^2.5.2"
 watchfiles = "^0.21.0"
+parsedatetime = "^2.6"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.3"

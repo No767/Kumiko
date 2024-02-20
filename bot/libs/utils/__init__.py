@@ -19,5 +19,5 @@ from .parse import (
     parse_subreddit as parse_subreddit,
 )
 from .prefix import get_prefix as get_prefix
-from .time import format_dt as format_dt, human_timedelta as human_timedelta
+from .time import human_timedelta as human_timedelta
 from .view import KumikoView as KumikoView
