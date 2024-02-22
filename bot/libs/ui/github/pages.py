@@ -139,27 +139,31 @@ class GitHubRepoMenu(discord.ui.Select["GithubRepoPages"]):
         await interaction.response.send_message(message, ephemeral=True)
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        assert self.view is not None
-        value = self.values[0]
-        if value == "repo":
-            await self.view.rebind(GitHubRepoPageSource(self.repo_entry), interaction)
-        else:
-            if len(self.releases_entries) == 0:
+        if self.view is not None:
+            value = self.values[0]
+            if value == "repo":
                 await self.view.rebind(
                     GitHubRepoPageSource(self.repo_entry), interaction
                 )
-                await self._send_message("There are no detected releases", interaction)
-                return
-            await self.view.rebind(
-                EmbedListSource(
-                    [
-                        GitHubReleasePageEntry(entry).to_dict()
-                        for entry in self.releases_entries
-                    ],
-                    per_page=1,
-                ),
-                interaction,
-            )
+            else:
+                if len(self.releases_entries) == 0:
+                    await self.view.rebind(
+                        GitHubRepoPageSource(self.repo_entry), interaction
+                    )
+                    await self._send_message(
+                        "There are no detected releases", interaction
+                    )
+                    return
+                await self.view.rebind(
+                    EmbedListSource(
+                        [
+                            GitHubReleasePageEntry(entry).to_dict()
+                            for entry in self.releases_entries
+                        ],
+                        per_page=1,
+                    ),
+                    interaction,
+                )
 
 
 class GitHubIssuesMenu(discord.ui.Select["GithubIssuesPages"]):
@@ -183,46 +187,46 @@ class GitHubIssuesMenu(discord.ui.Select["GithubIssuesPages"]):
         await interaction.response.send_message(message, ephemeral=True)
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        assert self.view is not None
-        value = self.values[0]
-        if value == "issue":
-            await self.view.rebind(
-                GitHubIssuesPageSource(self.issue_entry), interaction
-            )
-        elif value == "comments":
-            if len(self.comment_entries) == 0:
+        if self.view is not None:
+            value = self.values[0]
+            if value == "issue":
                 await self.view.rebind(
                     GitHubIssuesPageSource(self.issue_entry), interaction
                 )
-                await self._send_message(NO_COMMENTS, interaction)
-                return
-            await self.view.rebind(
-                EmbedListSource(
-                    [
-                        GitHubIssuesCommentsPageEntry(entry).to_dict()
-                        for entry in self.comment_entries
-                    ],
-                    per_page=1,
-                ),
-                interaction,
-            )
-        else:
-            if len(self.issue_entry.assignees) == 0:
+            elif value == "comments":
+                if len(self.comment_entries) == 0:
+                    await self.view.rebind(
+                        GitHubIssuesPageSource(self.issue_entry), interaction
+                    )
+                    await self._send_message(NO_COMMENTS, interaction)
+                    return
                 await self.view.rebind(
-                    GitHubIssuesPageSource(self.issue_entry), interaction
+                    EmbedListSource(
+                        [
+                            GitHubIssuesCommentsPageEntry(entry).to_dict()
+                            for entry in self.comment_entries
+                        ],
+                        per_page=1,
+                    ),
+                    interaction,
                 )
-                await self._send_message(NO_ASSIGNEES, interaction)
-                return
-            await self.view.rebind(
-                EmbedListSource(
-                    [
-                        GitHubUserPageEntry(entry).to_dict()
-                        for entry in self.issue_entry.assignees
-                    ],
-                    per_page=1,
-                ),
-                interaction,
-            )
+            else:
+                if len(self.issue_entry.assignees) == 0:
+                    await self.view.rebind(
+                        GitHubIssuesPageSource(self.issue_entry), interaction
+                    )
+                    await self._send_message(NO_ASSIGNEES, interaction)
+                    return
+                await self.view.rebind(
+                    EmbedListSource(
+                        [
+                            GitHubUserPageEntry(entry).to_dict()
+                            for entry in self.issue_entry.assignees
+                        ],
+                        per_page=1,
+                    ),
+                    interaction,
+                )
 
 
 class GithubIssuesPages(KumikoPages):

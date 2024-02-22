@@ -61,22 +61,22 @@ class ConfigMenu(discord.ui.Select):
         # I know that this is pretty dirty on how to do it, but there is quite literally no other way to do it
         # You can't just define a variable for columns
         # See https://github.com/MagicStack/asyncpg/issues/208#issuecomment-335498184
-        assert interaction.guild is not None
-        value = self.values[0]
-        self.bot.logger.info(f"Selected Value: {value}")
-        value_to_key = {
-            "Economy": "economy",
-            "Redirects": "redirects",
-            "VoiceSummary": "voice_summary",
-        }
-        key = value_to_key[value]
-        current_status = self.config_cog.reserved_configs[interaction.guild.id][key]
-        view = ToggleCacheView(self.ctx, self.config_cog, value)
-        embed = Embed()
-        embed.description = format_conf_desc(value, current_status)
-        await interaction.response.send_message(embed=embed, view=view)
+        if interaction.guild is not None:
+            value = self.values[0]
+            self.bot.logger.info(f"Selected Value: {value}")
+            value_to_key = {
+                "Economy": "economy",
+                "Redirects": "redirects",
+                "VoiceSummary": "voice_summary",
+            }
+            key = value_to_key[value]
+            current_status = self.config_cog.reserved_configs[interaction.guild.id][key]
+            view = ToggleCacheView(self.ctx, self.config_cog, value)
+            embed = Embed()
+            embed.description = format_conf_desc(value, current_status)
+            await interaction.response.send_message(embed=embed, view=view)
 
-        view.original_response = await interaction.original_response()  # type: ignore
+            view.original_response = await interaction.original_response()  # type: ignore
 
 
 class ToggleCacheView(KumikoView):
@@ -103,15 +103,6 @@ class ToggleCacheView(KumikoView):
             return
 
         guild_id = interaction.guild.id
-        is_already_enabled = self.config_cog.is_config_already_enabled(
-            guild_id, self.value
-        )
-        if is_already_enabled is status:
-            await interaction.response.send_message(
-                f"Module `{self.value}` is already {str_status.lower()}!",
-                ephemeral=True,
-            )
-            return
 
         # This will only run if the module is enabled/disabled
         if guild_id in self.config_cog.reserved_configs:

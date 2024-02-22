@@ -57,7 +57,8 @@ include = ["bot/**"]
 exclude = [
     "**/__pycache__", 
     "**/.mypy_cache", 
-    "**/.dmpypy.json", 
+    "**/.dmpypy.json",
+    "old/**"
 ]
 reportMissingImports = true
 typeCheckingMode = "basic"
@@ -69,6 +70,9 @@ skips = ["B311", "B101"]
 [tool.ruff.lint]
 ignore = ["E501", "N999", "E402", "S311"]
 select = ["E", "F", "N", "ASYNC", "S", "ERA"]
+
+[tool.ruff]
+extend-exclude = ["old/**"]
 
 [tool.pytest.ini_options]
 minversion = 8.0

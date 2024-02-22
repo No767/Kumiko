@@ -109,13 +109,12 @@ class ConfigSelectMenu(discord.ui.Select["ConfigMenu"]):
             )
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        assert self.view is not None
-        value = self.values[0]
-        if value == "__index":
-            # await self.view.rebind(FrontPageSource(), interaction)
-            ...
-        else:
-            ...
+        if self.view is not None:
+            value = self.values[0]
+            if value == "__index":
+                ...
+            else:
+                ...
 
 
 class ConfigMenu(KumikoPages):
@@ -181,8 +180,6 @@ class Config(commands.Cog):
     @commands.hybrid_group(name="configure", aliases=["config"], fallback="modules")
     async def config(self, ctx: GuildContext) -> None:
         """Configure the settings for the modules on Kumiko"""
-        assert ctx.guild is not None
-
         value_map = {
             "economy": "Economy",
             "redirects": "Redirects",
@@ -227,32 +224,8 @@ class Config(commands.Cog):
     @config.group(name="logs", fallback="settings")
     async def logs(self, ctx: GuildContext) -> None:
         """Configure logging settings"""
-        # assert ctx.guild is not None
-
-        # query = """
-        # SELECT mod, eco, redirects
-        # FROM logging_config
-        # WHERE guild_id = $1;
-        # """
-        # rows = await self.pool.fetchrow(query, ctx.guild.id)
-        # if rows is None:
-        #     await ctx.send("Apparently guild is not in db")
-        #     return
-
-        # lgc_conf = ReservedLGC(**dict(rows))
-        # self.reserved_lgc.setdefault(ctx.guild.id, lgc_conf)
-        # view = LGCView(self.bot, self, ctx)
-        # embed = Embed()
-        # embed.description = """
-        # If you are the owner or a server mod, this is logging panel!
-        # This menu is meant for enabling/disabling the different types of logging.
-        # """
-        # embed.add_field(
-        #     name="How to use",
-        #     value="Click on the select menu, and enable/disable the selected feature. Once finished, just click the 'Finish' button",
-        #     inline=False,
-        # )
-        await ctx.send("yes")
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
 
     @commands.cooldown(10, 30, commands.BucketType.guild)
     @logs.command(name="setup")

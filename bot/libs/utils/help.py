@@ -87,29 +87,29 @@ class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
             )
 
     async def callback(self, interaction: discord.Interaction):
-        assert self.view is not None
-        value = self.values[0]
-        if value == "__index":
-            await self.view.rebind(FrontPageSource(), interaction)
-        else:
-            cog = self.bot.get_cog(value)
-            if cog is None:
-                await interaction.response.send_message(
-                    "Somehow this category does not exist?", ephemeral=True
-                )
-                return
+        if self.view is not None:
+            value = self.values[0]
+            if value == "__index":
+                await self.view.rebind(FrontPageSource(), interaction)
+            else:
+                cog = self.bot.get_cog(value)
+                if cog is None:
+                    await interaction.response.send_message(
+                        "Somehow this category does not exist?", ephemeral=True
+                    )
+                    return
 
-            commands = self.cmds[cog]
-            if not commands:
-                await interaction.response.send_message(
-                    "This category has no commands for you", ephemeral=True
-                )
-                return
+                commands = self.cmds[cog]
+                if not commands:
+                    await interaction.response.send_message(
+                        "This category has no commands for you", ephemeral=True
+                    )
+                    return
 
-            source = GroupHelpPageSource(
-                cog, commands, prefix=self.view.ctx.clean_prefix
-            )
-            await self.view.rebind(source, interaction)
+                source = GroupHelpPageSource(
+                    cog, commands, prefix=self.view.ctx.clean_prefix
+                )
+                await self.view.rebind(source, interaction)
 
 
 class HelpMenu(KumikoPages):
@@ -262,8 +262,8 @@ class KumikoHelpPaginated(commands.HelpCommand):
                 continue
 
             cog = bot.get_cog(name)
-            assert cog is not None
-            all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
+            if cog is not None:
+                all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
         menu = HelpMenu(FrontPageSource(), ctx=self.context)
         menu.add_categories(all_commands)

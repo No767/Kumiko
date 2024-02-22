@@ -86,7 +86,6 @@ class Pins(commands.Cog):
 
     # @property
     # def configurable(self) -> bool:
-    #     return True
 
     @is_pins_enabled()
     @commands.guild_only()
