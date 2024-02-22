@@ -14,10 +14,7 @@ from .embeds import (
 from .help import KumikoHelpPaginated as KumikoHelpPaginated
 from .logger import KumikoLogger as KumikoLogger
 from .modal import KumikoModal as KumikoModal
-from .parse import (
-    parse_datetime as parse_datetime,
-    parse_subreddit as parse_subreddit,
-)
+from .parse import parse_datetime as parse_datetime
 from .prefix import get_prefix as get_prefix
 from .time import human_timedelta as human_timedelta
 from .view import KumikoView as KumikoView

@@ -1,3 +1,4 @@
+import re
 from typing import Literal, Optional
 
 import asyncpraw
@@ -11,7 +12,7 @@ from libs.ui.reddit import (
     RedditMemePages,
     RedditPages,
 )
-from libs.utils import KContext, parse_subreddit
+from libs.utils import KContext
 from yarl import URL
 
 
@@ -27,6 +28,19 @@ class Reddit(commands.Cog):
     @property
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji.from_str("<:reddit:314349923103670272>")
+
+    def parse_subreddit(self, subreddit: Optional[str]) -> str:
+        """Parses a subreddit name to be used in a reddit url
+
+        Args:
+            subreddit (Union[str, None]): Subreddit name to parse
+
+        Returns:
+            str: Parsed subreddit name
+        """
+        if subreddit is None:
+            return "all"
+        return re.sub(r"^[r/]{2}", "", subreddit, re.IGNORECASE)
 
     @commands.hybrid_group(name="reddit")
     async def reddit(self, ctx: KContext) -> None:
@@ -50,7 +64,7 @@ class Reddit(commands.Cog):
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         )
-        sub = await reddit.subreddit(parse_subreddit(subreddit))
+        sub = await reddit.subreddit(self.parse_subreddit(subreddit))
         sub_search = sub.search(search)
         converted = [
             RedditEntry(
@@ -88,7 +102,7 @@ class Reddit(commands.Cog):
             user_agent="Kumiko (by /u/No767)",
             requestor_kwargs={"session": self.bot.session},
         )
-        sub = await reddit.subreddit(parse_subreddit(subreddit))
+        sub = await reddit.subreddit(self.parse_subreddit(subreddit))
         sub_gen = (
             sub.new(limit=10)
             if filter == "New"
@@ -124,7 +138,9 @@ class Reddit(commands.Cog):
     ) -> None:
         """Searches for memes on Reddit"""
         url = (
-            URL("https://meme-api.com/gimme") / parse_subreddit(subreddit) / str(amount)
+            URL("https://meme-api.com/gimme")
+            / self.parse_subreddit(subreddit)
+            / str(amount)
         )
         async with self.bot.session.get(url) as r:
             data = await r.json(loads=orjson.loads)

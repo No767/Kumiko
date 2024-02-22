@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from bot.kumikocore import KumikoCore
 
 
-@alru_cache()
+@alru_cache(maxsize=1024)
 async def get_prefix(
     bot: KumikoCore, message: discord.Message
 ) -> Union[str, List[str]]:
