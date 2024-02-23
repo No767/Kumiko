@@ -3,7 +3,7 @@ name: "kumiko-dev"
 services:
   postgres:
     container_name: Kumiko-Postgres-Dev
-    image: postgres:15 
+    image: postgres:15
     env_file:
       - .env
     volumes:
