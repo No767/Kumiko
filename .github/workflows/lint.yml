@@ -32,7 +32,7 @@ jobs:
 
       - name: Cache Poetry
         id: cache-poetry
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.1
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: ${{ runner.os }}-poetry-lint-${{ matrix.version }}-${{ hashFiles('**/poetry.lock') }}
