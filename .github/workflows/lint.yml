@@ -28,7 +28,7 @@ jobs:
           python-version: ${{ matrix.version }}
 
       - name: Set up Poetry
-        uses: Gr1N/setup-poetry@v8
+        uses: Gr1N/setup-poetry@v9
 
       - name: Cache Poetry
         id: cache-poetry
