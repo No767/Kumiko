@@ -29,7 +29,7 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 skips = ["B311", "B101"]
 
 [tool.ruff.lint]
-ignore = ["E501", "N999", "E402", "S101"]
+ignore = ["E501", "N999", "E402", "S101", "S311"]
 select = ["E", "F", "N", "ASYNC", "S", "ERA"]
 
 [tool.pytest.ini_options]

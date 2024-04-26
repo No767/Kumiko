@@ -4,10 +4,9 @@ import os
 import re
 import traceback
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import List, Union
 
 import ciso8601
-import dateparser
 import discord
 
 from .embeds import ErrorEmbed
@@ -52,19 +51,6 @@ def is_docker() -> bool:
     return os.path.exists("/.dockerenv") or (
         os.path.isfile(path) and any("docker" in line for line in open(path))
     )
-
-
-def parse_dt(dt: str) -> Optional[datetime]:
-    """Parses an string representation of datetime (e.g. Jan 1)
-    into an `datetime.datetime` instance
-
-    Args:
-        dt (str): String representation of datetime
-
-    Returns:
-        Optional[datetime]: `datetime.datetime` instance
-    """
-    return dateparser.parse(dt)
 
 
 def format_greedy(list: List[str]) -> str:
