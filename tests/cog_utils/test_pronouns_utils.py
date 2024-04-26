@@ -8,8 +8,8 @@ sys.path.append(str(path))
 
 load_dotenv()
 
-from Libs.cog_utils.pronouns import parse_pronouns
-from Libs.cog_utils.pronouns.utils import (
+from libs.cog_utils.pronouns import parse_pronouns
+from libs.cog_utils.pronouns.utils import (
     format_inline_references,
     format_link_references,
     format_multi_reference,

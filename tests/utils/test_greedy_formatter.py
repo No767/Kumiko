@@ -4,7 +4,7 @@ from pathlib import Path
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.utils import format_greedy
+from libs.utils import format_greedy
 
 
 def test_format_greedy_3plus():

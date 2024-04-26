@@ -6,7 +6,7 @@ import pytest
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.errors import (
+from libs.errors import (
     EconomyDisabledError,
     KumikoExceptionError,
     PinsDisabledError,

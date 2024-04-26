@@ -5,7 +5,7 @@ path = Path(__file__).parents[3].joinpath("Bot")
 sys.path.append(str(path))
 
 from discord.ext import commands
-from Libs.cog_utils.moderation import TimeoutDTConverter
+from libs.cog_utils.moderation import TimeoutDTConverter
 
 
 class ModCog(commands.Cog):

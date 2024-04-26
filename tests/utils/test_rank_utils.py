@@ -4,7 +4,7 @@ from pathlib import Path
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.utils import calc_petals, calc_rank
+from libs.utils import calc_petals, calc_rank
 
 
 def test_calc_rank():

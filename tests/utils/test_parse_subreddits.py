@@ -4,7 +4,7 @@ from pathlib import Path
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.utils import parse_subreddit
+from libs.utils import parse_subreddit
 
 
 def test_rslash_egg_irl():

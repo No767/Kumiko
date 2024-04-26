@@ -6,7 +6,7 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 import pytest
-from Libs.utils import parse_datetime
+from libs.utils import parse_datetime
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -13,7 +13,7 @@ env_path = path / ".env"
 load_dotenv(dotenv_path=env_path)
 
 import asyncpg
-from Libs.utils import ensure_postgres_conn
+from libs.utils import ensure_postgres_conn
 
 
 @pytest.fixture(scope="session")
