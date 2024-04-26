@@ -1,6 +1,11 @@
 from discord.utils import format_dt
 
-from .structs import GitHubCommit, GitHubIssueComment, GitHubRepoReleases, GitHubUser
+from .structs import (
+    GitHubCommit,
+    GitHubIssueComment,
+    GitHubRepoReleases,
+    GitHubUser,
+)
 from .utils import parse_optional_datetimes, truncate_excess_string
 
 
