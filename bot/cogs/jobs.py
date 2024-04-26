@@ -1,5 +1,5 @@
 import asyncio
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 import discord
 from discord import app_commands
@@ -29,13 +29,16 @@ from libs.utils import ConfirmEmbed, Embed, MessageConstants
 from libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class JobName(commands.clean_content):
     def __init__(self, *, lower: bool = False):
         self.lower: bool = lower
         super().__init__()
 
-    async def convert(self, ctx: commands.Context, argument: str) -> str:
+    async def convert(self, ctx: KContext, argument: str) -> str:
         converted = await super().convert(ctx, argument)
         lower = converted.lower().strip()
 
@@ -44,7 +47,7 @@ class JobName(commands.clean_content):
 
         first_word, _, _ = lower.partition(" ")
 
-        root: commands.GroupMixin = ctx.bot.get_command("jobs")
+        root: commands.GroupMixin = ctx.bot.get_command("jobs")  # type: ignore
         if first_word in root.all_commands:
             raise commands.BadArgument("This Job name starts with a reserved word.")
 
@@ -85,11 +88,11 @@ class Jobs(commands.Cog):
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f4bc")
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
+    async def cog_check(self, ctx: KContext) -> bool:
         return await check_economy_enabled(ctx)
 
     @commands.hybrid_group(name="jobs", fallback="list")
-    async def jobs(self, ctx: commands.Context, flags: JobListFlags) -> None:
+    async def jobs(self, ctx: KContext, flags: JobListFlags) -> None:
         """Lists all available jobs in your server"""
         sql = """
         SELECT job.id, job.name, job.description, job.required_rank, job.pay_amount
@@ -137,7 +140,7 @@ class Jobs(commands.Cog):
         pay="The base pay required for the job",
     )
     async def create(
-        self, ctx: commands.Context, required_rank: int = 0, pay: int = 15
+        self, ctx: KContext, required_rank: int = 0, pay: int = 15
     ) -> None:
         """Create a job for your server"""
         if ctx.interaction is not None:
@@ -229,7 +232,7 @@ class Jobs(commands.Cog):
     )
     async def update(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         name: Annotated[str, commands.clean_content],
         required_rank: int,
         pay: int,
@@ -277,7 +280,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="delete")
     @app_commands.describe(name="The name of the job to delete")
     async def delete(
-        self, ctx: commands.Context, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Deletes a job by name. You can only delete your own jobs."""
         view = DeleteJobView(ctx, self.pool, name)
@@ -287,7 +290,7 @@ class Jobs(commands.Cog):
 
     @jobs.command(name="delete-id")
     @app_commands.describe(id="The ID of the job to delete")
-    async def delete_via_id(self, ctx: commands.Context, id: int) -> None:
+    async def delete_via_id(self, ctx: KContext, id: int) -> None:
         """Deletes the job via the job ID"""
         view = DeleteJobViaIDView(ctx, self.pool, id)
         embed = ConfirmEmbed()
@@ -295,7 +298,7 @@ class Jobs(commands.Cog):
         await ctx.send(embed=embed, view=view)
 
     @jobs.command(name="purge")
-    async def purge(self, ctx: commands.Context) -> None:
+    async def purge(self, ctx: KContext) -> None:
         """Purges all jobs that you own"""
         view = PurgeJobsView(ctx, self.pool)
         embed = ConfirmEmbed()
@@ -305,7 +308,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="file")
     @app_commands.describe(name="The name of the job to file")
     async def file(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Files (publicly lists) a job for general availability. This must be one that you own"""
         query = """
@@ -322,7 +325,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="unfile")
     @app_commands.describe(name="The name of the job to un-file")
     async def unfile(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Un-files a job for general availability. This must be one that you own"""
         query = """
@@ -343,7 +346,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="apply")
     @app_commands.describe(name="The name of the job to apply")
     async def apply(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Apply for a job"""
         query = """
@@ -371,7 +374,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="quit")
     @app_commands.describe(name="The name of the job to quit")
     async def quit(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Quit a current job that you have"""
         async with self.pool.acquire() as conn:
@@ -389,7 +392,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="info")
     @app_commands.describe(name="The name of the job to get")
     async def info(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Get info about a job"""
         job_results = await get_job(ctx.guild.id, name.lower(), self.pool)  # type: ignore
@@ -405,7 +408,7 @@ class Jobs(commands.Cog):
     @jobs.command(name="search")
     @app_commands.describe(query="The name of the job to look for")
     async def search(
-        self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Search for jobs that are available. These must be listed in order to show up"""
         if len(query) < 3:
@@ -428,7 +431,7 @@ class Jobs(commands.Cog):
     @app_commands.describe(name="The name of the item that the job outputs")
     async def associate_item(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         name: Annotated[str, commands.clean_content],
         *,
         flags: JobOutputFlags,

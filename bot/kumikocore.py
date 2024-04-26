@@ -6,7 +6,7 @@ from typing import Union
 import asyncpg
 import discord
 from aiohttp import ClientSession
-from Cogs import EXTENSIONS, VERSION
+from cogs import EXTENSIONS, VERSION
 from discord.ext import commands, ipcx
 from libs.errors import send_error_embed
 from libs.utils import (

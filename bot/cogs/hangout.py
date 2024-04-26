@@ -8,6 +8,11 @@ from libs.ui.redirects import ConfirmResolvedView
 
 NOELLE_HANGOUT_HELP_CHANNEL_ID = 1145900494284402750
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class Hangout(commands.Cog):
     """Noelle's Hangout commands (exclusive for that guild lol)"""
@@ -15,7 +20,7 @@ class Hangout(commands.Cog):
     def __init__(self, bot: KumikoCore) -> None:
         self.bot = bot
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
+    async def cog_check(self, ctx: KContext) -> bool:
         return (
             isinstance(ctx.channel, discord.Thread)
             and ctx.channel.parent_id == NOELLE_HANGOUT_HELP_CHANNEL_ID
@@ -27,7 +32,7 @@ class Hangout(commands.Cog):
 
     @commands.cooldown(1, 20, commands.BucketType.channel)
     @commands.command(name="solved", aliases=["is_solved"])
-    async def solved(self, ctx: commands.Context) -> None:
+    async def solved(self, ctx: KContext) -> None:
         """Marks a thread as completed"""
 
         channel = ctx.channel
@@ -75,7 +80,7 @@ class Hangout(commands.Cog):
             pass
 
     @solved.error
-    async def on_solved_error(self, ctx: commands.Context, error: Exception):
+    async def on_solved_error(self, ctx: KContext, error: Exception):
         if isinstance(error, commands.CommandOnCooldown):
             await ctx.send(
                 f"This command is on cooldown. Try again in {error.retry_after:.2f}s"

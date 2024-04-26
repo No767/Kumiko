@@ -1,11 +1,13 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.cog_utils.auctions import create_auction
 from libs.cog_utils.economy import refund_item
 from libs.utils import KumikoModal
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class UserInvAHListModal(KumikoModal, title="List an item for auction"):
@@ -15,7 +17,7 @@ class UserInvAHListModal(KumikoModal, title="List an item for auction"):
 
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         max_amount: Optional[int],
         item_id: int,
         pool: asyncpg.Pool,
@@ -53,7 +55,7 @@ class UserInvRefundModal(KumikoModal, title="Refund an item"):
 
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         max_amount: Optional[int],
         item_id: int,
         pool: asyncpg.Pool,

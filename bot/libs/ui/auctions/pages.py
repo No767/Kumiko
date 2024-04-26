@@ -1,7 +1,6 @@
-from typing import List
+from typing import TYPE_CHECKING, List
 
 import asyncpg
-from discord.ext import commands
 from libs.utils.pages import EmbedListSource, KumikoPages
 
 from .base_pages import AuctionItemSearchBasePages, OwnedAuctionItemBasePages
@@ -14,11 +13,12 @@ from .utils import (
     OwnedAuctionItemPageEntry,
 )
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class AuctionPages(KumikoPages):
-    def __init__(
-        self, entries: List[AuctionItem], *, ctx: commands.Context, per_page: int = 1
-    ):
+    def __init__(self, entries: List[AuctionItem], *, ctx: KContext, per_page: int = 1):
         converted = [AuctionItemPageEntry(entry).to_dict() for entry in entries]
         super().__init__(EmbedListSource(converted, per_page=per_page), ctx=ctx)
 
@@ -28,7 +28,7 @@ class OwnedAuctionPages(OwnedAuctionItemBasePages):
         self,
         entries: List[OwnedAuctionItem],
         *,
-        ctx: commands.Context,
+        ctx: KContext,
         per_page: int = 1,
         pool: asyncpg.Pool
     ):
@@ -38,11 +38,7 @@ class OwnedAuctionPages(OwnedAuctionItemBasePages):
 
 class AuctionSearchPages(AuctionItemSearchBasePages):
     def __init__(
-        self,
-        entries: List[CompactAuctionItem],
-        *,
-        ctx: commands.Context,
-        per_page: int = 10
+        self, entries: List[CompactAuctionItem], *, ctx: KContext, per_page: int = 10
     ):
         converted = [AuctionItemCompactPageEntry(entry) for entry in entries]
         super().__init__(converted, per_page=per_page, ctx=ctx)

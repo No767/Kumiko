@@ -1,13 +1,17 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
 
 from .selects import SelectPrideCategory
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class ConfirmRegisterView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool) -> None:
         super().__init__(ctx)
         self.pool = pool
 
@@ -56,7 +60,7 @@ class ConfirmRegisterView(KumikoView):
 
 
 class ConfigureView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool) -> None:
         super().__init__(ctx)
         self.add_item(SelectPrideCategory(ctx, pool))
 
@@ -70,7 +74,7 @@ class ConfigureView(KumikoView):
 
 
 class DeleteProfileView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool) -> None:
         super().__init__(ctx)
         self.pool = pool
 

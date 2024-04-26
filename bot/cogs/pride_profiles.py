@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -11,6 +13,9 @@ from libs.ui.pride_profiles import (
     PrideProfileStatsPages,
 )
 from libs.utils import ConfirmEmbed, Embed
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class PrideProfiles(commands.Cog, name="Pride Profiles"):
@@ -30,7 +35,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
     @commands.hybrid_group(name="pride-profiles", fallback="info")
     @app_commands.describe(user="The user to look for")
     async def pride_profiles(
-        self, ctx: commands.Context, user: discord.User = commands.Author
+        self, ctx: KContext, user: discord.User = commands.Author
     ) -> None:
         """Look at a pride profile"""
         ...
@@ -59,7 +64,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
             await ctx.send(embed=embed)
 
     @pride_profiles.command(name="register")
-    async def register(self, ctx: commands.Context) -> None:
+    async def register(self, ctx: KContext) -> None:
         """Register a pride profile"""
         view = ConfirmRegisterView(ctx, self.pool)
         embed = ConfirmEmbed()
@@ -67,7 +72,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
         await ctx.send(embed=embed, view=view, ephemeral=True)
 
     @pride_profiles.command(name="configure", aliases=["config"])
-    async def configure(self, ctx: commands.Context) -> None:
+    async def configure(self, ctx: KContext) -> None:
         """Configure your pride profile"""
         view = ConfigureView(ctx, self.pool)
         embed = Embed(title="Configuring your pride profile")
@@ -75,7 +80,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
         await ctx.send(embed=embed, view=view, ephemeral=True)
 
     @pride_profiles.command(name="top")
-    async def top(self, ctx: commands.Context) -> None:
+    async def top(self, ctx: KContext) -> None:
         """Gets the top 100 most viewed profiles globally"""
         query = """
         SELECT id, name, views
@@ -92,7 +97,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
 
     @pride_profiles.command(name="search")
     @app_commands.describe(name="The preferred name to search")
-    async def search(self, ctx: commands.Context, name: str) -> None:
+    async def search(self, ctx: KContext, name: str) -> None:
         """Searches for a profile using the given name"""
 
         query = """
@@ -110,7 +115,7 @@ class PrideProfiles(commands.Cog, name="Pride Profiles"):
             await ctx.send("No names were found.")
 
     @pride_profiles.command(name="delete")
-    async def delete(self, ctx: commands.Context) -> None:
+    async def delete(self, ctx: KContext) -> None:
         """Permanently deletes your pride profile"""
         view = DeleteProfileView(ctx, self.pool)
         embed = ConfirmEmbed()

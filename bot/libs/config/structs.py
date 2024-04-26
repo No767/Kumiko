@@ -12,6 +12,7 @@ class GuildConfig(msgspec.Struct):
     local_economy: bool = False
     pins: bool = True
     voice_summary: bool = False
+    redirects: bool = True
 
 
 class FullGuildConfig(msgspec.Struct):

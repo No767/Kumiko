@@ -1,14 +1,18 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.cog_utils.jobs import create_job_output_item, update_job
 from libs.utils import KumikoModal
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class CreateJob(KumikoModal, title="Create Job"):
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         pool: asyncpg.pool.Pool,
         required_rank: int,
         pay: int,
@@ -76,7 +80,7 @@ class CreateJob(KumikoModal, title="Create Job"):
 class UpdateJobModal(KumikoModal, title="Update Job"):
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         pool: asyncpg.pool.Pool,
         name: str,
         required_rank: int,
@@ -113,7 +117,7 @@ class UpdateJobModal(KumikoModal, title="Update Job"):
 class CreateJobOutputItemModal(KumikoModal, title="Create Output Item"):
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         pool: asyncpg.Pool,
         name: str,
         price: int,

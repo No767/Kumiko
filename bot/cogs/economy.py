@@ -1,9 +1,14 @@
+from typing import TYPE_CHECKING
+
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
 from libs.cog_utils.economy import RefundFlags, check_economy_enabled
 from libs.ui.economy import LeaderboardPages, RegisterView, UserInvPages
 from libs.utils import ConfirmEmbed, Embed
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class Economy(commands.Cog):
@@ -26,16 +31,16 @@ class Economy(commands.Cog):
     def configurable(self) -> bool:
         return True
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
+    async def cog_check(self, ctx: KContext) -> bool:
         return await check_economy_enabled(ctx)
 
     @commands.hybrid_group(name="eco", aliases=["economy"])
-    async def eco(self, ctx: commands.Context) -> None:
+    async def eco(self, ctx: KContext) -> None:
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @eco.command(name="wallet", aliases=["bal", "balance"])
-    async def wallet(self, ctx: commands.Context) -> None:
+    async def wallet(self, ctx: KContext) -> None:
         """View your eco wallet"""
         sql = """
         SELECT rank, petals, created_at
@@ -61,7 +66,7 @@ class Economy(commands.Cog):
         await ctx.send(embed=embed)
 
     @eco.command(name="register")
-    async def register(self, ctx: commands.Context) -> None:
+    async def register(self, ctx: KContext) -> None:
         """Register for an economy account"""
         view = RegisterView(ctx, self.pool)
         embed = ConfirmEmbed()
@@ -69,7 +74,7 @@ class Economy(commands.Cog):
         await ctx.send(embed=embed, view=view)
 
     @eco.command(name="inventory", aliases=["inv"])
-    async def inventory(self, ctx: commands.Context) -> None:
+    async def inventory(self, ctx: KContext) -> None:
         """View your inventory"""
         query = """
         SELECT eco_item.id, eco_item.name, eco_item.description, eco_item.price, user_inv.amount_owned, eco_item.producer_id
@@ -86,7 +91,7 @@ class Economy(commands.Cog):
         await pages.start()
 
     @eco.command(name="top", aliases=["baltop"])
-    async def top(self, ctx: commands.Context) -> None:
+    async def top(self, ctx: KContext) -> None:
         """View the top players in your server"""
         query = """
         SELECT id, rank, petals
@@ -103,7 +108,7 @@ class Economy(commands.Cog):
         await pages.start()
 
     @eco.command(name="refund", aliases=["return"])
-    async def refund(self, ctx: commands.Context, *, flags: RefundFlags) -> None:
+    async def refund(self, ctx: KContext, *, flags: RefundFlags) -> None:
         """Refunds your item, but you will only get 75% of the original price back"""
         sql = """
         SELECT eco_item.name, eco_item.price, user_inv.owner_id, user_inv.amount_owned, user_inv.item_id

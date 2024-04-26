@@ -1,12 +1,16 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 
 from .modals import EditProfileModal
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class SelectPrideCategory(discord.ui.Select):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool) -> None:
         options = [
             discord.SelectOption(label="Name", value="name"),
             discord.SelectOption(label="Pronouns", value="pronouns"),

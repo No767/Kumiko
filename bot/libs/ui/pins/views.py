@@ -1,11 +1,15 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class DeletePinView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool, name: str):
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool, name: str):
         super().__init__(ctx)
         self.pool = pool
         self.name = name
@@ -67,7 +71,7 @@ class DeletePinView(KumikoView):
 
 
 class PurgePinView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool):
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool):
         super().__init__(ctx)
         self.pool = pool
 

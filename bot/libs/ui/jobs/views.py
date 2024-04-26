@@ -1,13 +1,15 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.utils import ErrorEmbed, KumikoView, MessageConstants, SuccessEmbed
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class DeleteJobView(KumikoView):
-    def __init__(
-        self, ctx: commands.Context, pool: asyncpg.pool.Pool, job_name: str
-    ) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.pool.Pool, job_name: str) -> None:
         super().__init__(ctx)
         self.pool: asyncpg.pool.Pool = pool
         self.job_name = job_name
@@ -55,9 +57,7 @@ class DeleteJobView(KumikoView):
 
 
 class DeleteJobViaIDView(KumikoView):
-    def __init__(
-        self, ctx: commands.Context, pool: asyncpg.pool.Pool, job_id: int
-    ) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.pool.Pool, job_id: int) -> None:
         super().__init__(ctx)
         self.pool: asyncpg.pool.Pool = pool
         self.job_id = job_id
@@ -105,7 +105,7 @@ class DeleteJobViaIDView(KumikoView):
 
 
 class PurgeJobsView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.pool.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.pool.Pool) -> None:
         super().__init__(ctx)
         self.pool: asyncpg.pool.Pool = pool
 

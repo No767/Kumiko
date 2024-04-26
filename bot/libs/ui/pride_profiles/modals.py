@@ -1,14 +1,16 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.cog_utils.pride_profiles import snake_case_to_title
 from libs.utils import KumikoModal
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class EditProfileModal(KumikoModal, title="Edit Profile"):
-    def __init__(
-        self, ctx: commands.Context, profile_type: str, pool: asyncpg.Pool
-    ) -> None:
+    def __init__(self, ctx: KContext, profile_type: str, pool: asyncpg.Pool) -> None:
         super().__init__(ctx)
         self.pool = pool
         self.profile_type = profile_type

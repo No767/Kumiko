@@ -3,22 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from discord.ext import commands
 from libs.config import GuildCacheHandler, GuildConfig
 from libs.utils import Embed, KumikoView
 
 from .utils import determine_status, format_conf_desc
 
 if TYPE_CHECKING:
-    from Bot.Cogs.config import Config
+    from libs.utils.context import KContext
 
+    from bot.cogs.config import Config
     from bot.kumikocore import KumikoCore
 
 
 class ConfigMenu(discord.ui.Select):
-    def __init__(
-        self, bot: KumikoCore, ctx: commands.Context, config_cog: Config
-    ) -> None:
+    def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
         self.bot = bot
         self.ctx = ctx
         self.config_cog = config_cog
@@ -59,7 +57,7 @@ class ConfigMenu(discord.ui.Select):
 
 
 class ToggleCacheView(KumikoView):
-    def __init__(self, ctx: commands.Context, config_cog: Config, value: str):
+    def __init__(self, ctx: KContext, config_cog: Config, value: str):
         super().__init__(ctx)
         self.ctx = ctx
         self.config_cog = config_cog
@@ -141,9 +139,7 @@ class ToggleCacheView(KumikoView):
 
 
 class ConfigMenuView(KumikoView):
-    def __init__(
-        self, bot: KumikoCore, ctx: commands.Context, config_cog: Config
-    ) -> None:
+    def __init__(self, bot: KumikoCore, ctx: KContext, config_cog: Config) -> None:
         super().__init__(ctx)
         self.config_cog = config_cog
         self.pool = bot.pool

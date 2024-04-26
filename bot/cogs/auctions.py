@@ -1,4 +1,5 @@
 import datetime
+from typing import TYPE_CHECKING
 
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
@@ -18,6 +19,9 @@ from libs.ui.auctions import AuctionPages, AuctionSearchPages, OwnedAuctionPages
 from libs.utils import Embed, MessageConstants
 from typing_extensions import Annotated
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class Auctions(commands.Cog):
     """List unwanted items away here"""
@@ -30,13 +34,13 @@ class Auctions(commands.Cog):
     def display_emoji(self) -> PartialEmoji:
         return PartialEmoji.from_str("<:auction_house:1136906394323398749>")
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
+    async def cog_check(self, ctx: KContext) -> bool:
         return await check_economy_enabled(ctx)
 
     @commands.hybrid_group(
         name="auctions", fallback="view", aliases=["auction-house", "ah"]
     )
-    async def auctions(self, ctx: commands.Context) -> None:
+    async def auctions(self, ctx: KContext) -> None:
         """List the items available for purchase"""
         sql = """
         SELECT eco_item.id, eco_item.name, eco_item.description, auction_house.user_id, auction_house.amount_listed, auction_house.listed_price, auction_house.listed_at
@@ -60,7 +64,7 @@ class Auctions(commands.Cog):
     @app_commands.describe(name="The name of the item to list for purchase")
     async def create(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         name: Annotated[str, commands.clean_content],
         *,
         flags: ListingFlag,
@@ -82,7 +86,7 @@ class Auctions(commands.Cog):
     @auctions.command(name="delete", aliases=["remove"])
     @app_commands.describe(name="The name of the item to list for removal")
     async def delete(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """List the items available for purchase"""
         if ctx.guild is None:
@@ -100,7 +104,7 @@ class Auctions(commands.Cog):
     @app_commands.describe(name="The name of the item you want to update")
     async def update(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         name: Annotated[str, commands.clean_content],
         *,
         flags: ListingFlag,
@@ -119,7 +123,7 @@ class Auctions(commands.Cog):
         await ctx.send(status)
 
     @auctions.command(name="owned")
-    async def owned(self, ctx: commands.Context) -> None:
+    async def owned(self, ctx: KContext) -> None:
         """Get items listed by you"""
         sql = """
         SELECT eco_item.id, eco_item.name, eco_item.description, auction_house.amount_listed, auction_house.listed_price, auction_house.listed_at
@@ -137,7 +141,7 @@ class Auctions(commands.Cog):
 
     @auctions.command(name="search")
     async def search(
-        self, ctx: commands.Context, *, query: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, query: Annotated[str, commands.clean_content]
     ) -> None:
         """Searches for the item listed in the Auction House"""
         sql = """
@@ -163,7 +167,7 @@ class Auctions(commands.Cog):
     @auctions.command(name="info")
     @app_commands.describe(name="The name of the item to look at")
     async def info(
-        self, ctx: commands.Context, *, name: Annotated[str, commands.clean_content]
+        self, ctx: KContext, *, name: Annotated[str, commands.clean_content]
     ) -> None:
         """Provides info about the given item"""
         if ctx.guild is None:
@@ -192,7 +196,7 @@ class Auctions(commands.Cog):
     @app_commands.describe(name="The name of the item to purchase")
     async def buy(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         name: Annotated[str, commands.clean_content],
         *,
         flags: PurchasingFlag,

@@ -1,15 +1,17 @@
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
 
 from .modals import UserInvAHListModal, UserInvRefundModal
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class BasePages(KumikoPages):
-    def __init__(self, entries, *, ctx: commands.Context, per_page: int = 10):
+    def __init__(self, entries, *, ctx: KContext, per_page: int = 10):
         super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx)
         self.embed = discord.Embed(
             title="Leaderboard stats", colour=discord.Colour.from_rgb(219, 171, 255)
@@ -18,7 +20,7 @@ class BasePages(KumikoPages):
 
 class UserInvBasePages(KumikoPages):
     def __init__(
-        self, entries, *, ctx: commands.Context, per_page: int = 1, pool: asyncpg.Pool
+        self, entries, *, ctx: KContext, per_page: int = 1, pool: asyncpg.Pool
     ):
         super().__init__(
             EmbedListSource(entries, per_page=per_page), ctx=ctx, compact=True
@@ -49,7 +51,7 @@ class UserInvBasePages(KumikoPages):
         item_id = int(page_data["fields"][0]["value"])
         curr_amount = int(page_data["fields"][-1]["value"])
         await interaction.response.send_modal(
-            UserInvAHListModal(self.ctx, curr_amount, item_id, self.pool)
+            UserInvAHListModal(self.ctx, curr_amount, item_id, self.pool)  # type: ignore
         )
 
     @discord.ui.button(
@@ -65,5 +67,5 @@ class UserInvBasePages(KumikoPages):
         item_id = int(page_data["fields"][0]["value"])
         curr_amount = int(page_data["fields"][-1]["value"])
         await interaction.response.send_modal(
-            UserInvRefundModal(self.ctx, curr_amount, item_id, self.pool)
+            UserInvRefundModal(self.ctx, curr_amount, item_id, self.pool)  # type: ignore
         )

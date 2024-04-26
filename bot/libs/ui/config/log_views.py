@@ -9,8 +9,7 @@ from libs.utils import KContext, KumikoView
 from .utils import determine_status, format_desc
 
 if TYPE_CHECKING:
-    from Bot.Cogs.config import Config
-
+    from bot.cogs.config import Config
     from bot.kumikocore import KumikoCore
 
 

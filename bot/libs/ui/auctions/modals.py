@@ -1,10 +1,12 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.cog_utils.auctions import add_more_to_auction
 from libs.utils import KumikoModal
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class OwnedAuctionItemAdd(KumikoModal, title="Add more"):
@@ -14,7 +16,7 @@ class OwnedAuctionItemAdd(KumikoModal, title="Add more"):
 
     def __init__(
         self,
-        ctx: commands.Context,
+        ctx: KContext,
         max_amount: Optional[int],
         item_id: int,
         pool: asyncpg.Pool,

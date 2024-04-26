@@ -1,7 +1,7 @@
 from typing import Literal, Optional
 
 import discord
-from Cogs import EXTENSIONS
+from cogs import EXTENSIONS
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
 from kumikocore import KumikoCore

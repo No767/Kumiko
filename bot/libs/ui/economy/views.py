@@ -1,11 +1,15 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.utils import Embed, KumikoView, SuccessEmbed
+
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
 
 
 class RegisterView(KumikoView):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool) -> None:
         super().__init__(ctx)
         self.pool = pool
 

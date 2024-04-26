@@ -11,6 +11,7 @@ from discord.utils import format_dt, oauth_url
 from kumikocore import KumikoCore
 from libs.utils import Embed, human_timedelta, is_docker
 from psutil._common import bytes2human
+from pygit2.enums import SortMode
 
 
 class Meta(commands.Cog):
@@ -46,9 +47,7 @@ class Meta(commands.Cog):
     def get_last_commits(self, count: int = 10):
         repo = pygit2.Repository(".git")
         commits = list(
-            itertools.islice(
-                repo.walk(repo.head.target, pygit2.GIT_SORT_TOPOLOGICAL), count
-            )
+            itertools.islice(repo.walk(repo.head.target, SortMode.TOPOLOGICAL), count)
         )
         return "\n".join(self.format_commit(c) for c in commits)
 

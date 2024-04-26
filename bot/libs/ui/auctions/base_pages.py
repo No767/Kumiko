@@ -1,17 +1,19 @@
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.cog_utils.auctions import delete_auction
 from libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
 
 from .modals import OwnedAuctionItemAdd
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class OwnedAuctionItemBasePages(KumikoPages):
     def __init__(
-        self, entries, *, ctx: commands.Context, pool: asyncpg.Pool, per_page: int = 1
+        self, entries, *, ctx: KContext, pool: asyncpg.Pool, per_page: int = 1
     ):
         super().__init__(
             EmbedListSource(entries, per_page=per_page), ctx=ctx, compact=True
@@ -38,7 +40,7 @@ class OwnedAuctionItemBasePages(KumikoPages):
         item_id = int(page_data["fields"][-1]["value"])
         curr_amount = int(page_data["fields"][3]["value"])
         await interaction.response.send_modal(
-            OwnedAuctionItemAdd(self.ctx, curr_amount, item_id, self.pool)
+            OwnedAuctionItemAdd(self.ctx, curr_amount, item_id, self.pool)  # type: ignore
         )
 
     @discord.ui.button(
@@ -63,7 +65,7 @@ class OwnedAuctionItemBasePages(KumikoPages):
 
 
 class AuctionItemSearchBasePages(KumikoPages):
-    def __init__(self, entries, *, ctx: commands.Context, per_page: int = 10):
+    def __init__(self, entries, *, ctx: KContext, per_page: int = 10):
         super().__init__(SimplePageSource(entries, per_page=per_page), ctx=ctx)
         self.embed = discord.Embed(
             title="Results", colour=discord.Colour.from_rgb(219, 171, 255)

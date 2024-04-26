@@ -1,12 +1,16 @@
+from typing import TYPE_CHECKING
+
 import asyncpg
 import discord
-from discord.ext import commands
 from libs.cog_utils.pins import edit_pin
 from libs.utils import KumikoModal
 
+if TYPE_CHECKING:
+    from libs.utils.context import KContext
+
 
 class CreatePin(KumikoModal, title="Create Pin"):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.pool.Pool) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.pool.Pool) -> None:
         super().__init__(ctx)
         self.pool: asyncpg.Pool = pool
         self.name = discord.ui.TextInput(
@@ -63,7 +67,7 @@ class CreatePin(KumikoModal, title="Create Pin"):
 
 
 class PinEditModal(KumikoModal, title="Edit Pin"):
-    def __init__(self, ctx: commands.Context, pool: asyncpg.Pool, name: str) -> None:
+    def __init__(self, ctx: KContext, pool: asyncpg.Pool, name: str) -> None:
         super().__init__(ctx)
         self.pool: asyncpg.Pool = pool
         self.name = name
