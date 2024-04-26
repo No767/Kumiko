@@ -1,11 +1,9 @@
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 import discord
 from libs.cog_utils.redirects import mark_as_resolved
 from libs.utils import KumikoView
-
-if TYPE_CHECKING:
-    from libs.utils.context import KContext
+from libs.utils.context import KContext
 
 
 class ConfirmResolvedView(KumikoView):

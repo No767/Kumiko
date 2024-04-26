@@ -54,8 +54,8 @@ class KumikoCore(commands.Bot):
         self.default_prefix = ">"
         self.ipc = ipcx.Server(
             self,
-            host=config["kumiko"]["ipc"]["host"],
-            secret_key=config["kumiko"]["ipc"]["secret"],
+            host=config["postgres_uri"],
+            secret_key=config["postgres_uri"],
         )
         self.logger: logging.Logger = logging.getLogger("kumiko")
         self.pool = pool

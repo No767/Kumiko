@@ -1,4 +1,5 @@
 import asyncio
+from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
@@ -7,8 +8,6 @@ from libs.cog_utils.redirects import can_close_threads, mark_as_resolved
 from libs.ui.redirects import ConfirmResolvedView
 
 NOELLE_HANGOUT_HELP_CHANNEL_ID = 1145900494284402750
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from libs.utils.context import KContext
