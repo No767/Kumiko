@@ -5,9 +5,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.config import ConfigMenuView, LGCView
-from Libs.utils import Embed, GuildContext, WebhookDispatcher, is_manager
-from Libs.utils.prefix import get_prefix
+from libs.ui.config import ConfigMenuView, LGCView
+from libs.utils import Embed, GuildContext, WebhookDispatcher, is_manager
+from libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
 
 

@@ -5,7 +5,7 @@ path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
 import pytest
-from Libs.cache import KumikoCPManager
+from libs.cache import KumikoCPManager
 from redis.asyncio.connection import ConnectionPool
 
 REDIS_URI = "redis://localhost:6379/0"

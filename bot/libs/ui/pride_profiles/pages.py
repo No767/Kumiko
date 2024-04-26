@@ -2,7 +2,7 @@ from typing import List
 
 import discord
 from discord.ext import commands
-from Libs.utils.pages import KumikoPages, SimplePageSource
+from libs.utils.pages import KumikoPages, SimplePageSource
 
 from .structs import SimplePrideProfileEntry, SimpleViewsEntry
 from .utils import SimplePrideProfilesPageEntry, ViewsPrideProfilesPageEntry

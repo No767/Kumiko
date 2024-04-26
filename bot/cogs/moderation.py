@@ -4,8 +4,8 @@ import discord
 from discord import Enum, PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.moderation.flags import BanFlags, KickFlags, TimeoutFlags
-from Libs.utils import Embed, MessageConstants, is_mod
+from libs.cog_utils.moderation.flags import BanFlags, KickFlags, TimeoutFlags
+from libs.utils import Embed, MessageConstants, is_mod
 
 
 class PunishmentEnum(Enum):

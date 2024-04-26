@@ -9,7 +9,7 @@ import pygit2
 from discord.ext import commands
 from discord.utils import format_dt, oauth_url
 from kumikocore import KumikoCore
-from Libs.utils import Embed, human_timedelta, is_docker
+from libs.utils import Embed, human_timedelta, is_docker
 from psutil._common import bytes2human
 
 

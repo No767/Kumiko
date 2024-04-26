@@ -15,7 +15,7 @@ from .structs import Timer, TimeZone
 from .utils import MaybeAcquireConnection
 
 if TYPE_CHECKING:
-    from Bot.kumikocore import KumikoCore
+    from bot.kumikocore import KumikoCore
 
 
 class TimerScheduler:

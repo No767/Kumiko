@@ -5,8 +5,8 @@ import orjson
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.pronouns import parse_pronouns
-from Libs.ui.pronouns import (
+from libs.cog_utils.pronouns import parse_pronouns
+from libs.ui.pronouns import (
     PronounsInclusiveEntry,
     PronounsInclusivePages,
     PronounsNounsEntry,
@@ -19,7 +19,7 @@ from Libs.ui.pronouns import (
     PronounsValuesEntry,
     PronounsWordsEntry,
 )
-from Libs.utils import Embed
+from libs.utils import Embed
 from typing_extensions import Annotated
 from yarl import URL
 

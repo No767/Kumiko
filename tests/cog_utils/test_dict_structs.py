@@ -8,7 +8,7 @@ sys.path.append(str(path))
 
 load_dotenv()
 
-from Libs.ui.dictionary import (
+from libs.ui.dictionary import (
     EnglishDef,
     EnglishDictEntry,
     JapaneseDictEntry,

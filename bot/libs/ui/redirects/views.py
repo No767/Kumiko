@@ -2,8 +2,8 @@ from typing import Union
 
 import discord
 from discord.ext import commands
-from Libs.cog_utils.redirects import mark_as_resolved
-from Libs.utils import KumikoView
+from libs.cog_utils.redirects import mark_as_resolved
+from libs.utils import KumikoView
 
 
 class ConfirmResolvedView(KumikoView):

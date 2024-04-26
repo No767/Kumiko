@@ -2,7 +2,7 @@ from typing import List
 
 import discord
 from discord.ext import commands
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils.pages import EmbedListSource, KumikoPages
 
 from .structs import NekosImages
 from .utils import NekosImageEntry

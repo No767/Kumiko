@@ -5,13 +5,13 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.reddit import (
+from libs.ui.reddit import (
     RedditEntry,
     RedditMemeEntry,
     RedditMemePages,
     RedditPages,
 )
-from Libs.utils import GuildContext, parse_subreddit
+from libs.utils import GuildContext, parse_subreddit
 from yarl import URL
 
 

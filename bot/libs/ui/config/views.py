@@ -4,14 +4,15 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from Libs.config import GuildCacheHandler, GuildConfig
-from Libs.utils import Embed, KumikoView
+from libs.config import GuildCacheHandler, GuildConfig
+from libs.utils import Embed, KumikoView
 
 from .utils import determine_status, format_conf_desc
 
 if TYPE_CHECKING:
     from Bot.Cogs.config import Config
-    from Bot.kumikocore import KumikoCore
+
+    from bot.kumikocore import KumikoCore
 
 
 class ConfigMenu(discord.ui.Select):

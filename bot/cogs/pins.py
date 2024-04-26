@@ -7,7 +7,7 @@ import orjson
 from discord import File, Member, PartialEmoji, User, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.pins import (
+from libs.cog_utils.pins import (
     create_pin,
     edit_pin,
     format_options,
@@ -17,14 +17,14 @@ from Libs.cog_utils.pins import (
     get_pin_info,
     is_pins_enabled,
 )
-from Libs.ui.pins import (
+from libs.ui.pins import (
     CreatePin,
     DeletePinView,
     PinEditModal,
     PinPages,
     PurgePinView,
 )
-from Libs.utils import ConfirmEmbed, Embed, GuildContext
+from libs.utils import ConfirmEmbed, Embed, GuildContext
 from typing_extensions import Annotated
 
 

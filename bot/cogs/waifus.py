@@ -5,9 +5,9 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.waifus import NekoImagesPages, NekosImages
-from Libs.utils import Embed
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.ui.waifus import NekoImagesPages, NekosImages
+from libs.utils import Embed
+from libs.utils.pages import EmbedListSource, KumikoPages
 from yarl import URL
 
 

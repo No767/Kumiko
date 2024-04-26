@@ -2,15 +2,15 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.pride_profiles import present_info
-from Libs.ui.pride_profiles import (
+from libs.cog_utils.pride_profiles import present_info
+from libs.ui.pride_profiles import (
     ConfigureView,
     ConfirmRegisterView,
     DeleteProfileView,
     PrideProfileSearchPages,
     PrideProfileStatsPages,
 )
-from Libs.utils import ConfirmEmbed, Embed
+from libs.utils import ConfirmEmbed, Embed
 
 
 class PrideProfiles(commands.Cog, name="Pride Profiles"):

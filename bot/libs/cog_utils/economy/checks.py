@@ -1,6 +1,6 @@
 from discord.ext import commands
-from Libs.config import GuildCacheHandler
-from Libs.errors import EconomyDisabledError
+from libs.config import GuildCacheHandler
+from libs.errors import EconomyDisabledError
 
 
 async def check_economy_enabled(ctx: commands.Context) -> bool:

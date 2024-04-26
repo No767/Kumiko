@@ -1,7 +1,7 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import Embed, KumikoView, SuccessEmbed
+from libs.utils import Embed, KumikoView, SuccessEmbed
 
 
 class RegisterView(KumikoView):

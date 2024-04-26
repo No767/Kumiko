@@ -2,7 +2,7 @@ from typing import Dict, List
 
 import discord
 from discord.ext import commands
-from Libs.utils.pages import KumikoPages, SimplePageSource
+from libs.utils.pages import KumikoPages, SimplePageSource
 
 from .page_entries import BlacklistPageEntry
 

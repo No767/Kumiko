@@ -7,7 +7,7 @@ from redis.asyncio.connection import ConnectionPool
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.utils import ensure_redis_conn
+from libs.utils import ensure_redis_conn
 
 
 @pytest.mark.asyncio

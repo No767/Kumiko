@@ -2,7 +2,7 @@ from typing import List
 
 import asyncpg
 from discord.ext import commands
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils.pages import EmbedListSource, KumikoPages
 
 from .base_pages import AuctionItemSearchBasePages, OwnedAuctionItemBasePages
 from .utils import (

@@ -4,7 +4,7 @@ import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.redirects import (
+from libs.cog_utils.redirects import (
     can_close_threads,
     check_redirects_enabled,
     check_redirects_menu,
@@ -12,8 +12,8 @@ from Libs.cog_utils.redirects import (
     is_thread,
     mark_as_resolved,
 )
-from Libs.ui.redirects import ConfirmResolvedView
-from Libs.utils import ErrorEmbed, GuildContext
+from libs.ui.redirects import ConfirmResolvedView
+from libs.utils import ErrorEmbed, GuildContext
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
 # Required Perms (from discord.Permission):

@@ -3,7 +3,7 @@ from typing import Any, Dict
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
+from libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
 
 from .modals import UserInvAHListModal, UserInvRefundModal
 

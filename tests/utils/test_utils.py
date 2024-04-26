@@ -7,7 +7,7 @@ import pytest
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.utils import is_docker, parse_datetime, parse_dt, produce_error_embed
+from libs.utils import is_docker, parse_datetime, parse_dt, produce_error_embed
 
 
 def test_is_docker():

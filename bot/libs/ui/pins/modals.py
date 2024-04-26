@@ -1,8 +1,8 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cog_utils.pins import edit_pin
-from Libs.utils import KumikoModal
+from libs.cog_utils.pins import edit_pin
+from libs.utils import KumikoModal
 
 
 class CreatePin(KumikoModal, title="Create Pin"):

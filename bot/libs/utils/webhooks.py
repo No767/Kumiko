@@ -7,7 +7,7 @@ import msgspec
 from async_lru import alru_cache
 
 if TYPE_CHECKING:
-    from Bot.kumikocore import KumikoCore
+    from bot.kumikocore import KumikoCore
 
 
 class GuildWebhookConfig(msgspec.Struct):

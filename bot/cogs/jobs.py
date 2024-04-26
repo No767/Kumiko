@@ -5,8 +5,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import check_economy_enabled
-from Libs.cog_utils.jobs import (
+from libs.cog_utils.economy import check_economy_enabled
+from libs.cog_utils.jobs import (
     JobListFlags,
     JobOutputFlags,
     create_job,
@@ -16,7 +16,7 @@ from Libs.cog_utils.jobs import (
     submit_job_app,
     update_job,
 )
-from Libs.ui.jobs import (
+from libs.ui.jobs import (
     CreateJob,
     CreateJobOutputItemModal,
     DeleteJobViaIDView,
@@ -25,8 +25,8 @@ from Libs.ui.jobs import (
     PurgeJobsView,
     UpdateJobModal,
 )
-from Libs.utils import ConfirmEmbed, Embed, MessageConstants
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils import ConfirmEmbed, Embed, MessageConstants
+from libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 
 

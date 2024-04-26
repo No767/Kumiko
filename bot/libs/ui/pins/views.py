@@ -1,7 +1,7 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
+from libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
 
 
 class DeletePinView(KumikoView):

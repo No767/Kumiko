@@ -3,8 +3,8 @@ from typing import Optional
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cog_utils.auctions import add_more_to_auction
-from Libs.utils import KumikoModal
+from libs.cog_utils.auctions import add_more_to_auction
+from libs.utils import KumikoModal
 
 
 class OwnedAuctionItemAdd(KumikoModal, title="Add more"):

@@ -3,14 +3,15 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import discord
-from Libs.config.cache import GuildCacheHandler, LoggingGuildConfig
-from Libs.utils import KContext, KumikoView
+from libs.config.cache import GuildCacheHandler, LoggingGuildConfig
+from libs.utils import KContext, KumikoView
 
 from .utils import determine_status, format_desc
 
 if TYPE_CHECKING:
     from Bot.Cogs.config import Config
-    from Bot.kumikocore import KumikoCore
+
+    from bot.kumikocore import KumikoCore
 
 
 class LoggingConfigMenu(discord.ui.Select):

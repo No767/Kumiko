@@ -2,7 +2,7 @@ import logging
 
 from discord.ext import commands, tasks
 from kumikocore import KumikoCore
-from Libs.utils import calc_rank
+from libs.utils import calc_rank
 
 
 class Tasks(commands.Cog, command_attrs=dict(hidden=True)):

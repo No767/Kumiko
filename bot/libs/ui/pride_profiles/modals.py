@@ -1,8 +1,8 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cog_utils.pride_profiles import snake_case_to_title
-from Libs.utils import KumikoModal
+from libs.cog_utils.pride_profiles import snake_case_to_title
+from libs.utils import KumikoModal
 
 
 class EditProfileModal(KumikoModal, title="Edit Profile"):

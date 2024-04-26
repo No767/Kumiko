@@ -3,8 +3,8 @@ from typing import Literal
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.blacklist import BlacklistPages
-from Libs.utils.blacklist import BlacklistEntityType, get_blacklist
+from libs.ui.blacklist import BlacklistPages
+from libs.utils.blacklist import BlacklistEntityType, get_blacklist
 
 DONE_MSG = "Done."
 NO_HANGOUT_BLOCK = "Can't block these servers"

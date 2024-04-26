@@ -8,11 +8,12 @@ from redis.asyncio.connection import ConnectionPool
 path = Path(__file__).parents[2].joinpath("Bot")
 sys.path.append(str(path))
 
-from Libs.cache import KumikoCache, command_key_builder
+from libs.cache import KumikoCache, command_key_builder
 
 DATA = "Hello World"
 DICT_DATA = {"message": DATA}
 OTHER_DATA = {"no": "yes"}
+FULL_DATA = {"message": DATA, "testing": "no"}
 
 REDIS_URI = "redis://localhost:6379/0"
 
@@ -78,7 +79,6 @@ async def test_merge_json_cache_no_ttl():
 
 @pytest.mark.asyncio
 async def test_merge_json_cache_with_ttl():
-    FULL_DATA = {"message": DATA, "testing": "no"}
     key = "cache:21342342523423424:cache"
     cache = KumikoCache(connection_pool=ConnectionPool().from_url(REDIS_URI))
     await cache.merge_json_cache(key=key, path="$", value=DICT_DATA, ttl=60)

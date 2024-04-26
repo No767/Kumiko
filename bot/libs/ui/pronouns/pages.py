@@ -2,7 +2,7 @@ from typing import List, Optional, TypedDict, Union
 
 import discord
 from discord.ext.commands import Context
-from Libs.utils.pages import EmbedListSource, KumikoPages
+from libs.utils.pages import EmbedListSource, KumikoPages
 
 from .embed_entries import (
     PronounsInclusiveEmbedEntry,

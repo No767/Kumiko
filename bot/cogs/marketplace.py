@@ -2,14 +2,14 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import PurchaseFlags, check_economy_enabled
-from Libs.cog_utils.marketplace import (
+from libs.cog_utils.economy import PurchaseFlags, check_economy_enabled
+from libs.cog_utils.marketplace import (
     format_item_options,
     get_item,
     is_payment_valid,
 )
-from Libs.ui.marketplace import ItemPages, SimpleSearchItemPages
-from Libs.utils import Embed, GuildContext, KContext
+from libs.ui.marketplace import ItemPages, SimpleSearchItemPages
+from libs.utils import Embed, GuildContext, KContext
 from typing_extensions import Annotated
 
 

@@ -3,8 +3,8 @@ from typing import Any, Dict
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cog_utils.auctions import delete_auction
-from Libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
+from libs.cog_utils.auctions import delete_auction
+from libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
 
 from .modals import OwnedAuctionItemAdd
 

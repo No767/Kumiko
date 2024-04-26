@@ -3,8 +3,8 @@ import asyncio
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.redirects import can_close_threads, mark_as_resolved
-from Libs.ui.redirects import ConfirmResolvedView
+from libs.cog_utils.redirects import can_close_threads, mark_as_resolved
+from libs.ui.redirects import ConfirmResolvedView
 
 NOELLE_HANGOUT_HELP_CHANNEL_ID = 1145900494284402750
 

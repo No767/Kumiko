@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import discord
 from discord.ext import commands, menus
-from Libs.utils.pages import KumikoPages
+from libs.utils.pages import KumikoPages
 
 from .message_constants import MessageConstants
 

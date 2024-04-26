@@ -3,7 +3,7 @@ import datetime
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.auctions import (
+from libs.cog_utils.auctions import (
     ListingFlag,
     PurchasingFlag,
     add_more_to_auction,
@@ -13,9 +13,9 @@ from Libs.cog_utils.auctions import (
     obtain_item_info,
     purchase_auction,
 )
-from Libs.cog_utils.economy import check_economy_enabled
-from Libs.ui.auctions import AuctionPages, AuctionSearchPages, OwnedAuctionPages
-from Libs.utils import Embed, MessageConstants
+from libs.cog_utils.economy import check_economy_enabled
+from libs.ui.auctions import AuctionPages, AuctionSearchPages, OwnedAuctionPages
+from libs.utils import Embed, MessageConstants
 from typing_extensions import Annotated
 
 

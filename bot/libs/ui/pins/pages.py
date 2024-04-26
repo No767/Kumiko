@@ -2,7 +2,7 @@ from typing import List, TypedDict
 
 import discord
 from discord.ext.commands import Context
-from Libs.utils.pages import KumikoPages, SimplePageSource
+from libs.utils.pages import KumikoPages, SimplePageSource
 
 
 class SimplePages(KumikoPages):

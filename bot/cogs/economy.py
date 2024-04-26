@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.cog_utils.economy import RefundFlags, check_economy_enabled
-from Libs.ui.economy import LeaderboardPages, RegisterView, UserInvPages
-from Libs.utils import ConfirmEmbed, Embed
+from libs.cog_utils.economy import RefundFlags, check_economy_enabled
+from libs.ui.economy import LeaderboardPages, RegisterView, UserInvPages
+from libs.utils import ConfirmEmbed, Embed
 
 
 class Economy(commands.Cog):

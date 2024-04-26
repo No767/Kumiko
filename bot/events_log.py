@@ -1,8 +1,8 @@
 from discord import PartialEmoji
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.events_log import RegisterView, UnregisterView
-from Libs.utils import ConfirmEmbed, Embed, is_manager
+from libs.ui.events_log import RegisterView, UnregisterView
+from libs.utils import ConfirmEmbed, Embed, is_manager
 
 
 class EventsLog(commands.Cog):

@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Libs.utils.pages import KumikoPages
+from libs.utils.pages import KumikoPages
 
 from .sources import EnglishDefinePageSource, JapaneseDefPageSource
 from .structs import (

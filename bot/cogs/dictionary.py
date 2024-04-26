@@ -2,8 +2,8 @@ import orjson
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from kumikocore import KumikoCore
-from Libs.ui.dictionary import DictPages, JapaneseDictPages
-from Libs.utils import GuildContext
+from libs.ui.dictionary import DictPages, JapaneseDictPages
+from libs.utils import GuildContext
 from typing_extensions import Annotated
 from yarl import URL
 

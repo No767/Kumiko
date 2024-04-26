@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from Libs.config import GuildCacheHandler
-from Libs.errors import RedirectsDisabledError
+from libs.config import GuildCacheHandler
+from libs.errors import RedirectsDisabledError
 
 if TYPE_CHECKING:
-    from Bot.kumikocore import KumikoCore
+    from bot.kumikocore import KumikoCore
 
 
 def check_if_thread(ctx: commands.Context):

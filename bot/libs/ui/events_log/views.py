@@ -1,10 +1,10 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cache import KumikoCache
-from Libs.cog_utils.events_log import disable_logging
-from Libs.config import LoggingGuildConfig
-from Libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
+from libs.cache import KumikoCache
+from libs.cog_utils.events_log import disable_logging
+from libs.config import LoggingGuildConfig
+from libs.utils import ErrorEmbed, KumikoView, SuccessEmbed
 from redis.asyncio.connection import ConnectionPool
 
 

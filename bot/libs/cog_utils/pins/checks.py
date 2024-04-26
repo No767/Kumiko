@@ -1,6 +1,6 @@
 from discord.ext import commands
-from Libs.config import GuildCacheHandler
-from Libs.errors import PinsDisabledError
+from libs.config import GuildCacheHandler
+from libs.errors import PinsDisabledError
 
 
 async def check_pin_enabled(ctx: commands.Context):

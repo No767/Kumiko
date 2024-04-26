@@ -8,7 +8,7 @@ from discord.app_commands import CommandTree
 from .message_constants import MessageConstants
 
 if TYPE_CHECKING:
-    from Bot.kumikocore import KumikoCore
+    from bot.kumikocore import KumikoCore
 
     from .blacklist import get_blacklist
 

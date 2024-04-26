@@ -1,7 +1,7 @@
 from typing import Dict, List, Union
 
 import asyncpg
-from Libs.cache import KumikoCache
+from libs.cache import KumikoCache
 from redis.asyncio.connection import ConnectionPool
 
 

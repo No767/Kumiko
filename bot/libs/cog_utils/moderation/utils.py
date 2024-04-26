@@ -2,8 +2,8 @@ import datetime
 
 from discord.ext import commands
 from discord.utils import utcnow
-from Libs.utils import parse_dt
-from Libs.utils.context import GuildContext
+from libs.utils import parse_dt
+from libs.utils.context import GuildContext
 
 # from typing import TYPE_CHECKING
 

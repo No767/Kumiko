@@ -1,8 +1,8 @@
 import asyncpg
 import discord
 from discord.ext import commands
-from Libs.cog_utils.jobs import create_job_output_item, update_job
-from Libs.utils import KumikoModal
+from libs.cog_utils.jobs import create_job_output_item, update_job
+from libs.utils import KumikoModal
 
 
 class CreateJob(KumikoModal, title="Create Job"):

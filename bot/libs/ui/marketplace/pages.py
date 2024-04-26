@@ -2,7 +2,7 @@ from typing import Any, Dict, List, TypedDict
 
 import discord
 from discord.ext.commands import Context
-from Libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
+from libs.utils.pages import EmbedListSource, KumikoPages, SimplePageSource
 
 
 class SimpleItemPages(KumikoPages):
