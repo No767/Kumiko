@@ -1,22 +1,20 @@
 import asyncio
 import logging
-import os
 from pathlib import Path
 
 import asyncpg
 from asyncpg_trek import Direction, execute, plan
 from asyncpg_trek.asyncpg import AsyncpgBackend
-from dotenv import load_dotenv
+from libs.utils.config import KumikoConfig
 
-ROOT_DIR = Path(__file__).parent
-MIGRATIONS_DIR = ROOT_DIR / "Migrations"
-ENV_PATH = ROOT_DIR / ".env"
+MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
-load_dotenv(dotenv_path=ENV_PATH)
+config_path = Path(__file__).parent / "config.yml"
+config = KumikoConfig(config_path)
 
+POSTGRES_URI = config["postgres"]["uri"]
+TARGET_REVISION = config["postgres"]["revision"]
 
-POSTGRES_URI = os.environ["POSTGRES_URI"]
-TARGET_REVISION = os.environ["TARGET_REVISION"]
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [Migrations] %(levelname)s\t%(message)s",
