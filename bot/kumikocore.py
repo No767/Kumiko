@@ -7,7 +7,7 @@ import asyncpg
 import discord
 from aiohttp import ClientSession
 from cogs import EXTENSIONS, VERSION
-from discord.ext import commands, ipcx
+from discord.ext import commands
 from libs.errors import send_error_embed
 from libs.utils import (
     KContext,
@@ -52,11 +52,6 @@ class KumikoCore(commands.Bot):
         )
         self.config = config
         self.default_prefix = ">"
-        self.ipc = ipcx.Server(
-            self,
-            host=config["postgres_uri"],
-            secret_key=config["postgres_uri"],
-        )
         self.logger: logging.Logger = logging.getLogger("kumiko")
         self.pool = pool
         self.redis_pool = redis_pool
@@ -107,14 +102,11 @@ class KumikoCore(commands.Bot):
         self.loop.add_signal_handler(signal.SIGTERM, stop)
         self.loop.add_signal_handler(signal.SIGINT, stop)
 
-        # The blacklist checks
-
         for cog in EXTENSIONS:
             self.logger.debug(f"Loaded extension: {cog}")
             await self.load_extension(cog)
 
         await self.load_extension("jishaku")
-        await self.ipc.start()
 
         if self._dev_mode is True and _fsw is True:
             self.logger.info("Dev mode is enabled. Loading Jishaku and FSWatcher")
@@ -125,13 +117,3 @@ class KumikoCore(commands.Bot):
             self.uptime = discord.utils.utcnow()
         curr_user = None if self.user is None else self.user.name
         self.logger.info(f"{curr_user} is fully ready!")
-
-    async def on_ipc_ready(self):
-        self.logger.info(
-            "Standard IPC Server started on %s:%s", self.ipc.host, self.ipc.port
-        )
-        self.logger.info(
-            "Multicast IPC server started on %s:%s",
-            self.ipc.host,
-            self.ipc.multicast_port,
-        )

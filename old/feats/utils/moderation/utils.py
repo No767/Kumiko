@@ -5,8 +5,6 @@ from discord.utils import utcnow
 from libs.utils import parse_dt
 from libs.utils.context import GuildContext
 
-# from typing import TYPE_CHECKING
-
 
 class TimeoutDTConverter(commands.Converter):
     async def convert(self, ctx: GuildContext, argument: str):

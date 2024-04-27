@@ -3,7 +3,6 @@ name: "CodeQL"
 on:
   push:
     branches:
-      - master
       - dev
     
   pull_request:
@@ -14,39 +13,43 @@ on:
 
 jobs:
   Analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+      name: Analyze
+      runs-on: ubuntu-latest
+      permissions:
+          actions: read
+          contents: read
+          security-events: write
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-    - name: Set up Python 3.11
-      id: setup-python
-      uses: actions/setup-python@v5.1.0
-      with:
-        python-version: '3.11'
-    - name: Set up Poetry
-      uses: Gr1N/setup-poetry@v8
-    - name: Cache Poetry
-      id: cache-poetry
-      uses: actions/cache@v4.0.2
-      with:
-        path: ~/.cache/pypoetry/virtualenvs
-        key: ${{ runner.os }}-codeql-python-${{ hashFiles('**/poetry.lock') }}
-    - name: Install Poetry Dependencies
-      if: steps.cache-poetry.outputs.cache-hit != 'true'
-      run: |
-        poetry install
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: python
-        setup-python-dependencies: false
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        upload: true
+      steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          
+      - name: Cache Dependencies
+        id: cache-pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-codeql-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-codeql-pip-
+      
+      - name: Install Dependencies
+        if: steps.cache-pip.outputs.cache-hit != 'true'
+        run: |
+          pip install -r requirements.txt
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          upload: true

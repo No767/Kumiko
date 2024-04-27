@@ -24,16 +24,10 @@ jobs:
           images: |
             ghcr.io/no767/kumiko
           tags: |
-            type=semver,pattern={{raw}},suffix=-bookworm
-            type=semver,pattern={{version}},suffix=-bookworm
-            type=semver,pattern={{major}}.{{minor}},suffix=-bookworm
-            type=semver,pattern={{major}},suffix=-bookworm
-            type=semver,pattern={{raw}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=edge,branch=dev
-            type=edge,branch=dev,suffix=-bookworm
 
       - name: Setup Docker Buildx
         id: buildx
@@ -49,14 +43,15 @@ jobs:
           password: ${{ secrets.GHCR_PACKAGE_TOKEN }}
 
       - name: Cache Docker layers
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-debian-ghcr-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-debian-ghcr-
+
       - name: Build and push
-        uses: docker/build-push-action@v5.3.0
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Docker/Dockerfile
@@ -84,16 +79,10 @@ jobs:
           images: |
             no767/kumiko
           tags: |
-            type=semver,pattern={{raw}},suffix=-bookworm
-            type=semver,pattern={{version}},suffix=-bookworm
-            type=semver,pattern={{major}}.{{minor}},suffix=-bookworm
-            type=semver,pattern={{major}},suffix=-bookworm
-            type=semver,pattern={{raw}}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=edge,branch=dev
-            type=edge,branch=dev,suffix=-bookworm
 
       - name: Setup Docker Buildx
         id: buildx
@@ -108,7 +97,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Cache Docker layers
-        uses: actions/cache@v4.0.2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-debian-hub-${{ github.sha }}
@@ -116,10 +105,10 @@ jobs:
             ${{ runner.os }}-buildx-debian-hub-
 
       - name: Build and push
-        uses: docker/build-push-action@v5.3.0
+        uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Docker/Dockerfile
+          file: ./docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache

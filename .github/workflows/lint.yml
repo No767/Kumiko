@@ -15,38 +15,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [3.8, 3.9, '3.10', '3.11']
+        version: [3.9, '3.10', '3.11', '3.12']
 
     steps:
-      - name: Checkout Repository  
-        uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.version }}
-        id: setup-python
-        uses: actions/setup-python@v5.1.0
-        with:
-          python-version: ${{ matrix.version }}
-
-      - name: Set up Poetry
-        uses: Gr1N/setup-poetry@v8
-
-      - name: Cache Poetry
-        id: cache-poetry
-        uses: actions/cache@v4.0.2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: ${{ runner.os }}-poetry-lint-${{ matrix.version }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install Poetry Dependencies
-        if: steps.cache-poetry.outputs.cache-hit != 'true'
-        run: |
-          poetry install --with dev
-          
-      - name: Run Pyright
-        run: |
-          poetry run pyright Bot
-
-      - name: Run Ruff
-        # the rewrite for using PEP8 standards will come later
-        run: |
-          poetry run ruff Bot
+        - name: Checkout Repository  
+          uses: actions/checkout@v4
+    
+        - name: Set up Python ${{ matrix.version }}
+          id: setup-python
+          uses: actions/setup-python@v5
+          with:
+            python-version: ${{ matrix.version }}
+    
+        - name: Install Tox
+          run: |
+            pip install "tox>=4.13.0,<5"
+    
+        - name: Lint Codebase
+          run: |
+            tox -e lint 

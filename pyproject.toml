@@ -1,64 +1,10 @@
-[tool.poetry]
-name = "Kumiko"
-version = "0.12.0"
+[project]
+name = "kumiko"
+version = "1.0.0"
 description = "A multipurpose Discord bot built with freedom and choice in mind"
-authors = ["No767 <73260931+No767@users.noreply.github.com>"]
-license = "Apache-2.0"
-
-[tool.poetry.dependencies]
-python = ">=3.9,<4.0"
-python-dotenv = "^1.0.0"
-aiodns = "^3.1.1"
-Brotli = "^1.1.0"
-orjson = "^3.9.10"
-asyncpraw = "^7.7.1"
-uvloop = {markers = "sys_platform != \"win32\"", version = "^0.19.0"}
-gql = { extras = ["aiohttp"], version = "^3.4.1" }
-redis = {extras = ["hiredis"], version = "^5.0.1"}
-ciso8601 = "^2.3.1"
-discord-ext-menus = {git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53"}
-asyncpg = "^0.29.0"
-asyncpg-trek = "^0.3.1"
-lru-dict = "^1.3.0"
-psutil = "^5.9.6"
-winloop = {markers = "sys_platform == \"win32\"", version = "^0.0.9"}
-cysystemd = "^1.5.4"
-python-dateutil = "^2.8.2"
-msgspec = "^0.18.4"
-langcodes = {extras = ["data"], version = "^3.3.0"}
-discord-py = {extras = ["speed"], version = "^2.3.2"}
-pynacl = "^1.5.0"
-discord-ext-ipcx = "^0.2.1"
-dateparser = "^1.2.0"
-async-lru = "^2.0.4"
-aiohttp = "3.9.1"
-pygit2 = "^1.14.1"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^7.4.3"
-pytest-asyncio = "^0.21.1"
-nox = "^2023.4.22"
-nox-poetry = "^1.0.3"
-pytest-cov = "^4.1.0"
-dpytest = "^0.7.0"
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^3.5.0"
-pyinstrument = "^4.6.1"
-pyright = "^1.1.337"
-watchfiles = "^0.21.0"
-jishaku = "^2.5.2"
-ruff = "^0.1.6"
-objgraph = "^3.6.0"
-
-
-[tool.poetry.group.docs.dependencies]
-sphinx = "^7.1.2"
-sphinx-autobuild = "^2021.3.14"
-furo = "^2023.9.10"
-sphinxext-opengraph = "^0.9.0"
-sphinx-copybutton = "^0.5.2"
-
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9,<4.0"
 
 [tool.isort]
 profile = 'black'
@@ -67,13 +13,13 @@ combine_star = true
 line_length = 80
 
 [tool.pyright]
-include = ["Bot/**"]
+include = ["bot/**"]
 exclude = [
     "**/__pycache__", 
     "**/.mypy_cache", 
     "**/.dmpypy.json", 
     "Kumiko-Docs",
-    "Docker"
+    "docker"
 ]
 reportMissingImports = true
 typeCheckingMode = "basic"
@@ -82,10 +28,14 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 [tool.bandit]
 skips = ["B311", "B101"]
 
-[tool.ruff]
-ignore = ["E501", "N999", "N801", "E402"]
-select = ["E", "F", "N"]
+[tool.ruff.lint]
+ignore = ["E501", "N999", "E402", "S101", "S311"]
+select = ["E", "F", "N", "ASYNC", "S", "ERA"]
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra"
+testpaths = [
+    "tests"
+]
+pythonpath = ["bot"]

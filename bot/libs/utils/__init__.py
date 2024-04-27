@@ -29,7 +29,6 @@ from .utils import (
     format_greedy as format_greedy,
     is_docker as is_docker,
     parse_datetime as parse_datetime,
-    parse_dt as parse_dt,
     parse_subreddit as parse_subreddit,
     produce_error_embed as produce_error_embed,
 )
