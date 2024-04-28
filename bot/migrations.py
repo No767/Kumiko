@@ -10,11 +10,7 @@ from typing import Optional, TypeVar
 import asyncpg
 import click
 from libs.utils.config import KumikoConfig
-
-try:
-    from typing import Self  # type: ignore
-except ImportError:
-    from typing_extensions import Self  # type: ignore
+from typing_extensions import Self
 
 path = Path(__file__).parent / "config.yml"
 config = KumikoConfig(path)
