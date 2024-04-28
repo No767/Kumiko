@@ -17,3 +17,5 @@ async-lru>=2.0.4,<3
 PyYAML>=6.0.1,<7
 jishaku>=2.5.2,<3
 watchfiles>=0.21.0,<1
+click>=8.1.7,<9
+typing-extensions>=4.11.0,<5

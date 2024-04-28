@@ -1,25 +1,17 @@
-version: "3.9"
 name: "kumiko-dev"
 services:
   postgres:
     container_name: Kumiko-Postgres-Dev
-    image: postgres:15 
+    image: kumiko-pg:dev-latest
+    build:
+        context: ./docker/pg
+        dockerfile: Dockerfile
     env_file:
       - .env
     volumes:
-      - dev_postgres_volume:/var/lib/postgresql/data
+      - postgres_volume:/var/lib/postgresql/data
     ports:
       - 5432:5432
 
-  redis:
-    container_name: Kumiko-Redis-Stack-Dev
-    image: redis/redis-stack-server:7.2.0-RC3
-    ports:
-      - 6379:6379
-    volumes:
-      - dev_redis_volume:/data
-    command: redis-stack-server protected-mode no --save 60 1
-
 volumes:
-  dev_postgres_volume:
-  dev_redis_volume:
+  postgres_volume:
