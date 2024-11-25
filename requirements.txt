@@ -1,4 +1,4 @@
-discord.py[speed,audio]>=2.4.0,<3
+discord.py[speed,voice]>=2.4.0,<3
 audioop-lts>=0.2.1,<1 ; python_version>='3.13'
 uvloop>=0.21.0,<1 ; sys_platform != "win32"
 winloop>=0.1.6,<1 ; sys_platform == "win32"
@@ -7,7 +7,7 @@ msgspec @ git+https://github.com/jcrist/msgspec@595c33c4a71c6d0c539b82233982a658
 python-dateutil>=2.9.0.post0,<3
 asyncpg>=0.30.0,<1
 psutil>=6.1.0,<7
-pygit2>=1.15.1,<1.16.0
+pygit2>=1.16.0,<2
 async-lru>=2.0.4,<3
 PyYAML>=6.0.2,<7
 jishaku>=2.6.0,<3
