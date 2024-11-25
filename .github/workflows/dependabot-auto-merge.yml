@@ -4,8 +4,8 @@ on:
     types:
       - opened
   workflow_run:
-    workflows: ["Tests", "CodeQL", "Docker Build"]
-    branches: [dev]
+    workflows: ["Lint"]
+    branches: [main]
     types: 
       - completed
 
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   dependabot:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ github.actor == 'dependabot[bot]'}}
     steps:
       - name: Dependabot metadata
