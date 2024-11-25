@@ -8,12 +8,11 @@ import psutil
 import pygit2
 from discord.ext import commands
 from discord.utils import format_dt, oauth_url
+from kumiko import Kumiko
 from libs.utils import Embed, human_timedelta
 from libs.utils.checks import is_docker
 from psutil._common import bytes2human
 from pygit2.enums import SortMode
-
-from bot.kumiko import Kumiko
 
 
 class Meta(commands.Cog):
@@ -146,8 +145,9 @@ class Meta(commands.Cog):
 
         embed = Embed()
         embed.set_author(
-            name=self.bot.user.name, icon_url=self.bot.user.display_avatar.url
-        )  # type: ignore
+            name=self.bot.user.name,  # type: ignore
+            icon_url=self.bot.user.display_avatar.url,  # type: ignore
+        )
         embed.title = "Support Server Invite"
         embed.url = "https://discord.gg/ns3e74frqn"
         embed.description = f"Latest Changes ({working_branch}):\n {revisions}"

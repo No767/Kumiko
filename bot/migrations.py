@@ -17,7 +17,7 @@ from typing_extensions import Self
 try:
     path = Path(__file__).parent / "config.yml"
     config = KumikoConfig(path)
-    POSTGRES_URI = config["postgres"]["uri"]
+    POSTGRES_URI = config["postgres_uri"]
 except KeyError:
     POSTGRES_URI = os.environ["POSTGRES_URI"]
 

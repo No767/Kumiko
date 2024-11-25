@@ -5,10 +5,9 @@ from pathlib import Path
 import asyncpg
 import discord
 from aiohttp import ClientSession
+from kumiko import Kumiko, init
 from libs.utils import KumikoConfig, KumikoLogger
 from libs.utils.handler import KeyboardInterruptHandler
-
-from bot.kumiko import Kumiko, init
 
 if os.name == "nt":
     from winloop import run
