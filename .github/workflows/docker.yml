@@ -37,7 +37,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: no767
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push image
@@ -46,7 +46,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/kumiko-build-cache:bot
-          cache-to: type=registry,mode=max,ref=ghcr.io/${{ github.repository_owner }}/kumiko-build-cache:bot
+          cache-from: type=registry,ref=ghcr.io/no767/kumiko-build-cache:bot
+          cache-to: type=registry,mode=max,ref=ghcr.io/no767/kumiko-build-cache:bot
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
