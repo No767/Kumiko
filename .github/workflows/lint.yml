@@ -2,35 +2,37 @@ name: Lint
 on:
   push:
     branches:
-      - dev
+      - main
       
   pull_request:
     branches:
-      - dev
+      - main
 
 jobs:
   Analyze:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
       matrix:
-        version: [3.9, '3.10', '3.11', '3.12']
+        version: ['3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
-        - name: Checkout Repository  
-          uses: actions/checkout@v4
-    
-        - name: Set up Python ${{ matrix.version }}
-          id: setup-python
-          uses: actions/setup-python@v5
-          with:
-            python-version: ${{ matrix.version }}
-    
-        - name: Install Tox
-          run: |
-            pip install "tox>=4.13.0,<5"
-    
-        - name: Lint Codebase
-          run: |
-            tox -e lint 
+      - name: Checkout Repository  
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.version }}
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.version }}
+
+      - name: Install Tox
+        run: |
+          pip install "tox>=4.23.2,<5"
+
+      - name: Lint Codebase
+        run: |
+          RAW_PYTHON_VERSION=${{ matrix.version }}
+          PYTHON_VERSION=$(echo $RAW_PYTHON_VERSION | sed 's/\.//')
+          tox -e $PYTHON_VERSION
