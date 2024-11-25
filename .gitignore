@@ -166,20 +166,12 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-# Vagrant project cache files and others
-.vagrant/
-inventory.yml
-inv.yml
-
-
 # VSC
 .vscode/
 
 # Cache files
 .dccache
 
-# Testing scripts
-test-scripts/
 
 # Ruff cache
 .ruff_cache/
