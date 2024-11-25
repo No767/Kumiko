@@ -11,6 +11,7 @@ Kumiko
    :hidden:
    :caption: User Guide
 
+   user/features
    user/prefix
 
 .. toctree::
