@@ -7,11 +7,11 @@ import msgspec
 from async_lru import alru_cache
 
 if TYPE_CHECKING:
-    from bot.kumikocore import KumikoCore
+    from bot.kumiko import Kumiko
 
 
 class GuildWebhookConfig(msgspec.Struct):
-    bot: KumikoCore
+    bot: Kumiko
     id: int
     channel_id: int
     broadcast_url: str
@@ -23,7 +23,7 @@ class GuildWebhookConfig(msgspec.Struct):
 
 
 class WebhookDispatcher:
-    def __init__(self, bot: KumikoCore, guild_id: int):
+    def __init__(self, bot: Kumiko, guild_id: int):
         self.bot = bot
         self.guild_id = guild_id
         self.session = self.bot.session

@@ -52,7 +52,8 @@ include = ["bot/**"]
 exclude = [
     "**/__pycache__", 
     "**/.mypy_cache", 
-    "**/.dmpypy.json"
+    "**/.dmpypy.json",
+    "old_code/**"
 ]
 reportMissingImports = true
 typeCheckingMode = "basic"
@@ -60,6 +61,9 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 
 [tool.ruff]
 line-length = 88
+exclude = [
+  "old_code/**"
+]
 
 [tool.ruff.lint]
 ignore = [

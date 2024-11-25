@@ -1,11 +1,13 @@
 from typing import Literal, Optional
 
 import discord
-from cogs import EXTENSIONS
 from discord.ext import commands
 from discord.ext.commands import Context, Greedy
-from kumikocore import KumikoCore
-from libs.utils import KContext, WebhookDispatcher
+from libs.utils import WebhookDispatcher
+from libs.utils.context import KumikoContext
+
+from bot.kumiko import Kumiko
+from cogs import EXTENSIONS
 
 TESTING_GUILD_ID = discord.Object(id=970159505390325842)
 HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
@@ -14,14 +16,14 @@ HANGOUT_GUILD_ID = discord.Object(id=1145897416160194590)
 class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
     """Tools for developing Kumiko"""
 
-    def __init__(self, bot: KumikoCore):
+    def __init__(self, bot: Kumiko):
         self.bot = bot
 
     @property
     def display_emoji(self) -> discord.PartialEmoji:
         return discord.PartialEmoji(name="\U0001f6e0")
 
-    async def cog_check(self, ctx: KContext) -> bool:
+    async def cog_check(self, ctx: KumikoContext) -> bool:
         return await self.bot.is_owner(ctx.author) and ctx.guild is not None
 
     @commands.command(name="sync", hidden=True)
@@ -69,25 +71,25 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.send(f"Synced the tree to {ret}/{len(guilds)}.")
 
     @commands.command(name="dispatch", aliases=["dispatch-event"], hidden=True)
-    async def dispatch_event(self, ctx: KContext, event: str) -> None:
+    async def dispatch_event(self, ctx: KumikoContext, event: str) -> None:
         """Dispatches an custom event"""
         self.bot.dispatch(event, ctx.guild)
         await ctx.send("Dispatched event")
 
     @commands.command(name="reload-all", hidden=True)
-    async def upgrade(self, ctx: KContext) -> None:
+    async def upgrade(self, ctx: KumikoContext) -> None:
         """Reloads all cogs. This is used for upgrading"""
         for cog in EXTENSIONS:
             await self.bot.reload_extension(cog)
         await ctx.send("Reloaded all cogs")
 
     @commands.command(name="raise-error", hidden=True)
-    async def raise_error(self, ctx: KContext) -> None:
+    async def raise_error(self, ctx: KumikoContext) -> None:
         """Simple test command"""
         raise RuntimeError("Invalid...")
 
     @commands.command(name="dispatch-logs-webhook")
-    async def dispatch_webhook(self, ctx: KContext, *, content: str) -> None:
+    async def dispatch_webhook(self, ctx: KumikoContext, *, content: str) -> None:
         """Dispatch the webhook logs event"""
         assert ctx.guild is not None
         dispatcher = WebhookDispatcher(self.bot, ctx.guild.id)
@@ -99,5 +101,5 @@ class DevTools(commands.Cog, command_attrs=dict(hidden=True)):
         await ctx.send(f"Webhook dispatched with message: {content}")
 
 
-async def setup(bot: KumikoCore):
+async def setup(bot: Kumiko):
     await bot.add_cog(DevTools(bot))

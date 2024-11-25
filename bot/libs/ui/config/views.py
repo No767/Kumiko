@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from libs.utils.context import KContext
 
     from bot.cogs.config import Config
-    from bot.kumikocore import KumikoCore
+    from bot.kumiko import KumikoCore
 
 
 class ConfigMenu(discord.ui.Select):

@@ -8,7 +8,7 @@ from libs.config import GuildCacheHandler
 from libs.errors import RedirectsDisabledError
 
 if TYPE_CHECKING:
-    from bot.kumikocore import KumikoCore
+    from bot.kumiko import KumikoCore
 
 
 def check_if_thread(ctx: commands.Context):

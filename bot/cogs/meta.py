@@ -8,16 +8,18 @@ import psutil
 import pygit2
 from discord.ext import commands
 from discord.utils import format_dt, oauth_url
-from kumikocore import KumikoCore
-from libs.utils import Embed, human_timedelta, is_docker
+from libs.utils import Embed, human_timedelta
+from libs.utils.checks import is_docker
 from psutil._common import bytes2human
 from pygit2.enums import SortMode
+
+from bot.kumiko import Kumiko
 
 
 class Meta(commands.Cog):
     """Commands to obtain info about Kumiko or others"""
 
-    def __init__(self, bot: KumikoCore) -> None:
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
         self.process = psutil.Process()
 
@@ -45,7 +47,7 @@ class Meta(commands.Cog):
         return f"[`{short_sha2}`](https://github.com/No767/Catherine-Chan/commit/{commit.hex}) {short} ({offset})"
 
     def get_last_commits(self, count: int = 10):
-        repo = pygit2.Repository(".git")
+        repo = pygit2.Repository(".git")  # type: ignore
         commits = list(
             itertools.islice(repo.walk(repo.head.target, SortMode.TOPOLOGICAL), count)
         )
@@ -54,7 +56,7 @@ class Meta(commands.Cog):
     def get_current_branch(
         self,
     ) -> str:
-        repo = pygit2.Repository(".git")
+        repo = pygit2.Repository(".git")  # type: ignore
         return repo.head.shorthand
 
     def get_bot_uptime(self, *, brief: bool = False) -> str:
@@ -143,7 +145,9 @@ class Meta(commands.Cog):
             working_branch = "Docker"
 
         embed = Embed()
-        embed.set_author(name=self.bot.user.name, icon_url=self.bot.user.display_avatar.url)  # type: ignore
+        embed.set_author(
+            name=self.bot.user.name, icon_url=self.bot.user.display_avatar.url
+        )  # type: ignore
         embed.title = "Support Server Invite"
         embed.url = "https://discord.gg/ns3e74frqn"
         embed.description = f"Latest Changes ({working_branch}):\n {revisions}"
@@ -229,5 +233,5 @@ class Meta(commands.Cog):
             await ctx.send(embed=embed)
 
 
-async def setup(bot: KumikoCore) -> None:
+async def setup(bot: Kumiko) -> None:
     await bot.add_cog(Meta(bot))
