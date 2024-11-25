@@ -1,7 +1,0 @@
--r ../requirements.txt
--r tests.txt
-
-pre-commit>=3.5.0,<4
-pyright>=1.1.355,<2
-ruff>=0.3.4,<1
-tox>=4.14.2,<5
