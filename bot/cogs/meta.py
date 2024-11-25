@@ -1,18 +1,20 @@
+from __future__ import annotations
+
 import datetime
 import itertools
 import platform
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import discord
 import psutil
 import pygit2
 from discord.ext import commands
-from discord.utils import format_dt, oauth_url
-from kumiko import Kumiko
 from libs.utils import Embed, human_timedelta
 from libs.utils.checks import is_docker
-from psutil._common import bytes2human
 from pygit2.enums import SortMode
+
+if TYPE_CHECKING:
+    from bot.kumiko import Kumiko
 
 
 class Meta(commands.Cog):
@@ -29,11 +31,13 @@ class Meta(commands.Cog):
     def format_date(self, dt: Optional[datetime.datetime]):
         if dt is None:
             return "N/A"
-        return f'{format_dt(dt, "F")} ({format_dt(dt, "R")})'
+        return (
+            f'{discord.utils.format_dt(dt, "F")} ({discord.utils.format_dt(dt, "R")})'
+        )
 
     def format_commit(self, commit: pygit2.Commit) -> str:
         short, _, _ = commit.message.partition("\n")
-        short_sha2 = commit.hex[0:6]
+        short_sha2 = str(commit.id)[0:6]
         commit_tz = datetime.timezone(
             datetime.timedelta(minutes=commit.commit_time_offset)
         )
@@ -42,21 +46,18 @@ class Meta(commands.Cog):
         )
 
         # [`hash`](url) message (offset)
-        offset = format_dt(commit_time.astimezone(datetime.timezone.utc), "R")
-        return f"[`{short_sha2}`](https://github.com/No767/Catherine-Chan/commit/{commit.hex}) {short} ({offset})"
+        offset = discord.utils.format_dt(
+            commit_time.astimezone(datetime.timezone.utc), "R"
+        )
+        commit_id = str(commit.id)
+        return f"[`{short_sha2}`](https://github.com/No767/Kumiko/commit/{commit_id}) {short} ({offset})"
 
-    def get_last_commits(self, count: int = 10):
-        repo = pygit2.Repository(".git")  # type: ignore
+    def get_last_commits(self, count: int = 5):
+        repo = pygit2.Repository(".git")  # type: ignore # Pyright is incorrect
         commits = list(
             itertools.islice(repo.walk(repo.head.target, SortMode.TOPOLOGICAL), count)
         )
         return "\n".join(self.format_commit(c) for c in commits)
-
-    def get_current_branch(
-        self,
-    ) -> str:
-        repo = pygit2.Repository(".git")  # type: ignore
-        return repo.head.shorthand
 
     def get_bot_uptime(self, *, brief: bool = False) -> str:
         return human_timedelta(
@@ -133,15 +134,13 @@ class Meta(commands.Cog):
                 elif isinstance(channel, discord.VoiceChannel):
                     voice += 1
 
-        proc_mem = bytes2human(self.process.memory_info().rss)
-        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()  # type: ignore # idk why
+        memory_usage = self.process.memory_full_info().uss / 1024**2
+        cpu_usage = self.process.cpu_percent() / psutil.cpu_count() # type: ignore # I'm not sure why pyright is complaining about this
 
-        revisions = self.get_last_commits(5)
-        working_branch = self.get_current_branch().title()
+        revisions = self.get_last_commits()
 
         if is_docker():
             revisions = "See [GitHub](https://github.com/No767/Kumiko)"
-            working_branch = "Docker"
 
         embed = Embed()
         embed.set_author(
@@ -150,18 +149,24 @@ class Meta(commands.Cog):
         )
         embed.title = "Support Server Invite"
         embed.url = "https://discord.gg/ns3e74frqn"
-        embed.description = f"Latest Changes ({working_branch}):\n {revisions}"
+        embed.description = (
+            "Kumiko is a personal multipurpose bot that takes an unique and alternative approach to what an multipurpose bot is. "
+            "Features include the redirects system, quiet mode, and many more.\n\n"
+            f"Latest Changes:\n {revisions}"
+        )
         embed.set_footer(
             text=f"Made with discord.py v{discord.__version__} | Running Python {platform.python_version()}",
             icon_url="https://cdn.discordapp.com/emojis/596577034537402378.png?size=100",
         )
-        embed.add_field(
-            name="Members", value=f"{total_members} total\n{total_unique} unique"
-        )
-        embed.add_field(name="Channels", value=f"{text} text\n{voice} voice")
         embed.add_field(name="Guilds", value=guilds)
-        embed.add_field(name="Process", value=f"{proc_mem}B \n{cpu_usage:.2f}% CPU")
-        embed.add_field(name="Build Version", value=str(self.bot.version))
+        embed.add_field(
+            name="Users", value=f"{total_members} total\n{total_unique} unique"
+        )
+        embed.add_field(
+            name="Process", value=f"{memory_usage:.2f} MiB\n{cpu_usage:.2f}% CPU"
+        )
+        embed.add_field(name="Python Version", value=platform.python_version())
+        embed.add_field(name="Kumiko Version", value=str(self.bot.version))
         embed.add_field(name="Uptime", value=self.get_bot_uptime(brief=True))
         await ctx.send(embed=embed)
 
@@ -170,13 +175,6 @@ class Meta(commands.Cog):
         """Returns the current version of Kumiko"""
         embed = Embed()
         embed.description = f"Build Version: {str(self.bot.version)}"
-        await ctx.send(embed=embed)
-
-    @commands.hybrid_command(name="ping")
-    async def ping(self, ctx: commands.Context) -> None:
-        """Returns the current latency of Kumiko"""
-        embed = Embed()
-        embed.description = f"Pong! {round(self.bot.latency * 1000)}ms"
         await ctx.send(embed=embed)
 
     @commands.hybrid_command(name="invite")
@@ -196,41 +194,8 @@ class Meta(commands.Cog):
         perms.read_message_history = True
         perms.external_emojis = True
         perms.add_reactions = True
-        url = oauth_url(self.bot.application_id, permissions=perms)
+        url = discord.utils.oauth_url(self.bot.application_id, permissions=perms)
         await ctx.send(url)
-
-    @commands.is_owner()
-    @commands.command(
-        name="sys-metrics",
-        aliases=["sysmetrics"],
-        hidden=True,
-    )
-    async def sys_metrics(self, ctx: commands.Context) -> None:
-        """Tells you the current system metrics along with other information"""
-        await ctx.defer()
-        mem = psutil.virtual_memory()
-        proc = psutil.Process()
-        with proc.oneshot():
-            proc_mem = bytes2human(proc.memory_info().rss)
-            disk_usage = psutil.disk_usage("/")
-            embed = Embed()
-            embed.title = "System Metrics + Info"
-            embed.description = (
-                f"**CPU:** {psutil.cpu_percent()}% (Proc - {proc.cpu_percent()}%)\n"
-                f"**Mem:** {proc_mem} ({proc_mem}/{bytes2human(mem.total)})\n"
-                f"**Disk (System):** {disk_usage.percent}% ({bytes2human(disk_usage.used)}/{bytes2human(disk_usage.total)})\n"
-                f"**Proc Status:** {proc.status()}\n"
-            )
-            embed.add_field(name="Kernel Version", value=platform.release())
-            embed.add_field(name="Python Compiler", value=platform.python_compiler())
-            embed.add_field(
-                name="Python Version", value=platform.python_version(), inline=True
-            )
-            embed.add_field(
-                name="Discord.py Version", value=discord.__version__, inline=True
-            )
-            embed.add_field(name="Kumiko Build Version", value=str(self.bot.version))
-            await ctx.send(embed=embed)
 
 
 async def setup(bot: Kumiko) -> None:
