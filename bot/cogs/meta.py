@@ -134,7 +134,7 @@ class Meta(commands.Cog):
                     voice += 1
 
         proc_mem = bytes2human(self.process.memory_info().rss)
-        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
+        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()  # type: ignore # idk why
 
         revisions = self.get_last_commits(5)
         working_branch = self.get_current_branch().title()
