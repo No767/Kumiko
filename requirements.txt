@@ -1,4 +1,4 @@
-discord.py[speed,audio]>=2.4.0,<3
+discord.py[speed,voice]>=2.4.0,<3
 audioop-lts>=0.2.1,<1 ; python_version>='3.13'
 uvloop>=0.21.0,<1 ; sys_platform != "win32"
 winloop>=0.1.6,<1 ; sys_platform == "win32"
