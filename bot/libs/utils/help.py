@@ -6,8 +6,6 @@ import discord
 from discord.ext import commands, menus
 from libs.utils.pages import KumikoPages
 
-from .message_constants import MessageConstants
-
 # RGB Colors:
 # Pink (255, 161, 231) - Used for the main bot page
 # Lavender (197, 184, 255) - Used for cog and group pages
@@ -176,7 +174,7 @@ class FrontPageSource(menus.PageSource):
                 name="About Kumiko",
                 value=(
                     "Kumiko is an multipurpose bot that takes an unique and alternative approach to "
-                    "what an multipurpose bot is. Kumiko offers features such as moderation, economy, and many more. You can get more "
+                    "what an multipurpose bot is. Kumiko offers features such as a redirects system, quiet mode, and many more. You can get more "
                     "information on the commands offered by using the dropdown below.\n\n"
                     "Kumiko is also open source. You can see the code on [GitHub](https://github.com/No767/Kumiko)"
                 ),
@@ -282,9 +280,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
         if command.description:
             embed_like.description = f"{command.description}\n\n{command.help}"
         else:
-            embed_like.description = (
-                command.help or MessageConstants.NO_HELP_FOUND.value
-            )
+            embed_like.description = command.help or "No help found..."
 
     async def send_command_help(self, command):
         # No pagination necessary for a single command.

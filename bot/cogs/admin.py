@@ -10,7 +10,7 @@ import discord
 from discord.ext import commands
 
 if TYPE_CHECKING:
-    from kumiko import Kumiko
+    from bot.kumiko import Kumiko
 
 NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 

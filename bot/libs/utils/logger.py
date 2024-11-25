@@ -16,7 +16,6 @@ class KumikoLogger:
     def __enter__(self) -> None:
         max_bytes = 32 * 1024 * 1024  # 32 MiB
         self.log.setLevel(logging.INFO)
-        logging.getLogger("gql").setLevel(logging.WARNING)
         logging.getLogger("discord").setLevel(logging.INFO)
         handler = RotatingFileHandler(
             filename="kumiko.log",
@@ -39,7 +38,7 @@ class KumikoLogger:
         exc: Optional[BE],
         traceback: Optional[TracebackType],
     ) -> None:
-        self.log.info("Shutting down Kumiko...")
+        self.log.info("Shutting down...")
         handlers = self.log.handlers[:]
         for hdlr in handlers:
             hdlr.close()
