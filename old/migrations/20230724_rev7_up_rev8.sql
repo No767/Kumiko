@@ -1,2 +1,0 @@
-ALTER TABLE eco_item ADD COLUMN restock_amount INT;
-ALTER TABLE eco_item ALTER COLUMN amount SET DEFAULT 1;
