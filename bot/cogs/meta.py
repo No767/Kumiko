@@ -145,7 +145,7 @@ class Meta(commands.Cog):
 
         embed = Embed()
         embed.set_author(
-            name=self.bot.user.name, # type: ignore
+            name=self.bot.user.name,  # type: ignore
             icon_url=self.bot.user.display_avatar.url,  # type: ignore
         )
         embed.title = "Support Server Invite"
