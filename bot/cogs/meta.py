@@ -1,17 +1,20 @@
+from __future__ import annotations
+
 import datetime
 import itertools
 import platform
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import discord
 import psutil
 import pygit2
 from discord.ext import commands
-from discord.utils import format_dt, oauth_url
-from kumiko import Kumiko
 from libs.utils import Embed, human_timedelta
 from libs.utils.checks import is_docker
 from pygit2.enums import SortMode
+
+if TYPE_CHECKING:
+    from bot.kumiko import Kumiko
 
 
 class Meta(commands.Cog):
@@ -28,7 +31,9 @@ class Meta(commands.Cog):
     def format_date(self, dt: Optional[datetime.datetime]):
         if dt is None:
             return "N/A"
-        return f'{format_dt(dt, "F")} ({format_dt(dt, "R")})'
+        return (
+            f'{discord.utils.format_dt(dt, "F")} ({discord.utils.format_dt(dt, "R")})'
+        )
 
     def format_commit(self, commit: pygit2.Commit) -> str:
         short, _, _ = commit.message.partition("\n")
@@ -189,7 +194,7 @@ class Meta(commands.Cog):
         perms.read_message_history = True
         perms.external_emojis = True
         perms.add_reactions = True
-        url = oauth_url(self.bot.application_id, permissions=perms)
+        url = discord.utils.oauth_url(self.bot.application_id, permissions=perms)
         await ctx.send(url)
 
 
