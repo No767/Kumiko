@@ -1,5 +1,5 @@
 import asyncio
-import datetime
+import os
 import re
 import traceback
 from functools import wraps
@@ -9,16 +9,22 @@ from typing import Optional, TypeVar
 
 import asyncpg
 import click
+from discord.utils import utcnow
 from libs.utils.config import KumikoConfig
 from typing_extensions import Self
 
-path = Path(__file__).parent / "config.yml"
-config = KumikoConfig(path)
+# If we can't load the configuration, then let's look for the environment variable
+try:
+    path = Path(__file__).parent / "config.yml"
+    config = KumikoConfig(path)
+    POSTGRES_URI = config["postgres"]["uri"]
+except KeyError:
+    POSTGRES_URI = os.environ["POSTGRES_URI"]
+
 
 BE = TypeVar("BE", bound=BaseException)
 
-REVISION_FILE = re.compile(r"(?P<kind>V)(?P<version>[0-9]+)__(?P<description>.+).sql")
-POSTGRES_URI = config["postgres_uri"]
+REVISION_FILE = re.compile(r"(?P<kind>V)(?P<version>\d+)__(?P<description>.+).sql")
 
 CREATE_MIGRATIONS_TABLE = """
 CREATE TABLE IF NOT EXISTS migrations (
@@ -126,7 +132,7 @@ class Migrations:
         stub = (
             f"-- Revision Version: V{self.version + 1}\n"
             f"-- Revises: V{self.version}\n"
-            f"-- Creation Date: {datetime.datetime.utcnow()} UTC\n"
+            f"-- Creation Date: {utcnow()} UTC\n"
             f"-- Reason: {reason}\n\n"
         )
 
@@ -169,6 +175,7 @@ async def create_migrations_table() -> None:
 
 @click.group(short_help="database migrations util", options_metavar="[options]")
 def main():
+    # grouped database commands
     pass
 
 

@@ -10,7 +10,6 @@ from discord import PartialEmoji, app_commands
 from discord.ext import commands
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
-from kumikocore import KumikoCore
 from libs.ui.search import (
     AniListAnime,
     AniListAnimePages,
@@ -24,6 +23,8 @@ from libs.utils import GuildContext
 from libs.utils.pages import EmbedListSource, KumikoPages
 from typing_extensions import Annotated
 from yarl import URL
+
+from bot.kumiko import KumikoCore
 
 
 class AIOHTTPTransportExistingSession(AIOHTTPTransport):

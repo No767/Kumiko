@@ -19,13 +19,15 @@ class KumikoConfig(Generic[_T]):
         except FileNotFoundError:
             self._config = {}
 
-    @overload
-    def get(self, key: Any) -> Optional[Union[_T, Any]]:
-        ...
+    @property
+    def kumiko(self) -> _T:
+        return self._config["kumiko"]
 
     @overload
-    def get(self, key: Any, default: Any) -> Union[_T, Any]:
-        ...
+    def get(self, key: Any) -> Optional[Union[_T, Any]]: ...
+
+    @overload
+    def get(self, key: Any, default: Any) -> Union[_T, Any]: ...
 
     def get(self, key: Any, default: Any = None) -> Optional[Union[_T, Any]]:
         """Retrieves a config entry."""

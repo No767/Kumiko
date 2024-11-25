@@ -10,7 +10,7 @@ from .utils import determine_status, format_desc
 
 if TYPE_CHECKING:
     from bot.cogs.config import Config
-    from bot.kumikocore import KumikoCore
+    from bot.kumiko import KumikoCore
 
 
 class LoggingConfigMenu(discord.ui.Select):

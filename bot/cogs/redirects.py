@@ -1,9 +1,8 @@
-from typing import Optional
+from typing import Optional, Union
 
 import discord
 from discord import PartialEmoji, app_commands
 from discord.ext import commands
-from kumikocore import KumikoCore
 from libs.cog_utils.redirects import (
     can_close_threads,
     check_redirects_enabled,
@@ -12,10 +11,60 @@ from libs.cog_utils.redirects import (
     is_thread,
     mark_as_resolved,
 )
-from libs.ui.redirects import ConfirmResolvedView
-from libs.utils import ErrorEmbed, GuildContext
+from libs.utils.context import GuildContext
+from libs.utils.embeds import ErrorEmbed
+from libs.utils.view import KumikoView
+
+from bot.kumiko import Kumiko
+
+
+class ConfirmResolvedView(KumikoView):
+    def __init__(
+        self,
+        ctx: GuildContext,
+        thread: discord.Thread,
+        author: Union[discord.User, discord.Member],
+        *args,
+        **kwargs,
+    ) -> None:
+        super().__init__(ctx, *args, **kwargs)
+        self.thread = thread
+        self.author = author
+
+    @discord.ui.button(
+        label="Confirm",
+        style=discord.ButtonStyle.green,
+        emoji="<:greenTick:596576670815879169>",
+    )
+    async def confirm(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        # Avoid relocking locked threads
+        if self.thread.locked:
+            return
+
+        await interaction.response.send_message(
+            "Marking this as solved. Next time you can mark it resolved yourself by using the command `>resolved`"
+        )
+        assert interaction.message is not None
+        await interaction.message.add_reaction(discord.PartialEmoji(name="\U00002705"))
+        await mark_as_resolved(self.thread, self.author)
+
+    @discord.ui.button(
+        label="Cancel",
+        style=discord.ButtonStyle.red,
+        emoji="<:redTick:596576672149667840>",
+    )
+    async def cancel(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ) -> None:
+        await interaction.delete_original_response()
+        self.stop()
+
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
+
+
 # Required Perms (from discord.Permission):
 # send_message_in_threads, manage_threads, create_public_threads, manage_messages
 class Redirects(commands.Cog):
@@ -25,10 +74,9 @@ class Redirects(commands.Cog):
     This module should be used within your general channel or others.
     """
 
-    def __init__(self, bot: KumikoCore) -> None:
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
         self.pool = self.bot.pool
-        self.redis_pool = self.bot.redis_pool
         self.redirects_path = ".redirects"
         self.redirects_ctx_menu = app_commands.ContextMenu(
             name="Redirect Conversation",
@@ -171,5 +219,5 @@ class Redirects(commands.Cog):
             )
 
 
-async def setup(bot: KumikoCore) -> None:
+async def setup(bot: Kumiko) -> None:
     await bot.add_cog(Redirects(bot))

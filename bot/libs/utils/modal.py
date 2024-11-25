@@ -4,18 +4,18 @@ from typing import TYPE_CHECKING
 
 import discord
 
-from .utils import produce_error_embed
+from .embeds import FullErrorEmbed
 
 if TYPE_CHECKING:
-    from .context import KContext
+    from .context import KumikoContext
 
 NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 
 
 class KumikoModal(discord.ui.Modal):
-    """Subclassed `discord.ui.Modal` that includes sane default functionality"""
+    """Subclassed `discord.ui.Modal` that includes sane default configs"""
 
-    def __init__(self, ctx: KContext, *args, **kwargs):
+    def __init__(self, ctx: KumikoContext, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ctx = ctx
 
@@ -32,6 +32,6 @@ class KumikoModal(discord.ui.Modal):
         self, interaction: discord.Interaction, error: Exception, /
     ) -> None:
         await interaction.response.send_message(
-            embed=produce_error_embed(error), ephemeral=True
+            embed=FullErrorEmbed(error), ephemeral=True
         )
         self.stop()

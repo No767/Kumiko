@@ -4,11 +4,14 @@ import asyncpg
 import discord
 from discord import app_commands
 from discord.ext import commands
-from kumikocore import KumikoCore
 from libs.ui.config import ConfigMenuView, LGCView
-from libs.utils import Embed, GuildContext, WebhookDispatcher, is_manager
+from libs.utils import WebhookDispatcher, is_manager
+from libs.utils.context import GuildContext
+from libs.utils.embeds import Embed
 from libs.utils.prefix import get_prefix
 from typing_extensions import Annotated
+
+from bot.kumiko import Kumiko
 
 
 class ReservedConfig(TypedDict):
@@ -37,11 +40,10 @@ class PrefixConverter(commands.Converter):
 class Config(commands.Cog):
     """Configure prefixes, modules, and much more"""
 
-    def __init__(self, bot: KumikoCore) -> None:
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
         self.session = self.bot.session
         self.pool = self.bot.pool
-        self.redis_pool = self.bot.redis_pool
         self.reserved_configs: Dict[int, ReservedConfig] = {}
         self.reserved_lgc: Dict[int, ReservedLGC] = {}
 
@@ -109,7 +111,10 @@ class Config(commands.Cog):
             value="Click on the select menu, and enable/disable the selected feature. Once finished, just click the 'Finish' button",
             inline=False,
         )
-        embed.set_author(name="Kumiko's Configuration Menu", icon_url=self.bot.user.display_avatar.url)  # type: ignore
+        embed.set_author(
+            name="Kumiko's Configuration Menu",
+            icon_url=self.bot.user.display_avatar.url,
+        )  # type: ignore
         await ctx.send(embed=embed, view=view)
 
     @is_manager()
@@ -393,5 +398,5 @@ class Config(commands.Cog):
         webhook_dispatcher.get_webhook_config.cache_invalidate()
 
 
-async def setup(bot: KumikoCore) -> None:
+async def setup(bot: Kumiko) -> None:
     await bot.add_cog(Config(bot))
