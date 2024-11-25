@@ -2,3 +2,4 @@ sphinx>=8.1.3,<9
 furo>=2024.8.6,<2025
 sphinx-copybutton>=0.5.2,<1
 sphinxext-opengraph>=0.9.1,<1
+matplotlib>=3.9.2,<4
