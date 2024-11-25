@@ -135,7 +135,7 @@ class Meta(commands.Cog):
                     voice += 1
 
         memory_usage = self.process.memory_full_info().uss / 1024**2
-        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
+        cpu_usage = self.process.cpu_percent() / psutil.cpu_count() # type: ignore # I'm not sure why pyright is complaining about this
 
         revisions = self.get_last_commits()
 
