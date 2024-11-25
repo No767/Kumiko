@@ -1,4 +1,4 @@
-sphinx>=7.3.7,<8
+sphinx>=7.3.7,<9
 furo>=2024.1.29,<2025
 sphinx-copybutton>=0.5.2
 sphinxext-opengraph>=0.9.1,<1
