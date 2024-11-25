@@ -1,11 +1,13 @@
-FROM python:3.12-slim-bookworm
+FROM python:3.13-slim-bookworm
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-  tini \
   bash \
-  netcat-traditional \
+  gcc \
   git \
+  libc6-dev \
+  netcat-traditional \
+  tini \
   && apt-get clean
 
 WORKDIR /kumiko
@@ -21,7 +23,7 @@ RUN adduser --disabled-password --gecos "" kumiko \
 
 USER kumiko
 
-ENV PATH="${PATH}:${HOME}/.local/bin"
+ENV PATH="${PATH}:/home/kumiko/.local/bin"
 
 RUN pip install --user -r requirements.txt
 
@@ -32,6 +34,6 @@ CMD ["/kumiko/start.sh"]
 STOPSIGNAL SIGTERM
 
 LABEL org.opencontainers.image.title="Kumiko"
-LABEL org.opencontainers.image.description="A multipurpose Discord bot built with freedom and choice in mind"
+LABEL org.opencontainers.image.description="A personal multipurpose discord bot built with freedom and choice in mind"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.source="https://github.com/No767/Kumiko"

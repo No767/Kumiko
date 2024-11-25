@@ -1,0 +1,20 @@
+name: kumiko_dev
+
+# For development purposes, it is recommended in order to start the bot normally and using the Dev Reloader system
+services:
+  database:
+    container_name: kumiko_postgres
+    build:
+      context: ./pg
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+volumes:
+  database:
