@@ -165,8 +165,8 @@ class KumikoPages(discord.ui.View):
     ) -> None:
         if (
             self.check_embeds
-            and not self.ctx.channel.permissions_for(self.ctx.me).embed_links
-        ):  # type: ignore
+            and not self.ctx.channel.permissions_for(self.ctx.me).embed_links  # type: ignore
+        ):
             await self.ctx.send(
                 "Bot does not have embed links permission in this channel.",
                 ephemeral=True,
