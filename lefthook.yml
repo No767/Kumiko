@@ -1,0 +1,10 @@
+pre-commit:
+  commands:
+    ruff-check:
+      glob: "*.py" 
+      staged_files: true
+      run: ruff check {staged_files} --fix --exit-non-zero-on-fix --config pyproject.toml
+    ruff-fmt:
+      glob: "*.py" 
+      staged_files: true
+      run: ruff format {staged_files} --config pyproject.toml
