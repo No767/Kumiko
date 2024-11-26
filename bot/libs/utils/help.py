@@ -190,7 +190,7 @@ class FrontPageSource(menus.PageSource):
             Use the dropdown menu below to select a category.
         """
         )
-        
+
         embed.add_field(
             name="Support Server",
             value="For more help, consider joining the official server over at https://discord.gg/ns3e74frqn",
