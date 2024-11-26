@@ -7,6 +7,8 @@ from discord.ext import commands, menus
 from libs.utils.pages import KumikoPages
 
 if TYPE_CHECKING:
+    from libs.utils.context import KumikoContext
+
     from bot.kumiko import Kumiko
 
 _T = TypeVar("_T")
@@ -36,7 +38,7 @@ class BlacklistPageSource(menus.AsyncIteratorPageSource):
 
 
 class BlacklistPages(KumikoPages):
-    def __init__(self, entries: dict[str, Union[_T, Any]], *, ctx: commands.Context):
+    def __init__(self, entries: dict[str, Union[_T, Any]], *, ctx: KumikoContext):
         super().__init__(BlacklistPageSource(entries), ctx=ctx)
         self.embed = discord.Embed(colour=discord.Colour.from_rgb(200, 168, 255))
 
@@ -47,14 +49,14 @@ class Admin(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
 
-    async def cog_check(self, ctx: commands.Context) -> bool:
+    async def cog_check(self, ctx: KumikoContext) -> bool:
         return await self.bot.is_owner(ctx.author)
 
     @commands.guild_only()
     @commands.command(name="sync", hidden=True)
     async def sync(
         self,
-        ctx: commands.Context,
+        ctx: KumikoContext,
         guilds: commands.Greedy[discord.Object],
         spec: Optional[Literal["~", "*", "^"]] = None,
     ) -> None:
@@ -91,7 +93,7 @@ class Admin(commands.Cog, command_attrs=dict(hidden=True)):
 
     @commands.guild_only()
     @commands.group(name="blacklist", invoke_without_command=True)
-    async def blacklist(self, ctx: commands.Context) -> None:
+    async def blacklist(self, ctx: KumikoContext) -> None:
         """Global blacklisting system - Without subcommand you are viewing the blacklist"""
         entries = self.bot.blacklist.all()
         if len(entries) == 0:
@@ -102,14 +104,14 @@ class Admin(commands.Cog, command_attrs=dict(hidden=True)):
         await pages.start()
 
     @blacklist.command(name="add")
-    async def add(self, ctx: commands.Context, id: discord.Object) -> None:
+    async def add(self, ctx: KumikoContext, id: discord.Object) -> None:
         """Adds an ID to the global blacklist"""
         given_id = id.id
         await self.bot.add_to_blacklist(given_id)
         await ctx.send(f"Done. Added ID {given_id} to the blacklist")
 
     @blacklist.command(name="remove")
-    async def remove(self, ctx: commands.Context, id: discord.Object) -> None:
+    async def remove(self, ctx: KumikoContext, id: discord.Object) -> None:
         """Removes an ID from the global blacklist"""
         given_id = id.id
         await self.bot.remove_from_blacklist(given_id)
