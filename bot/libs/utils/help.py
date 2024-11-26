@@ -1,10 +1,11 @@
 import inspect
 import itertools
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Union
 
 import discord
 from discord.ext import commands, menus
-from libs.utils.pages import KumikoPages
+
+from .pages import KumikoPages
 
 # RGB Colors:
 # Pink (255, 161, 231) - Used for the main bot page
@@ -12,11 +13,33 @@ from libs.utils.pages import KumikoPages
 # Light Orange (255, 199, 184) - Used for command pages
 
 
+def process_perms_name(
+    command: Union[commands.Group, commands.Command],
+) -> Optional[str]:
+    merge_list = []
+    if (
+        all(isinstance(parent, commands.Group) for parent in command.parents)
+        and len(command.parents) > 0
+    ):
+        # See https://stackoverflow.com/a/27638751
+        merge_list = [
+            next(iter(parent.extras["permissions"])) for parent in command.parents
+        ]
+
+    if "permissions" in command.extras:
+        merge_list.extend([*command.extras["permissions"]])
+
+    perms_set = sorted(set(merge_list))
+    if len(perms_set) == 0:
+        return None
+    return ", ".join(name.replace("_", " ").title() for name in perms_set)
+
+
 class GroupHelpPageSource(menus.ListPageSource):
     def __init__(
         self,
         group: Union[commands.Group, commands.Cog],
-        entries: List[commands.Command],
+        entries: list[commands.Command],
         *,
         prefix: str,
     ):
@@ -26,10 +49,15 @@ class GroupHelpPageSource(menus.ListPageSource):
         self.title: str = f"{self.group.qualified_name} Commands"
         self.description: str = self.group.description
 
-    async def format_page(self, menu: KumikoPages, commands: List[commands.Command]):
+    def _process_description(self, group: Union[commands.Group, commands.Cog]):
+        if isinstance(group, commands.Group) and "permissions" in group.extras:
+            return f"{self.description}\n\n**Required Permissions**: {process_perms_name(group)}"
+        return self.description
+
+    async def format_page(self, menu: KumikoPages, commands: list[commands.Command]):
         embed = discord.Embed(
             title=self.title,
-            description=self.description,
+            description=self._process_description(self.group),
             colour=discord.Colour.from_rgb(197, 184, 255),
         )
 
@@ -54,14 +82,14 @@ class GroupHelpPageSource(menus.ListPageSource):
 
 
 class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
-    def __init__(self, entries: Dict[commands.Cog, List[commands.Command]], bot):
+    def __init__(self, entries: dict[commands.Cog, list[commands.Command]], bot):
         super().__init__(
             placeholder="Select a category...",
             min_values=1,
             max_values=1,
             row=0,
         )
-        self.cmds: dict[commands.Cog, List[commands.Command]] = entries
+        self.cmds: dict[commands.Cog, list[commands.Command]] = entries
         self.bot = bot
         self.__fill_options()
 
@@ -85,29 +113,29 @@ class HelpSelectMenu(discord.ui.Select["HelpMenu"]):
             )
 
     async def callback(self, interaction: discord.Interaction):
-        assert self.view is not None
-        value = self.values[0]
-        if value == "__index":
-            await self.view.rebind(FrontPageSource(), interaction)
-        else:
-            cog = self.bot.get_cog(value)
-            if cog is None:
-                await interaction.response.send_message(
-                    "Somehow this category does not exist?", ephemeral=True
-                )
-                return
+        if self.view is not None:
+            value = self.values[0]
+            if value == "__index":
+                await self.view.rebind(FrontPageSource(), interaction)
+            else:
+                cog = self.bot.get_cog(value)
+                if cog is None:
+                    await interaction.response.send_message(
+                        "Somehow this category does not exist?", ephemeral=True
+                    )
+                    return
 
-            commands = self.cmds[cog]
-            if not commands:
-                await interaction.response.send_message(
-                    "This category has no commands for you", ephemeral=True
-                )
-                return
+                commands = self.cmds[cog]
+                if not commands:
+                    await interaction.response.send_message(
+                        "This category has no commands for you", ephemeral=True
+                    )
+                    return
 
-            source = GroupHelpPageSource(
-                cog, commands, prefix=self.view.ctx.clean_prefix
-            )
-            await self.view.rebind(source, interaction)
+                source = GroupHelpPageSource(
+                    cog, commands, prefix=self.view.ctx.clean_prefix
+                )
+                await self.view.rebind(source, interaction)
 
 
 class HelpMenu(KumikoPages):
@@ -115,7 +143,7 @@ class HelpMenu(KumikoPages):
         super().__init__(source, ctx=ctx, compact=True)
 
     def add_categories(
-        self, commands: Dict[commands.Cog, List[commands.Command]]
+        self, commands: dict[commands.Cog, list[commands.Command]]
     ) -> None:
         self.clear_items()
         self.add_item(HelpSelectMenu(commands, self.ctx.bot))
@@ -171,7 +199,7 @@ class FrontPageSource(menus.PageSource):
 
         if self.index == 0:
             embed.add_field(
-                name="About Kumiko",
+                name="About Rodhaj",
                 value=(
                     "Kumiko is an multipurpose bot that takes an unique and alternative approach to "
                     "what an multipurpose bot is. Kumiko offers features such as a redirects system, quiet mode, and many more. You can get more "
@@ -204,7 +232,7 @@ class FrontPageSource(menus.PageSource):
         return embed
 
 
-class KumikoHelpPaginated(commands.HelpCommand):
+class KumikoHelp(commands.HelpCommand):
     context: commands.Context
 
     def __init__(self):
@@ -214,8 +242,7 @@ class KumikoHelpPaginated(commands.HelpCommand):
                     1, 3.0, commands.BucketType.member
                 ),
                 "help": "Shows help about the bot, a command, or a category",
-            },
-            verify_checks=True,
+            }
         )
 
     async def on_help_command_error(
@@ -254,14 +281,14 @@ class KumikoHelpPaginated(commands.HelpCommand):
             bot.commands, sort=True, key=key
         )
 
-        all_commands: dict[commands.Cog, List[commands.Command]] = {}
+        all_commands: dict[commands.Cog, list[commands.Command]] = {}
         for name, children in itertools.groupby(entries, key=key):
             if name == "\U0010ffff":
                 continue
 
             cog = bot.get_cog(name)
-            assert cog is not None
-            all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
+            if cog is not None:
+                all_commands[cog] = sorted(children, key=lambda c: c.qualified_name)
 
         menu = HelpMenu(FrontPageSource(), ctx=self.context)
         menu.add_categories(all_commands)
@@ -275,8 +302,16 @@ class KumikoHelpPaginated(commands.HelpCommand):
         )
         await menu.start()
 
-    def common_command_formatting(self, embed_like, command):
+    def common_command_formatting(
+        self,
+        embed_like: Union[discord.Embed, GroupHelpPageSource],
+        command: commands.Command,
+    ):
         embed_like.title = self.get_command_signature(command)
+        processed_perms = process_perms_name(command)
+        if isinstance(embed_like, discord.Embed) and processed_perms is not None:
+            embed_like.add_field(name="Required Permissions", value=processed_perms)
+
         if command.description:
             embed_like.description = f"{command.description}\n\n{command.help}"
         else:

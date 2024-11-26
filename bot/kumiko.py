@@ -10,7 +10,7 @@ from cogs import EXTENSIONS, VERSION
 from discord.ext import commands
 from libs.utils.config import KumikoConfig
 from libs.utils.context import KumikoContext
-from libs.utils.help import KumikoHelpPaginated
+from libs.utils.help import KumikoHelp
 from libs.utils.prefix import get_prefix
 from libs.utils.reloader import Reloader
 from libs.utils.tree import KumikoCommandTree
@@ -46,10 +46,13 @@ class Kumiko(commands.Bot):
         **kwargs,
     ):
         super().__init__(
-            intents=intents,
-            command_prefix=get_prefix,
-            help_command=KumikoHelpPaginated(),
             activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
+            allowed_mentions=discord.AllowedMentions(
+                everyone=False, replied_user=False
+            ),
+            command_prefix=get_prefix,
+            help_command=KumikoHelp(),
+            intents=intents,
             tree_cls=KumikoCommandTree,
             *args,
             **kwargs,
