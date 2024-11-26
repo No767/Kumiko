@@ -108,6 +108,7 @@ class Admin(commands.Cog, command_attrs=dict(hidden=True)):
         """Adds an ID to the global blacklist"""
         given_id = id.id
         await self.bot.add_to_blacklist(given_id)
+        self.bot.metrics.blacklist.users.inc()
         await ctx.send(f"Done. Added ID {given_id} to the blacklist")
 
     @blacklist.command(name="remove")
@@ -115,6 +116,7 @@ class Admin(commands.Cog, command_attrs=dict(hidden=True)):
         """Removes an ID from the global blacklist"""
         given_id = id.id
         await self.bot.remove_from_blacklist(given_id)
+        self.bot.metrics.blacklist.users.dec()
         await ctx.send(f"Done. Removed ID {given_id} from the blacklist")
 
 

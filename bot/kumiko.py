@@ -7,6 +7,7 @@ import discord
 import orjson
 from aiohttp import ClientSession
 from cogs import EXTENSIONS, VERSION
+from cogs.ext import prometheus
 from discord.ext import commands
 from libs.utils.config import Blacklist, KumikoConfig
 from libs.utils.context import KumikoContext
@@ -63,12 +64,15 @@ class Kumiko(commands.Bot):
         self.config = config
         self.default_prefix = ">"
         self.logger: logging.Logger = logging.getLogger("kumiko")
+        self.metrics = prometheus.MetricCollector(self)
         self.pool = pool
         self.session = session
         self.version = str(VERSION)
         self._config = config
         self._dev_mode = config.kumiko.get("dev_mode", False)
         self._reloader = Reloader(self, Path(__file__).parent)
+        self._prometheus = config.kumiko.get("prometheus", {})
+        self._prometheus_enabled = self._prometheus.get("enabled", False)
 
     ### Blacklist utilities
 
@@ -125,10 +129,17 @@ class Kumiko(commands.Bot):
             return
 
         if ctx.author.id in self.blacklist:
+            self.metrics.blacklist.commands.inc(1)
             return
 
         if ctx.guild and ctx.guild.id in self.blacklist:
+            self.metrics.blacklist.commands.inc(1)
             return
+
+        # Guaranteed to be commands now
+        self.metrics.commands.invocation.inc()
+        name = ctx.command.qualified_name
+        self.metrics.commands.count.labels(name).inc()
 
         await self.invoke(ctx)
 
@@ -146,12 +157,26 @@ class Kumiko(commands.Bot):
 
         await self.load_extension("jishaku")
 
+        if self._prometheus_enabled:
+            await self.load_extension("cogs.ext.prometheus")
+            prom_host = self._prometheus.get("host", "127.0.0.1")
+            prom_port = self._prometheus.get("port", 8770)
+
+            await self.metrics.start(host=prom_host, port=prom_port)
+            self.logger.info("Prometheus Server started on %s:%s", prom_host, prom_port)
+
+            self.metrics.fill()
+
         if self._dev_mode:
             self._reloader.start()
 
     async def on_ready(self) -> None:
         if not hasattr(self, "uptime"):
             self.uptime = discord.utils.utcnow()
+
+        if self._prometheus_enabled and not hasattr(self, "guild_metrics_created"):
+            self.guild_metrics_created = self.metrics.guilds.fill()
+
         curr_user = None if self.user is None else self.user.name
         self.logger.info(f"{curr_user} is fully ready!")
 
