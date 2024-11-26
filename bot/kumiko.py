@@ -8,7 +8,7 @@ import orjson
 from aiohttp import ClientSession
 from cogs import EXTENSIONS, VERSION
 from discord.ext import commands
-from libs.utils.config import KumikoConfig
+from libs.utils.config import Blacklist, KumikoConfig
 from libs.utils.context import KumikoContext
 from libs.utils.help import KumikoHelp
 from libs.utils.prefix import get_prefix
@@ -57,6 +57,9 @@ class Kumiko(commands.Bot):
             *args,
             **kwargs,
         )
+        self.blacklist: Blacklist[bool] = Blacklist(
+            Path(__file__).parent / "blacklist.json"
+        )
         self.config = config
         self.default_prefix = ">"
         self.logger: logging.Logger = logging.getLogger("kumiko")
@@ -66,6 +69,17 @@ class Kumiko(commands.Bot):
         self._config = config
         self._dev_mode = config.kumiko.get("dev_mode", False)
         self._reloader = Reloader(self, Path(__file__).parent)
+
+    ### Blacklist utilities
+
+    async def add_to_blacklist(self, object_id: int):
+        await self.blacklist.put(object_id, True)
+
+    async def remove_from_blacklist(self, object_id: int):
+        try:
+            await self.blacklist.remove(object_id)
+        except KeyError:
+            pass
 
     ### Bot-related overrides
 
@@ -110,7 +124,11 @@ class Kumiko(commands.Bot):
         if ctx.command is None:
             return
 
-        # TODO - Add Blacklist Feature
+        if ctx.author.id in self.blacklist:
+            return
+
+        if ctx.guild and ctx.guild.id in self.blacklist:
+            return
 
         await self.invoke(ctx)
 
