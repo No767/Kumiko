@@ -172,6 +172,7 @@ class Redirects(commands.Cog):
                 author=author,
                 reference_author=reference_author,
             )
+            self.bot.metrics.features.successful_redirects.inc()
             await interaction.response.send_message(
                 f"Notified {reference_author.display_name} to redirect the conversation to {redirected_thread}"
             )
@@ -212,6 +213,7 @@ class Redirects(commands.Cog):
                     author=ctx.author,
                     reference_author=reference_author,
                 )
+                self.bot.metrics.features.successful_redirects.inc()
                 await ctx.send(
                     f"Notified {reference_author.display_name} to redirect the conversation to {redirected_thread}"
                 )
