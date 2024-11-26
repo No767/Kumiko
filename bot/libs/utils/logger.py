@@ -16,6 +16,7 @@ class KumikoLogger:
     def __enter__(self) -> None:
         max_bytes = 32 * 1024 * 1024  # 32 MiB
         self.log.setLevel(logging.INFO)
+        logging.getLogger("watchfiles").setLevel(logging.ERROR)
         logging.getLogger("discord").setLevel(logging.INFO)
         handler = RotatingFileHandler(
             filename="kumiko.log",
