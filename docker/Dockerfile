@@ -27,6 +27,8 @@ ENV PATH="${PATH}:/home/kumiko/.local/bin"
 
 RUN pip install --user -r requirements.txt
 
+EXPOSE 8770
+
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 CMD ["/kumiko/start.sh"]
