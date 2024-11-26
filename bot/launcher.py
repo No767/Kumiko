@@ -3,7 +3,6 @@ import signal
 from pathlib import Path
 
 import asyncpg
-import discord
 from aiohttp import ClientSession
 from kumiko import Kumiko, init
 from libs.utils import KumikoConfig, KumikoLogger
@@ -21,9 +20,6 @@ config = KumikoConfig(config_path)
 TOKEN = config["kumiko"]["token"]
 POSTGRES_URI = config["postgres_uri"]
 
-intents = discord.Intents.default()
-intents.message_content = True
-
 
 async def main() -> None:
     async with (
@@ -38,7 +34,6 @@ async def main() -> None:
     ):
         async with Kumiko(
             config=config,
-            intents=intents,
             session=session,
             pool=pool,
         ) as bot:

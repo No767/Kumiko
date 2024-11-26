@@ -16,6 +16,10 @@ from libs.utils.prefix import get_prefix
 from libs.utils.reloader import Reloader
 from libs.utils.tree import KumikoCommandTree
 
+description = (
+    "A personal multipurpose Discord bot built with freedom and choice in mind"
+)
+
 
 async def init(conn: asyncpg.Connection):
     # Refer to https://github.com/MagicStack/asyncpg/issues/140#issuecomment-301477123
@@ -40,18 +44,26 @@ class Kumiko(commands.Bot):
     def __init__(
         self,
         config: KumikoConfig,
-        intents: discord.Intents,
         session: ClientSession,
         pool: asyncpg.Pool,
         *args,
         **kwargs,
     ):
+        intents = discord.Intents(
+            emojis=True,
+            guilds=True,
+            message_content=True,
+            messages=True,
+            reactions=True,
+            voice_states=True,
+        )
         super().__init__(
             activity=discord.Activity(type=discord.ActivityType.watching, name=">help"),
             allowed_mentions=discord.AllowedMentions(
                 everyone=False, replied_user=False
             ),
             command_prefix=get_prefix,
+            description=description,
             help_command=KumikoHelp(),
             intents=intents,
             tree_cls=KumikoCommandTree,
@@ -61,7 +73,6 @@ class Kumiko(commands.Bot):
         self.blacklist: Blacklist[bool] = Blacklist(
             Path(__file__).parent / "blacklist.json"
         )
-        self.config = config
         self.default_prefix = ">"
         self.logger: logging.Logger = logging.getLogger("kumiko")
         self.metrics = prometheus.MetricCollector(self)
@@ -147,6 +158,10 @@ class Kumiko(commands.Bot):
         if message.author.bot:
             return
         await self.process_commands(message)
+
+    async def on_guild_join(self, guild: discord.Guild) -> None:
+        if guild.id in self.blacklist:
+            await guild.leave()
 
     ### Internal core overrides
 
