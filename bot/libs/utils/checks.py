@@ -58,7 +58,7 @@ def check_permissions(**perms: bool) -> Callable[[T], T]:
         ):
             return False
         guild_perms = await check_guild_permissions(ctx, perms)
-        can_run = ctx.me.top_role > ctx.author.top_role
+        can_run = ctx.me.top_role < ctx.author.top_role
         return guild_perms and can_run
 
     def decorator(func: T) -> T:
