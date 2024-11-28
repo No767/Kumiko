@@ -36,7 +36,7 @@ async def get_prefix(bot: Kumiko, message: discord.Message) -> Union[str, list[s
 
     query = """
     SELECT prefix
-    FROM guild_config
+    FROM guild_prefix
     WHERE id = $1;
     """
     prefixes = await bot.pool.fetchval(query, message.guild.id)
