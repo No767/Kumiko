@@ -125,74 +125,74 @@ class Anilist(commands.GroupCog):
         }
         query = gql(
             """
-query ($search: String!, $sort: [CharacterSort], $tagIn: [String], $genreIn: [String], $isAdult: Boolean)  {
-  Page {
-    media (search: $search, tag_in: $tagIn, genre_in: $genreIn, isAdult: $isAdult) {
-      id
-      title {
-        native
-        romaji
-        english
-      }
-      description
-      chapters
-      volumes
-      rankings {
-        context
-        rank
-        year
-      }
-      format
-      status
-      startDate {
-        year
-        month
-        day
-      }
-      endDate {
-        year
-        month
-        day
-      }
-      seasonYear
-      season
-      averageScore
-      meanScore
-      popularity
-      favourites
-      studios {
-        nodes {
-          name
-          siteUrl
-        }
-      }
-      hashtag
-      genres
-      characters(sort: $sort) {
-        edges {
-          name
-          role
-          node {
-            siteUrl
-            image {
-              large
-            }
-          }
-        }
-      }
-      tags {
-        category
-        isGeneralSpoiler
-        isMediaSpoiler
-        name
-        rank
-      }
-      coverImage {
-        large
-      }
-    }
-  }
-}
+                query ($search: String!, $sort: [CharacterSort], $tagIn: [String], $genreIn: [String], $isAdult: Boolean)  {
+                  Page {
+                    media (search: $search, tag_in: $tagIn, genre_in: $genreIn, isAdult: $isAdult) {
+                      id
+                      title {
+                        native
+                        romaji
+                        english
+                      }
+                      description
+                      chapters
+                      volumes
+                      rankings {
+                        context
+                        rank
+                        year
+                      }
+                      format
+                      status
+                      startDate {
+                        year
+                        month
+                        day
+                      }
+                      endDate {
+                        year
+                        month
+                        day
+                      }
+                      seasonYear
+                      season
+                      averageScore
+                      meanScore
+                      popularity
+                      favourites
+                      studios {
+                        nodes {
+                          name
+                          siteUrl
+                        }
+                      }
+                      hashtag
+                      genres
+                      characters(sort: $sort) {
+                        edges {
+                          name
+                          role
+                          node {
+                            siteUrl
+                            image {
+                              large
+                            }
+                          }
+                        }
+                      }
+                      tags {
+                        category
+                        isGeneralSpoiler
+                        isMediaSpoiler
+                        name
+                        rank
+                      }
+                      coverImage {
+                        large
+                      }
+                    }
+                  }
+                }
             """
         )
         async with self.client as session:
