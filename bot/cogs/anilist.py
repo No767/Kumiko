@@ -115,6 +115,7 @@ class Anilist(commands.GroupCog):
 
     @commands.hybrid_command(name="search")
     async def search(self, ctx: GuildContext, *, flags: SearchFlags) -> None:
+        """Search for media and others on AniList"""
         await ctx.defer()
         params = {
             "search": flags.title,
