@@ -87,12 +87,6 @@ class AIOHTTPTransportExistingSession(AIOHTTPTransport):
         super().__init__(json_deserialize=deserializer, *args, **kwargs)
         self.session = session
 
-    async def connect(self) -> None:
-        pass
-
-    async def close(self) -> None:
-        pass
-
 
 class Anilist(commands.GroupCog):
     """AniList related commands"""
