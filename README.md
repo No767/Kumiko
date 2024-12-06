@@ -37,13 +37,11 @@ Kumiko uses both a prefixed command and slash commands. The currently supported 
 
 If you would like to get started, here are some links to help you with that:
 
-- [Trying out Kumiko](https://kumiko.readthedocs.io/en/latest/guides/user/trying-out.html)
-- [Contributing](contributing.md)
+- [Contributing](./github/contributing.md)
 - [Documentation](https://kumiko.readthedocs.io/en/latest)
 
 ## Resources and Links
 
-- [Documentation](https://kumiko.readthedocs.io/en/latest)
 - [Discord Support Server](https://discord.gg/ns3e74frqn)
 
 ## Licensing
