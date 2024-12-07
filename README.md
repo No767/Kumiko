@@ -10,8 +10,9 @@ A personal multipurpose Discord bot built with freedom and choice in mind
 
 <!-- </div> -->
 
-> [!NOTE]  
-> Highlights information that users should take into account, even when skimming.
+> [!IMPORTANT]  
+> 1. Kumiko is first and foremost my **own personal bot**. Development can be staggered, and is not taken as seriously as my other projects such as Catherine-Chan.
+> 2. I would prefer if you do not run instances of Kumiko in production. Just use the `>invite` command or use the Top.gg invite to have the bot on your server instead. The only reason why builds exist if for others to catch bugs and issues. The code provided is for educational use and for others to provide suggestions and feedback only.
 
 ## About
 
