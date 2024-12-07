@@ -1,4 +1,4 @@
-# Kumiko (久美子)
+<h1 align="center">Kumiko (久美子)</h1>
 
 <div align="center">
 
