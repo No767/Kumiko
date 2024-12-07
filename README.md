@@ -1,6 +1,6 @@
 # Kumiko (久美子)
 
-<!-- <div align="center"> -->
+<div align="center">
 
 ![Kumiko](./assets/kumiko-resized-round.svg)
 
@@ -8,7 +8,7 @@
 
 A personal multipurpose Discord bot built with freedom and choice in mind
 
-<!-- </div> -->
+</div>
 
 > [!IMPORTANT]
 >
