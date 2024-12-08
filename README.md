@@ -1,6 +1,6 @@
-<div align=center>
+<h1 align="center">Kumiko (久美子)</h1>
 
-# Kumiko (久美子)
+<div align="center">
 
 ![Kumiko](./assets/kumiko-resized-round.svg)
 
@@ -8,13 +8,13 @@
 
 A personal multipurpose Discord bot built with freedom and choice in mind
 
-<div align=left>
+</div>
 
-## Kumiko (久美子)
+## About
 
 Kumiko is a personal multipurpose Discord bot built with freedom and choice in mind. Kumiko provides a wide range of features, including an customizable redirects system, revolutionary quiet mode and anti-ping, and many more features. Integration with AniList, and others are also included.
 
-> ⚠️ **IMPORTANT**:
+> [!IMPORTANT]
 >
 > 1. Kumiko is first and foremost my **own personal bot**. Development can be staggered, and is not taken as seriously as my other projects such as Catherine-Chan.
 > 2. I would prefer if you do not run instances of Kumiko in production. Just use the `>invite` command or use the Top.gg invite to have the bot on your server instead. The only reason why builds exist if for others to catch bugs and issues. The code provided is for educational use and for others to provide suggestions and feedback only.
@@ -37,7 +37,7 @@ Kumiko uses both a prefixed command and slash commands. The currently supported 
 
 If you would like to get started, here are some links to help you with that:
 
-- [Contributing](./github/contributing.md)
+- [Contributing](.github/CONTRIBUTING.md)
 - [Documentation](https://kumiko.readthedocs.io/en/latest)
 
 ## Resources and Links
@@ -46,7 +46,7 @@ If you would like to get started, here are some links to help you with that:
 
 ## Licensing
 
-Kumiko and any software that is a part of Kumiko is licensed under [Apache-2.0](https://github.com/No767/Kumiko/blob/main/LICENSE).
+Kumiko and any software that is a part of Kumiko is licensed under [Apache-2.0](LICENSE).
 
 ## Name Inspiration
 
