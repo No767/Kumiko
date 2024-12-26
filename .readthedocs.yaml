@@ -9,5 +9,5 @@ build:
     - python -m sphinx -aEnTW --builder html --keep-going docs/ $READTHEDOCS_OUTPUT/html
 
 sphinx:
-   configuration: docs/source/conf.py
+   configuration: docs/conf.py
    fail_on_warning: true
