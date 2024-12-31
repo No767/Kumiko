@@ -16,4 +16,4 @@ jishaku>=2.6.0,<3
 watchfiles>=1.0.0,<2
 click>=8.1.7,<9
 typing-extensions>=4.12.0,<5
-gql>=3.6.0b2,<4
+gql>=3.5.0,<4
