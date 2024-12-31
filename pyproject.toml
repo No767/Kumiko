@@ -7,7 +7,7 @@ license = {file = "LICENSE"}
 requires-python = ">=3.10,<4.0"
 
 [tool.towncrier]
-directory = "changelog.d"
+directory = "changelogs"
 filename = "changelog.md"
 start_string = "<!-- towncrier release notes start -->\n"
 underlines = ["", "", ""]
@@ -52,8 +52,7 @@ include = ["bot/**"]
 exclude = [
     "**/__pycache__", 
     "**/.mypy_cache", 
-    "**/.dmpypy.json",
-    "old_code/**"
+    "**/.dmpypy.json"
 ]
 reportMissingImports = true
 typeCheckingMode = "basic"
@@ -61,9 +60,6 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 
 [tool.ruff]
 line-length = 88
-exclude = [
-  "old_code/**"
-]
 
 [tool.ruff.lint]
 ignore = [

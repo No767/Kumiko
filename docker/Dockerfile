@@ -3,9 +3,7 @@ FROM python:3.13-slim-bookworm
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   bash \
-  gcc \
   git \
-  libc6-dev \
   netcat-traditional \
   tini \
   && apt-get clean
