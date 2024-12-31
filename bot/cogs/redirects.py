@@ -239,7 +239,6 @@ class Redirects(commands.Cog):
             # Permissions.add_reaction and Permissions.read_message_history is required
             await ctx.message.add_reaction(discord.PartialEmoji(name="\U00002705"))
             await self.mark_as_resolved(channel, ctx.author)
-            return
         else:
             prompt_message = f"<@!{channel.owner_id}>, would you like to mark this thread as solved? If this thread is not marked as resolved, then it will not be resolved. This has been requested by {ctx.author.mention}."
             view = ConfirmResolvedView(

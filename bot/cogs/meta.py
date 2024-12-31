@@ -119,8 +119,6 @@ class Meta(commands.Cog):
         total_members = 0
         total_unique = len(self.bot.users)
 
-        text = 0
-        voice = 0
         guilds = 0
         for guild in self.bot.guilds:
             guilds += 1
@@ -128,14 +126,9 @@ class Meta(commands.Cog):
                 continue
 
             total_members += guild.member_count or 0
-            for channel in guild.channels:
-                if isinstance(channel, discord.TextChannel):
-                    text += 1
-                elif isinstance(channel, discord.VoiceChannel):
-                    voice += 1
 
         memory_usage = self.process.memory_full_info().uss / 1024**2
-        cpu_usage = self.process.cpu_percent() / psutil.cpu_count() # type: ignore # I'm not sure why pyright is complaining about this
+        cpu_usage = self.process.cpu_percent() / psutil.cpu_count()  # type: ignore # I'm not sure why pyright is complaining about this
 
         revisions = self.get_last_commits()
 
