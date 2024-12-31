@@ -1,4 +1,4 @@
-discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py@e1b6310ef387481a654a1085653a33aa1b17e034
+discord.py[speed,voice] @ git+https://github.com/Rapptz/discord.py@9806aeb83179d0d1e90d903e30db7e69e0d492e5
 audioop-lts>=0.2.1,<1 ; python_version>='3.13'
 uvloop>=0.21.0,<1 ; sys_platform != "win32"
 winloop>=0.1.6,<1 ; sys_platform == "win32"
