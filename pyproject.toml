@@ -7,7 +7,7 @@ license = {file = "LICENSE"}
 requires-python = ">=3.10,<4.0"
 
 [tool.towncrier]
-directory = "changelogs"
+directory = "changes"
 filename = "changelog.md"
 start_string = "<!-- towncrier release notes start -->\n"
 underlines = ["", "", ""]
