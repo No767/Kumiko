@@ -45,6 +45,14 @@ jobs:
         name: artifact
         path: releases
 
+    - name: Generate release notes
+      uses: no767/get-releasenote@0.1.0
+      with:
+        name: Kumiko
+        changes_file: changelog.md
+        output_file: output.md
+        version_file: bot/cogs/__init__.py
+
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@1.67.0
       id: tag_version
@@ -56,7 +64,7 @@ jobs:
     - name: Release New Version
       uses: ncipollo/release-action@v1
       with:
-        bodyFile: "changelog.md"
+        bodyFile: "output.md"
         token: ${{ secrets.PAT_TOKEN }}
         tag: ${{ steps.tag_version.outputs.new_tag }}
         name: ${{ steps.tag_version.outputs.new_tag }}
