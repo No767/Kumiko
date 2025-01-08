@@ -1,6 +1,8 @@
 from pkgutil import iter_modules
 from typing import Literal, NamedTuple
 
+__version__ = "0.12.0-beta"
+
 
 class VersionInfo(NamedTuple):
     major: int
