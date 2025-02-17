@@ -4,20 +4,17 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   bash \
   git \
-  netcat-traditional \
   tini \
   && apt-get clean
 
 WORKDIR /kumiko
 COPY bot/ /kumiko/bot/
 COPY /docker/start.sh /kumiko/start.sh
-COPY /docker/wait-for /kumiko/wait-for
 COPY /requirements.txt /kumiko/requirements.txt
 
 RUN adduser --disabled-password --gecos "" kumiko \
   && chown -R kumiko:kumiko /kumiko \
-  && chmod +x /kumiko/start.sh \
-  && chmod +x /kumiko/wait-for
+  && chmod +x /kumiko/start.sh
 
 USER kumiko
 
