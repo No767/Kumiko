@@ -6,7 +6,7 @@ discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus@8686b5d1bbc1
 msgspec>=0.19.0,<1
 python-dateutil>=2.9.0.post0,<3
 asyncpg>=0.30.0,<1
-psutil>=6.1.0,<7
+psutil>=6.1.0,<8
 pygit2>=1.16.0,<2
 async-lru>=2.0.4,<3
 prometheus-client>=0.20.0,<1
