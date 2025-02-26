@@ -10,5 +10,4 @@
 **/*$py.class
 
 # Configuration data
-
-**/*.y[a]ml
+**/*.yml
