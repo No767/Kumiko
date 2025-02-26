@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 KUMIKO_FIRST_START_CHECK="KUMIKO_FIRST_START"
 

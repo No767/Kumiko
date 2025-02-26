@@ -10,8 +10,11 @@ services:
     ports:
       - 8770:8770
     depends_on:
-      - database
-    command: sh -c '/kumiko/wait-for database:5432 -- echo "[Wait-for] PostgreSQL is fully up. Starting Kumiko." && /kumiko/start.sh'
+      database:
+        condition: service_healthy
+        restart: true
+    env_file:
+      - .env
     restart: always
 
   database:
