@@ -46,7 +46,7 @@ jobs:
         path: releases
 
     - name: Generate release notes
-      uses: no767/get-releasenote@0
+      uses: no767/get-releasenote@v0
       with:
         name: Kumiko
         changes_file: changelog.md
