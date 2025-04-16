@@ -15,7 +15,7 @@ tasks:
 
   bot:
     preconditions:
-      -  test -f bot/config.yml
+      - test -f bot/config.yml
     cmds:
       - python3 bot/launcher.py
     silent: true

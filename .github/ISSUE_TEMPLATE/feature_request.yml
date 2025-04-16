@@ -14,7 +14,7 @@ body:
       multiple: false
       label: What is the feature request for?
       options:
-        - Catherine-Chan
+        - Kumiko
         - The documentation
     validations:
       required: true
