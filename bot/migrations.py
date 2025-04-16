@@ -260,7 +260,7 @@ async def log(reverse):
     )
     for rev in revs:
         as_yellow = click.style(f"V{rev.version:>03}", fg="yellow")
-        click.echo(f'{as_yellow} {rev.description.replace("_", " ")}')
+        click.echo(f"{as_yellow} {rev.description.replace('_', ' ')}")
 
 
 if __name__ == "__main__":

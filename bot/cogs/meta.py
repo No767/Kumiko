@@ -32,7 +32,7 @@ class Meta(commands.Cog):
         if dt is None:
             return "N/A"
         return (
-            f'{discord.utils.format_dt(dt, "F")} ({discord.utils.format_dt(dt, "R")})'
+            f"{discord.utils.format_dt(dt, 'F')} ({discord.utils.format_dt(dt, 'R')})"
         )
 
     def format_commit(self, commit: pygit2.Commit) -> str:
@@ -100,10 +100,10 @@ class Meta(commands.Cog):
         desc = f"""
         **Name/ID**: {user.global_name} / {user.id}
         **Created**: {self.format_date(user.created_at)}
-        **Status**: {user.status if isinstance(user, discord.Member) else 'Unknown'}
+        **Status**: {user.status if isinstance(user, discord.Member) else "Unknown"}
         {platform_status}
         **Mutual Guilds**: {len(user.mutual_guilds)}
-        **Roles**: {', '.join(roles)}
+        **Roles**: {", ".join(roles)}
         """
 
         embed = discord.Embed(colour=discord.Colour.from_rgb(255, 125, 212))
