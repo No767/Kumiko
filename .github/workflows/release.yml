@@ -1,8 +1,7 @@
 name: Release
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 jobs:
   Bundle:
     runs-on: ubuntu-24.04

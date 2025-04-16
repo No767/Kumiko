@@ -5,10 +5,11 @@ on: pull_request_target
 jobs:
   auto-approve:
     runs-on: ubuntu-24.04
+
     permissions:
       pull-requests: write
+
     if: github.actor == 'dependabot[bot]'
+    
     steps:
       - uses: hmarr/auto-approve-action@v4
-        with:
-            github-token: ${{ secrets.PAT_TOKEN }}

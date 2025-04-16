@@ -51,7 +51,7 @@ body:
       options:
         - label: I have searched the open issues for duplicates.
           required: true
-        - label: This bug was found on the official version of Catherine-Chan and not on any self-hosted versions or forks.
+        - label: This bug was found on the official version of Kumiko and not on any self-hosted versions or forks.
           required: true
   - type: textarea
     attributes:

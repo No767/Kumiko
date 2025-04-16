@@ -9,7 +9,7 @@ requires-python = ">=3.10,<4.0"
 [tool.towncrier]
 directory = "changes"
 filename = "changelog.md"
-start_string = "<!-- towncrier release notes start -->\n"
+start_string = "<!-- towncrier release notes start -->"
 underlines = ["", "", ""]
 title_format = "## Kumiko [{version}](https://github.com/No767/Kumiko/tree/{version}) - {project_date}"
 issue_format = "[#{issue}](https://github.com/No767/Kumiko/issues/{issue})"
@@ -50,9 +50,9 @@ issue_format = "[#{issue}](https://github.com/No767/Kumiko/issues/{issue})"
 [tool.pyright]
 include = ["bot/**"]
 exclude = [
-    "**/__pycache__", 
-    "**/.mypy_cache", 
-    "**/.dmpypy.json"
+    "**/__pycache__",
+    "docs",
+    "docker"
 ]
 reportMissingImports = true
 typeCheckingMode = "basic"
@@ -60,6 +60,7 @@ reportUnnecessaryTypeIgnoreComment = "warning"
 
 [tool.ruff]
 line-length = 88
+extend-exclude = ["**/__pycache__"]
 
 [tool.ruff.lint]
 ignore = [
@@ -91,6 +92,7 @@ fixable = ["ALL"]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
+force-wrap-aliases = true
 
 [tool.ruff.format]
 docstring-code-format = true
