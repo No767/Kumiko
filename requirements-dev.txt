@@ -11,7 +11,7 @@ towncrier>=24.8.0,<25
 # Documentation utilities
 
 sphinx>=8.1.3,<9
-furo>=2024.8.6,<2025
+furo>=2024.8.6,<2026
 sphinx-copybutton>=0.5.2,<1
 sphinxext-opengraph>=0.9.1,<1
 sphinx-autobuild>=2024.10.3,<2025
