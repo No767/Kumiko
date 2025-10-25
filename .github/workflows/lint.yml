@@ -49,7 +49,7 @@ jobs:
       - name: Install Dependencies
         if: steps.cache-uv.outputs.cache-hit != 'true'
         run: |
-          uv sync --frozen --no-default-groups --group lint
+          uv sync --frozen --no-default-groups --group dev
 
       - name: Check typing
         run: |
