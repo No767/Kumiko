@@ -6,7 +6,7 @@ services:
     image: ghcr.io/no767/kumiko:edge
     volumes:
       # Do not edit the next line. If you want to change the path of the configuration file, please edit the CONFIG_LOCATION variable
-      - ${CONFIG_LOCATION}:/app/config.yml:ro
+      - ${CONFIG_LOCATION}:/app/config.yml
     ports:
       - 8770:8770
     depends_on:
@@ -53,7 +53,7 @@ services:
       database:
         condition: service_healthy
     volumes:
-      - ../app/schema.sql:/schema.sql
+      - ../src/schema.sql:/schema.sql
 
 volumes:
   database:

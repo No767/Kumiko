@@ -3,7 +3,7 @@ pre-commit:
     ruff-check:
       glob: "*.py" 
       stage_fixed: true
-      run: uv run ruff check {staged_files} --fix --exit-non-zero-on-fix 
+      run: uv run ruff check {staged_files} --fix --unsafe-fixes --exit-non-zero-on-fix 
     ruff-fmt:
       glob: "*.py" 
       stage_fixed: true
