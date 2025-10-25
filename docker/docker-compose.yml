@@ -15,8 +15,6 @@ services:
         restart: true
       migrate:
         condition: service_completed_successfully
-    env_file:
-      .env
     restart: always
 
   database:
