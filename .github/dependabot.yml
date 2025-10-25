@@ -1,15 +1,14 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
+  - package-ecosystem: uv
+    directory: /backend
     schedule:
-      interval: "weekly"
+      interval: weekly
     commit-message:
-      prefix: "[pip]"
+      prefix: "[uv]"
       include: "scope"
-    target-branch: "main"
     groups:
-      dev-deps:
-        dependency-type: "development"
-      prod-deps:
-        dependency-type: "production"
+      dependencies:
+        applies-to: version-updates
+        patterns:
+          - "*"
