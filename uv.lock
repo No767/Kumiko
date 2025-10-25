@@ -811,7 +811,7 @@ requires-dist = [
     { name = "msgspec", specifier = "~=0.19.0" },
     { name = "prometheus-async", specifier = "~=25.1.0" },
     { name = "prometheus-client", specifier = "~=0.23.1" },
-    { name = "psutil", specifier = "~=7.1.1" },
+    { name = "psutil", specifier = "~=7.1.2" },
     { name = "pygit2", specifier = "~=1.19.0" },
     { name = "python-dateutil", specifier = "~=2.9.0.post0" },
     { name = "pyyaml", specifier = "~=6.0.3" },
