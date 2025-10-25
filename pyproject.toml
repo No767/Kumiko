@@ -20,6 +20,7 @@ dependencies = [
     "pyyaml~=6.0.3",
     "typing-extensions~=4.15.0 ; python_full_version < '3.11'",
     "uvloop~=0.22.1 ; sys_platform != 'win32'",
+    "watchfiles~=1.1.1",
     "winloop~=0.3.1 ; sys_platform == 'win32'",
 ]
 
@@ -28,11 +29,11 @@ discord-ext-menus = { git = "https://github.com/Rapptz/discord-ext-menus", rev =
 
 [dependency-groups]
 dev = [
-    "watchfiles~=1.1.1",
     "towncrier~=25.8.0",
     { include-group = "lint" },
     { include-group = "docs" }
 ]
+
 lint = [
     "pyright[nodejs]~=1.1.407",
     "ruff~=0.14.2",

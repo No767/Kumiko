@@ -778,6 +778,7 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "pyyaml" },
     { name = "uvloop", marker = "sys_platform != 'win32'" },
+    { name = "watchfiles" },
     { name = "winloop", marker = "sys_platform == 'win32'" },
 ]
 
@@ -789,7 +790,6 @@ dev = [
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
     { name = "towncrier" },
-    { name = "watchfiles" },
 ]
 docs = [
     { name = "furo" },
@@ -817,6 +817,7 @@ requires-dist = [
     { name = "pyyaml", specifier = "~=6.0.3" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'", specifier = "~=4.15.0" },
     { name = "uvloop", marker = "sys_platform != 'win32'", specifier = "~=0.22.1" },
+    { name = "watchfiles", specifier = "~=1.1.1" },
     { name = "winloop", marker = "sys_platform == 'win32'", specifier = "~=0.3.1" },
 ]
 
@@ -828,7 +829,6 @@ dev = [
     { name = "sphinx", specifier = "~=8.2.3" },
     { name = "sphinx-copybutton", specifier = "~=0.5.2" },
     { name = "towncrier", specifier = "~=25.8.0" },
-    { name = "watchfiles", specifier = "~=1.1.1" },
 ]
 docs = [
     { name = "furo", specifier = "~=2025.9.25" },
