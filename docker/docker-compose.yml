@@ -3,10 +3,7 @@ name: kumiko
 services:
   kumiko:
     container_name: kumiko
-    # image: ghcr.io/no767/kumiko:edge
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
+    image: ghcr.io/no767/kumiko:edge
     volumes:
       # Do not edit the next line. If you want to change the path of the configuration file, please edit the CONFIG_LOCATION variable
       - ${CONFIG_LOCATION}:/app/config.yml
