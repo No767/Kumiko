@@ -1,20 +1,49 @@
 name: kumiko_dev
 
-# For development purposes, it is recommended in order to start the bot normally and using the Dev Reloader system
 services:
   database:
-    container_name: kumiko_postgres
-    build:
-      context: ./pg
-      dockerfile: Dockerfile
+    container_name: beaklevision_postgres
+    image: postgres:17
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE_NAME}
+      POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USERNAME}
-    volumes:
-      - database:/var/lib/postgresql/data
+      POSTGRES_INITDB_ARGS: '--data-checksums'
     ports:
       - 5432:5432
+    networks:
+      - default
+      - db_bridge
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready --dbname='${DB_DATABASE}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
+      interval: 5m
+      start_interval: 30s
+      start_period: 5m
+    restart: always
+
+  migrate:
+    container_name: kumiko_migrate
+    image: arigaio/atlas:latest
+    command: >
+      schema apply
+      --auto-approve
+      --to "file://schema.sql"
+      --url "postgres://${DB_USERNAME}:${DB_PASSWORD}@database:5432/${DB_DATABASE}?search_path=public&sslmode=disable"
+      --dev-url "postgres://${DB_USERNAME}:${DB_PASSWORD}@database:5432/postgres?search_path=public&sslmode=disable"
+    networks:
+      - default
+      - db_bridge
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ../app/schema.sql:/schema.sql
 
 volumes:
   database:
+
+networks:
+  db_bridge:
+    driver: bridge

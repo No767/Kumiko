@@ -9,7 +9,7 @@ The following is a set of guidelines for contributing to the repository. These a
 
 Generally, there are much better resources that are available. These include:
 
-- The official support server: [https://discord.gg/ns3e74frqn]
+- The official support server: <https://discord.gg/ns3e74frqn>
 - FAQ in the documentation
 
 Make sure to not ask questions in the issue tracker.

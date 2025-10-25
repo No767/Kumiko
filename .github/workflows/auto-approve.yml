@@ -4,6 +4,7 @@ on: pull_request_target
 
 jobs:
   auto-approve:
+    name: auto-approve
     runs-on: ubuntu-24.04
 
     permissions:
@@ -12,4 +13,5 @@ jobs:
     if: github.actor == 'dependabot[bot]'
     
     steps:
-      - uses: hmarr/auto-approve-action@v4
+      - name: Auto Approve
+        uses: hmarr/auto-approve-action@8f929096a962e83ccdfa8afcf855f39f12d4dac7 # 4.0.0

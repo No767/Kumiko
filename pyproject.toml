@@ -4,7 +4,45 @@ version = "1.0.0"
 description = "A multipurpose Discord bot built with freedom and choice in mind"
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.11,<4.0"
+dependencies = [
+    "async-lru~=2.0.5",
+    "asyncpg~=0.30.0",
+    "discord-ext-menus",
+    "discord-py[speed,voice]~=2.6.4",
+    "jishaku~=2.6.3",
+    "msgspec~=0.19.0",
+    "prometheus-async~=25.1.0",
+    "prometheus-client~=0.23.1",
+    "psutil~=7.1.1",
+    "pygit2~=1.19.0",
+    "python-dateutil~=2.9.0.post0",
+    "pyyaml~=6.0.3",
+    "typing-extensions~=4.15.0 ; python_full_version < '3.11'",
+    "uvloop~=0.22.1 ; sys_platform != 'win32'",
+    "winloop~=0.3.1 ; sys_platform == 'win32'",
+]
+
+[tool.uv.sources]
+discord-ext-menus = { git = "https://github.com/Rapptz/discord-ext-menus", rev = "8686b5d1bbc1d3c862292eb436ab630d6e9c9b53" }
+
+[dependency-groups]
+dev = [
+    "watchfiles~=1.1.1",
+    "towncrier~=25.8.0",
+    { include-group = "lint" },
+    { include-group = "docs" }
+]
+lint = [
+    "pyright[nodejs]~=1.1.407",
+    "ruff~=0.14.2",
+]
+docs = [
+    "furo~=2025.9.25",
+    "sphinx~=8.2.3",
+    "sphinx-copybutton~=0.5.2",
+]
+
 
 [tool.towncrier]
 directory = "changes"
@@ -48,29 +86,64 @@ issue_format = "[#{issue}](https://github.com/No767/Kumiko/issues/{issue})"
     showcontent = true
 
 [tool.pyright]
-include = ["bot/**"]
+include = [
+    "src"
+]
 exclude = [
     "**/__pycache__",
-    "docs",
-    "docker"
+    ".venv",
+    "docs"
 ]
-reportMissingImports = true
-typeCheckingMode = "basic"
+reportMissingImports = "error"
+typeCheckingMode = "standard"
 reportUnnecessaryTypeIgnoreComment = "warning"
+reportFunctionMemberAccess = "none"
+reportCallIssue = "none"
+reportArgumentType = "none"
 
 [tool.ruff]
 line-length = 88
-extend-exclude = ["**/__pycache__"]
+extend-include = [
+    "src"
+]
+extend-exclude = [
+    "**/__pycache__",
+    ".venv",
+    "docs"
+]
 
 [tool.ruff.lint]
 ignore = [
-    "E501", 
-    "N999", 
-    "E402", 
-    "S311", 
-    "ASYNC109",
-    "S101",
-    
+    "ANN003",   # Expects TypedDict with Unpack, and I'm not wasting my time doing that
+    "ANN202",   # It's fine sometimes
+    "ANN204",   # I would prefer not to
+    "ANN401",   # Any is the correct type in some cases
+    "B901",     # I'm aware of how generators as coroutines work - Sinbad
+    "B903",     # We don't need to use dataclasses for everything
+    "B904",     # Straight up wrong
+    "D100",     # Also a massive waste of time
+    "D101",     # I'm not writing docstrings all of the time
+    "D102",     # I'm not writing them
+    "D103",     # Also not writing these
+    "D104",     # Nor this
+    "D105",     # Waste of time
+    "D107",     # __init__ is the wrong place to doc this
+    "D415",     # I'm not being formal
+    "E501",     # Ruff formats it, so ignore
+    "EM101",    # Incorrect
+    "FBT003",   # Straight up wrong...
+    "PLR0912",  # too many branches
+    "PLR0913",  # number of function arguments
+    "PLR0915",  # too many statements.... in an async entrypoint handling graceful shutdown...
+    "PLR0917",  # too many positional arguments
+    "PLR2004",  # Magic numbers,
+    "PGH003",   # I'm too lazy
+    "UP007",    # Does not account for union unpacking and I prefer this style
+    "UP045",    # No, I prefer this
+    "TRY003",   # Goes against the standard
+    "RUF029",   # async in interface is fine
+    "S311",     # We all know...
+
     # These are recommended by Ruff if the formatter is to be used: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
     "W191",
     "E111",
@@ -86,13 +159,36 @@ ignore = [
     "COM819",
     "ISC001",
     "ISC002"
-    ]
-select = ["E", "F", "N", "ASYNC", "S", "ERA", "I"]
+]
+
+# Pulled from https://github.com/mikeshardmind/async-utils/blob/main/pyproject.toml#L149
+select = [
+    "A", "ANN", "ASYNC", "B", "BLE", "C4", "COM", "D", "DTZ", "E",
+    "EM", "ERA", "F", "FA", "FBT", "FURB", "G", "I", "ICN", "INP", "ISC", "LOG",
+    "PD", "PERF", "PGH", "PIE", "PLC", "PLE", "PLR", "PLW", "PTH", "PYI",
+    "Q", "Q003", "RET", "RSE", "RUF", "S", "SIM", "SLOT", "T20", "TC", "TID",
+    "TRY", "UP", "W", "YTT"
+]
 fixable = ["ALL"]
+unfixable = ["E501"]
 
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-wrap-aliases = true
 
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
 [tool.ruff.format]
 docstring-code-format = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra"
+testpaths = [
+    "tests"
+]
+asyncio_default_fixture_loop_scope = "function"
