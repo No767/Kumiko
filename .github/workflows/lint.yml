@@ -19,7 +19,6 @@ jobs:
     env:
       # Configure a constant location for the uv cache
       UV_CACHE_DIR: /tmp/.uv-cache
-      UV_NO_DEV: 1
 
     steps:
       - name: Checkout Repository  
@@ -49,7 +48,7 @@ jobs:
       - name: Install Dependencies
         if: steps.cache-uv.outputs.cache-hit != 'true'
         run: |
-          uv sync --frozen --no-default-groups --group dev
+          uv sync --frozen
 
       - name: Check typing
         run: |
