@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated, Union
+from typing import TYPE_CHECKING, Annotated
 
 import discord
 from discord import app_commands
@@ -40,7 +40,7 @@ class Config(commands.Cog):
 
     ### Prefix utilities
 
-    def _clean_prefixes(self, prefixes: Union[str, list[str]]) -> str:
+    def _clean_prefixes(self, prefixes: str | list[str]) -> str:
         if isinstance(prefixes, str):
             return f"`{prefixes}`"
 

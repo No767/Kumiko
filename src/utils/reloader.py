@@ -40,7 +40,7 @@ class Reloader:
             await self.bot.load_extension(module)
             self.logger.info("Loaded extension: %s", module)
 
-    async def reload_lib_modules(self, module: str) -> None:
+    def reload_lib_modules(self, module: str) -> None:
         try:
             actual_module = sys.modules[module]
             importlib.reload(actual_module)
@@ -69,7 +69,7 @@ class Reloader:
                 await self.bot.unload_extension(true_module)
         elif true_module.startswith("libs"):
             self.logger.info("Reloaded library module: %s", true_module)
-            await self.reload_lib_modules(true_module)
+            self.reload_lib_modules(true_module)
 
     async def _watch_cogs(self):
         async for changes in awatch(self._cogs_path, self._libs_path, recursive=True):

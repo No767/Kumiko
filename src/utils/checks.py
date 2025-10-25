@@ -18,7 +18,10 @@ if TYPE_CHECKING:
 
 
 async def check_guild_permissions(
-    ctx: KumikoContext, perms: dict[str, bool], *, check: bool = all
+    ctx: KumikoContext,
+    perms: dict[str, bool],
+    *,
+    check=all,  # noqa: ANN001
 ) -> bool:
     is_owner = await ctx.bot.is_owner(ctx.author)
     if is_owner:
@@ -34,7 +37,10 @@ async def check_guild_permissions(
 
 
 async def check_bot_permissions(
-    ctx: KumikoContext, perms: dict[str, bool], *, check: bool = all
+    ctx: KumikoContext,
+    perms: dict[str, bool],
+    *,
+    check=all,  # noqa: ANN001
 ) -> bool:
     is_owner = await ctx.bot.is_owner(ctx.author)
     if is_owner:

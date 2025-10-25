@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from async_lru import alru_cache
 
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @alru_cache(maxsize=1024)
-async def get_prefix(bot: Kumiko, message: discord.Message) -> Union[str, list[str]]:
+async def get_prefix(bot: Kumiko, message: discord.Message) -> str | list[str]:
     """Obtains the prefix for the guild
 
     This coroutine is heavily cached in order to reduce database calls
@@ -44,5 +44,6 @@ async def get_prefix(bot: Kumiko, message: discord.Message) -> Union[str, list[s
     if prefixes is None:
         get_prefix.cache_invalidate(bot, message)
         return base
+
     base.extend(item for item in prefixes)
     return base

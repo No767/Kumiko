@@ -205,6 +205,7 @@ class KumikoPages(discord.ui.View):
     async def go_to_current_page(
         self, interaction: discord.Interaction, button: discord.ui.Button
     ) -> None:
+        # In the middle button, so no need for impl
         pass
 
     @discord.ui.button(label="Next", style=discord.ButtonStyle.blurple)
