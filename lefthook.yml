@@ -3,8 +3,8 @@ pre-commit:
     ruff-check:
       glob: "*.py" 
       stage_fixed: true
-      run: ruff check {staged_files} --fix --exit-non-zero-on-fix --config pyproject.toml
+      run: uv run ruff check {staged_files} --fix --exit-non-zero-on-fix 
     ruff-fmt:
       glob: "*.py" 
       stage_fixed: true
-      run: ruff format {staged_files} --config pyproject.toml
+      run: uv run ruff format {staged_files}

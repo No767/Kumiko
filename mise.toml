@@ -1,0 +1,90 @@
+redactions = ["DB_PASSWORD"]
+
+[tools]
+uv = "0.9.5"
+atlas = "latest"
+
+lefthook = "latest"
+
+[settings]
+experimental = true
+pin = true
+
+[hooks]
+postinstall = "lefthook install"
+
+[env]
+_.file = [{ path = "{{ config_root }}/.env" }]
+DATABASE_URL = "postgres://{{env.DB_USERNAME}}:{{env.DB_PASSWORD}}@localhost:5432/{{env.DB_DATABASE}}?sslmode=disable"
+
+
+[tasks."bot:up"]
+alias = ["bot:start", "bot:dev"]
+depends = ["bot:check-config"]
+description = "Starts up the bot for development"
+env._.path = ".venv/bin"
+dir = "{{ config_root }}"
+run = "python3 src/main.py"
+
+[tasks."bot:lint"]
+description = "Lints the codebase by type checking and general linting"
+env._.path = ".venv/bin"
+dir = "{{ config_root }}"
+run = ["pyright src", "ruff check src --fix --exit-non-zero-on-fix"]
+
+[tasks."bot:format"]
+description = "Formats the codebase"
+env._.path = ".venv/bin"
+dir = "{{ config_root }}"
+run = "ruff format src"
+
+[tasks."bot:check"]
+description = "Lint and format codebase. This is necessary to handle import sorting and formatting. TD;LR: Run this task once you are done with development at the end of the PR"
+run = [{ task = "bot:lint" }, { task = "bot:format" }]
+
+[tasks."bot:schema:plan"]
+depends = ["bot:check-env"]
+description = "Plans schema diffs"
+run = "atlas schema plan --to file://src/schema.sql --env local --var url=$DATABASE_URL"
+run_windows = "atlas schema plan --to file://src/schema.sql --env local --var url=%DATABASE_URL%"
+
+[tasks."bot:schema:apply"]
+depends = ["bot:check-env"]
+description = "Applies schema diffs to database"
+run = "atlas schema apply --auto-approve --env local --var url=$DATABASE_URL"
+run_windows = "atlas schema apply --auto-approve --env local --var url=%DATABASE_URL%"
+
+[tasks."bot:towncrier:create"]
+description = "Creates towncrier entry"
+env._.path = ".venv/bin"
+usage = "arg '<entry>' help='Towncrier entry to put'"
+dir = "{{ config_root }}"
+run = "towncrier create -c {{arg(name='entry')}}"
+
+[tasks."bot:towncrier:build"]
+description = "Builds towncrier changelog"
+env._.path = ".venv/bin"
+dir = "{{ config_root }}"
+run = "towncrier build --yes"
+
+[tasks."bot:check-env"]
+hide = true
+run = "test -f {{ config_root }}/.env"
+run_windows = 'IF NOT EXIST {{ config_root }}\.env (EXIT /B 2)'
+
+[tasks."bot:check-config"]
+hide = true
+run = "test -f {{ config_root }}/config.yml"
+run_windows = 'IF NOT EXIST {{ config_root }}\config.yml (EXIT /B 2)'
+
+[tasks."bot:docker:up"]
+depends = ["bot:check-env"]
+description = "Brings up the development databases through Docker Compose"
+dir = "{{ config_root }}"
+run = "docker compose -f docker/docker-compose.dev.yml --env-file .env up -d"
+
+[tasks."bot:docker:stop"]
+depends = ["bot:check-env"]
+description = "Stops the development databases through Docker Compose"
+dir = "{{ config_root }}"
+run = "docker compose -f docker/docker-compose.dev.yml --env-file .env stop"

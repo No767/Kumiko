@@ -1,0 +1,9 @@
+token: ""
+dev_mode: False
+
+prometheus:
+  enabled: True
+  host: localhost
+  port: 8770
+
+postgres_uri: ""
