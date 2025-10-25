@@ -14,4 +14,4 @@ jobs:
     
     steps:
       - name: Auto Approve
-        uses: hmarr/auto-approve-action@v3
+        uses: hmarr/auto-approve-action@8f929096a962e83ccdfa8afcf855f39f12d4dac7 # 4.0.0

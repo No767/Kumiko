@@ -50,6 +50,9 @@ WORKDIR /app/
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
+# Use non-root user
+USER app
+
 EXPOSE 8770
 
 ENTRYPOINT ["/tini", "--"]
