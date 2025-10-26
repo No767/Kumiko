@@ -2,7 +2,7 @@ name: kumiko_dev
 
 services:
   database:
-    container_name: beaklevision_postgres
+    container_name: kumiko_postgres
     image: postgres:17
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -39,7 +39,7 @@ services:
       database:
         condition: service_healthy
     volumes:
-      - ../app/schema.sql:/schema.sql
+      - ../src/schema.sql:/schema.sql
 
 volumes:
   database:

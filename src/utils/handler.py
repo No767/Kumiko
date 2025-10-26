@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class KeyboardInterruptHandler:
     def __init__(self, bot: Kumiko):
         self.bot = bot
-        self._task: Optional[asyncio.Task]
+        self._task: Optional[asyncio.Task] = None
 
     def __call__(self):
         if self._task:

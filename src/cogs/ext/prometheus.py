@@ -61,7 +61,7 @@ class GuildCollector:
                 elif isinstance(channel, discord.VoiceChannel):
                     voice += 1
 
-        return GuildCount(count=guilds, text=text, voice=voice, users=users)
+        return GuildCount(amount=guilds, text=text, voice=voice, users=users)
 
     def fill(self) -> None:
         stats = self._get_stats()

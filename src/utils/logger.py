@@ -1,37 +1,54 @@
 import logging
 from logging.handlers import RotatingFileHandler
 from types import TracebackType
-from typing import TypeVar
 
-import discord
+from utils.checks import is_docker
 
-BE = TypeVar("BE", bound=BaseException)
+MAX_BYTES = 32 * 1024 * 1024  # 32 MiB
 
 
 class KumikoLogger:
     def __init__(self) -> None:
-        self.self = self
-        self.log = logging.getLogger("kumiko")
+        self._disable_watchfiles_logger()
+
+    def _get_formatter(self) -> logging.Formatter:
+        dt_fmt = "%Y-%m-%d %H:%M:%S"
+        return logging.Formatter(
+            "[{asctime}] [{levelname}]\t\t{message}", dt_fmt, style="{"
+        )
+
+    def _disable_watchfiles_logger(self) -> None:
+        watchfiles = logging.getLogger("watchfiles")
+
+        watchfiles.propagate = False
+        watchfiles.addHandler(logging.NullHandler())
 
     def __enter__(self) -> None:
-        max_bytes = 32 * 1024 * 1024  # 32 MiB
-        self.log.setLevel(logging.INFO)
-        logging.getLogger("watchfiles").setLevel(logging.ERROR)
-        logging.getLogger("discord").setLevel(logging.INFO)
-        handler = RotatingFileHandler(
-            filename="kumiko.log",
-            encoding="utf-8",
-            mode="w",
-            maxBytes=max_bytes,
-            backupCount=5,
-        )
-        fmt = logging.Formatter(
-            fmt="%(asctime)s %(levelname)s\t%(message)s",
-            datefmt="[%Y-%m-%d %H:%M:%S]",
-        )
-        handler.setFormatter(fmt)
-        self.log.addHandler(handler)
-        discord.utils.setup_logging(formatter=fmt)
+        discord_logger = logging.getLogger("discord")
+
+        root = logging.getLogger("kumiko")
+
+        handler = logging.StreamHandler()
+        handler.setFormatter(self._get_formatter())
+
+        if not is_docker():
+            file_handler = RotatingFileHandler(
+                filename="kumiko.log",
+                encoding="utf-8",
+                mode="w",
+                maxBytes=MAX_BYTES,
+                backupCount=5,
+            )
+            file_handler.setFormatter(self._get_formatter())
+
+            discord_logger.addHandler(file_handler)
+            root.addHandler(file_handler)
+
+        discord_logger.setLevel(logging.INFO)
+        discord_logger.addHandler(handler)
+
+        root.setLevel(logging.INFO)
+        root.addHandler(handler)
 
     def __exit__(
         self,
@@ -39,8 +56,10 @@ class KumikoLogger:
         exc: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
-        self.log.info("Shutting down...")
-        handlers = self.log.handlers[:]
+        root = logging.getLogger("kumiko")
+
+        root.info("Shutting down...")
+        handlers = root.handlers[:]
         for hdlr in handlers:
             hdlr.close()
-            self.log.removeHandler(hdlr)
+            root.removeHandler(hdlr)

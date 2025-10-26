@@ -1,16 +1,20 @@
+from __future__ import annotations
+
 import inspect
 import itertools
-from collections.abc import Mapping
-from typing import Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 import discord
 from discord.ext import commands, menus
 
-from core import Kumiko
 from utils.embeds import Embed
 
 from .pages import KumikoPages
 
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    from core import Kumiko
 # RGB Colors:
 # Pink (255, 161, 231) - Used for the main bot page
 # Lavender (197, 184, 255) - Used for cog and group pages

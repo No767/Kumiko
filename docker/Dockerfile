@@ -9,6 +9,9 @@ ENV UV_LINK_MODE=copy
 # Disable Python downloads as the system Python interpreter instead
 ENV UV_PYTHON_DOWNLOADS=0
 
+# Disable development dependencies from being installed
+ENV UV_NO_DEV=1
+
 # Set Tini version
 # Ref: https://github.com/krallin/tini?tab=readme-ov-file#using-tini
 ENV TINI_VERSION=v0.19.0
@@ -27,14 +30,14 @@ COPY pyproject.toml uv.lock /app/
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-install-project --no-dev
+    uv sync --frozen --no-install-project
 
 # Add project source code
 COPY ./src /app
 
 # Install the rest (this allows for optimal caching)
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+    uv sync --frozen
 
 FROM python:3.13-slim-trixie
 
