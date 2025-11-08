@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: uv
-    directory: /backend
+    directory: /
     schedule:
       interval: weekly
     commit-message:
@@ -11,4 +11,5 @@ updates:
       dependencies:
         applies-to: version-updates
         patterns:
+
           - "*"
