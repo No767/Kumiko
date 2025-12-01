@@ -7,7 +7,7 @@ license = {file = "LICENSE"}
 requires-python = ">=3.11,<4.0"
 dependencies = [
     "async-lru~=2.0.5",
-    "asyncpg~=0.30.0",
+    "asyncpg~=0.31.0",
     "discord-ext-menus",
     "discord-py[speed,voice]~=2.6.4",
     "jishaku~=2.6.3",
