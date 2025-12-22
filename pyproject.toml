@@ -39,8 +39,8 @@ lint = [
     "ruff~=0.14.2",
 ]
 docs = [
-    "furo~=2025.9.25",
-    "sphinx~=8.2.3",
+    "furo~=2025.12.19",
+    "sphinx~=9.0.4",
     "sphinx-copybutton~=0.5.2",
 ]
 
