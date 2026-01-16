@@ -9,29 +9,21 @@ Kumiko
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: User Guide
+   :caption: Overviews
 
-   user/features
-   user/prefix
-
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-   :caption: Development Guide
-
-   dev/intro
-   dev/faq
+   overviews/user/index
+   overviews/dev/index
 
    
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: Terms of Service
+   :caption: Miscellaneous
 
-   terms-of-service/tos
-   terms-of-service/privacy-policy
+   misc/tos.rst
+   misc/privacy-policy.rst
 
-.. figure:: /_assets/kumiko-resized-round.svg
+.. figure:: /_images/kumiko-resized-round.svg
    :align: right
 
 .. image:: https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver
@@ -56,21 +48,36 @@ Features
 * Quiet mode
 * Support for AniList and other anime-related services
 
+
 Guides
 ------
 
 Are you interested in contributing to Kumiko as a developer? Or are you interested in learning the different features of Kumiko? This is the place to get started!
 
-- :doc:`dev/intro`
+.. grid:: 2
+   :gutter: 4
+
+   .. grid-item-card:: :material-regular:`account_circle;2em;sd-mr-2` User Overview
+      :link: overviews/user/index
+      :link-type: doc
+      :link-alt: Leads to user-facing documentation
+      :shadow: md
+
+      Covers user-facing features and documentation
+
+   .. grid-item-card:: :material-regular:`code;2em;sd-mr-2` Development Overview
+      :link: overviews/dev/index
+      :link-type: doc
+      :link-alt: Leads to development documentation
+      :shadow: md
+
+      Technical developer-focused overview and documentation
+
 
 Resources and Links
 -------------------
 
 - `GitHub <https://github.com/No767/Kumiko>`_
 - `Discord Server <https://discord.gg/ns3e74frqn>`_
-
-Project Links
-^^^^^^^^^^^^^
-
 - `Contributing <https://github.com/No767/Kumiko/blob/main/.github/CONTRIBUTING.md>`_
 - `Project License <https://github.com/No767/Kumiko/blob/main/LICENSE>`_

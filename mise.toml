@@ -73,6 +73,20 @@ description = "Stops the development databases through Docker Compose"
 dir = "{{ config_root }}"
 run = "docker compose -f docker/docker-compose.dev.yml --env-file .env stop"
 
+# Docs tasks
+[tasks."docs:auto:build"]
+description = "Builds documentation and serves using sphinx-autobuild"
+env._.path = ".venv/bin"
+dir ="{{ config_root }}/docs"
+run = "uv run sphinx-autobuild -nTW . ./_build/dev/html"
+
+[tasks."docs:preview:build"]
+description = "Builds the documentation for production"
+env._.path = ".venv/bin"
+dir ="{{ config_root }}/docs"
+run = "uv run sphinx-build -aEnTW --keep-going . ./_build/dist/html"
+
+# Towncrier tasks
 [tasks."towncrier:create"]
 description = "Creates towncrier entry"
 env._.path = ".venv/bin"

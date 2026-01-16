@@ -23,9 +23,9 @@ It is strongly recommended you read what the different options the command offer
 For example, in order to sync your commands, you would run a command in your Discord client
 such as the following:
 
-.. code-block::
+::
 
-    r>sync
+    >sync
 
 To see details information on why the practice of automatically syncing commands is bad,
 see `this gist <https://gist.github.com/No767/e65fbfdedc387457b88723595186000f>`_ for more.
