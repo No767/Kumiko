@@ -5,7 +5,7 @@ build:
   tools:
     python: "3.14"
   commands:
-    - python3 -m pip install sphinx>=8.2.3 furo>=2025.9.25 sphinx_design>=0.6.1 sphinxext-opengraph[social-cards]>=0.13.0 roman-numerals==3.1.0
+    - python3 -m pip install sphinx>=8.2.3 furo>=2025.9.25 sphinx_design>=0.6.1 sphinxext-opengraph[social-cards]>=0.13.0 sphinx-copybutton>=0.5.2 roman-numerals==3.1.0
     - python3 -m sphinx -aEnTW --builder html --keep-going docs/ $READTHEDOCS_OUTPUT/html
 
 sphinx:
