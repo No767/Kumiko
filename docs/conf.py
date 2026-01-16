@@ -40,7 +40,7 @@ ogp_custom_meta_tags = [
 
 ogp_social_cards = {
     "enable": True,
-    "image": "./_images/kumiko-resized-round.svg",
+    "image": "./_images/kumiko-resized-round.png",
     "line_color": "#FFABE1",
 }
 
