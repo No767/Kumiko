@@ -11,5 +11,4 @@ updates:
       dependencies:
         applies-to: version-updates
         patterns:
-
           - "*"

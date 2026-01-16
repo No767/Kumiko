@@ -8,23 +8,22 @@ jobs:
     if: contains(github.event.head_commit.message, '#major') || contains(github.event.head_commit.message, '#minor') || contains(github.event.head_commit.message, '#patch')
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare for bundling
         run: |
           mkdir -p kumiko-docker
           mkdir -p releases
-          cp docker/docker-compose.yml kumiko-docker/
-          cp docker/example.env kumiko-docker/
-          cp -r docker/pg/ kumiko-docker/
+          cp docker/docker-compose.yml kumiko-docker/docker-compose.yml
+          cp .env.dist kumiko-docker/.env.dist
   
       - name: Bundle docker-related files
         run: |
           zip releases/kumiko-docker.zip kumiko-docker/**
-          tar -czf releases/kumiko-docker.tar.gz kumiko-docker/** 
+          tar -czf releases/kumiko-docker.tar.gz kumiko-docker/**
   
       - name: Upload bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           path: releases
   
@@ -34,23 +33,23 @@ jobs:
     needs: Bundle
     if: contains(github.event.head_commit.message, '#major') || contains(github.event.head_commit.message, '#minor') || contains(github.event.head_commit.message, '#patch')
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: '0'
 
     - name: Download Artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       with:
         name: artifact
         path: releases
 
     - name: Generate release notes
-      uses: no767/get-releasenote@v0
+      uses: no767/get-releasenote@3eedfc5c134cf232520bb18ccc856838dbdc0b3f
       with:
         name: Kumiko
         changes_file: changelog.md
         output_file: output.md
-        version_file: bot/cogs/__init__.py
+        version_file: src/cogs/__init__.py
 
     - name: Bump version and push tag
       uses: anothrNick/github-tag-action@1.67.0

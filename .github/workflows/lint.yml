@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ['3.10', '3.11', '3.12', '3.13']
+        version: ["3.12", "3.13", "3.14"]
 
     env:
       # Configure a constant location for the uv cache
@@ -30,26 +30,25 @@ jobs:
           python-version: ${{ matrix.version }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # 6.8.0
+        uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # 7.2.0
         with:
           version: "latest"
-          enable-cache: true
-
+  
       - name: Cache Dependencies
         id: cache-uv
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /tmp/.uv-cache
           key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
           restore-keys: |
             uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
             uv-${{ runner.os }}
-
+    
       - name: Install Dependencies
         if: steps.cache-uv.outputs.cache-hit != 'true'
         run: |
           uv sync --frozen
-
+  
       - name: Check typing
         run: |
           uv run pyright src
