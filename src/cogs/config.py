@@ -6,9 +6,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils import Embed
+from core import get_prefix
 from utils.checks import is_manager
-from utils.prefix import get_prefix
+from utils.embeds import Embed
 
 if TYPE_CHECKING:
     from core import Kumiko
@@ -30,7 +30,7 @@ class PrefixConverter(commands.Converter):
 class Config(commands.Cog):
     """Configuration layer for Kumiko"""
 
-    def __init__(self, bot: Kumiko):
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
         self.pool = self.bot.pool
 

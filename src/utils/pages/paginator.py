@@ -30,7 +30,7 @@ class NumberedPageModal(discord.ui.Modal, title="Go to page"):
 
 # This is originally from RoboDanny's Paginator class (RoboPages)
 class KumikoPages(discord.ui.View):
-    embed: Embed
+    embed: discord.Embed | Embed
 
     def __init__(
         self,
@@ -39,7 +39,7 @@ class KumikoPages(discord.ui.View):
         ctx: Context,
         check_embeds: bool = True,
         compact: bool = False,
-    ):
+    ) -> None:
         super().__init__()
         self.source: menus.PageSource = source
         self.check_embeds: bool = check_embeds

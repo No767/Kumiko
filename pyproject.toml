@@ -22,6 +22,7 @@ dependencies = [
     "uvloop~=0.22.1 ; sys_platform != 'win32'",
     "watchfiles~=1.1.1",
     "winloop~=0.4.0 ; sys_platform == 'win32'",
+    "zstandard~=0.25.0",
 ]
 
 [tool.uv.sources]
@@ -40,8 +41,11 @@ lint = [
 ]
 docs = [
     "furo~=2025.12.19",
-    "sphinx~=9.0.4",
+    "sphinx~=8.2.3",
+    "sphinx-autobuild~=2025.8.25",
     "sphinx-copybutton~=0.5.2",
+    "sphinx-design~=0.6.1",
+    "sphinxext-opengraph[social-cards]~=0.13.0",
 ]
 
 
@@ -51,7 +55,8 @@ filename = "changelog.md"
 start_string = "<!-- towncrier release notes start -->"
 underlines = ["", "", ""]
 title_format = "## Kumiko [{version}](https://github.com/No767/Kumiko/tree/{version}) - {project_date}"
-issue_format = "[#{issue}](https://github.com/No767/Kumiko/issues/{issue})"
+issue_format = "#{issue}"
+package = "src.cogs"
 
   [[tool.towncrier.section]]
     path = ""
@@ -93,7 +98,7 @@ include = [
 exclude = [
     "**/__pycache__",
     ".venv",
-    "docs"
+    "docs", "**/node_modules", "**/.*"
 ]
 reportMissingImports = "error"
 typeCheckingMode = "standard"
@@ -115,24 +120,16 @@ extend-exclude = [
 
 [tool.ruff.lint]
 ignore = [
-    "ANN003",   # Expects TypedDict with Unpack, and I'm not wasting my time doing that
     "ANN202",   # It's fine sometimes
-    "ANN204",   # I would prefer not to
     "ANN401",   # Any is the correct type in some cases
-    "B901",     # I'm aware of how generators as coroutines work - Sinbad
     "B903",     # We don't need to use dataclasses for everything
     "B904",     # Straight up wrong
-    "D100",     # Also a massive waste of time
-    "D101",     # I'm not writing docstrings all of the time
-    "D102",     # I'm not writing them
-    "D103",     # Also not writing these
-    "D104",     # Nor this
-    "D105",     # Waste of time
-    "D107",     # __init__ is the wrong place to doc this
+    "D1",       # Too lazy
     "D415",     # I'm not being formal
     "E501",     # Ruff formats it, so ignore
     "EM101",    # Incorrect
     "FBT003",   # Straight up wrong...
+    "INP001",   # I would prefer not to
     "PLR0912",  # too many branches
     "PLR0913",  # number of function arguments
     "PLR0915",  # too many statements.... in an async entrypoint handling graceful shutdown...
@@ -144,6 +141,7 @@ ignore = [
     "TRY003",   # Goes against the standard
     "RUF029",   # async in interface is fine
     "S311",     # We all know...
+    "SIM105",   # I would prefer not to in most cases
 
     # These are recommended by Ruff if the formatter is to be used: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
     "W191",
@@ -187,7 +185,7 @@ keep-runtime-typing = true
 docstring-code-format = true
 
 [tool.pytest.ini_options]
-minversion = "8.0"
+minversion = "9.0"
 addopts = "-ra"
 testpaths = [
     "tests"

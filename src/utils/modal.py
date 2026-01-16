@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, TypedDict, Unpack
 
 import discord
 
@@ -12,10 +12,16 @@ if TYPE_CHECKING:
 NO_CONTROL_MSG = "This modal cannot be controlled by you, sorry!"
 
 
+class ModalUnpack(TypedDict):
+    title: str
+    timeout: Optional[float]
+    custom_id: str
+
+
 class KumikoModal(discord.ui.Modal):
     """Subclassed `discord.ui.Modal` that includes sane default configs"""
 
-    def __init__(self, ctx: KumikoContext, **kwargs):
+    def __init__(self, ctx: KumikoContext, **kwargs: Unpack[ModalUnpack]) -> None:
         super().__init__(**kwargs)
         self.ctx = ctx
 
@@ -31,6 +37,11 @@ class KumikoModal(discord.ui.Modal):
     async def on_error(
         self, interaction: discord.Interaction, error: Exception, /
     ) -> None:
+        self.ctx.bot.logger.exception(
+            "Ignoring modal exception from %s: ",
+            self.__class__.__name__,
+            exc_info=error,
+        )
         await interaction.response.send_message(
             embed=FullErrorEmbed(error), ephemeral=True
         )

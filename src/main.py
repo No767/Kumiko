@@ -1,13 +1,17 @@
-import contextlib
 import os
 import signal
 
 import asyncpg
 from aiohttp import ClientSession
 
-from core import Kumiko, find_config, init
-from utils import KumikoConfig, KumikoLogger
-from utils.handler import KeyboardInterruptHandler
+from core import (
+    KeyboardInterruptHandler,
+    Kumiko,
+    KumikoConfig,
+    KumikoLogger,
+    find_config,
+    init,
+)
 
 if os.name == "nt":
     from winloop import run
@@ -45,5 +49,7 @@ def launch() -> None:
 
 
 if __name__ == "__main__":
-    with contextlib.suppress(KeyboardInterrupt):
+    try:
         launch()
+    except KeyboardInterrupt:
+        pass

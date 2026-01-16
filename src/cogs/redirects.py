@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 from typing import TYPE_CHECKING, Optional, Union
 
 import discord
@@ -37,9 +36,10 @@ class ConfirmResolvedView(KumikoView):
         ctx: GuildContext,
         thread: discord.Thread,
         author: Union[discord.User, discord.Member],
-        **kwargs,
+        *,
+        timeout: Optional[float],
     ) -> None:
-        super().__init__(ctx, **kwargs)
+        super().__init__(ctx, view_timeout=timeout)
         self.thread = thread
         self.author = author
         self.cog: Redirects = ctx.bot.get_cog("Redirects")  # type: ignore
@@ -254,8 +254,10 @@ class Redirects(commands.Cog):
         # this logic is the same as RoboDanny
         # Requires Permissions.manage_messages
         message = thread.get_partial_message(thread.id)
-        with contextlib.suppress(discord.HTTPException):
+        try:
             await message.pin()
+        except discord.HTTPException:
+            pass
 
     ### Error Handlers
 

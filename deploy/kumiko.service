@@ -1,0 +1,91 @@
+[Unit]
+Description=kumiko
+After=network.target
+
+[Service]
+Type=simple
+
+# ===============================
+# Directories
+# ===============================
+
+StateDirectory=kumiko
+LogsDirectory=kumiko
+CacheDirectory=kumiko
+ConfigurationDirectory=kumiko
+ConfigurationDirectoryMode=0700
+
+
+WorkingDirectory=/opt/kumiko
+
+# ===============================
+# Exec and Restart
+# ===============================
+
+ExecStartPre=+/bin/sh -c 'chown -R root:root /etc/kumiko && chmod 600 /etc/kumiko/config.yml'
+ExecStart=/opt/kumiko/.venv/bin/python3 /opt/kumiko/src/main.py
+
+LoadCredential=bot_config:/etc/kumiko/config.yml
+
+KillSignal=SIGTERM
+Restart=on-failure
+RestartSec=10s
+
+# ===============================
+# Kernel and Privileges
+# ===============================
+KeyringMode=private
+LockPersonality=yes
+NoNewPrivileges=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+# ===============================
+# Network Hardening
+# ===============================
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# ===============================
+# System calls
+# ===============================
+SystemCallArchitectures=native
+SystemCallErrorNumber=EPERM
+SystemCallFilter=@system-service
+
+# ===============================
+# Capabilities
+# ===============================
+CapabilityBoundingSet=
+
+# ===============================
+# Users
+# ===============================
+DynamicUser=yes
+
+# ===============================
+# Protect
+# ===============================
+ProtectClock=yes
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectProc=invisible
+ProtectSystem=strict
+
+# ===============================
+# Private
+# ===============================
+PrivateDevices=yes
+PrivateTmp=yes
+
+# ===============================
+# Modern Options
+# ===============================
+RemoveIPC=yes
+
+[Install]
+WantedBy=multi-user.target
