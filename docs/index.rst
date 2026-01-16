@@ -27,11 +27,9 @@ Kumiko
    :align: right
 
 .. image:: https://img.shields.io/github/v/release/No767/Kumiko?label=Release&logo=github&sort=semver
-   :alt: GitHub release (latest SemVer)
    :target: https://github.com/No767/Kumiko/releases/
 
 .. image:: https://img.shields.io/github/license/No767/Kumiko?label=License&logo=github
-   :alt: GitHub
    :target: https://github.com/No767/Kumiko/blob/main/LICENSE
 
 .. image:: https://img.shields.io/badge/Kumiko-Oumae-white
