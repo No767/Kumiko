@@ -13,7 +13,7 @@ import sys
 import uuid
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Generic, Optional, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union, overload
 
 import discord
 import msgspec
@@ -128,7 +128,7 @@ async def get_prefix(bot: Kumiko, message: discord.Message) -> str | list[str]:
         get_prefix.cache_invalidate(bot, message)
         return base
 
-    base.extend(item for item in prefixes)
+    base.extend(set(prefixes))
     return base
 
 
@@ -226,7 +226,7 @@ class Reloader:
 ### Application core utilities
 
 
-class Blacklist(Generic[T]):
+class Blacklist[T]:
     """Internal blacklist database used by R. Danny"""
 
     def __init__(

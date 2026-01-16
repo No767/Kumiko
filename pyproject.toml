@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "A multipurpose Discord bot built with freedom and choice in mind"
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.11,<4.0"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "async-lru~=2.0.5",
     "asyncpg~=0.31.0",
