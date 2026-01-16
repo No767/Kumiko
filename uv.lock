@@ -961,7 +961,7 @@ requires-dist = [
 dev = [
     { name = "furo", specifier = "~=2025.12.19" },
     { name = "pyright", extras = ["nodejs"], specifier = "~=1.1.407" },
-    { name = "roman-numerals", specifier = "==3.1.0" },
+    { name = "roman-numerals", specifier = "==4.1.0" },
     { name = "ruff", specifier = "~=0.14.2" },
     { name = "sphinx", specifier = "~=8.2.3" },
     { name = "sphinx-autobuild", specifier = "~=2025.8.25" },
@@ -972,7 +972,7 @@ dev = [
 ]
 docs = [
     { name = "furo", specifier = "~=2025.12.19" },
-    { name = "roman-numerals", specifier = "==3.1.0" },
+    { name = "roman-numerals", specifier = "==4.1.0" },
     { name = "sphinx", specifier = "~=8.2.3" },
     { name = "sphinx-autobuild", specifier = "~=2025.8.25" },
     { name = "sphinx-copybutton", specifier = "~=0.5.2" },
@@ -1833,11 +1833,11 @@ wheels = [
 
 [[package]]
 name = "roman-numerals"
-version = "3.1.0"
+version = "4.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/57/5b/1bcda2c6a8acec5b310dd70f732400827b96f05d815834f0f112b91b3539/roman_numerals-3.1.0.tar.gz", hash = "sha256:384e36fc1e8d4bd361bdb3672841faae7a345b3f708aae9895d074c878332551", size = 9069, upload-time = "2025-03-12T00:41:08.837Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/f9/41dc953bbeb056c17d5f7a519f50fdf010bd0553be2d630bc69d1e022703/roman_numerals-4.1.0.tar.gz", hash = "sha256:1af8b147eb1405d5839e78aeb93131690495fe9da5c91856cb33ad55a7f1e5b2", size = 9077, upload-time = "2025-12-17T18:25:34.381Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/82/1d/7356f115a0e5faf8dc59894a3e9fc8b1821ab949163458b0072db0a12a68/roman_numerals-3.1.0-py3-none-any.whl", hash = "sha256:842ae5fd12912d62720c9aad8cab706e8c692556d01a38443e051ee6cc158d90", size = 7709, upload-time = "2025-03-12T00:41:07.626Z" },
+    { url = "https://files.pythonhosted.org/packages/04/54/6f679c435d28e0a568d8e8a7c0a93a09010818634c3c3907fc98d8983770/roman_numerals-4.1.0-py3-none-any.whl", hash = "sha256:647ba99caddc2cc1e55a51e4360689115551bf4476d90e8162cf8c345fe233c7", size = 7676, upload-time = "2025-12-17T18:25:33.098Z" },
 ]
 
 [[package]]
