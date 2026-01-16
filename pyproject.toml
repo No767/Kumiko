@@ -97,9 +97,11 @@ include = [
     "src"
 ]
 exclude = [
+    "**/node_modules",
+    "**/.*",
     "**/__pycache__",
     ".venv",
-    "docs", "**/node_modules", "**/.*"
+    "docs"
 ]
 reportMissingImports = "error"
 typeCheckingMode = "standard"
