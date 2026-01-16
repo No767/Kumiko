@@ -3,7 +3,7 @@ name: kumiko_dev
 services:
   database:
     container_name: kumiko_postgres
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
@@ -15,7 +15,7 @@ services:
       - default
       - db_bridge
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/18/docker
     healthcheck:
       test: pg_isready --dbname='${DB_DATABASE}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
       interval: 5m

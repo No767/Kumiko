@@ -7,29 +7,49 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Kumiko"
-copyright = "2024, No767"
+copyright = "2026, No767"
 author = "No767"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinxext.opengraph", "sphinx_copybutton"]
+extensions = ["sphinx_design", "sphinxext.opengraph", "sphinx_copybutton"]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-latex_elements = {
-    "sphinxsetup": "verbatimwithframe=false",
-}
-
 html_title = "Kumiko"
+html_favicon = "./_static/public/favicon.svg"
+
+
+# -- Open Graph (OGP) options ------------------------------------------------
+# https://sphinxext-opengraph.readthedocs.io/en/latest/
+
+ogp_site_name = "Kumiko Documentation"
+ogp_description_length = 130
+ogp_type = "website"
+
+ogp_custom_meta_tags = [
+    '<link rel="icon" type="image/png" href="/_static/public/favicon-96x96.png" sizes="96x96" />'
+    '<link rel="icon" type="image/svg+xml" href="/_static/public/favicon.svg" />',
+    '<link rel="shortcut icon" href="/_static/public/favicon.ico" />',
+    '<link rel="apple-touch-icon" sizes="180x180" href="/_static/public/apple-touch-icon.png" />',
+    '<meta name="apple-mobile-web-app-title" content="Kumiko Documentation" />',
+    '<link rel="manifest" href="/_static/public/site.webmanifest" />',
+]
+
+ogp_social_cards = {
+    "enable": True,
+    "image": "./_images/kumiko-resized-round.png",
+    "line_color": "#FFABE1",
+}
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
-html_static_path = []
+html_static_path = ["_static"]
 
 html_theme_options = {
     "dark_css_variables": {
@@ -41,6 +61,3 @@ html_theme_options = {
         "color-brand-content": "#CE7BB0",
     },
 }
-
-ogp_site_url = "https://kumiko.readthedocs.io"
-ogp_image = "https://raw.githubusercontent.com/No767/Kumiko/main/assets/kumiko-resized-round.png"

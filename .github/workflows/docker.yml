@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-24.04
 
     # We want to filter out dependabot automated pushes to main
-    if: ${{ github.actor != 'dependabot[bot]'}}
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Prepare Docker Meta
         id: meta

@@ -1,65 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
-import discord
 from discord.ext import commands
 
-from .view import KumikoView
+from .view import ConfirmationView
 
 if TYPE_CHECKING:
+    import discord
+
     from core import Kumiko
     from utils.context import KumikoContext
 
 NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
-
-
-# Why not subclass KumikoView?
-# It results in a circular logic, so instead
-# we subclassed discord.ui.View and pretty much implement what KumikoView does anyways
-class ConfirmationView(KumikoView):
-    def __init__(self, ctx: KumikoContext, timeout: float, *, delete_after: bool):
-        super().__init__(ctx, timeout=timeout)
-        self.value: Optional[bool]
-        self.delete_after = delete_after
-        self.message: Optional[discord.Message]
-
-    async def on_timeout(self) -> None:
-        if self.delete_after and self.message:
-            await self.message.delete()
-        elif self.message:
-            await self.message.edit(view=None)
-
-    async def delete_response(self, interaction: discord.Interaction) -> None:
-        await interaction.response.defer()
-        if self.delete_after:
-            await interaction.delete_original_response()
-
-        self.stop()
-
-    @discord.ui.button(
-        label="Confirm",
-        style=discord.ButtonStyle.green,
-        emoji="<:greenTick:596576670815879169>",
-    )
-    async def confirm(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
-        self.value = True
-        await self.delete_response(interaction)
-
-    @discord.ui.button(
-        label="Cancel",
-        style=discord.ButtonStyle.red,
-        emoji="<:redTick:596576672149667840>",
-    )
-    async def cancel(
-        self, interaction: discord.Interaction, button: discord.ui.Button
-    ) -> None:
-        self.value = False
-        await interaction.response.defer()
-        await interaction.delete_original_response()
-        self.stop()
 
 
 class KumikoContext(commands.Context):
@@ -67,7 +20,7 @@ class KumikoContext(commands.Context):
 
     bot: Kumiko
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.pool = self.bot.pool
         self.session = self.bot.session

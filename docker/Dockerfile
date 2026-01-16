@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.13-trixie-slim AS build
+FROM ghcr.io/astral-sh/uv:python3.14-trixie-slim AS build
 
 # Compile bytecode and enable caching
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode
@@ -39,7 +39,7 @@ COPY ./src /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
-FROM python:3.13-slim-trixie
+FROM python:3.14-slim-trixie
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app

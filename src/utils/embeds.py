@@ -1,28 +1,41 @@
+import datetime
 import traceback
+from typing import Any, Optional, TypedDict, Union, Unpack
 
 import discord
+from discord.types.embed import EmbedType
+
+
+class EmbedUnpack(TypedDict):
+    colour: Optional[Union[int, discord.Colour]]
+    color: Optional[Union[int, discord.Colour]]
+    title: Optional[Any]
+    type: EmbedType
+    url: Optional[Any]
+    description: Optional[Any]
+    timestamp: Optional[datetime.datetime]
 
 
 class Embed(discord.Embed):
     """Kumiko's custom default embed"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Unpack[EmbedUnpack]) -> None:
         kwargs.setdefault("color", discord.Color.from_rgb(255, 163, 253))
         super().__init__(**kwargs)
 
 
-class SuccessEmbed(discord.Embed):
+class SuccessEmbed(Embed):
     """Kumiko's custom success action embed"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Unpack[EmbedUnpack]) -> None:
         kwargs.setdefault("color", discord.Color.from_rgb(75, 181, 67))
         kwargs.setdefault("title", "Action successful")
         kwargs.setdefault("description", "The action requested was successful")
         super().__init__(**kwargs)
 
 
-class ErrorEmbed(discord.Embed):
-    def __init__(self, **kwargs):
+class ErrorEmbed(Embed):
+    def __init__(self, **kwargs: Unpack[EmbedUnpack]) -> None:
         kwargs.setdefault("color", discord.Color.from_rgb(214, 6, 6))
         kwargs.setdefault("title", "Oh no, an error has occurred!")
         kwargs.setdefault(
@@ -33,7 +46,7 @@ class ErrorEmbed(discord.Embed):
 
 
 class FullErrorEmbed(ErrorEmbed):
-    def __init__(self, error: Exception, **kwargs):
+    def __init__(self, error: Exception, **kwargs: Unpack[EmbedUnpack]) -> None:
         kwargs.setdefault("description", self._format_description(error))
         super().__init__(**kwargs)
 
@@ -47,8 +60,8 @@ class FullErrorEmbed(ErrorEmbed):
         """
 
 
-class CooldownEmbed(discord.Embed):
-    def __init__(self, retry_after: float, **kwargs):
+class CooldownEmbed(Embed):
+    def __init__(self, retry_after: float, **kwargs: Unpack[EmbedUnpack]) -> None:
         kwargs.setdefault("color", discord.Color.from_rgb(214, 6, 6))
         kwargs.setdefault("timestamp", discord.utils.utcnow())
         kwargs.setdefault("title", "Command On Cooldown")
@@ -59,10 +72,10 @@ class CooldownEmbed(discord.Embed):
         super().__init__(**kwargs)
 
 
-class ConfirmEmbed(discord.Embed):
+class ConfirmEmbed(Embed):
     """Kumiko's custom confirm embed"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Unpack[EmbedUnpack]) -> None:
         kwargs.setdefault("color", discord.Color.from_rgb(255, 191, 0))
         kwargs.setdefault("title", "Are you sure?")
         super().__init__(**kwargs)

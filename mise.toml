@@ -1,17 +1,14 @@
 redactions = ["DB_PASSWORD"]
 
 [tools]
-uv = "0.9.5"
+uv = "0.9.26"
 atlas = "latest"
 
-lefthook = "latest"
 
 [settings]
 experimental = true
 pin = true
 
-[hooks]
-postinstall = "lefthook install"
 
 [env]
 _.file = [{ path = "{{ config_root }}/.env" }]
@@ -30,7 +27,7 @@ run = "python3 src/main.py"
 description = "Lints the codebase by type checking and general linting"
 env._.path = ".venv/bin"
 dir = "{{ config_root }}"
-run = ["pyright src", "ruff check src --fix --exit-non-zero-on-fix"]
+run = ["pyright src", "ruff check src --fix --unsafe-fixes --exit-non-zero-on-fix"]
 
 [tasks."bot:format"]
 description = "Formats the codebase"
@@ -54,19 +51,6 @@ description = "Applies schema diffs to database"
 run = "atlas schema apply --auto-approve --env local --var url=$DATABASE_URL"
 run_windows = "atlas schema apply --auto-approve --env local --var url=%DATABASE_URL%"
 
-[tasks."bot:towncrier:create"]
-description = "Creates towncrier entry"
-env._.path = ".venv/bin"
-usage = "arg '<entry>' help='Towncrier entry to put'"
-dir = "{{ config_root }}"
-run = "towncrier create -c {{arg(name='entry')}}"
-
-[tasks."bot:towncrier:build"]
-description = "Builds towncrier changelog"
-env._.path = ".venv/bin"
-dir = "{{ config_root }}"
-run = "towncrier build --yes"
-
 [tasks."bot:check-env"]
 hide = true
 run = "test -f {{ config_root }}/.env"
@@ -88,3 +72,38 @@ depends = ["bot:check-env"]
 description = "Stops the development databases through Docker Compose"
 dir = "{{ config_root }}"
 run = "docker compose -f docker/docker-compose.dev.yml --env-file .env stop"
+
+# Docs tasks
+[tasks."docs:auto:build"]
+description = "Builds documentation and serves using sphinx-autobuild"
+env._.path = ".venv/bin"
+dir ="{{ config_root }}/docs"
+run = "uv run sphinx-autobuild -nTW . ./_build/dev/html"
+
+[tasks."docs:preview:build"]
+description = "Builds the documentation for production"
+env._.path = ".venv/bin"
+dir ="{{ config_root }}/docs"
+run = "uv run sphinx-build -aEnTW --keep-going . ./_build/dist/html"
+
+# Towncrier tasks
+[tasks."towncrier:create"]
+description = "Creates towncrier entry"
+env._.path = ".venv/bin"
+usage = '''
+flag "--filename <filename>" help="Filename to use"
+flag "--entry <entry>" help="Entry to put in"
+'''
+dir = "{{ config_root }}"
+run = '''
+#!/usr/bin/env bash
+set -euo pipefail
+
+towncrier create ${usage_filename?} && echo "${usage_entry?}" > changes/${usage_filename?}
+'''
+
+[tasks."towncrier:build"]
+description = "Builds towncrier changelog"
+env._.path = ".venv/bin"
+dir = "{{ config_root }}"
+run = "towncrier build --yes"

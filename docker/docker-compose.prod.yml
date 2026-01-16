@@ -19,7 +19,7 @@ services:
 
   database:
     container_name: kumiko_postgres
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
@@ -28,33 +28,13 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql/18/docker
     healthcheck:
       test: pg_isready --dbname='${DB_DATABASE}' --username='${DB_USERNAME}' || exit 1; Chksum="$$(psql --dbname='${DB_DATABASE}' --username='${DB_USERNAME}' --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
       interval: 5m
       start_interval: 30s
       start_period: 5m
     restart: always
-
-  kumiko-prometheus:
-    container_name: kumiko_prometheus
-    ports:
-      - 9090:9090
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-
-  # first login uses admin/admin
-  # add data source for http://kumiko-prometheus:9090 to get started
-  kumiko-grafana:
-    container_name: kumiko_grafana
-    command: ['./run.sh', '-disable-reporting']
-    ports:
-      - 3000:3000
-    image: grafana/grafana-enterprise:latest-ubuntu
-    volumes:
-      - grafana_data:/var/lib/grafana
 
   migrate:
     container_name: kumiko_migrate
@@ -73,6 +53,39 @@ services:
         condition: service_healthy
     volumes:
       - ../src/schema.sql:/schema.sql
+
+  prometheus:
+    container_name: kumiko_prometheus
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    healthcheck:
+      test: wget -q -O /dev/null http://prometheus:9090/api/v1/status/buildinfo || exit 1
+      start_period: 15s
+      interval: 1m
+      start_interval: 15s
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    
+
+  # first login uses admin/admin
+  # add data source for http://prometheus:9090 to get started
+  grafana:
+    container_name: kumiko_grafana
+    image: grafana/grafana-enterprise:latest-ubuntu
+    command: ./run.sh -disable-reporting
+    ports:
+      - 3000:3000
+    healthcheck:
+      test: wget -q -O /dev/null http://grafana:3000/api/health || exit 1
+      start_period: 15s
+      interval: 1m
+      start_interval: 15s
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
 
 volumes:
   database:

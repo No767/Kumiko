@@ -8,14 +8,110 @@ from typing import TYPE_CHECKING, Optional, Union
 import discord
 import psutil
 import pygit2
+from dateutil.relativedelta import relativedelta
 from discord.ext import commands
 from pygit2.enums import SortMode
 
-from utils import Embed, human_timedelta
 from utils.checks import is_docker
+from utils.embeds import Embed
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from core import Kumiko
+
+
+def human_timedelta(
+    dt: datetime.datetime,
+    *,
+    source: Optional[datetime.datetime] = None,
+    accuracy: Optional[int] = 3,
+    brief: bool = False,
+    suffix: bool = True,
+) -> str:
+    def _human_join(seq: Sequence[str], delim: str = ", ", final: str = "or") -> str:
+        if not seq:
+            return ""
+        if len(seq) == 1:
+            return seq[0]
+        return f"{delim.join(seq[:-1])} {final} {seq[-1]}"
+
+    now = source or datetime.datetime.now(datetime.UTC)
+
+    # Merge timezone checks
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=datetime.UTC)
+    if now.tzinfo is None:
+        now = now.replace(tzinfo=datetime.UTC)
+
+    # Microsecond free zone
+    now = now.replace(microsecond=0)
+    dt = dt.replace(microsecond=0)
+
+    # This implementation uses relativedelta instead of the much more obvious
+    # divmod approach with seconds because the seconds approach is not entirely
+    # accurate once you go over 1 week in terms of accuracy since you have to
+    # hardcode a month as 30 or 31 days.
+    # A query like "11 months" can be interpreted as "!1 months and 6 days"
+    if dt > now:
+        delta = relativedelta(dt, now)
+        output_suffix = ""
+    else:
+        delta = relativedelta(now, dt)
+        output_suffix = " ago" if suffix else ""
+
+    attrs = [
+        ("year", "y"),
+        ("month", "mo"),
+        ("day", "d"),
+        ("hour", "h"),
+        ("minute", "m"),
+        ("second", "s"),
+    ]
+
+    output = []
+
+    for attr, brief_attr in attrs:
+        elem = getattr(delta, attr + "s")
+        if not elem:
+            continue
+
+        # Handle weeks logic inside the 'day' iteration
+        if attr == "day" and delta.weeks:
+            weeks = delta.weeks
+            elem -= weeks * 7
+            output.append(f"{weeks}w" if brief else format(Plural(weeks), "week"))
+
+        # Skip if elem is <= 0 (specifically for days after week subtraction)
+        if elem <= 0:
+            continue
+
+        # Merged formatting logic
+        output.append(f"{elem}{brief_attr}" if brief else format(Plural(elem), attr))
+
+    if accuracy is not None:
+        output = output[:accuracy]
+
+    if not output:
+        return "now"
+
+    if brief:
+        return " ".join(output) + output_suffix
+
+    return _human_join(output, final="and") + output_suffix
+
+
+class Plural:
+    def __init__(self, value: int) -> None:
+        self.value: int = value
+
+    def __format__(self, format_spec: str) -> str:
+        v = self.value
+        singular, _, plural = format_spec.partition("|")
+        plural = plural or f"{singular}s"
+        if abs(v) != 1:
+            return f"{v} {plural}"
+        return f"{v} {singular}"
 
 
 class Meta(commands.Cog):

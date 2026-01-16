@@ -4,14 +4,15 @@ on: pull_request_target
 
 jobs:
   auto-approve:
-    name: auto-approve
+    name: Auto Approve
     runs-on: ubuntu-24.04
 
     permissions:
       pull-requests: write
 
-    if: github.actor == 'dependabot[bot]'
-    
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
       - name: Auto Approve
         uses: hmarr/auto-approve-action@8f929096a962e83ccdfa8afcf855f39f12d4dac7 # 4.0.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"

@@ -1,4 +1,3 @@
-# noqa: INP001
 from __future__ import annotations
 
 import platform
@@ -34,7 +33,7 @@ class GuildCount(NamedTuple):
 class GuildCollector:
     __slots__ = ("amount", "bot", "text", "users", "voice")
 
-    def __init__(self, bot: Kumiko):
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
         self.amount = Gauge(f"{METRIC_PREFIX}guilds", "Amount of guilds connected")
         self.text = Gauge(
@@ -75,7 +74,7 @@ class GuildCollector:
 class BlacklistCollector:
     __slots__ = ("bot", "commands", "users")
 
-    def __init__(self, bot: Kumiko):
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
 
         # For now, until we can improve the blacklist system,
@@ -96,7 +95,7 @@ class BlacklistCollector:
 class FeatureCollector:
     __slots__ = ("bot", "successful_redirects")
 
-    def __init__(self, bot: Kumiko):
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
         self.successful_redirects = Counter(
             f"{METRIC_PREFIX}successful_redirects",
@@ -107,7 +106,7 @@ class FeatureCollector:
 class CommandsCollector:
     __slots__ = ("bot", "count", "invocation", "total")
 
-    def __init__(self, bot: Kumiko):
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
 
         self.total = Summary(
@@ -139,7 +138,7 @@ class MetricCollector:
         "version",
     )
 
-    def __init__(self, bot: Kumiko):
+    def __init__(self, bot: Kumiko) -> None:
         self.bot = bot
 
         self.connected = Enum(
