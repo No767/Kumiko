@@ -19,7 +19,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_title = "Kumiko"
-html_favicon = "/_static/public/favicon.svg"
+html_favicon = "./_static/public/favicon.svg"
 
 
 # -- Open Graph (OGP) options ------------------------------------------------
