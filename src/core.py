@@ -119,9 +119,10 @@ async def get_prefix(bot: Kumiko, message: discord.Message) -> str | list[str]:
         return base
 
     query = """
-    SELECT prefix
-    FROM guild_prefix
-    WHERE id = $1;
+    SELECT ARRAY_AGG(guild_prefixes.prefix) AS prefixes
+    FROM guilds
+    INNER JOIN guild_prefixes ON guilds.id = guild_prefixes.guild_id
+    WHERE guilds.id = $1;
     """
     prefixes = await bot.pool.fetchval(query, message.guild.id)
     if prefixes is None:

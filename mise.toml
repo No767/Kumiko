@@ -61,11 +61,23 @@ hide = true
 run = "test -f {{ config_root }}/config.yml"
 run_windows = 'IF NOT EXIST {{ config_root }}\config.yml (EXIT /B 2)'
 
+[tasks."bot:docker:pull"]
+depends = ["bot:check-env"]
+description = "Pulls any images down for use for the development databases"
+dir = "{{ config_root }}"
+run = "docker compose -f docker/docker-compose.dev.yml --env-file .env pull"
+
 [tasks."bot:docker:up"]
 depends = ["bot:check-env"]
 description = "Brings up the development databases through Docker Compose"
 dir = "{{ config_root }}"
 run = "docker compose -f docker/docker-compose.dev.yml --env-file .env up -d"
+
+[tasks."bot:docker:start"]
+depends = ["bot:check-env"]
+description = "Brings up the development databases through Docker Compose"
+dir = "{{ config_root }}"
+run = [{ task = "bot:docker:pull" }, { task = "bot:docker:up" }]
 
 [tasks."bot:docker:stop"]
 depends = ["bot:check-env"]

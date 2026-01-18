@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
+import asyncpg
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -87,18 +88,33 @@ class Config(commands.Cog):
                 "You can not have more than 10 custom prefixes for your server"
             )
             return
+
         if prefix in prefixes:
             await ctx.send("The prefix you want to set already exists")
             return
 
         query = """
-            INSERT INTO guild_prefix (id, prefix) VALUES ($2, ARRAY[$1])
-            ON CONFLICT (id) DO UPDATE
-            SET prefix = ARRAY_APPEND(guild_prefix.prefix, $1) WHERE guild_prefix.id = $2;
+            WITH insert_guild AS (
+                INSERT INTO guilds (id) VALUES ($1)
+                ON CONFLICT (id) DO NOTHING
+            )
+            INSERT INTO guild_prefixes (guild_id, prefix)
+            VALUES ($1, $2);
         """
-        await self.pool.execute(query, prefix, ctx.guild.id)
-        get_prefix.cache_invalidate(self.bot, ctx.message)
-        await ctx.send(f"Added prefix: `{prefix}`")
+
+        async with self.pool.acquire() as connection:
+            tr = connection.transaction()
+            await tr.start()
+
+            try:
+                await connection.execute(query, ctx.guild.id, prefix)
+            except asyncpg.PostgresError as error:
+                await tr.rollback()
+                await ctx.send(f"Failed to add prefix ({error!s})")
+            else:
+                await tr.commit()
+                get_prefix.cache_invalidate(self.bot, ctx.message)
+                await ctx.send(f"Added prefix: `{prefix}`")
 
     @is_manager()
     @commands.guild_only()
@@ -115,17 +131,26 @@ class Config(commands.Cog):
     ) -> None:
         """Edits and replaces a prefix"""
         query = """
-            UPDATE guild_prefix
-            SET prefix = ARRAY_REPLACE(prefix, $1, $2)
-            WHERE id = $3;
+            UPDATE guild_prefixes
+            SET prefix = $3
+            WHERE guild_id = $1 AND prefix = $2;
         """
         prefixes = await get_prefix(self.bot, ctx.message)
 
-        guild_id = ctx.guild.id
+        if old == new:
+            await ctx.send("Old and new requested prefixes must not be the same")
+            return
+
         if old in prefixes:
-            await self.pool.execute(query, old, new, guild_id)
-            get_prefix.cache_invalidate(self.bot, ctx.message)
-            await ctx.send(f"Prefix updated to from `{old}` to `{new}`")
+            try:
+                await self.pool.execute(query, ctx.guild.id, old, new)
+            except asyncpg.UniqueViolationError:
+                await ctx.send(
+                    f"Requested prefix `{new}` is already in use for this server"
+                )
+            else:
+                get_prefix.cache_invalidate(self.bot, ctx.message)
+                await ctx.send(f"Prefix updated to from `{old}` to `{new}`")
         else:
             await ctx.send("The prefix is not in the list of prefixes for your server")
 
@@ -137,13 +162,34 @@ class Config(commands.Cog):
         self, ctx: GuildContext, prefix: Annotated[str, PrefixConverter]
     ) -> None:
         """Deletes a set prefix"""
-        query = "DELETE FROM guild_prefix WHERE id = $1;"
+        query = "DELETE FROM guild_prefixes WHERE guild_id = $1 AND prefix = $2;"
         msg = f"Do you want to delete the following prefix: {prefix}"
-        confirm = await ctx.prompt(msg, timeout=120.0, delete_after=True)
+        confirm = await ctx.prompt(msg, prompt_timeout=120.0, delete_after=True)
         if confirm:
-            await self.pool.execute(query, prefix, ctx.guild.id)
+            res = await self.pool.execute(query, ctx.guild.id, prefix)
+            if res[-1] == "0":
+                await ctx.send(f"The requested prefix `{prefix} does not exist")
+                return
+
             get_prefix.cache_invalidate(self.bot, ctx.message)
             await ctx.send(f"The prefix `{prefix}` has been successfully deleted")
+        elif confirm is None:
+            await ctx.send("Confirmation timed out. Cancelled deletion...")
+        else:
+            await ctx.send("Confirmation cancelled. Please try again")
+
+    @is_manager()
+    @commands.guild_only()
+    @prefix.command(name="reset")
+    async def prefix_reset(self, ctx: GuildContext) -> None:
+        """Wipes all custom prefixes for the guild"""
+        query = """DELETE FROM guild_prefixes WHERE guild_id = $1;"""
+        msg = "Do you want to reset all custom prefixes to default?"
+        confirm = await ctx.prompt(msg, prompt_timeout=120.0, delete_after=True)
+        if confirm:
+            await self.pool.execute(query, ctx.guild.id)
+            get_prefix.cache_invalidate(self.bot, ctx.message)
+            await ctx.send("Wiped all custom prefixes and restored to default")
         elif confirm is None:
             await ctx.send("Confirmation timed out. Cancelled deletion...")
         else:

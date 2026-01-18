@@ -45,7 +45,7 @@ class KumikoContext(commands.Context):
 
             - ``None`` if deny due to prompt_timeout
         """
-        view = ConfirmationView(self, prompt_timeout, delete_after)
+        view = ConfirmationView(self, timeout=prompt_timeout, delete_after=delete_after)
         view.message = await self.send(message, view=view, ephemeral=delete_after)
         await view.wait()
         return view.value
