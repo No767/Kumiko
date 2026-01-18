@@ -1,4 +1,10 @@
-CREATE TABLE IF NOT EXISTS guild_prefix (
-    id BIGINT PRIMARY KEY,
-    prefix TEXT[]
+CREATE TABLE IF NOT EXISTS guilds (
+    id BIGINT PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS guild_prefixes (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    guild_id BIGINT REFERENCES guilds (id) ON DELETE CASCADE,
+    prefix TEXT NOT NULL,
+    UNIQUE (guild_id, prefix)
 );

@@ -1,9 +1,13 @@
-from typing import Any, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Optional
 
 import discord
 
-from .context import KumikoContext
 from .embeds import ErrorEmbed, FullErrorEmbed
+
+if TYPE_CHECKING:
+    from .context import KumikoContext
 
 NO_CONTROL_MSG = "This view cannot be controlled by you, sorry!"
 
@@ -55,9 +59,9 @@ class KumikoView(discord.ui.View):
 
 class ConfirmationView(KumikoView):
     def __init__(
-        self, ctx: KumikoContext, timeout: float, *, delete_after: bool
+        self, ctx: KumikoContext, *, timeout: float, delete_after: bool
     ) -> None:
-        super().__init__(ctx, timeout=timeout)
+        super().__init__(ctx, view_timeout=timeout)
         self.value: Optional[bool]
         self.delete_after = delete_after
         self.message: Optional[discord.Message]
