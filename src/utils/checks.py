@@ -56,8 +56,10 @@ async def check_bot_permissions(
     )
 
 
+# Yes, I know you can introspect the predicate from commands.has_guild_permissions and inject everything from there
+# But as these are decorators itself, and need to inject the perms into a extra slot for the help menu, I'm too lazy to change it
 def check_permissions(**perms: bool) -> Callable[[T], T]:
-    async def pred(ctx: KumikoContext):
+    async def pred(ctx: KumikoContext) -> bool:
         # Usually means this is in the context of a DM
         if (
             isinstance(ctx.me, discord.ClientUser)
@@ -65,9 +67,16 @@ def check_permissions(**perms: bool) -> Callable[[T], T]:
             or ctx.guild is None
         ):
             return False
+
         guild_perms = await check_guild_permissions(ctx, perms)
-        can_run = ctx.me.top_role > ctx.author.top_role
-        return guild_perms and can_run
+
+        if not guild_perms:
+            requested_perms = [
+                f"`{name}`" for name, perm in perms.items() if perm is True
+            ]
+            raise commands.MissingPermissions(requested_perms)
+
+        return guild_perms
 
     def decorator(func: T) -> T:
         func.extras["permissions"] = perms
