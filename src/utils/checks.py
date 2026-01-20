@@ -55,6 +55,7 @@ async def check_bot_permissions(
         for name, value in perms.items()
     )
 
+
 # Yes, I know you can introspect the predicate from commands.has_guild_permissions and inject everything from there
 # But as these are decorators itself, and need to inject the perms into a extra slot for the help menu, I'm too lazy to change it
 def check_permissions(**perms: bool) -> Callable[[T], T]:
