@@ -892,7 +892,7 @@ class Kumiko(commands.Bot):
                     ctx.command.qualified_name,  # type: ignore
                     exc_info=original,
                 )
-        elif isinstance(error, commands.BadArgument):
+        elif isinstance(error, (commands.BadArgument, commands.MissingPermissions)):
             await ctx.send(str(error))
 
     async def process_commands(self, message: discord.Message) -> None:
