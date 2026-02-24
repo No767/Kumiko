@@ -6,7 +6,7 @@ readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.12,<4.0"
 dependencies = [
-    "async-lru~=2.1.0",
+    "async-lru~=2.2.0",
     "asyncpg~=0.31.0",
     "discord-ext-menus",
     "discord-py[speed,voice]~=2.6.4",
