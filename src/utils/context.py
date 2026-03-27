@@ -20,7 +20,7 @@ class KumikoContext(commands.Context):
 
     bot: Kumiko
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, **kwargs: Any) -> None:  # noqa: ANN401
         super().__init__(**kwargs)
         self.pool = self.bot.pool
         self.session = self.bot.session

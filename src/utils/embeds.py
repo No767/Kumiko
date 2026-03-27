@@ -1,14 +1,14 @@
 import datetime
 import traceback
-from typing import Any, Optional, TypedDict, Union, Unpack
+from typing import Any, Optional, TypedDict, Unpack
 
 import discord
 from discord.types.embed import EmbedType
 
 
 class EmbedUnpack(TypedDict):
-    colour: Optional[Union[int, discord.Colour]]
-    color: Optional[Union[int, discord.Colour]]
+    colour: Optional[int | discord.Colour]
+    color: Optional[int | discord.Colour]
     title: Optional[Any]
     type: EmbedType
     url: Optional[Any]

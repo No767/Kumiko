@@ -10,10 +10,11 @@ try:
     from prometheus_async.aio.web import start_http_server
     from prometheus_client import Counter, Enum, Gauge, Info, Summary
 except ImportError:
-    raise RuntimeError(
+    msg = (
         "Prometheus libraries are required to be installed. "
         "Either install those libraries or disable Prometheus extension"
     )
+    raise RuntimeError(msg)
 
 
 if TYPE_CHECKING:

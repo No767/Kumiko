@@ -1,9 +1,9 @@
 redactions = ["DB_PASSWORD"]
 
-[tools]
-uv = "0.9.26"
-atlas = "latest"
 
+[tools]
+uv = "0.11.2"
+atlas = "latest"
 
 [settings]
 experimental = true
@@ -27,7 +27,7 @@ run = "python3 src/main.py"
 description = "Lints the codebase by type checking and general linting"
 env._.path = ".venv/bin"
 dir = "{{ config_root }}"
-run = ["pyright src", "ruff check src --fix --unsafe-fixes --exit-non-zero-on-fix"]
+run = ["pyright src", "ruff check src --fix --exit-non-zero-on-fix"]
 
 [tasks."bot:format"]
 description = "Formats the codebase"
