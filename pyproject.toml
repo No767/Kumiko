@@ -6,22 +6,22 @@ readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.12,<4.0"
 dependencies = [
-    "async-lru~=2.2.0",
+    "async-lru~=2.3.0",
     "asyncpg~=0.31.0",
     "discord-ext-menus",
-    "discord-py[speed,voice]~=2.6.4",
+    "discord-py[speed,voice]~=2.7.1",
     "jishaku~=2.6.3",
     "msgspec~=0.20.0",
-    "prometheus-async~=25.1.0",
-    "prometheus-client~=0.24.0",
-    "psutil~=7.2.1",
-    "pygit2~=1.19.0",
+    "prometheus-async~=26.1.0",
+    "prometheus-client~=0.24.1",
+    "psutil~=7.2.2",
+    "pygit2~=1.19.1",
     "python-dateutil~=2.9.0.post0",
     "pyyaml~=6.0.3",
     "typing-extensions~=4.15.0 ; python_full_version < '3.11'",
     "uvloop~=0.22.1 ; sys_platform != 'win32'",
     "watchfiles~=1.1.1",
-    "winloop~=0.5.0 ; sys_platform == 'win32'",
+    "winloop~=0.6.0 ; sys_platform == 'win32'",
     "zstandard~=0.25.0",
 ]
 
@@ -37,7 +37,7 @@ dev = [
 
 lint = [
     "pyright[nodejs]~=1.1.407",
-    "ruff~=0.15.0",
+    "ruff~=0.15.8",
 ]
 docs = [
     "furo~=2025.12.19",
