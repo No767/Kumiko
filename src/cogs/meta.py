@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import itertools
 import platform
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 import discord
 import psutil
@@ -147,7 +147,7 @@ class Meta(commands.Cog):
         commit_id = str(commit.id)
         return f"[`{short_sha2}`](https://github.com/No767/Kumiko/commit/{commit_id}) {short} ({offset})"
 
-    def _get_last_commits(self, count: int = 5):
+    def _get_last_commits(self, count: int = 5) -> str:
         repo = pygit2.Repository(".git")
         commits = list(
             itertools.islice(repo.walk(repo.head.target, SortMode.TOPOLOGICAL), count)
@@ -168,7 +168,7 @@ class Meta(commands.Cog):
 
     @commands.hybrid_command(name="info")
     async def info(
-        self, ctx: commands.Context, *, user: Union[discord.Member, discord.User]
+        self, ctx: commands.Context, *, user: discord.Member | discord.User
     ) -> None:
         """Shows info about a user"""
         user = user or ctx.author

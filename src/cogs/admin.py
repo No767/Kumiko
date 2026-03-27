@@ -8,12 +8,10 @@ import sys
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
-    Any,
     Literal,
     NamedTuple,
     Optional,
     TypeVar,
-    Union,
 )
 
 import discord
@@ -41,12 +39,10 @@ class ReloadModule(NamedTuple):
 
 
 class BlacklistPageSource(menus.AsyncIteratorPageSource):
-    def __init__(self, entries: dict[str, Union[_T, Any]]) -> None:
+    def __init__(self, entries: dict[str, _T]) -> None:
         super().__init__(self.blacklist_iterator(entries), per_page=20)
 
-    async def blacklist_iterator(
-        self, entries: dict[str, Union[_T, Any]]
-    ) -> AsyncIterator[str]:
+    async def blacklist_iterator(self, entries: dict[str, _T]) -> AsyncIterator[str]:
         for key, entry in entries.items():
             yield f"{key}: {entry}"
 
@@ -62,9 +58,7 @@ class BlacklistPageSource(menus.AsyncIteratorPageSource):
 
 
 class BlacklistPages(KumikoPages):
-    def __init__(
-        self, entries: dict[str, Union[_T, Any]], *, ctx: commands.Context
-    ) -> None:
+    def __init__(self, entries: dict[str, _T], *, ctx: commands.Context) -> None:
         super().__init__(BlacklistPageSource(entries), ctx=ctx)
         self.embed = discord.Embed(colour=discord.Colour.from_rgb(200, 168, 255))
 

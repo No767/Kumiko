@@ -22,9 +22,11 @@ class PrefixConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, argument: str) -> str:
         user_id = ctx.bot.user.id
         if argument.startswith((f"<@{user_id}>", f"<@!{user_id}>", ">")):
-            raise commands.BadArgument("That is a reserved prefix already in use.")
+            msg = "That is a reserved prefix already in use."
+            raise commands.BadArgument(msg)
         if len(argument) > 100:
-            raise commands.BadArgument("That prefix is too long.")
+            msg = "That prefix is too long."
+            raise commands.BadArgument(msg)
         return argument
 
 

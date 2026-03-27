@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import contextlib
 import gzip
 import importlib
 import inspect
@@ -13,7 +12,7 @@ import sys
 import uuid
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Optional, Self, TypeVar, overload
 
 import discord
 import msgspec
@@ -35,7 +34,8 @@ try:
 except ImportError:
     _HAS_WATCHFILES = False
 
-    raise RuntimeError("Watchfiles is not installed")
+    msg = "Watchfiles is not installed"
+    raise RuntimeError(msg)
 else:
     _HAS_WATCHFILES = True
 
@@ -76,10 +76,10 @@ def find_config() -> Optional[Path]:
 
 async def init(conn: asyncpg.Connection) -> None:
     # Refer to https://github.com/MagicStack/asyncpg/issues/140#issuecomment-301477123
-    def _encode_jsonb(value: Any):
+    def _encode_jsonb(value: object) -> bytes:
         return b"\x01" + orjson.dumps(value)
 
-    def _decode_jsonb(value: Any):
+    def _decode_jsonb(value: bytes) -> object:
         return orjson.loads(value[1:].decode("utf-8"))
 
     await conn.set_type_codec(
@@ -151,7 +151,8 @@ class KumikoConfig(msgspec.Struct, frozen=True):
     @classmethod
     def load_from_file(cls, path: Optional[Path]) -> KumikoConfig:
         if not path:
-            raise FileNotFoundError("Configuration file not found")
+            msg = "Configuration file not found"
+            raise FileNotFoundError(msg)
 
         with path.open() as f:
             return msgspec.yaml.decode(f.read(), type=KumikoConfig)
@@ -208,7 +209,7 @@ class Reloader:
             self.logger.info("Reloaded utils module: %s", true_module)
             self.reload_utils_modules(true_module)
 
-    async def _watch_cogs(self):
+    async def _watch_cogs(self) -> None:
         async for changes in awatch(self._cogs_path, self._utils_path, recursive=True):
             for ctype, cpath in changes:
                 module = self.find_modules_from_path(cpath)
@@ -240,7 +241,7 @@ class Blacklist[T]:
         self.encoder = msgspec.json.Encoder()
         self.loop = asyncio.get_running_loop()
         self.lock = asyncio.Lock()
-        self._db: dict[str, Union[T, Any]] = {}
+        self._db: dict[str, T] = {}
         if load_later:
             self.loop.create_task(self.load())
         else:
@@ -257,7 +258,7 @@ class Blacklist[T]:
         async with self.lock:
             await self.loop.run_in_executor(None, self.load_from_file)
 
-    def _dump(self):
+    def _dump(self) -> None:
         temp_id = uuid.uuid4()
         temp_file = Path(f"{temp_id}-{self.filepath.name}.tmp")
 
@@ -280,35 +281,35 @@ class Blacklist[T]:
             await self.loop.run_in_executor(None, self._dump)
 
     @overload
-    def get(self, key: Any) -> Optional[Union[T, Any]]: ...
+    def get(self, key: object) -> Optional[T]: ...
 
     @overload
-    def get(self, key: Any, default: Any) -> Union[T, Any]: ...
+    def get(self, key: object, default: T) -> T: ...
 
-    def get(self, key: Any, default: Any = None) -> Optional[Union[T, Any]]:
+    def get(self, key: object, default: Optional[T] = None) -> Optional[T]:
         """Retrieves a config entry."""
         return self._db.get(str(key), default)
 
-    async def put(self, key: Any, value: Union[T, Any]) -> None:
+    async def put(self, key: object, value: T) -> None:
         """Edits a config entry."""
         self._db[str(key)] = value
         await self.save()
 
-    async def remove(self, key: Any) -> None:
+    async def remove(self, key: object) -> None:
         """Removes a config entry."""
         del self._db[str(key)]
         await self.save()
 
-    def __contains__(self, item: Any) -> bool:
+    def __contains__(self, item: object) -> bool:
         return str(item) in self._db
 
-    def __getitem__(self, item: Any) -> Union[T, Any]:
+    def __getitem__(self, item: object) -> T:
         return self._db[str(item)]
 
     def __len__(self) -> int:
         return len(self._db)
 
-    def all(self) -> dict[str, Union[T, Any]]:
+    def all(self) -> dict[str, T]:
         return self._db
 
 
@@ -435,7 +436,7 @@ class KeyboardInterruptHandler:
 
 
 def process_perms_name(
-    command: Union[commands.Group, commands.Command],
+    command: commands.Group | commands.Command,
 ) -> Optional[str]:
     merge_list = []
     if (
@@ -459,18 +460,18 @@ def process_perms_name(
 class GroupHelpPageSource(menus.ListPageSource):
     def __init__(
         self,
-        group: Union[commands.Group, commands.Cog],
+        group: commands.Group | commands.Cog,
         entries: list[commands.Command],
         *,
         prefix: str,
     ) -> None:
         super().__init__(entries=entries, per_page=6)
-        self.group: Union[commands.Group, commands.Cog] = group
+        self.group: commands.Group | commands.Cog = group
         self.prefix: str = prefix
         self.title: str = f"{self.group.qualified_name} Commands"
         self.description: str = self.group.description
 
-    def _process_description(self, group: Union[commands.Group, commands.Cog]) -> str:
+    def _process_description(self, group: commands.Group | commands.Cog) -> str:
         if isinstance(group, commands.Group) and "permissions" in group.extras:
             return f"{self.description}\n\n**Required Permissions**: {process_perms_name(group)}"
         return self.description
@@ -597,12 +598,12 @@ class FrontPageSource(menus.PageSource):
         # However we need at least 2 to show all the buttons
         return 2
 
-    async def get_page(self, page_number: int) -> Any:
+    async def get_page(self, page_number: int) -> Self:
         # The front page is a dummy
         self.index = page_number
         return self
 
-    async def format_page(self, menu: HelpMenu, page: Any) -> Embed:
+    async def format_page(self, menu: HelpMenu, page: Self) -> Embed:
         embed = Embed(title="Bot Help", colour=discord.Colour.from_rgb(255, 161, 231))
         embed.description = inspect.cleandoc(
             f"""
@@ -729,7 +730,7 @@ class KumikoHelp(commands.HelpCommand):
 
     def common_command_formatting(
         self,
-        embed_like: Union[discord.Embed, GroupHelpPageSource],
+        embed_like: discord.Embed | GroupHelpPageSource,
         command: commands.Command,
     ) -> None:
         embed_like.title = self.get_command_signature(command)
@@ -855,8 +856,10 @@ class Kumiko(commands.Bot):
         await self.blacklist.put(object_id, True)
 
     async def remove_from_blacklist(self, object_id: int) -> None:
-        with contextlib.suppress(KeyError):
+        try:
             await self.blacklist.remove(object_id)
+        except KeyError:
+            pass
 
     ### Bot-related overrides
 
@@ -864,7 +867,7 @@ class Kumiko(commands.Bot):
     # for now, we can just use the default commands.Context
     async def get_context(  # type: ignore
         self,
-        origin: Union[discord.Interaction, discord.Message],
+        origin: discord.Interaction | discord.Message,
         /,
         *,
         cls: KumikoContext = KumikoContext,

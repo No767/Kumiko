@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 
 import discord
 from discord import app_commands
@@ -17,11 +17,12 @@ if TYPE_CHECKING:
 
 CANNOT_REDIRECT_OWN_MESSAGE = "You can't redirect your own messages."
 
+
 ### Command checks
 
 
 def is_thread() -> Check[GuildContext]:
-    def pred(ctx: commands.Context):
+    def pred(ctx: commands.Context) -> bool:
         return isinstance(ctx.channel, discord.Thread) and not isinstance(
             ctx.channel, discord.ForumChannel
         )
@@ -35,7 +36,7 @@ class ConfirmResolvedView(KumikoView):
         self,
         ctx: GuildContext,
         thread: discord.Thread,
-        author: Union[discord.User, discord.Member],
+        author: discord.User | discord.Member,
         *,
         timeout: Optional[float],
     ) -> None:
@@ -109,7 +110,7 @@ class Redirects(commands.Cog):
         return permissions.manage_threads or ctx.channel.owner_id == ctx.author.id
 
     async def mark_as_resolved(
-        self, thread: discord.Thread, user: Union[discord.User, discord.Member]
+        self, thread: discord.Thread, user: discord.User | discord.Member
     ) -> None:
         await thread.edit(
             locked=True,
@@ -117,14 +118,14 @@ class Redirects(commands.Cog):
             reason=f"Marked as resolved by {user.global_name} (ID: {user.id})",
         )
 
-    async def create_redirected_thread(
+    async def create_redirected_thread(  # noqa: PLR0913
         self,
         channel: discord.TextChannel,
         thread_name: str,
         reason: str,
         msg: discord.Message,
-        author: Union[discord.User, discord.Member],
-        reference_author: Union[discord.User, discord.Member],
+        author: discord.User | discord.Member,
+        reference_author: discord.User | discord.Member,
     ) -> str:
         thread_name = (
             thread_name
@@ -233,7 +234,8 @@ class Redirects(commands.Cog):
         """Marks a thread as completed"""
         channel = ctx.channel
         if not isinstance(channel, discord.Thread):
-            raise RuntimeError("This only works in threads")  # noqa: TRY004
+            msg = "This only works in threads"
+            raise RuntimeError(msg)  # noqa: TRY004
 
         if self.can_close_threads(ctx) and ctx.invoked_with in [
             "resolved",

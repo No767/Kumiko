@@ -88,7 +88,7 @@ def check_permissions(**perms: bool) -> Callable[[T], T]:
 
 
 def bot_check_permissions(**perms: bool) -> Callable[[T], T]:
-    async def pred(ctx: KumikoContext):
+    async def pred(ctx: KumikoContext) -> bool:
         return await check_bot_permissions(ctx, perms)
 
     def decorator(func: T) -> T:

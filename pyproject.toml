@@ -121,29 +121,22 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
+# Pulled from https://github.com/mikeshardmind/async-utils/blob/main/pyproject.toml#L149
+select = [
+    "A", "ANN", "ASYNC", "B", "BLE", "C4", "COM", "DTZ", "E",
+    "EM", "ERA", "F", "FA", "FBT", "FLY", "FURB", "G", "I", "ICN", "ISC", "LOG", "NPY",
+    "PD", "PERF", "PGH", "PIE", "PLC", "PLE", "PLR", "PLW", "PTH", "PYI",
+    "Q", "Q003", "RET", "RSE", "RUF", "S", "SIM", "SLOT", "T20", "TC", "TID",
+    "TRY", "UP", "W", "YTT"
+]
 ignore = [
-    "ANN202",   # It's fine sometimes
-    "ANN401",   # Any is the correct type in some cases
-    "B903",     # We don't need to use dataclasses for everything
-    "B904",     # Straight up wrong
-    "D1",       # Too lazy
-    "D415",     # I'm not being formal
-    "E501",     # Ruff formats it, so ignore
-    "EM101",    # Incorrect
-    "FBT003",   # Straight up wrong...
-    "INP001",   # I would prefer not to
-    "PLR0912",  # too many branches
-    "PLR0913",  # number of function arguments
-    "PLR0915",  # too many statements.... in an async entrypoint handling graceful shutdown...
-    "PLR0917",  # too many positional arguments
-    "PLR2004",  # Magic numbers,
-    "PGH003",   # I'm too lazy
-    "UP007",    # Does not account for union unpacking and I prefer this style
-    "UP045",    # No, I prefer this
-    "TRY003",   # Goes against the standard
-    "RUF029",   # async in interface is fine
-    "S311",     # We all know...
-    "SIM105",   # I would prefer not to in most cases
+    "B904",     # Niche standard
+    "E501",     # Ruff suggested format
+    "FBT003",   # Inherently incorrect to enforce this 
+    "PGH003",   # I'm too lazy - Will be removed when migrating over to ty
+    "PLR2004",  # Magic numbers are fine sometimes
+    "SIM105",   # Prefer not to use due to stylistic choices
+    "UP045",    # Explicitly use typing.Optional to not confuse between union operators with discord.py
 
     # These are recommended by Ruff if the formatter is to be used: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
     "W191",
@@ -160,15 +153,6 @@ ignore = [
     "COM819",
     "ISC001",
     "ISC002"
-]
-
-# Pulled from https://github.com/mikeshardmind/async-utils/blob/main/pyproject.toml#L149
-select = [
-    "A", "ANN", "ASYNC", "B", "BLE", "C4", "COM", "D", "DTZ", "E",
-    "EM", "ERA", "F", "FA", "FBT", "FURB", "G", "I", "ICN", "INP", "ISC", "LOG",
-    "PD", "PERF", "PGH", "PIE", "PLC", "PLE", "PLR", "PLW", "PTH", "PYI",
-    "Q", "Q003", "RET", "RSE", "RUF", "S", "SIM", "SLOT", "T20", "TC", "TID",
-    "TRY", "UP", "W", "YTT"
 ]
 fixable = ["ALL"]
 unfixable = ["E501"]
