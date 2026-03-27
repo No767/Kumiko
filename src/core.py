@@ -12,7 +12,7 @@ import sys
 import uuid
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Self, TypeVar, overload
+from typing import TYPE_CHECKING, Optional, Self, overload
 
 import discord
 import msgspec
@@ -50,7 +50,6 @@ __description__ = (
     "A personal multipurpose Discord bot built with freedom and choice in mind"
 )
 
-T = TypeVar("T")
 
 ### Application core function utilities
 
