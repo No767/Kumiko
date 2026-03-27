@@ -17,38 +17,28 @@ jobs:
         version: ["3.12", "3.13", "3.14"]
 
     env:
-      # Configure a constant location for the uv cache
-      UV_CACHE_DIR: /tmp/.uv-cache
+      UV_NO_DEV: true
+      UV_NO_DEFAULT_GROUPS: true
 
     steps:
-      - name: Checkout Repository  
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v6
 
-      - name: Set up Python ${{ matrix.version }}
+      - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: ${{ matrix.version }}
+          python-version: "3.x"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@61cb8a9741eeb8a550a1b8544337180c0fc8476b # 7.2.0
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
         with:
           version: "latest"
-  
-      - name: Cache Dependencies
-        id: cache-uv
-        uses: actions/cache@v5
-        with:
-          path: /tmp/.uv-cache
-          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
-          restore-keys: |
-            uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
-            uv-${{ runner.os }}
-    
-      - name: Install Dependencies
-        if: steps.cache-uv.outputs.cache-hit != 'true'
+          enable-cache: true
+
+      - name: Install dependencies
         run: |
-          uv sync --frozen
-  
+          uv sync --frozen --group lint
+          
       - name: Check typing
         run: |
           uv run pyright src
@@ -60,7 +50,3 @@ jobs:
       - name: Check for formatting
         run: |
           uv run ruff format src --check
-
-      - name: Minimize uv cache
-        run: |
-          uv cache prune --ci

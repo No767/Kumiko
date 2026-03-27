@@ -23,7 +23,7 @@ jobs:
           tar -czf releases/kumiko-docker.tar.gz kumiko-docker/**
   
       - name: Upload bundle
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: releases
   
@@ -38,7 +38,7 @@ jobs:
         fetch-depth: '0'
 
     - name: Download Artifacts
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: artifact
         path: releases
@@ -52,7 +52,7 @@ jobs:
         version_file: src/cogs/__init__.py
 
     - name: Bump version and push tag
-      uses: anothrNick/github-tag-action@1.67.0
+      uses: anothrNick/github-tag-action@1.75.0
       id: tag_version
       env:
         GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
