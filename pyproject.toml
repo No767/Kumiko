@@ -37,7 +37,7 @@ dev = [
 
 lint = [
     "pyright[nodejs]~=1.1.408",
-    "ruff~=0.15.10",
+    "ruff~=0.15.11",
 ]
 docs = [
     "furo~=2025.12.19",
