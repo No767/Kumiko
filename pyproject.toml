@@ -15,7 +15,7 @@ dependencies = [
     "prometheus-async~=26.1.0",
     "prometheus-client~=0.25.0",
     "psutil~=7.2.2",
-    "pygit2~=1.19.1",
+    "pygit2~=1.19.3",
     "python-dateutil~=2.9.0.post0",
     "pyyaml~=6.0.3",
     "typing-extensions~=4.15.0 ; python_full_version < '3.11'",
@@ -37,7 +37,7 @@ dev = [
 
 lint = [
     "pyright[nodejs]~=1.1.410",
-    "ruff~=0.15.16",
+    "ruff~=0.15.17",
 ]
 docs = [
     "furo~=2025.12.19",
