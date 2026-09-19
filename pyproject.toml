@@ -13,9 +13,9 @@ dependencies = [
     "jishaku~=2.7.5",
     "msgspec~=0.21.1",
     "prometheus-async~=26.1.0",
-    "prometheus-client~=0.25.0",
+    "prometheus-client~=0.26.0",
     "psutil~=7.2.2",
-    "pygit2~=1.19.3",
+    "pygit2~=1.20.1",
     "python-dateutil~=2.9.0.post0",
     "pyyaml~=6.0.3",
     "typing-extensions~=4.15.0 ; python_full_version < '3.11'",
@@ -30,14 +30,14 @@ discord-ext-menus = { git = "https://github.com/Rapptz/discord-ext-menus", rev =
 
 [dependency-groups]
 dev = [
-    "towncrier~=25.8.0",
+    "towncrier~=26.9.0",
     { include-group = "lint" },
     { include-group = "docs" }
 ]
 
 lint = [
-    "pyright[nodejs]~=1.1.411",
-    "ruff~=0.15.22",
+    "pyright[nodejs]~=1.1.414",
+    "ruff~=0.16.7",
 ]
 docs = [
     "furo~=2025.12.19",
